@@ -1,0 +1,10 @@
+@import './font/ofont/iconfont.css';
+@import './font/pingfang.css';
+html{
+  font-family: 'SF Pro SC', 'PingFangSC-Regular', 'HanHei SC', 'SF Pro Text', 'Myriad Set Pro', 'SF Pro Icons', 'PingFang SC', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+}
+.flex-center{
+  display:flex;
+  justify-content: center;
+  align-items: center;
+}

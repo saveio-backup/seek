@@ -30,7 +30,7 @@
 				></el-input>
 			</el-form-item>
 		</el-form>
-		<a @click="submitForm('form')">Submit</a>
+		<el-button type='primary' @click="submitForm('form')">Submit</el-button>
 	</div>
 </template>
 <script>

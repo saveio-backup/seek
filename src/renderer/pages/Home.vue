@@ -1,6 +1,18 @@
 <template>
 	<div id="home">
 		<div class="content">
+			<div v-show="loginStatus === 1">
+				<el-button
+				 type="danger"
+				 class="log"
+				 @click="logoutOut"
+				>Log Out</el-button>
+				<el-button
+				 type="success"
+				 style="margin-bottom: 20px;"
+				 @click="exportWallet"
+				>Export Wallet</el-button>
+			</div>
 			<div class="user-meta">
 				<div
 				 class="user-meta-left"
@@ -73,16 +85,29 @@
 			</div>
 			<div class="channels">
 				<el-table :data="channels">
-					<el-table-column prop='ChannelId' label='Channel'></el-table-column>
-					<el-table-column prop='Balance' label='balance'></el-table-column>
-					<el-table-column prop='TokenAddr' label='Token Addr'></el-table-column>
-					<el-table-column prop='HostAddr' label='DNS'></el-table-column>
+					<el-table-column
+					 prop='ChannelId'
+					 label='Channel'
+					></el-table-column>
+					<el-table-column
+					 prop='Balance'
+					 label='balance'
+					></el-table-column>
+					<el-table-column
+					 prop='TokenAddr'
+					 label='Token Addr'
+					></el-table-column>
+					<el-table-column
+					 prop='HostAddr'
+					 label='DNS'
+					></el-table-column>
 				</el-table>
 			</div>
 		</div>
 	</div>
 </template>
 <script>
+const { ipcRenderer } = require("electron");
 export default {
 	mounted() {
 		this.currentAccount();
@@ -179,6 +204,26 @@ export default {
 					}
 				})
 				.catch(err => {});
+		},
+		logoutOut() {
+			this.$axios
+				.post(this.$api.account + "/logout")
+				.then(res => {
+					console.log(res);
+				})
+				.catch(err => {
+					console.err(err);
+				});
+		},
+		exportWallet() {
+			this.$axios
+				.get(this.$api.account + "/export/walletfile")
+				.then(res => {
+					if (res.data.Desc === "SUCCESS" && res.data.Error === 0) {
+						ipcRenderer.send("export-wallet-dialog", contents);
+					}
+				})
+				.catch(err => {});
 		}
 	}
 };
@@ -268,7 +313,7 @@ $grey: #ccc;
 				}
 			}
 		}
-		.channels{
+		.channels {
 			margin-top: 100px;
 			background: $grey;
 		}

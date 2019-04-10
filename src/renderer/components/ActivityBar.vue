@@ -4,7 +4,7 @@
 			<div class="composite-bar">
 				<ul class="action-container">
 					<li class="action-item">
-            <i class="el-icon-info user"></i>
+						<router-link to="/"><i class="ofont ofont-user user"></i></router-link>
 					</li>
           <li class="action-item">
             <router-link to="/appstore"><i class="el-icon-picture wallet"></i></router-link>

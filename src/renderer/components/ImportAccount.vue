@@ -1,18 +1,21 @@
 <template>
 	<div id="import-account">
-		<p>Secret Key</p>
+		<el-button
+		 type="primary"
+		 @click='importWallet'
+		>Import Wallet</el-button>
 		<el-input
 		 type="textarea"
-		 v-model="data.secret"
+		 v-model="data.Wallet"
 		 cols="30"
 		 rows="10"
 		 placeholder="key"
 		></el-input>
 		<p>Password</p>
-		<el-input v-model="data.password"></el-input>
+		<el-input v-model="data.Password"></el-input>
 		<div style="text-align:center; margin-top: 10px;">
 			<el-button
-			 @click="importAccount"
+			 @click="importAccountWithWalletFile"
 			 class="import-button"
 			 type="primary"
 			>Import</el-button>
@@ -20,19 +23,26 @@
 	</div>
 </template>
 <script>
+const { ipcRenderer } = require("electron");
 export default {
 	data() {
 		return {
 			data: {
-				secret: "",
-				password: ""
+				Wallet: "",
+				Password: ""
 			}
 		};
 	},
 	methods: {
-		importAccount() {
+		importWallet() {
+			ipcRenderer.send("open-wallet-dialog");
+			ipcRenderer.on("selected-wallet", (event, content) => {
+				this.data.Wallet = content;
+			});
+		},
+		importAccountWithWalletFile() {
 			this.$axios
-				.post(this.$api.account + "/import", data)
+				.post(this.$api.account + "/import/walletfile", this.data)
 				.then(res => {})
 				.catch(res => {});
 		}

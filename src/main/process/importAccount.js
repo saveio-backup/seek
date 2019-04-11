@@ -8,7 +8,6 @@ ipcMain.on('open-wallet-dialog', (event) => {
     properties: ['openFile']
   }, (files) => {
     if (files) {
-      console.log(files);
       const contents = fs.readFileSync(files[0], 'utf-8');
       event.sender.send('selected-wallet', contents)
     }

@@ -6,18 +6,18 @@
 					<li class="action-item">
 						<router-link to="/"><i class="ofont ofont-user user"></i></router-link>
 					</li>
-          <li class="action-item">
-            <router-link to="/appstore"><i class="el-icon-picture wallet"></i></router-link>
-          </li>
 					<li class="action-item">
-						<router-link to="/filemanager"><i class="el-icon-upload filemanger"></i></router-link>
+						<router-link to="/Appstore"><i class="el-icon-picture appstore"></i></router-link>
 					</li>
 					<li class="action-item">
-            <router-link to="/wallet"><i class="el-icon-news wallet"></i></router-link>
-          </li>
-          <li class="action-item">
-            <router-link to="/miner"><i class="el-icon-rank miner"></i></router-link>
-          </li>
+						<router-link :to="{name:'disk',query:{type:1}}"><i class="el-icon-upload filemanger"></i></router-link>
+					</li>
+					<li class="action-item">
+						<router-link to="/Wallet"><i class="el-icon-news wallet"></i></router-link>
+					</li>
+					<li class="action-item">
+						<router-link to="/Miner"><i class="el-icon-rank miner"></i></router-link>
+					</li>
 				</ul>
 			</div>
 		</div>
@@ -36,13 +36,13 @@ export default {};
 		color: #fff;
 		display: flex;
 		flex-direction: column;
-    justify-content: space-between;
-    .action-container{
-      text-align:center;
-      .action-item{
-        padding: 10px 0;
-      }
-    }
+		justify-content: space-between;
+		.action-container {
+			text-align: center;
+			.action-item {
+				padding: 10px 0;
+			}
+		}
 	}
 }
 </style>

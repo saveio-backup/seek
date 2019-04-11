@@ -30,7 +30,10 @@
 				></el-input>
 			</el-form-item>
 		</el-form>
-		<el-button type='primary' @click="submitForm('form')">Submit</el-button>
+		<el-button
+		 type='primary'
+		 @click="submitForm('form')"
+		>Submit</el-button>
 	</div>
 </template>
 <script>
@@ -89,9 +92,9 @@ export default {
 							const data = res.data;
 							if (data.Desc === "SUCCESS") {
 								const result = data.Result;
-								window.localStorage.setItem("Address", result.Address);
-								window.localStorage.setItem("PublicKey", result.PublicKey);
-								window.localStorage.setItem("SigScheme", result.SigScheme);
+								for (let key in result) {
+									window.localStorage.setItem(key, result[key]);
+								}
 								window.location.href = "/"; // success login link to home page
 							}
 						})

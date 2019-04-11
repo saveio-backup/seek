@@ -43,8 +43,18 @@ export default {
 		importAccountWithWalletFile() {
 			this.$axios
 				.post(this.$api.account + "/import/walletfile", this.data)
-				.then(res => {})
-				.catch(res => {});
+				.then(res => {
+					if (res.data.Desc === "SUCCESS" && res.data.Error === 0) {
+						const result = res.data.Result;
+						for (let key in result) {
+							window.localStorage.setItem(key, result[key]);
+						}
+						window.location.href = "/"; // success login link to home page
+					}
+				})
+				.catch(err => {
+					console.error(err);
+				});
 		}
 	}
 };
@@ -52,7 +62,5 @@ export default {
 <style lang="scss">
 #import-account {
 	margin: 20px auto;
-	.import-button {
-	}
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
 	<div id="home">
 		<div class="content">
-			<div v-show="loginStatus === 1">
+			<div v-if="loginStatus">
 				<el-button
 				 type="danger"
 				 class="log"
@@ -84,7 +84,10 @@
 				</div>
 			</div>
 			<div class="channels">
-				<el-table :data="channels">
+				<el-table
+				 :data="channels"
+				 empty-text='No data'
+				>
 					<el-table-column
 					 prop='ChannelId'
 					 label='Channel'
@@ -117,38 +120,38 @@ export default {
 			balanceValue: "",
 			loginStatus: 0, // 1: login 0: not login
 			user: {
-				name: localStorage.getItem("label") || ""
+				name: localStorage.getItem("Label") || ""
 			},
 			balanceLists: [
-				{
-					Name: "Save Power",
-					Symbol: "SAVE",
-					Decimals: 0,
-					Balance: "000000"
-				},
-				{
-					Name: "NEO",
-					Symbol: "NEO",
-					Decimals: 9,
-					Balance: "0"
-				},
-				{
-					Name: "Ontology",
-					Symbol: "ONT",
-					Decimals: 9,
-					Balance: "0"
-				}
+				// {
+				// 	Name: "Save Power",
+				// 	Symbol: "SAVE",
+				// 	Decimals: 0,
+				// 	Balance: "000000"
+				// },
+				// {
+				// 	Name: "NEO",
+				// 	Symbol: "NEO",
+				// 	Decimals: 9,
+				// 	Balance: "0"
+				// },
+				// {
+				// 	Name: "Ontology",
+				// 	Symbol: "ONT",
+				// 	Decimals: 9,
+				// 	Balance: "0"
+				// }
 			],
 			balanceSelected: 0,
 			channels: [
-				{
-					ChannelId: 101,
-					Balance: 1000000000,
-					BalanceFormat: "1",
-					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
-					HostAddr: "tcp://127.0.0.1:13004",
-					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
-				}
+				// {
+				// 	ChannelId: 101,
+				// 	Balance: 1000000000,
+				// 	BalanceFormat: "1",
+				// 	Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
+				// 	HostAddr: "tcp://127.0.0.1:13004",
+				// 	TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
+				// }
 			]
 		};
 	},
@@ -158,29 +161,27 @@ export default {
 		},
 		// Confirm login status
 		currentAccount() {
-			const address = window.localStorage.getItem("Address") || null;
-			if (address) {
-				this.$axios
-					.get(this.$api.account)
-					.then(res => {
-						const data = res.data;
-						if (data.Error === 0) {
-							if (data.Desc === "SUCCESS" && data.Result.Address) {
-								const result = data.Result;
-								window.localStorage.setItem("Address", result.Address);
-								window.localStorage.setItem("PublicKey", result.PublicKey);
-								window.localStorage.setItem("SigScheme", result.SigScheme);
-								this.loginStatus = 1; // login success
-								this.getBalance();
-							} else {
-								window.localStorage.clear(); // remove all local infomation
+			this.$axios
+				.get(this.$api.account)
+				.then(res => {
+					const data = res.data;
+					if (data.Error === 0) {
+						if (data.Desc === "SUCCESS" && data.Result.Address) {
+							const result = data.Result;
+							for (let key in result) {
+								window.localStorage.setItem(key, result[key]);
 							}
+							this.loginStatus = 1; // login success
+							this.getBalance();
+							this.getAllChannels();
+						} else {
+							window.localStorage.clear(); // remove all local infomation
 						}
-					})
-					.catch(err => {
-						console.error(err);
-					});
-			}
+					}
+				})
+				.catch(err => {
+					console.error(err);
+				});
 		},
 		getBalance() {
 			this.$axios
@@ -193,26 +194,33 @@ export default {
 						this.balanceLists = result;
 					}
 				})
-				.catch(err => {});
+				.catch(err => {
+					console.err(err);
+				});
 		},
 		getAllChannels() {
 			this.$axios
-				.get(this.$api.host + "chanel")
+				.get(this.$api.host+ this.$api.version + "channel")
 				.then(res => {
 					if (res.data.Desc === "SUCCESS" && res.data.Error === 0) {
 						this.channels = res.data.Result;
 					}
 				})
-				.catch(err => {});
+				.catch(err => {
+					console.error(err);
+				});
 		},
 		logoutOut() {
 			this.$axios
-				.post(this.$api.account + "/logout")
+				.post(this.$api.account + "/logout", {})
 				.then(res => {
-					console.log(res);
+					if (res.data.Desc === "SUCCESS" && res.data.Error === 0) {
+						window.localStorage.clear();
+						window.location.href = "/"; // success login link to home page
+					}
 				})
 				.catch(err => {
-					console.err(err);
+					console.error(err);
 				});
 		},
 		exportWallet() {
@@ -220,10 +228,12 @@ export default {
 				.get(this.$api.account + "/export/walletfile")
 				.then(res => {
 					if (res.data.Desc === "SUCCESS" && res.data.Error === 0) {
-						ipcRenderer.send("export-wallet-dialog", contents);
+						ipcRenderer.send("export-wallet-dialog", res.data.Result.Wallet);
 					}
 				})
-				.catch(err => {});
+				.catch(err => {
+					console.error(err);
+				});
 		}
 	}
 };

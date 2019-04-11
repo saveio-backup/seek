@@ -5,7 +5,10 @@ import router from './router/router.js'
 import store from './store/store.js'
 import API from './assets/config/api';
 import './assets/css/style.scss'
-
+import lang from 'element-ui/lib/locale/lang/en'
+import locale from 'element-ui/lib/locale'
+import dateFormat from './assets/tool/date'
+locale.use(lang)
 import {
   Select,
   Option,
@@ -14,8 +17,16 @@ import {
   FormItem,
   Button,
   Table,
-  TableColumn
+  TableColumn,
+  Progress,
+  Dialog,
+  InputNumber,
+  DatePicker
 } from 'element-ui';
+Vue.use(DatePicker)
+Vue.use(InputNumber)
+Vue.use(Dialog)
+Vue.use(Progress)
 Vue.use(Table)
 Vue.use(TableColumn)
 Vue.use(Button)
@@ -26,6 +37,7 @@ Vue.use(Option)
 Vue.use(Select)
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
+Vue.prototype.$dateFormat = dateFormat;
 Vue.prototype.$axios = axios
 Vue.prototype.$api = API;
 Vue.config.productionTip = false

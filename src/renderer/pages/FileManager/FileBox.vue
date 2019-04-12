@@ -2,12 +2,12 @@
 	<div id="file-box">
 		<div class="aside">
 			<div class="aside-link">
-				<router-link :to="{name:'disk', query:{type:1}}">All File</router-link>
-				<router-link :to="{name:'disk', query:{type:2}}">Image</router-link>
-				<router-link :to="{name:'disk', query:{type:3}}">Document</router-link>
-				<router-link :to="{name:'disk', query:{type:4}}">Video</router-link>
-				<router-link :to="{name:'disk', query:{type:5}}">Music</router-link>
-				<router-link :to="{name:'domain'}">Domain</router-link>
+				<router-link :to="{name:'disk', query:{type:0}}">All File</router-link>
+				<router-link :to="{name:'disk', query:{type:1}}">Image</router-link>
+				<router-link :to="{name:'disk', query:{type:2}}">Document</router-link>
+				<router-link :to="{name:'disk', query:{type:3}}">Video</router-link>
+				<router-link :to="{name:'disk', query:{type:4}}">Music</router-link>
+				<router-link :to="{name:'domain',query:{type:9}}">Domain</router-link>
 			</div>
 			<div
 			 class="aside-progress"
@@ -60,13 +60,34 @@ export default {
 					console.error(err);
 				});
 		}
+	},
+	beforeRouteEnter(to, from, next) {
+		next(vm => {
+			if (to.name === "filebox") {
+				vm.$router.push({
+					name: "disk",
+					query: {
+						type: 0
+					}
+				});
+			}
+		});
+	},
+	beforeRouteUpdate(to, from, next) { //  electron-vue bug hack
+		console.log("route update");
+		console.log(to);
+		if (to.name === "filebox") {
+			next({ name: "disk", query: { type: 0 } });
+		}else{
+			next();
+		}
 	}
 };
 </script>
 <style lang="scss">
-$brand-blue:#409EFF;
-$sucess:#67C23A;
-$danger: #F56C6C;
+$brand-blue: #409eff;
+$sucess: #67c23a;
+$danger: #f56c6c;
 #file-box {
 	display: flex;
 	.aside {
@@ -80,7 +101,7 @@ $danger: #F56C6C;
 		width: 200px;
 		min-height: 400px;
 		background: $danger;
-		color:#fff;
+		color: #fff;
 		& > a {
 			display: flex;
 		}

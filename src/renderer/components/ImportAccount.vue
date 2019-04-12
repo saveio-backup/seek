@@ -36,7 +36,7 @@ export default {
 	methods: {
 		importWallet() {
 			ipcRenderer.send("open-wallet-dialog");
-			ipcRenderer.on("selected-wallet", (event, content) => {
+			ipcRenderer.once("selected-wallet", (event, content) => {
 				this.data.Wallet = content;
 			});
 		},

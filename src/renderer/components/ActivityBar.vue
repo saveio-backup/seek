@@ -10,7 +10,7 @@
 						<router-link to="/Appstore"><i class="el-icon-picture appstore"></i></router-link>
 					</li>
 					<li class="action-item">
-						<router-link :to="{name:'disk',query:{type:1}}"><i class="el-icon-upload filemanger"></i></router-link>
+						<router-link :to="{name:'disk',query:{type:0}}"><i class="el-icon-upload filemanger"></i></router-link>
 					</li>
 					<li class="action-item">
 						<router-link to="/Wallet"><i class="el-icon-news wallet"></i></router-link>

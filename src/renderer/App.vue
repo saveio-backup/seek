@@ -22,5 +22,8 @@ export default {
 	display: flex;
 	height: 100vh;
 }
+.common-main{
+	padding: 0 88px;
+}
 </style>
 

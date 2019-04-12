@@ -40,30 +40,41 @@ export default new Router({
           name: 'filebox',
           component: require('../pages/FileManager/FileBox.vue').default,
           children: [{
-            path: 'disk',
-            name: 'disk',
-            component: require('../pages/FileManager/FileBox/Disk.vue').default
-          }, {
-            path: 'domain',
-            name: 'domain',
-            component: require('../pages/FileManager/FileBox/Domain.vue').default
-          }, {
-            path: 'expand',
-            name: 'expand',
-            component: require('../pages/FileManager/FileBox/Expand.vue').default
-          },
-          {
-            path: 'upload',
-            name: 'upload',
-            component: require('../pages/FileManager/FileBox/Upload.vue').default
-          }]
+              path: 'disk',
+              name: 'disk',
+              component: require('../pages/FileManager/FileBox/Disk.vue').default
+            }, {
+              path: 'domain',
+              name: 'domain',
+              component: require('../pages/FileManager/FileBox/Domain.vue').default
+            }, {
+              path: 'expand',
+              name: 'expand',
+              component: require('../pages/FileManager/FileBox/Expand.vue').default
+            },
+            {
+              path: 'upload',
+              name: 'upload',
+              component: require('../pages/FileManager/FileBox/Upload.vue').default
+            }, {
+              path: '/*',
+              redirect: {
+                name: 'disk',
+                query: {
+                  type: 0
+                }
+              }
+            }
+          ]
         },
         {
           path: 'transfer',
+          name: 'transfer',
           component: require('../pages/FileManager/Transfer.vue').default
         },
         {
           path: 'discovery',
+          name: 'discovery',
           component: require('../pages/FileManager/Discovery.vue').default
         }
       ]

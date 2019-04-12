@@ -5,6 +5,7 @@ const API = {
   version: VERSION,
   account: HOST + VERSION + 'account',
   balance: HOST + VERSION + 'balance',
-  userspace: HOST + VERSION + 'dsp/client/userspace/'
+  userspace: HOST + VERSION + 'dsp/client/userspace/',
+  getFileList: HOST + VERSION + 'dsp/file/uploadlist/'
 }
 module.exports = API;

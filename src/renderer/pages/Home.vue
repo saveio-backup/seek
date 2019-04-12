@@ -1,5 +1,5 @@
 <template>
-	<div id="home">
+	<div id="home" class="common-main">
 		<div class="content">
 			<div v-if="loginStatus">
 				<el-button

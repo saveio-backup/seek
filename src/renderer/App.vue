@@ -4,7 +4,7 @@
 		<keep-alive>
 			<router-view v-if="$route.meta.keepAlive"></router-view>
 		</keep-alive>
-    <router-view v-if="!$route.meta.keepAlive"></router-view>
+		<router-view v-if="!$route.meta.keepAlive"></router-view>
 	</div>
 </template>
 
@@ -22,8 +22,16 @@ export default {
 	display: flex;
 	height: 100vh;
 }
-.common-main{
+.common-main {
 	padding: 0 88px;
+	width: calc(100% - 70px);
+}
+.layout-main {
+	position: absolute;
+	left: 200px;
+	top: 80px;
+	bottom: 0px;
+	right: 0px;
 }
 </style>
 

@@ -1,10 +1,10 @@
 @font-face {font-family: "ofont";
-  src: url('iconfont.eot?t=1554798302008'); /* IE9 */
-  src: url('iconfont.eot?t=1554798302008#iefix') format('embedded-opentype'), /* IE6-IE8 */
-  url('data:application/x-font-woff2;charset=utf-8;base64,d09GMgABAAAAAALMAAsAAAAABkAAAAKBAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHEIGVgCCcApwgQkBNgIkAwgLBgAEIAWESQcuG4kFyK4xNoblRyQEs0xLq8s8sfaXFzPVA5x1Szz8t3x33+xsyvyU2lwAhQux1GJRvVoUCI9Gl6qaRHEQBoWKULv9XpfXNREy57slc6vp2p38sfMCW2E8ylV4JA7hOJrji1maTu7b7ZfPY0k0oFhirgHOtOuBDm58ST3GnGuWB1ylKWLTFeQKwt/ENfUT6IELAHNZSbsJtw08G2wkRTLyDWMXvMDHBIoZHebQ6fUdVGT2qkBc8Zw5VAo+WWbJDqGt4WAWr9U60ssU4FX0/fjPKDpI6opddvTyyQr29zhpfNEsFwOAn4CO16iwBWTiZGPssLxgWF6JFSyAYxUHe74JDOKoWsH+OruwC0xB7pl4T/CohQnkZHoO2J50LalryJ+fcac3J6+n8mta2iV8HdvvvsH8sbnNvSdzzqEDxhdlF/8J79OrsXnyYS6dwDrHG2u7cUn+DuwDNOUnv4JBcPu3tQ6eM/j7/Y88TQUMc4COHduDH8QP7MmG0NanrPGNjmRu0sqEoqABuwb8TlUN300q1IbvydFuIsMrtXkw88eXSBwtm0jSxhUHIF5s2jreMojlRe7EhleAh+INnvR4i1eKT2BGv+O1Ed94m+IfXpz2f2HLSuzWdoTmSitcvKK3TGJ2rVq7HuTekPMYzgVx/rwHEuslMQ57g2LyjGKSaVvskzNSZWRJIjyVFArDBNPlPi2156qmm/0+Nz2pt0wiqNkhyJwiK2jhFfIsJWIcpFTN9ez1G8TxKDQnqC2pfUCE5Rmz0VDPoAs8k8XdXbfcbz1xjCjFEC+eiKDTafNIKJRAaXOmjywpkrkTIqlNfacfD5X1LqOIftcAFLY6hVNdyXctCQA=') format('woff2'),
-  url('iconfont.woff?t=1554798302008') format('woff'),
-  url('iconfont.ttf?t=1554798302008') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
-  url('iconfont.svg?t=1554798302008#ofont') format('svg'); /* iOS 4.1- */
+  src: url('iconfont.eot?t=1555311546358'); /* IE9 */
+  src: url('iconfont.eot?t=1555311546358#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('data:application/x-font-woff2;charset=utf-8;base64,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') format('woff2'),
+  url('iconfont.woff?t=1555311546358') format('woff'),
+  url('iconfont.ttf?t=1555311546358') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
+  url('iconfont.svg?t=1555311546358#ofont') format('svg'); /* iOS 4.1- */
 }
 
 .ofont {
@@ -15,6 +15,22 @@
 }
 
 .ofont-user:before {
-  content: "\f12b";
+  content: "\e617";
+}
+
+.ofont-miner:before {
+  content: "\e62b";
+}
+
+.ofont-file:before {
+  content: "\e631";
+}
+
+.ofont-menu:before {
+  content: "\e785";
+}
+
+.ofont-wallet:before {
+  content: "\e61b";
 }
 

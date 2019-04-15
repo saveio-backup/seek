@@ -5,13 +5,13 @@
 				<h1>Upload File</h1>
 				<span
 				 class="text-underline"
-				 @click="advancedToggle = true"
-				 v-show="!advancedToggle"
+				 @click="switchToggle.advanced = true"
+				 v-show="!switchToggle.advanced"
 				>Advanced</span>
 				<span
 				 class="text-underline"
-				 @click="advancedToggle = false"
-				 v-show="advancedToggle"
+				 @click="switchToggle.advanced = false"
+				 v-show="switchToggle.advanced"
 				>Simple</span>
 			</div>
 			<div class="upload-params">
@@ -70,7 +70,7 @@
 				<!-- advanced Section -->
 
 				<el-form
-				 v-show="advancedToggle"
+				 v-show="switchToggle.advanced"
 				 ref="advancedForm"
 				 :v-model="advancedData"
 				 label-position="left"
@@ -159,7 +159,11 @@
 						></el-input>
 					</el-form-item>
 				</el-form>
-				<el-button type="primary">Pay & Upload</el-button>
+				<el-button
+				 type="primary"
+				 @click="toUploadFile"
+				>Pay & Upload</el-button>
+				<el-button @click="toEmptyUpload">Cancel</el-button>
 				{{advancedData.WhiteList}}
 			</div>
 		</div>
@@ -194,7 +198,10 @@ export default {
 			verificationCycleNumber: 1, // Integrity verification cycle (default 2 month)
 			storageCycleSelected: baseKeys[3], // default Permanent
 			storageCycleNumber: 1,
-			advancedToggle: false,
+			switchToggle: {
+				advanced: false, // advanced form
+				upload: true
+			},
 			wihteListString: "",
 			fileSize: 0,
 			encryptionToggle: false,
@@ -256,8 +263,35 @@ export default {
 				this.verificationCycleNumber *
 				this.BASE[this.verificationCycleSelected];
 		},
+		toEmptyUpload() {
+			this.uploadFormData.Path = "";
+			this.uploadFormData.Desc = "";
+			this.uploadFormData.EncryptPassword = "";
+			this.fileSize = 0;
+			this.switchToggle.advanced = false;
+		},
 		toUploadFile() {
-			
+			if (!this.switchToggle.upload) return;
+			this.switchToggle.upload = false; // set toggle
+			let data = null;
+			data = this.switchToggle.advanced
+				? Object.assign(this.uploadFormData, this.advancedData)
+				: this.uploadFormData;
+			this.$axios
+				.post(this.$api.upload, data)
+				.then(res => {
+					this.switchToggle.upload = true;
+					if (res.data.Error === 0) {
+						this.$store.dispatch("setUpload"); 
+						this.$router.push({ name: "transfer", query: { transferType: 0 } });
+					} else {
+						this.$message.error("Upload Error");
+					}
+				})
+				.catch(() => {
+					this.$message.error("Upload Error");
+					this.switchToggle.upload = true;
+				});
 		}
 	},
 	computed: {

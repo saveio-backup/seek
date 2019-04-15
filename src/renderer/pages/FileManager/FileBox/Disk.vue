@@ -1,33 +1,61 @@
 <template>
 	<div id="disk">
-		<div class="func-nav">
+		<div
+		 class="func-nav"
+		 v-if="controlBar !== 'close'"
+		>
 			<div class="fun-button">
 				<router-link :to="{name:'upload'}">
 					<el-button>Upload</el-button>
 				</router-link>
-				<el-button type="success">Download</el-button>
+				<el-button
+				 type="success"
+				 @click="toDownload"
+				>Download</el-button>
 				<el-button type="primary">Share</el-button>
 			</div>
 			<div class="fun-search">
-				<el-input placeholder="search by name"></el-input>
+				<el-input
+				 placeholder="search by name"
+				 type="text"
+				></el-input>
 			</div>
 		</div>
+		<div
+		 class="func-nav"
+		 v-else
+		>
+			Miner Control
+		</div>
 		<div class="content">
-			<div style="position:absolute; top:0; left:50%">当前 type {{type}}</div>
 			<div class="table-element">
-				<el-table ref='table' :data="mockData" height="100%">
+				<el-table
+				 ref='table'
+				 :data="mockMiner"
+				 height="100%"
+				 @select="selectFile"
+				>
+
 					<el-table-column
+					 v-if="toggleFilebox"
 					 type="selection"
 					 width="55"
 					></el-table-column>
+
 					<el-table-column
 					 label="Filename"
+					 width="500"
 					 prop="Name"
-					></el-table-column>
+					>
+						<template slot-scope="scope">
+							<div>{{ scope.row.Name }}</div>
+						</template>
+					</el-table-column>
 					<el-table-column label="Size">
 						<template slot-scope="scope">
+							<!-- api return 'KB' unit -->
 							<span>
-								{{util.bytesToSize(scope.row.Size)}}
+								{{util.bytesToSize(scope.row.Size * 1024)}}
 							</span>
 						</template>
 					</el-table-column>
@@ -39,7 +67,18 @@
 					 label="Profit"
 					 prop="Profit"
 					></el-table-column>
-					<el-table-column label="Type">
+					<el-table-column
+					 label="Last Share"
+					 v-if="page ==='miner'"
+					>
+						<template slot-scope="scope">
+							<span>{{date.formatTime(new Date(scope.row.LastShareAt * 1000))}}</span>
+						</template>
+					</el-table-column>
+					<el-table-column
+					 label="Type"
+					 v-if="page === 'filebox'"
+					>
 						<template slot-scope="scope">
 							<span>
 								{{privilegeConfig[scope.row.Privilege]}}
@@ -53,12 +92,27 @@
 	</div>
 </template>
 <script>
+import date from "../../../assets/tool/date";
 import util from "../../../assets/config/util";
 let tableElement;
 export default {
 	data() {
 		return {
+			toggleFilebox: false,
+			date,
 			util,
+			mockMiner: [
+				{
+					Hash: "QmP9pWe9W6KWnVkoEAFPFvfRYDHft7bvq5aAsTGhjpUCvK",
+					Name: "text.txt",
+					Size: 1024,
+					DownloadCount: 10,
+					DownloadAt: 1555166657,
+					LastShareAt: 1555166657,
+					Privilege: 0,
+					Profit: 10
+				}
+			],
 			mockData: [
 				{
 					Hash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
@@ -68,7 +122,7 @@ export default {
 					ExpiredAt: 1555051356,
 					UpdatedAt: 0,
 					Profit: 0,
-					Privilege: 1
+					Privilege: 0
 				},
 				{
 					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
@@ -251,15 +305,29 @@ export default {
 					Privilege: 1
 				}
 			],
+			fileListData: [],
 			privilegeConfig: ["Private", "Public", "Whitelist"],
 			offsetArray: [],
+			fileSelected: [],
+			controlBar: true,
 			type: "",
-			loadToggle: true,
-			limit: 20
+			switchToggle: {
+				load: true
+			},
+			page: "",
+			addrAPI: "",
+			limitCount: 20
 		};
 	},
 	mounted() {
 		// window.vue = this;
+		console.log(this.$route);
+		this.page = this.$route.query.page || "filebox";
+		this.$nextTick(() => {
+			if (this.page == "filebox") {
+				this.toggleFilebox = true;
+			}
+		});
 		tableElement = this.$refs.table.bodyWrapper;
 		this.addListenScroll();
 	},
@@ -268,11 +336,9 @@ export default {
 			const that = this;
 			const distance = 300;
 			tableElement.addEventListener("scroll", function() {
-				if (that.loadToggle) {
+				if (that.switchToggle.load) {
 					if (
-						tableElement.scrollTop +
-							tableElement.clientHeight +
-							distance >=
+						tableElement.scrollTop + tableElement.clientHeight + distance >=
 						tableElement.scrollHeight
 					) {
 						console.log("scroll Toggle");
@@ -282,20 +348,23 @@ export default {
 				}
 			});
 		},
+		selectFile(file) {
+			this.fileSelected = file;
+		},
 		getFileLists() {
-			if (!this.loadToggle) return;
-			this.loadToggle = false; // if your are loading list now,  the switch will be set to false
+			if (!this.switchToggle.load) return;
+			this.switchToggle.load = false; // if your are loading list now,  the switch will be set to false
+			let type = this.offsetArray[this.type] || 0;
+			let addr =
+				this.addrAPI +
+				this.type +
+				"/" +
+				type * this.limitCount +
+				"/" +
+				(type * this.limitCount + this.limitCount - 1);
 			this.$axios
-				.get(
-					this.$api.getFileList +
-						this.type +
-						"/" +
-						(this.offsetArray[this.type] || 0) +
-						"/" +
-						this.limit
-				)
+				.get(addr)
 				.then(res => {
-					console.log(res);
 					if (res.data.Error === 0) {
 						const result = res.data.Result;
 						if (result.length) {
@@ -303,22 +372,48 @@ export default {
 							this.offsetArray[this.type] = this.offsetArray[this.type]
 								? this.offsetArray[this.type] + 1
 								: 1;
+							this.fileListData = this.fileListData.concat(result);
+						} else {
+							this.switchToggle.load = false;
+							return;
 						}
 					}
-					this.loadToggle = true;
-					// setTimeout(() => {
-					// 	this.loadToggle = true;
-					// }, 3000);
+					this.switchToggle.load = true;
 				})
 				.catch(err => {
 					console.error(err);
-					this.loadToggle = true;
+					this.switchToggle.load = true;
 				});
+		},
+		toDownload() {
+			const fileSelected = this.fileSelected;
+			const length = fileSelected.length;
+			const commitAll = [];
+			for (let i = 0; i < length; i++) {
+				commitAll.push(
+					this.$axios.post(this.$api.download, {
+						Hash: fileSelected[i].Hash,
+						MaxPeerNum: 10
+					})
+				);
+			}
+			this.$axios.all(commitAll).then(() => {
+				this.$store.dispatch("setUpload");
+				this.$router.push({
+					name: "transfer",
+					query: {
+						transferType: 1
+					}
+				});
+			});
 		}
 	},
 	beforeRouteEnter(to, from, next) {
 		next(vm => {
 			vm.type = to.query.type;
+			vm.controlBar = to.query.controlBar;
+			vm.addrAPI = to.query.addrAPI || vm.$api.getFileList;
+			// vm.page = to.query.type || "filebox";
 			vm.getFileLists();
 		});
 	},
@@ -340,12 +435,12 @@ $light-grey: #f2f2f2;
 		height: 80px;
 		background: $light-grey;
 	}
-	&>.content{
+	& > .content {
 		position: absolute;
-		top:80px;
-		bottom:0px;
-		width:100%;
-		.table-element{
+		top: 80px;
+		bottom: 0px;
+		width: 100%;
+		.table-element {
 			height: 100%;
 			overflow-y: hidden;
 		}

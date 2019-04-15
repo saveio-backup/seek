@@ -2,12 +2,30 @@
 	<div id="file-box">
 		<div class="aside">
 			<div class="aside-link">
-				<router-link :to="{name:'disk', query:{type:0}}">All File</router-link>
-				<router-link :to="{name:'disk', query:{type:1}}">Image</router-link>
-				<router-link :to="{name:'disk', query:{type:2}}">Document</router-link>
-				<router-link :to="{name:'disk', query:{type:3}}">Video</router-link>
-				<router-link :to="{name:'disk', query:{type:4}}">Music</router-link>
-				<router-link :to="{name:'domain',query:{type:9}}">Domain</router-link>
+				<router-link
+				 :class="{'theme-font-blue': fileType == 0}"
+				 :to="{name:'disk', query:{type:0}}"
+				>All File</router-link>
+				<router-link
+				 :class="{'theme-font-blue': fileType == 1}"
+				 :to="{name:'disk', query:{type:1}}"
+				>Image</router-link>
+				<router-link
+				 :class="{'theme-font-blue': fileType == 2}"
+				 :to="{name:'disk', query:{type:2}}"
+				>Document</router-link>
+				<router-link
+				 :class="{'theme-font-blue': fileType == 3}"
+				 :to="{name:'disk', query:{type:3}}"
+				>Video</router-link>
+				<router-link
+				 :class="{'theme-font-blue': fileType == 4}"
+				 :to="{name:'disk', query:{type:4}}"
+				>Music</router-link>
+				<router-link
+				 active-class="theme-font-blue"
+				 :to="{name:'domain',query:{type:9}}"
+				>Domain</router-link>
 			</div>
 			<div
 			 class="aside-progress"
@@ -43,6 +61,9 @@ export default {
 			} else {
 				return 100;
 			}
+		},
+		fileType: function() {
+			return this.$route.query.type;
 		}
 	},
 	methods: {
@@ -73,21 +94,22 @@ export default {
 			}
 		});
 	},
-	beforeRouteUpdate(to, from, next) { //  electron-vue bug hack
-		console.log("route update");
-		console.log(to);
+	beforeRouteUpdate(to, from, next) {
+		//  electron-vue bug hack
 		if (to.name === "filebox") {
 			next({ name: "disk", query: { type: 0 } });
-		}else{
+		} else {
 			next();
 		}
 	}
 };
 </script>
 <style lang="scss">
+$theme-font-blue: #040f39;
 $brand-blue: #409eff;
 $sucess: #67c23a;
 $danger: #f56c6c;
+$light-grey: #f7f7f7;
 #file-box {
 	display: flex;
 	.aside {
@@ -100,16 +122,20 @@ $danger: #f56c6c;
 		bottom: 0;
 		width: 200px;
 		min-height: 400px;
-		background: $danger;
-		color: #fff;
-		& > a {
-			display: flex;
-		}
+		background: $light-grey;
+		color: $theme-font-blue;
+		font-size: 16px;
 		.aside-link {
 			display: flex;
 			flex-direction: column;
 			width: 100%;
-			padding-left: 50px;
+			& > a {
+				display: flex;
+				padding: 10px 0 10px 50px;
+				&:hover{
+					background:rgba(231,231,235,1);
+				}
+			}
 		}
 		.aside-progress {
 			// flex:1;
@@ -118,13 +144,6 @@ $danger: #f56c6c;
 				padding-right: 0px;
 			}
 		}
-	}
-	.layout-main {
-		position: absolute;
-		left: 200px;
-		top: 80px;
-		bottom: 0px;
-		right: 0px;
 	}
 }
 </style>

@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import '../assets/css/reset.css'
+import api from '../assets/config/api';
 Vue.use(Router)
 
 export default new Router({
@@ -56,14 +57,6 @@ export default new Router({
               path: 'upload',
               name: 'upload',
               component: require('../pages/FileManager/FileBox/Upload.vue').default
-            }, {
-              path: '/*',
-              redirect: {
-                name: 'disk',
-                query: {
-                  type: 0
-                }
-              }
             }
           ]
         },
@@ -78,6 +71,34 @@ export default new Router({
           component: require('../pages/FileManager/Discovery.vue').default
         }
       ]
+    },
+    {
+      path: '/Miner',
+      name: 'Miner',
+      component: require('../pages/Miner.vue').default,
+      meta: {
+        keepAlive: true
+      },
+      children: [{
+        path: 'minerdisk',
+        name: 'minerdisk',
+        component: require('../pages/FileManager/FileBox/Disk.vue').default
+      }, {
+        path: 'income',
+        name: 'income',
+        component: require('../pages/Miner/Income.vue').default
+      }, {
+        path: '',
+        redirect: {
+          name: 'minerdisk',
+          query: {
+            controlBar: 'close',
+            type: 0,
+            page: 'miner',
+            addrAPI: api.getDownloadFileList
+          }
+        }
+      }]
     },
     {
       path: '*',

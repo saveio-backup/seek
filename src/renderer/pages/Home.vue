@@ -247,9 +247,7 @@ $grey: #ccc;
 	display: flex;
 	flex: 1;
 	.content {
-		width: 90%;
-		max-width: 1000px;
-		margin: 60px auto;
+		width: 100%;
 		.user-meta {
 			display: flex;
 			justify-content: space-between;
@@ -260,7 +258,7 @@ $grey: #ccc;
 			justify-content: space-between;
 			padding: 20px 10px;
 			width: 350px;
-			height: 180px;
+			height: 200px;
 			border-radius: 8px;
 			background: $grey;
 			&.no-user {
@@ -295,11 +293,14 @@ $grey: #ccc;
 			}
 		}
 		.user-meta-right {
-			width: 600px;
+			// width: 600px;
+			flex:1;
 			display: flex;
+			height: 200px;
 			flex-direction: column;
 			justify-content: space-between;
 			padding: 20px 20px;
+			margin-left: 10px;
 			background: $grey;
 			.balance-title {
 				display: flex;

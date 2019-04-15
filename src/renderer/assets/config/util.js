@@ -11,7 +11,7 @@ const result = {
 
 
     var num = bytes / Math.pow(k, i);
-    return num.toPrecision(3) + ' ' + sizes[i];
+    return num.toFixed(3) + ' ' + sizes[i];
 
   }
 }

@@ -10,10 +10,10 @@
 					 active-class="active-blue"
 					 :replace="true"
 					>Filebox</router-link>
-					<router-link
+					<!-- <router-link
 					 :to="{name:'discovery'}"
 					 active-class="active-blue"
-					>Discovery</router-link>
+					>Discovery</router-link> -->
 					<router-link
 					 :to="{name:'transfer'}"
 					 active-class="active-blue"
@@ -48,7 +48,8 @@ $grey: #ccc;
 		left: 70px;
 		right: 0px;
 		.top-nav {
-			background: $grey;
+			background: #fff;
+			box-shadow:0px 2px 4px 0px rgba(231,231,235,0.7);
 			padding: 20px;
 			display: flex;
 			justify-content: space-between;
@@ -62,9 +63,6 @@ $grey: #ccc;
 				}
 				flex: 1;
 				display: flex;
-			}
-			.active-blue {
-				color: aquamarine;
 			}
 		}
 	}

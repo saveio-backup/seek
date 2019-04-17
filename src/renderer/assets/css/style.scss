@@ -1,8 +1,18 @@
 @import './font/ofont/iconfont.css';
 @import './font/pingfang.css';
+@import './globals.scss';
 $theme-font-blue: #040f39;
 html {
   font-family: 'SF Pro SC', 'PingFangSC-Regular', 'HanHei SC', 'SF Pro Text', 'Myriad Set Pro', 'SF Pro Icons', 'PingFang SC', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+}
+.flex {
+  display: flex;
+  &.between{
+    justify-content: space-between;
+  }
+}
+.flex1{
+  flex:1;
 }
 .text-underline{
   text-decoration: underline;

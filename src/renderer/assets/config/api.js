@@ -8,7 +8,9 @@ const API = {
   userspace: HOST + VERSION + 'dsp/client/userspace/',
   getFileList: HOST + VERSION + 'dsp/file/uploadlist/',
   getDownloadFileList: HOST + VERSION + 'dsp/file/downloadlist/',
-  transferlist: HOST + VERSION + 'dsp/file/transferlist/',
+  transactions:HOST+VERSION + 'transactions/',
+  transfer:HOST +VERSION + 'asset/transfer/direct',
+  transferlist: HOST + VERSION + 'dsp/file/transferlist',
   upload: HOST + VERSION + 'dsp/file/upload',
   download: HOST + VERSION + 'dsp/file/download'
 }

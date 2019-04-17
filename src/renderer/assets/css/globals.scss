@@ -1,1 +1,20 @@
-$theme-color: skyblue;
+$light-grey: #f7f7f7;
+$theme-font-blue: #040f39;
+
+.bold {
+  font-weight: bold;
+}
+
+.grey-xs {
+  font-size: 12px;
+  color: rgba(125, 125, 125, 0.5);
+}
+
+.theme-font-blue {
+  color: $theme-font-blue;
+}
+
+.theme-bold {
+  color: $theme-font-blue;
+  font-weight: bold;
+}

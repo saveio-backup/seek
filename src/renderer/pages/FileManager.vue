@@ -20,7 +20,7 @@
 					>Transfer</router-link>
 				</div>
 				<div class="coin">
-					<span>Balance</span>
+					<span>Balance: {{balanceTotal}}</span>
 					<el-button type="primary">划转</el-button>
 				</div>
 			</div>
@@ -34,6 +34,11 @@ export default {
 		return {
 			location: location
 		};
+	},
+	computed: {
+		balanceTotal: function() {
+			return this.$store.state.Home.balanceTotal;
+		}
 	}
 };
 </script>
@@ -49,7 +54,7 @@ $grey: #ccc;
 		right: 0px;
 		.top-nav {
 			background: #fff;
-			box-shadow:0px 2px 4px 0px rgba(231,231,235,0.7);
+			box-shadow: 0px 2px 4px 0px rgba(231, 231, 235, 0.7);
 			padding: 20px;
 			display: flex;
 			justify-content: space-between;

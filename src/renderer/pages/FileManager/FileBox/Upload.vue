@@ -159,10 +159,11 @@
 						></el-input>
 					</el-form-item>
 				</el-form>
+				<div>Price: {{uploadPrice}}</div>
 				<el-button
 				 type="primary"
 				 @click="toUploadFile"
-				>Pay & Upload</el-button>
+				>Upload</el-button>
 				<el-button @click="toEmptyUpload">Cancel</el-button>
 				{{advancedData.WhiteList}}
 			</div>
@@ -203,6 +204,7 @@ export default {
 				upload: true
 			},
 			wihteListString: "",
+			uploadPrice:0,
 			fileSize: 0,
 			encryptionToggle: false,
 			uploadFormData: {
@@ -283,7 +285,7 @@ export default {
 					this.switchToggle.upload = true;
 					if (res.data.Error === 0) {
 						this.$store.dispatch("setUpload"); 
-						this.$router.push({ name: "transfer", query: { transferType: 0 } });
+						this.$router.push({ name: "transfer", query: { transferType: 1 } });
 					} else {
 						this.$message.error("Upload Error");
 					}

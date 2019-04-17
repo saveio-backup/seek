@@ -23,11 +23,11 @@ export default {
 				})
 				.then(res => {
 					if (res.data.Error === 0) {
-						this.$store.dispatch("setUpload");
+						// this.$store.dispatch("setDownload");
 						this.$router.push({
 							name: "transfer",
 							query: {
-								transferType: 1
+								transferType: 2
 							}
 						});
 					}

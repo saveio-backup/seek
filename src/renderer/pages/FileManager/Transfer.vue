@@ -3,16 +3,16 @@
 		<div class="aside">
 			<div class="aside-link">
 				<p
-				 :class="{'active-blue': transferType == 0}"
-				 @click="transferType = 0"
+				 :class="{'active-blue': transferType == 1}"
+				 @click="transferType = 1"
 				>Upload</p>
 				<p
-				 :class="{'active-blue': transferType == 1}"
-				 @click="transferType = 1 "
+				 :class="{'active-blue': transferType == 2}"
+				 @click="transferType = 2 "
 				>Download</p>
 				<p
-				 :class="{'active-blue': transferType == 2}"
-				 @click="transferType = 2"
+				 :class="{'active-blue': transferType == 0}"
+				 @click="transferType = 0"
 				>Complete</p>
 			</div>
 		</div>
@@ -40,10 +40,14 @@ export default {
 	},
 	data() {
 		return {
-			transferType: 0		};
+			transferType: 0
+		};
 	},
 	beforeRouteEnter(to, from, next) {
 		next(vm => {
+			vm.$store.dispatch("setUpload");
+			vm.$store.dispatch("setDownload");
+			vm.$store.dispatch("setComplete");
 			vm.transferType = to.query.transferType >= 0 ? to.query.transferType : 2;
 		});
 	},

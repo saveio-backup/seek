@@ -101,6 +101,14 @@ export default new Router({
       }]
     },
     {
+      path: '/wallet',
+      name: 'wallet',
+      component: require('../pages/Wallet.vue').default,
+      meta: {
+        keepAlive: true
+      }
+    },
+    {
       path: '*',
       redirect: '/',
       meta: {

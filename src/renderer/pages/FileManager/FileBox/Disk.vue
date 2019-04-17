@@ -16,8 +16,8 @@
 			</div>
 			<div class="fun-search">
 				<el-input
+				 v-model="filterInput"
 				 placeholder="search by name"
-				 type="text"
 				></el-input>
 			</div>
 		</div>
@@ -26,14 +26,21 @@
 		 v-else
 		>
 			Miner Control
+			<div class="fun-search">
+				<el-input
+				 v-model="filterInput"
+				 placeholder="search by name"
+				></el-input>
+			</div>
 		</div>
 		<div class="content">
 			<div class="table-element">
 				<el-table
 				 ref='table'
-				 :data="mockMiner"
+				 :data="filterListData"
 				 height="100%"
 				 @select="selectFile"
+				 @select-all="selectFile"
 				>
 
 					<el-table-column
@@ -101,6 +108,7 @@ export default {
 			toggleFilebox: false,
 			date,
 			util,
+			filterInput: "",
 			mockMiner: [
 				{
 					Hash: "QmP9pWe9W6KWnVkoEAFPFvfRYDHft7bvq5aAsTGhjpUCvK",
@@ -321,7 +329,6 @@ export default {
 	},
 	mounted() {
 		// window.vue = this;
-		console.log(this.$route);
 		this.page = this.$route.query.page || "filebox";
 		this.$nextTick(() => {
 			if (this.page == "filebox") {
@@ -349,19 +356,21 @@ export default {
 			});
 		},
 		selectFile(file) {
+			console.log("file Select!!!");
+			console.log(file);
 			this.fileSelected = file;
 		},
 		getFileLists() {
 			if (!this.switchToggle.load) return;
 			this.switchToggle.load = false; // if your are loading list now,  the switch will be set to false
-			let type = this.offsetArray[this.type] || 0;
+			let offset = this.offsetArray[this.type] || 0;
 			let addr =
 				this.addrAPI +
 				this.type +
 				"/" +
-				type * this.limitCount +
+				offset * this.limitCount +
 				"/" +
-				(type * this.limitCount + this.limitCount - 1);
+				(offset * this.limitCount + this.limitCount - 1);
 			this.$axios
 				.get(addr)
 				.then(res => {
@@ -390,21 +399,38 @@ export default {
 			const length = fileSelected.length;
 			const commitAll = [];
 			for (let i = 0; i < length; i++) {
+				console.log(i);
 				commitAll.push(
-					this.$axios.post(this.$api.download, {
-						Hash: fileSelected[i].Hash,
-						MaxPeerNum: 10
-					})
+					this.$axios
+						.post(this.$api.download, {
+							Hash: fileSelected[i].Hash,
+							MaxPeerNum: 10
+						})
+						.then(res => {
+							console.log("downloading");
+							console.log(res);
+						})
 				);
 			}
-			this.$axios.all(commitAll).then(() => {
-				this.$store.dispatch("setUpload");
-				this.$router.push({
-					name: "transfer",
-					query: {
-						transferType: 1
-					}
-				});
+			this.$axios.all(commitAll).then(
+				this.$axios.spread(() => {
+					// this.$store.dispatch("setDownload");
+					this.$router.push({
+						name: "transfer",
+						query: {
+							transferType: 2
+						}
+					});
+				})
+			);
+		}
+	},
+	computed: {
+		filterListData: function() {
+			const filterInput = this.filterInput;
+			const fileListData = this.fileListData;
+			return fileListData.filter(item => {
+				return item.Name.indexOf(filterInput) >= 0;
 			});
 		}
 	},
@@ -419,6 +445,9 @@ export default {
 	},
 	beforeRouteUpdate(to, from, next) {
 		this.type = to.query.type;
+		this.offsetArray = [];
+		this.switchToggle.load = true;
+		this.fileListData = [];
 		this.getFileLists();
 		next();
 	}

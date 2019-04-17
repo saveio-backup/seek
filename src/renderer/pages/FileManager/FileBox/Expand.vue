@@ -71,16 +71,15 @@
 					<div class="adjust-item">
 						<p class="adjust-title">Current</p>
 						<div class="adjust-info">
-							{{expired}}
+							{{expired_old}}
 						</div>
 					</div>
 					<div class="adjust-item">
 						<div class="adjust-title">Adjust to</div>
 						<div class="adjust-info">
 							<el-date-picker
-							 v-model="dateSet"
+							 v-model="expired"
 							 @change='getDateValue'
-							 :default-value="dateSet"
 							 :picker-options="pickerOptions"
 							 type="date"
 							 placeholder="Choose date"
@@ -104,18 +103,22 @@
 	</div>
 </template>
 <script>
+const now = new Date();
+const nextDay = new Date(now.setDate(now.getDate() + 1));
+nextDay.setHours(23);
+nextDay.setMinutes(59);
+nextDay.setSeconds(59);
 export default {
 	data() {
-		const now = new Date();
-		const nextDay = new Date(now.setDate(now.getDate() + 1));
-		nextDay.setHours(23);
-		nextDay.setMinutes(59);
-		nextDay.setSeconds(59);
+		const expired =
+			this.$dateFormat.formatTimeByTimestamp(
+				this.$store.state.Filemanager.space.ExpiredAt * 1000
+			) || this.$dateFormat.formatTimeByTimestamp(now);
 		return {
-      submitToggle: true, // commit toggle
-      innerVisible:false,
+			submitToggle: true, // commit toggle
+			innerVisible: false,
 			spaceSizeGB: 1,
-			dateSet: nextDay,
+			expired,
 			pickerOptions: {
 				disabledDate: date => {
 					const now = new Date().getTime();
@@ -125,18 +128,18 @@ export default {
 			addInfo: {
 				Addr: window.localStorage.getItem("Address"),
 				Size: 1024,
-				Second: Math.floor((nextDay.getTime() - new Date().getTime()) / 1000)
+				Second: 0
 			},
 			expandDialogVisible: false,
 			record: []
 		};
 	},
 	computed: {
-		expired() {
+		expired_old() {
 			return (
 				this.$dateFormat.formatTimeByTimestamp(
-					this.$store.state.Filemanager.space.ExpiredAt
-				) || 0
+					this.$store.state.Filemanager.space.ExpiredAt * 1000
+				) || this.$dateFormat.formatTimeByTimestamp(now)
 			);
 		},
 		space() {
@@ -152,25 +155,31 @@ export default {
 	},
 	methods: {
 		addUserSpace() {
-      if(!submitToggle) return;
+			if (!this.submitToggle) return;
+			const addr = this.addInfo.Second >= 0 ? "add" : "revoke";
 			this.$axios
-				.post(this.$api.userspace + "add", this.addInfo)
+				.post(this.$api.userspace + addr, {
+					Addr: this.addInfo.Addr,
+					Second: Math.abs(this.addInfo.Second),
+					Size: this.addInfo.Size
+				})
 				.then(res => {
 					console.log(res);
 					if (res.data.Error === 0) {
-            this.innerVisible = true;
-          }
-          this.submitToggle = true;
+						this.innerVisible = true;
+					}
+					this.submitToggle = true;
 				})
 				.catch(err => {
-          console.error(err);
-          this.submitToggle = true;
+					console.error(err);
+					this.submitToggle = true;
 				});
 		},
 		getDateValue(e) {
 			console.log(e);
+			if (!e) return;
 			this.addInfo.Second = Math.floor(
-				(e.getTime() - new Date().getTime()) / 1000
+				(e.getTime() - new Date(this.expired_old).getTime()) / 1000
 			);
 		}
 	}

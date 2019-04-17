@@ -3,38 +3,39 @@ import axios from 'axios'
 import App from './App'
 import router from './router/router.js'
 import store from './store/store.js'
-import API from './assets/config/api';
+import API from './assets/config/api'
 import './assets/css/style.scss'
-import lang from 'element-ui/lib/locale/lang/en'
-import locale from 'element-ui/lib/locale'
 import dateFormat from './assets/tool/date'
-locale.use(lang)
-import {
-  Select,
-  Option,
-  Form,
-  Input,
-  FormItem,
-  Button,
-  Table,
-  TableColumn,
-  Progress,
-  Dialog,
-  InputNumber,
-  DatePicker
-} from 'element-ui';
-Vue.use(DatePicker)
-Vue.use(InputNumber)
-Vue.use(Dialog)
-Vue.use(Progress)
-Vue.use(Table)
-Vue.use(TableColumn)
-Vue.use(Button)
-Vue.use(FormItem)
-Vue.use(Input)
-Vue.use(Form)
-Vue.use(Option)
-Vue.use(Select)
+import ElementUI from 'element-ui'
+import locale from 'element-ui/lib/locale/lang/en'
+
+Vue.use(ElementUI, { locale })
+// import {
+//   Select,
+//   Option,
+//   Form,
+//   Input,
+//   FormItem,
+//   Button,
+//   Table,
+//   TableColumn,
+//   Progress,
+//   Dialog,
+//   InputNumber,
+//   DatePicker,
+// } from 'element-ui';
+// Vue.use(DatePicker)
+// Vue.use(InputNumber)
+// Vue.use(Dialog)
+// Vue.use(Progress)
+// Vue.use(Table)
+// Vue.use(TableColumn)
+// Vue.use(Button)
+// Vue.use(FormItem)
+// Vue.use(Input)
+// Vue.use(Form)
+// Vue.use(Option)
+// Vue.use(Select)
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.prototype.$dateFormat = dateFormat;

@@ -86,6 +86,7 @@
 			<div class="channels">
 				<el-table
 				 :data="channels"
+				 height="100%"
 				 empty-text='No data'
 				>
 					<el-table-column
@@ -143,6 +144,136 @@ export default {
 				// }
 			],
 			balanceSelected: 0,
+			mockChannels:[
+				{
+					ChannelId: 101,
+					Balance: 1000000000,
+					BalanceFormat: "1",
+					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
+					HostAddr: "tcp://127.0.0.1:13004",
+					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
+				},
+				{
+					ChannelId: 101,
+					Balance: 1000000000,
+					BalanceFormat: "1",
+					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
+					HostAddr: "tcp://127.0.0.1:13004",
+					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
+				},
+				{
+					ChannelId: 101,
+					Balance: 1000000000,
+					BalanceFormat: "1",
+					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
+					HostAddr: "tcp://127.0.0.1:13004",
+					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
+				},
+				{
+					ChannelId: 101,
+					Balance: 1000000000,
+					BalanceFormat: "1",
+					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
+					HostAddr: "tcp://127.0.0.1:13004",
+					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
+				},
+				{
+					ChannelId: 101,
+					Balance: 1000000000,
+					BalanceFormat: "1",
+					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
+					HostAddr: "tcp://127.0.0.1:13004",
+					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
+				},
+				{
+					ChannelId: 101,
+					Balance: 1000000000,
+					BalanceFormat: "1",
+					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
+					HostAddr: "tcp://127.0.0.1:13004",
+					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
+				},
+				{
+					ChannelId: 101,
+					Balance: 1000000000,
+					BalanceFormat: "1",
+					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
+					HostAddr: "tcp://127.0.0.1:13004",
+					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
+				},
+				{
+					ChannelId: 101,
+					Balance: 1000000000,
+					BalanceFormat: "1",
+					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
+					HostAddr: "tcp://127.0.0.1:13004",
+					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
+				},
+				{
+					ChannelId: 101,
+					Balance: 1000000000,
+					BalanceFormat: "1",
+					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
+					HostAddr: "tcp://127.0.0.1:13004",
+					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
+				},
+				{
+					ChannelId: 101,
+					Balance: 1000000000,
+					BalanceFormat: "1",
+					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
+					HostAddr: "tcp://127.0.0.1:13004",
+					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
+				},
+				{
+					ChannelId: 101,
+					Balance: 1000000000,
+					BalanceFormat: "1",
+					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
+					HostAddr: "tcp://127.0.0.1:13004",
+					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
+				},
+				{
+					ChannelId: 101,
+					Balance: 1000000000,
+					BalanceFormat: "1",
+					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
+					HostAddr: "tcp://127.0.0.1:13004",
+					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
+				},
+				{
+					ChannelId: 101,
+					Balance: 1000000000,
+					BalanceFormat: "1",
+					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
+					HostAddr: "tcp://127.0.0.1:13004",
+					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
+				},
+				{
+					ChannelId: 101,
+					Balance: 1000000000,
+					BalanceFormat: "1",
+					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
+					HostAddr: "tcp://127.0.0.1:13004",
+					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
+				},
+				{
+					ChannelId: 101,
+					Balance: 1000000000,
+					BalanceFormat: "1",
+					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
+					HostAddr: "tcp://127.0.0.1:13004",
+					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
+				},
+				{
+					ChannelId: 101,
+					Balance: 1000000000,
+					BalanceFormat: "1",
+					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
+					HostAddr: "tcp://127.0.0.1:13004",
+					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
+				},
+			],
 			channels: [
 				// {
 				// 	ChannelId: 101,
@@ -195,7 +326,7 @@ export default {
 					}
 				})
 				.catch(err => {
-					console.err(err);
+					console.error(err);
 				});
 		},
 		getAllChannels() {
@@ -203,7 +334,8 @@ export default {
 				.get(this.$api.host+ this.$api.version + "channel")
 				.then(res => {
 					if (res.data.Desc === "SUCCESS" && res.data.Error === 0) {
-						this.channels = res.data.Result;
+						this.channels = res.data.Result.Channels;
+						this.$store.dispatch('setChannelBalanceTotal',res.data.Result.Balance)
 					}
 				})
 				.catch(err => {
@@ -240,14 +372,13 @@ export default {
 </script>
 <style lang="scss">
 $grey: #ccc;
-.flex {
-	display: flex;
-}
 #home {
 	display: flex;
 	flex: 1;
 	.content {
 		width: 100%;
+		display:flex;
+		flex-direction: column;
 		.user-meta {
 			display: flex;
 			justify-content: space-between;
@@ -325,7 +456,10 @@ $grey: #ccc;
 			}
 		}
 		.channels {
-			margin-top: 100px;
+			flex:1;
+			overflow-y: auto;
+			margin-top: 80px;
+			margin-bottom:20px;
 			background: $grey;
 		}
 	}

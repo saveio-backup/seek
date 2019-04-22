@@ -6,21 +6,76 @@
 					<li class="action-item item-user">
 						<router-link to="/"><i class="ofont ofont-user user"></i></router-link>
 					</li>
-					<li class="action-item">
+					<!-- <li class="action-item">
 						<router-link to="/Appstore"><i class="ofont ofont-menu appstore"></i></router-link>
+					</li> -->
+					<li class="action-item">
+						<router-link
+						 :to="{name:'FileManager'}"
+						 active-class="slidebar-active"
+						>
+							<img
+							 class="active-none"
+							 src="../assets/images/aside_file.png"
+							 alt="Menu"
+							>
+							<img
+							 class="active-display"
+							 src="../assets/images/aside_file_color.png"
+							 alt=""
+							>
+						</router-link>
 					</li>
 					<li class="action-item">
 						<router-link
-						 :to="{name:'disk',query:{type:0}}"
+						 to="/Wallet"
 						 active-class="slidebar-active"
-						><i class="ofont ofont-file filemanger"></i></router-link>
+						>
+							<img
+							 class="active-none"
+							 src="../assets/images/aside_wallet.png"
+							 alt="Menu"
+							>
+							<img
+							 class="active-display"
+							 src="../assets/images/aside_wallet_color.png"
+							 alt=""
+							>
+						</router-link>
 					</li>
 					<li class="action-item">
-						<router-link to="/Wallet"><i class="ofont ofont-wallet wallet"></i></router-link>
+						<router-link
+						 to="/Miner"
+						 active-class="slidebar-active"
+						>
+							<img
+							 class="active-none"
+							 src="../assets/images/aside_miner.png"
+							 alt="Menu"
+							>
+							<img
+							 class="active-display"
+							 src="../assets/images/aside_miner_color.png"
+							 alt=""
+							>
+						</router-link>
 					</li>
-					<li class="action-item">
-						<router-link to="/Miner"><i class="ofont ofont-miner miner"></i></router-link>
-					</li>
+				</ul>
+			</div>
+			<div
+			 class="setting-bar"
+			 @click="toggleAppear"
+			 v-clickoutside='hideAppear'
+			>
+				<div style="position:relative; z-index:2">
+					<i class="el-icon-menu"></i>
+				</div>
+				<ul
+				 class="setting-ul"
+				 :class="{appear:switchToggle.appear}"
+				>
+					<li class="setting-li">Log Out</li>
+					<li class="setting-li">Export Wallet</li>
 				</ul>
 			</div>
 		</div>
@@ -28,7 +83,26 @@
 </template>
 <script>
 import "element-ui/lib/theme-chalk/index.css";
-export default {};
+export default {
+	data() {
+		return {
+			switchToggle: {
+				appear: false
+			}
+		};
+	},
+	methods: {
+		setAppear() {
+			this.switchToggle.appear = true;
+		},
+		toggleAppear() {
+			this.switchToggle.appear = !this.switchToggle.appear;
+		},
+		hideAppear() {
+			this.switchToggle.appear = false;
+		}
+	}
+};
 </script>
 <style lang="scss">
 $theme-color: #1b1e2f;
@@ -42,6 +116,9 @@ $slidebar-active-color: linear-gradient(
 	color: $theme-color;
 	background: $theme-color;
 	.content {
+		position: relative;
+		z-index: 999;
+		height: 100%;
 		color: #767882;
 		display: flex;
 		flex-direction: column;
@@ -51,16 +128,72 @@ $slidebar-active-color: linear-gradient(
 			.action-item {
 				display: flex;
 				font-size: 40px;
-				padding: 5px 0;
+				margin: 50px 0;
 				&.item-user {
+					position: relative;
 					font-size: 50px;
-					border-bottom: solid 1px #767882;
-					margin-bottom: 30px;
+					margin-top: 10px;
+					padding-bottom: 10px;
+					margin-bottom: 40px;
+				}
+				&.item-user:after {
+					content: "";
+					position: absolute;
+					bottom: 0px;
+					left: 50%;
+					transform: translateX(-50%);
+					width: 75%;
+					height: 1px;
+					background: rgba(255, 255, 255, 0.2);
 				}
 				a {
-					flex:1;
+					flex: 1;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					.active-display {
+						display: none;
+					}
 					&.slidebar-active {
-						border-right: solid 1px $slidebar-active-color
+						border-right: solid 1px $slidebar-active-color;
+						.active-display {
+							display: inline-block;
+						}
+						.active-none {
+							display: none;
+						}
+					}
+				}
+			}
+		}
+		.setting-bar {
+			position: relative;
+			text-align: center;
+			font-size: 42px;
+			.el-icon-menu {
+				position: relative;
+				z-index: 2;
+			}
+			.setting-ul {
+				&.appear {
+					transform: translateX(100%);
+					opacity: 1;
+				}
+				opacity: 0;
+				transition: all 0.5s;
+				width: 150px;
+				position: absolute;
+				right: 0px;
+				bottom: 0px;
+				padding: 0px;
+				background: #fff;
+				font-size: 14px;
+				z-index: 1;
+				.setting-li {
+					padding: 10px 10px;
+					&:hover {
+						background: $theme-color;
+						color: #fff;
 					}
 				}
 			}

@@ -10,12 +10,30 @@
 					 v-model='balanceSelected'
 					 @change="changeSelectedAsset"
 					>
+						<div
+						 slot="prefix"
+						 class="prefix-icon"
+						>
+							<img
+							 v-if="balanceLists.length>0"
+							 class="asset-icon"
+							 :src="'../../../static/images/logo/'+balanceLists[balanceSelected].Symbol+'.png'"
+							 alt=""
+							>
+						</div>
 						<el-option
 						 v-for="(item,index) in balanceLists"
 						 :key='index'
-						 :label='item.Name'
+						 :label='item.Symbol'
 						 :value='index'
-						></el-option>
+						 class="asset-item"
+						>
+							<img
+							 class="asset-icon mr10"
+							 :src="'../../../static/images/logo/'+ item.Symbol+ '.png'"
+							 :alt="item.Symbol"
+							> <span class="">{{item.Symbol}}</span>
+						</el-option>
 					</el-select>
 				</div>
 				<div class="wallet-asset">
@@ -24,10 +42,10 @@
 					 class="balance-content"
 					 v-if="balanceLists && balanceLists.length>0"
 					>
-						<div class="total"> <span class="symbol">$</span> <span class="theme-bold">{{parseFloat(balanceLists[balanceSelected].Balance).toFixed(3)}}</span></div>
+						<div class="total"> <span class="symbol"></span> <span class="theme-bold">{{parseFloat(balanceLists[balanceSelected].Balance).toFixed(3)}}</span></div>
 						<ul class="child-ul">
 							<li class="child-list">
-								<div class="name"><span>Icon</span> <span class="theme-bold">{{balanceLists[balanceSelected].Symbol}}</span></div>
+								<div class="name"><img class="asset-icon" :src="'../../../static/images/logo/'+balanceLists[balanceSelected].Symbol+'.png'" alt=""> <span class="theme-bold">{{balanceLists[balanceSelected].Symbol}}</span></div>
 								<div class="balance theme-bold">{{parseFloat(balanceLists[balanceSelected].Balance).toFixed(3)}}</div>
 							</li>
 						</ul>
@@ -38,11 +56,8 @@
 					</div>
 				</div>
 				<div class="wallet-deal">
-					<div><i class="el-icon-download"></i> <span class="theme-bold">Receive</span></div>
-					<div><i class="el-icon-upload2"></i> <span
-						 class="theme-bold"
-						 @click="switchToggle.sendDialog =true"
-						>Send</span></div>
+					<div @click="getQRCode"><i class="ofont ofont-transfer_in"></i> <span class="theme-bold">Receive</span></div>
+					<div @click="switchToggle.sendDialog =true"><i class="ofont ofont-transfer_out"></i> <span class="theme-bold">Send</span></div>
 				</div>
 			</div>
 			<div class="wallet-layout-main">
@@ -50,17 +65,17 @@
 					<p
 					 @click="txType = 'txRecords';txDetailIndex =-1"
 					 class="select-button"
-					 :class="{active:txType === 'txRecords'}"
+					 :class="{'theme-font-blue-bold':txType === 'txRecords'}"
 					>All Transfer</p>
 					<p
 					 class="select-button"
 					 @click="txType = 'transferIn';txDetailIndex =-1"
-					 :class="{active:txType === 'transferIn'}"
+					 :class="{'theme-font-blue-bold':txType === 'transferIn'}"
 					> Receive</p>
 					<p
 					 class="select-button"
 					 @click="txType = 'transferOut';txDetailIndex =-1"
-					 :class="{active:txType === 'transferOut'}"
+					 :class="{'theme-font-blue-bold':txType === 'transferOut'}"
 					>Send</p>
 				</div>
 				<ul class="tx-ul">
@@ -75,7 +90,7 @@
 						 v-if="balanceLists.length>0"
 						>
 							<div class="item-addr">
-								<i :class="item.Type ==1 ? 'el-icon-upload2':'el-icon-download'"></i>
+								<i class="ofont" :class="item.Type ==1 ? 'ofont-transfer_out':'ofont-transfer_in'"></i>
 								<div class="addr-info">
 									<p class='from-or-to'>{{item.Type ==1 ? item.To: item.From}}</p>
 									<p class="tx-date grey-xs">{{date.formatTimeByTimestamp(item.Timestamp * 1000)}}</p>
@@ -94,7 +109,7 @@
 							<div class="txid grey-xs">ID: {{item.Txid || ''}}</div>
 							<div class="towards theme-bold">
 								<p class='from'>{{item.From}}</p>
-								<i class="el-icon-arrow-right arrow"></i>
+								<i class="ofont ofont-transfer_right arrow"></i>
 								<p class="to">{{item.To}}</p>
 							</div>
 							<div class="flex between bottom-info">
@@ -108,28 +123,60 @@
 			</div>
 		</div>
 		<div
-		 @click="clipText('.addr_btn')"
-		 class="addr_btn"
-		 aria-label='复制我一个'
-		>Copy Address</div>
-		<div
 		 v-if="balanceLists.length>0"
 		 class="send-dialog"
 		>
 			<el-dialog
-			 :title='balanceLists[balanceSelected].Symbol + " Transfer"'
+			 :visible.sync='switchToggle.receiveDialog'
+			 width="600px"
+			 center
+			>
+				<div
+				 class="dialog-header el-dialog__header"
+				 slot="title"
+				>
+					<h2>{{balanceLists[balanceSelected].Symbol + ' Wallet'}}</h2>
+					<div class="dialog-title-border"></div>
+				</div>
+				<div class="flex ai-center column">
+					<div>Please Send {{balanceLists.length>0?balanceLists[balanceSelected].Symbol : 'Test Symbol'}}</div>
+					<div class="flex ai-center mt10 mb10">
+						<p class="mr10  theme-font-blue bold">{{balanceLists.length>0?balanceLists[balanceSelected].Address : 'Text Addr'}}</p>
+						<i
+						 class="el-icon-document addr_btn"
+						 @click="clipText('.addr_btn')"
+						 :aria-label='balanceLists[balanceSelected].Address'
+						></i>
+					</div>
+					<div id="qrcode-content"></div>
+					<div
+					 class="done mt20"
+					 slot="footer"
+					>
+						<el-button
+						 type="primary"
+						 @click="switchToggle.receiveDialog = false"
+						>Done</el-button>
+					</div>
+				</div>
+			</el-dialog>
+			<el-dialog
 			 width='600px'
 			 center
 			 :visible.sync="switchToggle.sendDialog"
 			>
-				<div>
+				<div slot="title">
+					<h2>{{balanceLists[balanceSelected].Symbol + " Transfer"}}</h2>
+					<div class="dialog-title-border mt10"></div>
+				</div>
+				<div class="send-form-wrap">
 					<el-form
 					 ref='form'
 					 :model="sendInfo"
 					 :rules="sendRules"
 					>
-						<div class="flex between">
-							<p>{{balanceLists[balanceSelected].Symbol}}</p>
+						<div class="flex between mb10">
+							<p class="theme-font-blue-bold">{{balanceLists[balanceSelected].Symbol}}</p>
 							<p>{{parseFloat(balanceLists[balanceSelected].Balance).toFixed(2)}} {{balanceLists[balanceSelected].Symbol}}</p>
 						</div>
 						<el-form-item>
@@ -140,7 +187,10 @@
 							 @blur="setFixed"
 							></el-input>
 						</el-form-item>
-						<el-form-item label="Send to">
+						<el-form-item
+						 class="theme-font-blue-bold"
+						 label="Send to"
+						>
 							<el-input
 							 v-model="sendInfo.To"
 							 :placeholder="'Input ' +balanceLists[balanceSelected].Symbol+' address'"
@@ -156,21 +206,31 @@
 					<el-button
 					 type="primary"
 					 @click="sendTransfer"
-					>Send</el-button>
+					>Transfer</el-button>
 				</span>
 			</el-dialog>
 			<el-dialog
-			 title="My Assets"
 			 width='600px'
 			 :visible.sync="switchToggle.assetDialog"
 			 center
 			>
+				<div
+				 class="dialog-header el-dialog__header"
+				 slot="title"
+				>
+					<h2>My Assets</h2>
+					<div class="dialog-title-border mt10"></div>
+				</div>
 				<ul class="asset-ul">
 					<li class="asset-list">
-						<div>Icon</div>
-						<div class="flex1">
+						<img
+						 class="asset-icon-lg"
+						 :src="'../../../static/images/logo/' +balanceLists[balanceSelected].Symbol+'.png'"
+						 alt=""
+						>
+						<div class="flex1 ml10">
 							<p class="theme-bold">{{balanceLists[balanceSelected].Symbol}} <span class="grey-xs"> {{balanceLists[balanceSelected].Name}}</span></p>
-							<p class="">{{balanceLists[balanceSelected].Address}}</p>
+							<p class="theme-font-color ft12">{{balanceLists[balanceSelected].Address}}</p>
 						</div>
 						<el-switch
 						 disabled
@@ -200,6 +260,7 @@ export default {
 	data() {
 		return {
 			switchToggle: {
+				receiveDialog: false,
 				sendDialog: false,
 				assetDialog: false
 			},
@@ -208,6 +269,7 @@ export default {
 				Amount: "",
 				To: ""
 			},
+			qrcode: null,
 			sendRules: {
 				account: [
 					{
@@ -282,6 +344,23 @@ export default {
 				clip.destroy();
 			});
 		},
+		getQRCode() {
+			this.switchToggle.receiveDialog = true;
+			this.$nextTick(() => {
+				if (this.qrcode) {
+					console.log("clear");
+					this.qrcode.clear();
+					this.qrcode.makeCode(this.balanceLists[this.balanceSelected].Address);
+				} else {
+					this.qrcode = new QRCode(
+						document.getElementById("qrcode-content"),
+						this.balanceLists.length > 0
+							? this.balanceLists[this.balanceSelected].Address
+							: "Test QRcode"
+					);
+				}
+			});
+		},
 		setFixed() {
 			this.sendInfo.Amount = parseFloat(this.sendInfo.Amount).toFixed(9);
 		},
@@ -319,6 +398,11 @@ export default {
 <style lang="scss">
 $theme-font-blue: #040f39;
 $light-grey: #f7f7f7;
+// .el-select,
+// .el-select:hover .el-input__inner:focus,
+// .el-input__inner:hover {
+// 	// border-color: #fff !important;
+// }
 #wallet {
 	display: flex;
 	flex: 1;
@@ -334,6 +418,10 @@ $light-grey: #f7f7f7;
 			justify-content: space-between;
 			.wallet-select {
 				background: #fff;
+				.el-input__inner {
+					border-color: #fff !important;
+					text-align: center;
+				}
 				.el-select {
 					width: 100%;
 				}
@@ -394,17 +482,15 @@ $light-grey: #f7f7f7;
 			flex: 1;
 			background: #fff;
 			margin-left: 30px;
+			overflow: auto;
 			.tx-select {
 				.select-button {
 					cursor: pointer;
 				}
-				.active {
-					color: aquamarine;
-				}
 				display: flex;
 				align-items: center;
 				font-size: 16px;
-				height: 80px;
+				height: 60px;
 				.select-button {
 					padding: 0px 20px;
 				}
@@ -482,9 +568,29 @@ $light-grey: #f7f7f7;
 		overflow-y: auto;
 	}
 	.asset-list {
-		border-top: solid 1px #ccc;
 		padding-top: 20px;
 		display: flex;
+		.el-switch.is-checked .el-switch__core{
+			background-color: $theme-font-blue;
+		}
+	}
+}
+.send-dialog {
+	.el-input__inner {
+		font-weight: normal !important;
+		background:#EBECEF;
+		border-radius: 2px;
+		border: none;
+	}
+	.send-form-wrap {
+		width: 80%;
+		margin: 0 auto;
+		.el-input.is-active .el-input__inner, .el-input__inner:focus {
+			border:none;
+		}
+		.el-form-item__label{
+			color: $theme-font-blue;
+		}
 	}
 }
 </style>

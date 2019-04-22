@@ -1,6 +1,7 @@
 import axios from 'axios';
 import api from '../../assets/config/api';
 const state = {
+  mainCount: 0,
   balanceLists: [],
   txRecords: [],
   transferIn: [],
@@ -10,6 +11,14 @@ const state = {
 const mutations = {
   SET_BALANCE_LISTS(state, result) {
     state.balanceLists = result;
+    for (let i = 0; i < result.length; i++) {
+      const item = result[i];
+      if (item.Symbol === 'SAVE') {
+        state.mainCount = item.Balance;
+        break;
+      }
+
+    }
   },
   SET_TX_RECORDS(state, result) {
     state.txRecords = result;

@@ -42,7 +42,22 @@ Vue.prototype.$dateFormat = dateFormat;
 Vue.prototype.$axios = axios
 Vue.prototype.$api = API;
 Vue.config.productionTip = false
+Vue.directive('clickoutside', {
+  bind: function (el, binding) {
+    function documentHandler(e) {
+      // console.log(el);
+      // console.log(e.target);
+      if (el.contains(e.target)) {
+        return false
+      };
+      if (binding.expression) {
+        binding.value(e);
+      }
+    }
+    document.addEventListener('click', documentHandler);
+  }
 
+});
 /* eslint-disable no-new */
 new Vue({
   components: {

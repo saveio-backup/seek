@@ -3,7 +3,7 @@
 		<div class="content">
 			<div class="space-header">
 				<div class="space-progress">
-					<div>Used: {{space.Used}} / {{space.Remain}}</div>
+					<div class="grey-xs bold ft20">Used: {{space.Used}} / {{space.Remain}}</div>
 					<el-progress
 					 :stroke-width="30"
 					 :percentage="takeSpace"
@@ -12,7 +12,7 @@
 				<el-button @click="expandDialogVisible = true">Get Space</el-button>
 			</div>
 			<div class="space-record">
-				<p>Space adjust record</p>
+				<p class="grey-xs bold ft20">Space adjust record</p>
 				<el-table
 				 :data='record'
 				 empty-text='No data'
@@ -23,10 +23,13 @@
 				</el-table>
 			</div>
 			<el-dialog
-			 title='Expand'
 			 width='600px'
 			 :visible.sync="expandDialogVisible"
 			>
+			<div slot="title">
+				<h2>Expand</h2>
+				<div class="dialog-title-border"></div>
+			</div>
 				<el-dialog
 				 width="30%"
 				 title="Success"
@@ -194,11 +197,17 @@ $grey: #ccc;
 			padding-top: 30px;
 			display: flex;
 			.space-progress {
+				.el-progress-bar__outer, .el-progress-bar__inner{
+					border-radius: 0px;
+				}
 				width: 100%;
 				.el-progress {
 					width: 100%;
 				}
 			}
+		}
+		.space-record{
+			margin-top: 50px;
 		}
 	}
 	.adjust {
@@ -225,7 +234,7 @@ $grey: #ccc;
 	.el-dialog__header {
 		padding-top: 10px;
 		text-align: center;
-		background: $grey;
+		// background: $grey;
 	}
 }
 </style>

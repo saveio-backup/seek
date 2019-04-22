@@ -32,6 +32,7 @@ export default new Router({
     },
     {
       path: '/FileManager',
+      name: 'FileManager',
       component: require('../pages/FileManager.vue').default,
       meta: {
         keepAlive: false
@@ -69,6 +70,13 @@ export default new Router({
           path: 'discovery',
           name: 'discovery',
           component: require('../pages/FileManager/Discovery.vue').default
+        },
+        {
+          path: '',
+          redirect: {
+            name: 'disk',
+            type: 0
+          }
         }
       ]
     },

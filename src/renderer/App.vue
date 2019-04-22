@@ -18,18 +18,20 @@ export default {
 </script>
 
 <style lang='scss'>
+$light-grey: #f2f2f2;
 #app {
 	display: flex;
 	height: 100vh;
 }
 .common-main {
+	background:$light-grey;
 	padding: 0 88px;
 	width: calc(100% - 70px);
 }
 .layout-main {
 	position: absolute;
 	left: 200px;
-	top: 80px;
+	top: 60px;
 	bottom: 0px;
 	right: 0px;
 }

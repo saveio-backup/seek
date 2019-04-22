@@ -3,27 +3,28 @@
 		<div class="aside">
 			<div class="aside-link">
 				<router-link
-				 :class="{'theme-font-blue': fileType == 0}"
+				class="allfile"
+				 :class="{'theme-font-blue-bold': fileType == 0}"
 				 :to="{name:'disk', query:{type:0}}"
-				>All File</router-link>
+				><i class='el-icon-document'></i> <span>All File</span></router-link>
 				<router-link
-				 :class="{'theme-font-blue': fileType == 1}"
+				 :class="{'theme-font-blue-bold': fileType == 1}"
 				 :to="{name:'disk', query:{type:1}}"
 				>Image</router-link>
 				<router-link
-				 :class="{'theme-font-blue': fileType == 2}"
+				 :class="{'theme-font-blue-bold': fileType == 2}"
 				 :to="{name:'disk', query:{type:2}}"
 				>Document</router-link>
 				<router-link
-				 :class="{'theme-font-blue': fileType == 3}"
+				 :class="{'theme-font-blue-bold': fileType == 3}"
 				 :to="{name:'disk', query:{type:3}}"
 				>Video</router-link>
 				<router-link
-				 :class="{'theme-font-blue': fileType == 4}"
+				 :class="{'theme-font-blue-bold': fileType == 4}"
 				 :to="{name:'disk', query:{type:4}}"
 				>Music</router-link>
 				<router-link
-				 active-class="theme-font-blue"
+				 active-class="theme-font-blue-bold"
 				 :to="{name:'domain',query:{type:9}}"
 				>Domain</router-link>
 			</div>
@@ -31,9 +32,11 @@
 			 class="aside-progress"
 			 v-if="space"
 			>
-				<p>{{space.Used / 1024}}G / {{space.Remain / 1024}}G </p>
+				<p class="grey-xs bold tl">{{space.Used / 1024}}G / {{space.Remain / 1024}}G </p>
 				<el-progress :percentage="takeSpace"></el-progress>
-				<router-link :to="{name:'expand'}">Expand</router-link>
+				<p class="tr">
+					<router-link class="theme-font-blue-bold ft12 link" :to="{name:'expand'}">Expand</router-link>
+				</p>
 			</div>
 		</div>
 		<div class="layout-main">
@@ -118,7 +121,7 @@ $light-grey: #f7f7f7;
 		justify-content: space-between;
 		align-items: center;
 		position: absolute;
-		top: 80px;
+		top: 60px;
 		bottom: 0;
 		width: 200px;
 		min-height: 400px;
@@ -129,17 +132,32 @@ $light-grey: #f7f7f7;
 			display: flex;
 			flex-direction: column;
 			width: 100%;
+			.allfile{
+				position:relative;
+				i{
+					position:absolute;
+					top:50%;
+					left:0px;
+					transform: translateX(100%) translateY(-50%);
+				}
+			}
 			& > a {
 				display: flex;
 				padding: 10px 0 10px 50px;
-				&:hover{
-					background:rgba(231,231,235,1);
+				&:hover {
+					background: rgba(231, 231, 235, 1);
 				}
 			}
 		}
 		.aside-progress {
 			// flex:1;
+			.link:hover{
+					text-decoration: underline;
+				}
+			
 			width: 100%;
+			padding: 0 10px;
+			margin-bottom: 20px;
 			.el-progress-bar {
 				padding-right: 0px;
 			}

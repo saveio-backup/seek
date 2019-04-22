@@ -6,17 +6,19 @@
 		>
 			<div class="fun-button">
 				<router-link :to="{name:'upload'}">
-					<el-button>Upload</el-button>
+					<el-button class="bt bt-upload theme-font-blue">Upload</el-button>
 				</router-link>
 				<el-button
-				 type="success"
+				 class="bt bt-download theme-font-blue"
 				 @click="toDownload"
-				>Download</el-button>
-				<el-button type="primary">Share</el-button>
+				>
+					Download
+				</el-button>
 			</div>
 			<div class="fun-search">
 				<el-input
 				 v-model="filterInput"
+				 prefix-icon="el-icon-search"
 				 placeholder="search by name"
 				></el-input>
 			</div>
@@ -29,6 +31,7 @@
 			<div class="fun-search">
 				<el-input
 				 v-model="filterInput"
+				 prefix-icon="el-icon-search"
 				 placeholder="search by name"
 				></el-input>
 			</div>
@@ -37,12 +40,12 @@
 			<div class="table-element">
 				<el-table
 				 ref='table'
-				 :data="filterListData"
+				 @row-click="clickRow"
+				 :data="mockData"
 				 height="100%"
-				 @select="selectFile"
-				 @select-all="selectFile"
+				 @selection-change="selectFile"
 				>
-
+					<!-- :data="filterListData" -->
 					<el-table-column
 					 v-if="toggleFilebox"
 					 type="selection"
@@ -55,7 +58,23 @@
 					 prop="Name"
 					>
 						<template slot-scope="scope">
-							<div>{{ scope.row.Name }}</div>
+							<div class="flex between rowName">
+								<span>{{ scope.row.Name }}</span>
+								<div
+								 v-if="page === 'filebox'"
+								 class="opera"
+								 @click="executedFile = scope.row"
+								><i
+									 @click="switchToggle.shareDialog = true"
+									 class="el-icon-share"
+									></i>
+									<i class="el-icon-download"></i>
+									<i
+									 @click="switchToggle.deleteDialog =true"
+									 class="el-icon-delete"
+									></i>
+								</div>
+							</div>
 						</template>
 					</el-table-column>
 					<el-table-column label="Size">
@@ -70,10 +89,13 @@
 					 label="Download statistics"
 					 prop="DownloadCount"
 					></el-table-column>
-					<el-table-column
-					 label="Profit"
-					 prop="Profit"
-					></el-table-column>
+					<el-table-column label="Profit">
+						<template slot-scope="scope">
+							<div class="light-blue">
+								{{scope.row.Profit}}
+							</div>
+						</template>
+					</el-table-column>
 					<el-table-column
 					 label="Last Share"
 					 v-if="page ==='miner'"
@@ -95,12 +117,52 @@
 				</el-table>
 			</div>
 		</div>
-
+		<el-dialog
+		 title='Share'
+		 :visible.sync="switchToggle.shareDialog"
+		 center
+		>
+			Share
+			<p>{{executedFile.Name}}</p>
+			<el-input
+			 readonly
+			 :value="executedFile.Hash"
+			>
+				<template slot="append">
+					<i
+					 class="el-icon-document addr_btn"
+					 @click="clipText('.addr_btn')"
+					 :aria-label='executedFile.Hash'
+					></i>
+				</template>
+			</el-input>
+			<el-button
+			 slot="footer"
+			 type="primer"
+			 @click="switchToggle.shareDialog = false"
+			>Close</el-button>
+		</el-dialog>
+		<el-dialog
+		 title="Notice"
+		 :visible.sync="switchToggle.deleteDialog"
+		 center
+		>
+			<p>Are your Sure to Delete this File?</p>
+			<p>{{executedFile.Name}}</p>
+			<div slot="footer">
+				<el-button @click="switchToggle.deleteDialog = false">Cancel</el-button>
+				<el-button
+				 type="danger"
+				 @click="toDeleteFile(mockData, executedFile.Hash)"
+				>Delete</el-button>
+			</div>
+		</el-dialog>
 	</div>
 </template>
 <script>
 import date from "../../../assets/tool/date";
 import util from "../../../assets/config/util";
+import ClipboardJS from "clipboard";
 let tableElement;
 export default {
 	data() {
@@ -108,6 +170,7 @@ export default {
 			toggleFilebox: false,
 			date,
 			util,
+			executedFile: {}, // a file be opera
 			filterInput: "",
 			mockMiner: [
 				{
@@ -134,7 +197,7 @@ export default {
 				},
 				{
 					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-					Name: "hahat.txt",
+					Name: "nihaoaaaaaa.txt",
 					Size: 1536,
 					DownloadCount: 0,
 					ExpiredAt: 1555051257,
@@ -144,7 +207,7 @@ export default {
 				},
 				{
 					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-					Name: "hahat.txt",
+					Name: "helloworld.txt",
 					Size: 1536,
 					DownloadCount: 0,
 					ExpiredAt: 1555051257,
@@ -320,6 +383,9 @@ export default {
 			controlBar: true,
 			type: "",
 			switchToggle: {
+				shareDialog: false,
+				deleteDialog: false,
+				deleteDialog: false,
 				load: true
 			},
 			page: "",
@@ -339,6 +405,28 @@ export default {
 		this.addListenScroll();
 	},
 	methods: {
+		clipText(el) {
+			console.log("clip");
+			const clip = new ClipboardJS(el, {
+				text: function(trigger) {
+					return trigger.getAttribute("aria-label");
+				}
+			});
+			clip.on("success", e => {
+				this.$message({
+					message: "Link Copied",
+					duration: 1200,
+					type: "success"
+				});
+				console.log("success");
+				console.log(e);
+				clip.destroy();
+			});
+		},
+		clickRow(row) {
+			this.$refs.table.clearSelection();
+			this.$refs.table.toggleRowSelection(row);
+		},
 		addListenScroll() {
 			const that = this;
 			const distance = 300;
@@ -423,6 +511,21 @@ export default {
 					});
 				})
 			);
+		},
+		toDeleteFile(dataList, hash) {
+			this.switchToggle.deleteDialog = false;
+			this.$axios.post(this.$api.delete, { Hash: hash }).then(res => {
+				if (res.data.Error === 0) {
+					dataList.some((item, index) => {
+						if (item.Hash === hash) {
+							dataList.splice(index, 1);
+							return true;
+						} else {
+							return false;
+						}
+					});
+				}
+			});
 		}
 	},
 	computed: {
@@ -454,7 +557,9 @@ export default {
 };
 </script>
 <style lang="scss">
+$light-blue: #65a6ff;
 $light-grey: #f2f2f2;
+$theme-color: #1b1e2f;
 #disk {
 	.func-nav {
 		display: flex;
@@ -463,6 +568,30 @@ $light-grey: #f2f2f2;
 		padding: 0 50px;
 		height: 80px;
 		background: $light-grey;
+		.bt {
+			width: 100px;
+			height: 33px;
+			padding: 0px;
+			border-color: $theme-color;
+			border-radius: 2px;
+			background: none;
+			&.bt-upload {
+				color: #fff;
+				background: $light-blue;
+				border: none;
+			}
+		}
+		.fun-search {
+			.el-input__inner{
+				height: 33px;
+				line-height: 33px;
+				border-radius: 17px;
+				font-weight: normal;
+			}
+			.el-input__icon{
+				line-height: 17px;
+			}
+		}
 	}
 	& > .content {
 		position: absolute;
@@ -472,6 +601,21 @@ $light-grey: #f2f2f2;
 		.table-element {
 			height: 100%;
 			overflow-y: hidden;
+			thead th {
+				background: rgba(231, 231, 235, 1);
+				color: $theme-color;
+				font-weight: bold;
+			}
+			.rowName {
+				.opera {
+					display: none;
+				}
+				&:hover {
+					.opera {
+						display: block;
+					}
+				}
+			}
 		}
 	}
 }

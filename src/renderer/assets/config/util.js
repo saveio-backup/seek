@@ -13,6 +13,12 @@ const result = {
     var num = bytes / Math.pow(k, i);
     return num.toFixed(3) + ' ' + sizes[i];
 
+  },
+  filterFloat(value) {
+    if (/^(\-|\+)?|(\.\d+)(\d+(\.\d+)?|(\d+\.)|Infinity)$/
+      .test(value))
+      return Number(value);
+    return NaN;
   }
 }
 module.exports = result;

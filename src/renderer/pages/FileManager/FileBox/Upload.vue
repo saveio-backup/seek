@@ -80,7 +80,7 @@
 						<el-input-number
 						 v-model="storageCycleNumber"
 						 :min="1"
-						 @input="setDuration"
+						 @change="setDuration"
 						 :disabled="advancedData.Duration === 0"
 						> </el-input-number>
 						<el-select
@@ -102,7 +102,7 @@
 						<el-input-number
 						 v-model="verificationCycleNumber"
 						 :min='1'
-						 @input="setDataInterval"
+						 @change="setDataInterval"
 						 class="cyclenumber-input"
 						>
 						</el-input-number>
@@ -126,6 +126,7 @@
 						<el-input-number
 						 :min='1'
 						 v-model="advancedData.CopyNum"
+						 @change='toGetPrice'
 						></el-input-number>
 					</el-form-item>
 					<el-form-item
@@ -173,6 +174,7 @@
 <script>
 import { ipcRenderer } from "electron";
 import util from "../../../assets/config/util";
+const DEFAULT_UPLOAD_PRICE = 0.03;
 export default {
 	data() {
 		let validateEncryptPassword = (rule, value, callback) => {
@@ -204,7 +206,7 @@ export default {
 				upload: true
 			},
 			wihteListString: "",
-			uploadPrice:0,
+			uploadPrice: DEFAULT_UPLOAD_PRICE,
 			fileSize: 0,
 			encryptionToggle: false,
 			uploadFormData: {
@@ -250,20 +252,24 @@ export default {
 				this.fileSize = util.bytesToSize(content.fileBytes);
 				this.uploadFormData.Path = content.filePath;
 				this.uploadFormData.Desc = content.fileName;
+				this.toGetPrice();
 			});
 		},
 		setWhiteList() {
 			let array = this.wihteListString.replace(/[\s\r\n]/g, "").split(";");
 			this.advancedData.WhiteList = array;
+			this.toGetPrice();
 		},
 		setDuration() {
 			this.advancedData.Duration =
 				this.storageCycleNumber * this.BASE[this.storageCycleSelected];
+			this.toGetPrice();
 		},
 		setDataInterval() {
 			this.advancedData.Interval =
 				this.verificationCycleNumber *
 				this.BASE[this.verificationCycleSelected];
+			this.toGetPrice();
 		},
 		toEmptyUpload() {
 			this.uploadFormData.Path = "";
@@ -284,7 +290,7 @@ export default {
 				.then(res => {
 					this.switchToggle.upload = true;
 					if (res.data.Error === 0) {
-						this.$store.dispatch("setUpload"); 
+						this.$store.dispatch("setUpload");
 						this.$router.push({ name: "transfer", query: { transferType: 1 } });
 					} else {
 						this.$message.error("Upload Error");
@@ -293,6 +299,28 @@ export default {
 				.catch(() => {
 					this.$message.error("Upload Error");
 					this.switchToggle.upload = true;
+				});
+		},
+		toGetPrice() {
+			if (!this.switchToggle.advanced) {
+				this.uploadPrice = DEFAULT_UPLOAD_PRICE;
+				return;
+			}
+			// let Path = encodeURIComponent(this.uploadFormData.Path);
+			const path = ipcRenderer.sendSync(
+				"string-to-hex",
+				encodeURIComponent(this.uploadFormData.Path)
+			);
+			const duration = this.advancedData.Duration;
+			const interval = this.advancedData.Interval;
+			const copynum = this.advancedData.CopyNum;
+			const whitelistcount = this.advancedData.WhiteList.length;
+			this.$axios
+				.get(this.$api.uploadfee + path, {
+					params: { duration, interval, copynum, whitelistcount }
+				})
+				.then(res => {
+					console.log(res);
 				});
 		}
 	},

@@ -1,5 +1,8 @@
 <template>
-	<div id="home" class="common-main">
+	<div
+	 id="home"
+	 class="common-main"
+	>
 		<div class="content">
 			<div v-if="loginStatus">
 				<el-button
@@ -19,13 +22,19 @@
 				 v-if="loginStatus === 1"
 				>
 					<div class="user-name">
-						<i class="ofont ofont-user"></i>
-						<p>Welcome <strong>{{user.name}}</strong></p>
+						<!-- <i class="ofont ofont-user"></i> -->
+						<div>
+							<p class="light-blue-xs bold">Welcome !</p>
+							<p class="theme-bold">{{user.name}}</p>
+						</div>
 					</div>
 					<!-- pause !!! -->
 					<div class="user-revenue">
-						<p>Your revenue</p>
-						<span>{{user.Revenue}}</span> SAVE POWER
+						<p class="grey-xs bold">Your revenue:</p>
+						<div class="flex between ai-center">
+							<span class="theme-bold ft24">{{revenue.toLocaleString('en-US')}}</span>
+							<span class="grey-xs bold">SAVE POWER</span>
+						</div>
 					</div>
 				</div>
 				<div
@@ -34,7 +43,6 @@
 				>
 					<i class="ofont ofont-user"></i>
 					<div class="please-login">
-						<p>Welcome</p>
 						<div class="tologin">
 							<router-link
 							 to="/CreateAccount"
@@ -50,19 +58,28 @@
 				<div class="user-meta-right">
 					<div class="balance-title">
 						<div class="balance-meta">
-							<p>Total Balance</p>
-							<p>$ {{balanceLists.length>0?balanceLists[balanceSelected].Balance:'$00000.00'}}</p>
+							<p class="grey-xs bold mb10">Total Balance</p>
+							<p class="theme-bold"> {{balanceLists.length>0?filterFloat(balanceLists[balanceSelected].Balance).toLocaleString('en-US'):'0'}}</p>
 						</div>
 						<el-select
+						 class="asset-select"
 						 v-model='balanceSelected'
 						 @change="setBalanceListsIndex"
 						>
+						<div slot="prefix" class="prefix-icon">
+							<img v-if="balanceLists.length>0" class="asset-icon" :src="'../../../static/images/logo/'+balanceLists[balanceSelected].Symbol+'.png'" alt="">
+						</div>
 							<el-option
+							class="asset-item"
 							 v-for="(item,index) in balanceLists"
 							 :key='item.Name'
-							 :label='item.Name'
+							 :label='item.Symbol'
 							 :value='index'
-							></el-option>
+							><img
+								 class="asset-icon mr10"
+								 :src="'../../../static/images/logo/'+ item.Symbol+ '.png'"
+								 :alt="item.Symbol"
+								> <span class="">{{item.Symbol}}</span></el-option>
 						</el-select>
 
 					</div>
@@ -72,17 +89,20 @@
 					>
 						<div class="balance-item">
 							<div class="balance-top">
-								<p>Icon</p>
-								<p>{{balanceLists[balanceSelected].Balance}}</p>
+								<div class="flex ai-center">
+									<img class="asset-icon mr10" :src="'../../../static/images/logo/'+balanceLists[balanceSelected].Symbol+'.png'" alt="">
+									<p class="theme-bold">{{ balanceLists[balanceSelected].Symbol}}</p>
+								</div>
+								<p class="theme-bold">{{filterFloat(balanceLists[balanceSelected].Balance).toLocaleString('en-US')}}</p>
 							</div>
-							<div class="balance-bottom">
-								<p>{{balanceLists[balanceSelected].Name}}</p>
+							<!-- <div class="balance-bottom">
 								<p>{{balanceLists[balanceSelected].Balance}}</p>
-							</div>
+							</div> -->
 						</div>
 					</div>
 				</div>
 			</div>
+			<div class="channels-title">Channel Balance</div>
 			<div class="channels">
 				<el-table
 				 :data="channels"
@@ -93,10 +113,13 @@
 					 prop='ChannelId'
 					 label='Channel'
 					></el-table-column>
-					<el-table-column
-					 prop='Balance'
-					 label='balance'
-					></el-table-column>
+					<el-table-column label='balance'>
+						<template slot-scope="scope">
+							<div class="light-blue">
+								{{filterFloat(scope.row.Balance).toLocaleString('en-US')}}
+							</div>
+						</template>
+					</el-table-column>
 					<el-table-column
 					 prop='TokenAddr'
 					 label='Token Addr'
@@ -112,39 +135,42 @@
 </template>
 <script>
 const { ipcRenderer } = require("electron");
+import { filterFloat } from "../assets/config/util";
 export default {
 	mounted() {
+		this.$store.dispatch("setRevenue");
 		this.currentAccount();
 	},
 	data() {
 		return {
+			filterFloat,
 			balanceValue: "",
 			loginStatus: 0, // 1: login 0: not login
 			user: {
 				name: localStorage.getItem("Label") || ""
 			},
-			balanceLists: [
-				// {
-				// 	Name: "Save Power",
-				// 	Symbol: "SAVE",
-				// 	Decimals: 0,
-				// 	Balance: "000000"
-				// },
-				// {
-				// 	Name: "NEO",
-				// 	Symbol: "NEO",
-				// 	Decimals: 9,
-				// 	Balance: "0"
-				// },
-				// {
-				// 	Name: "Ontology",
-				// 	Symbol: "ONT",
-				// 	Decimals: 9,
-				// 	Balance: "0"
-				// }
-			],
+			// balanceLists: [
+			// 	// {
+			// 	// 	Name: "Save Power",
+			// 	// 	Symbol: "SAVE",
+			// 	// 	Decimals: 0,
+			// 	// 	Balance: "000000"
+			// 	// },
+			// 	// {
+			// 	// 	Name: "NEO",
+			// 	// 	Symbol: "NEO",
+			// 	// 	Decimals: 9,
+			// 	// 	Balance: "0"
+			// 	// },
+			// 	// {
+			// 	// 	Name: "Ontology",
+			// 	// 	Symbol: "ONT",
+			// 	// 	Decimals: 9,
+			// 	// 	Balance: "0"
+			// 	// }
+			// ],
 			balanceSelected: 0,
-			mockChannels:[
+			mockChannels: [
 				{
 					ChannelId: 101,
 					Balance: 1000000000,
@@ -272,17 +298,7 @@ export default {
 					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
 					HostAddr: "tcp://127.0.0.1:13004",
 					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
-				},
-			],
-			channels: [
-				// {
-				// 	ChannelId: 101,
-				// 	Balance: 1000000000,
-				// 	BalanceFormat: "1",
-				// 	Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
-				// 	HostAddr: "tcp://127.0.0.1:13004",
-				// 	TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
-				// }
+				}
 			]
 		};
 	},
@@ -303,7 +319,8 @@ export default {
 								window.localStorage.setItem(key, result[key]);
 							}
 							this.loginStatus = 1; // login success
-							this.getBalance();
+							// this.getBalance();
+							this.$store.dispatch("setBalanceLists");
 							this.getAllChannels();
 						} else {
 							window.localStorage.clear(); // remove all local infomation
@@ -321,8 +338,8 @@ export default {
 				)
 				.then(res => {
 					if (res.data.Desc === "SUCCESS") {
-						const result = res.data.Result;
-						this.balanceLists = result;
+						// const result = res.data.Result;
+						// this.balanceLists = result;
 					}
 				})
 				.catch(err => {
@@ -331,11 +348,10 @@ export default {
 		},
 		getAllChannels() {
 			this.$axios
-				.get(this.$api.host+ this.$api.version + "channel")
+				.get(this.$api.host + this.$api.version + "channel")
 				.then(res => {
 					if (res.data.Desc === "SUCCESS" && res.data.Error === 0) {
-						this.channels = res.data.Result.Channels;
-						this.$store.dispatch('setChannelBalanceTotal',res.data.Result.Balance)
+						this.$store.dispatch("setChannelBalanceTotal", res.data.Result);
 					}
 				})
 				.catch(err => {
@@ -367,17 +383,65 @@ export default {
 					console.error(err);
 				});
 		}
+	},
+	computed: {
+		balanceLists: function() {
+			return this.$store.state.Wallet.balanceLists;
+		},
+		revenue: function() {
+			return this.$store.state.Home.revenue;
+		},
+		channels: function() {
+			return this.$store.state.Home.channels;
+		}
 	}
 };
 </script>
 <style lang="scss">
+$light-grey: #f2f2f2;
 $grey: #ccc;
+$theme-color: #1b1e2f;
+.el-select-dropdown,
+.el-popper {
+	border: solid 1px #fff;
+	border-top: none;
+}
+.asset-item{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 16px;
+}
+.prefix-icon{
+	margin-left: 15px;
+	height:100%;
+	display:flex;
+	align-items: center
+}
+.asset-icon{
+	display: inline-block;
+	width:15px;
+	height:15px;
+}
 #home {
 	display: flex;
 	flex: 1;
+	.el-input {
+		&.is-focus {
+			.el-input__inner {
+				border-bottom: none;
+			}
+		}
+	}
+	.el-select .el-input__inner:focus {
+		border-color: $theme-color !important;
+	}
+	.el-input__inner {
+		border-color: $theme-color !important;
+	}
 	.content {
 		width: 100%;
-		display:flex;
+		display: flex;
 		flex-direction: column;
 		.user-meta {
 			display: flex;
@@ -387,18 +451,22 @@ $grey: #ccc;
 			display: flex;
 			flex-direction: column;
 			justify-content: space-between;
-			padding: 20px 10px;
+			// padding: 20px 10px;
 			width: 350px;
 			height: 200px;
-			border-radius: 8px;
-			background: $grey;
 			&.no-user {
-				flex-direction: row;
+				// flex-direction: row;
+				align-items: center;
+				justify-content: space-around;
+				background: #fff;
 				.ofont-user {
 					width: 80px;
 					display: flex;
 					justify-content: center;
 					align-items: center;
+				}
+				.please-login {
+					flex: initial;
 				}
 			}
 			.ofont-user {
@@ -407,6 +475,22 @@ $grey: #ccc;
 			.user-name {
 				display: flex;
 				align-items: center;
+				height: 90px;
+				border-radius: 2px;
+				background: #fff;
+				padding: 5px 10px;
+				.ofont-user {
+					margin: 0 8px;
+				}
+			}
+			.user-revenue {
+				display: flex;
+				flex-direction: column;
+				justify-content: space-around;
+				height: 100px;
+				border-radius: 2px;
+				background: #fff;
+				padding: 5px 10px;
 			}
 			.please-login {
 				flex: 1;
@@ -416,36 +500,46 @@ $grey: #ccc;
 			}
 			.tologin {
 				.button {
-					background: #fff;
+					background: $theme-color;
 					padding: 10px;
-					color: #333;
+					color: #fff;
 					font-size: 14px;
 				}
 			}
 		}
 		.user-meta-right {
 			// width: 600px;
-			flex:1;
+			flex: 1;
 			display: flex;
 			height: 200px;
 			flex-direction: column;
 			justify-content: space-between;
 			padding: 20px 20px;
 			margin-left: 10px;
-			background: $grey;
+			background: #fff;
+			border-radius: 2px;
 			.balance-title {
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
+				.el-input__inner {
+					text-align: center;
+				}
 			}
 			.balance-detail {
+				height: 80px;
 				.balance-item {
 					width: 240px;
+					height: 100%;
+					display: flex;
+					align-items: center;
 					background: #fff;
-					border-radius: 5px;
+					border-radius: 2px;
+					border: solid 1px rgba(203, 203, 203, 1);
 					padding: 5px 8px;
 					.balance-top {
 						display: flex;
+						flex: 1;
 						justify-content: space-between;
 					}
 					.balance-bottom {
@@ -455,12 +549,22 @@ $grey: #ccc;
 				}
 			}
 		}
+		.channels-title {
+			background: #fff;
+			padding: 10px 15px;
+			color: $grey;
+			margin-top: 20px;
+		}
 		.channels {
-			flex:1;
+			flex: 1;
 			overflow-y: auto;
-			margin-top: 80px;
-			margin-bottom:20px;
-			background: $grey;
+			// margin-top: 80px;
+			margin-bottom: 20px;
+			.el-table thead th {
+				color: $theme-color;
+				font-weight: bold;
+				background: rgba(231, 231, 235, 1);
+			}
 		}
 	}
 }

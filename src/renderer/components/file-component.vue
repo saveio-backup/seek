@@ -1,6 +1,5 @@
 <template>
 	<div class="file-component">
-		{{transferType}}
 		<div
 		 class="top-progress"
 		 v-if="transferType != 0"
@@ -15,37 +14,32 @@
 			<el-button>Cancel All</el-button>
 			<el-button
 			 v-if="transferType == 2"
-			 @click="switchNewTask=true"
+			 @click="switchToggle.newTaskDialog=true"
 			>New Task</el-button>
 		</div>
 		<div v-else>
-			Finished " " Files
+			Finished {{fileList.length}} Files
 		</div>
-		<el-dialog
-		 title='New Download'
-		 width='600px'
-		 :visible.sync="switchNewTask"
-		>
-			<download-dialog></download-dialog>
-		</el-dialog>
 		<div class="file-list">
 			<el-table
-			 :data="fileList"
+			 :data="mockFileList"
 			 empty-text='No data'
+			 height="100%"
 			>
-			<el-table-column
-				 width="500"
+				<!-- :data="fileList" -->
+				<el-table-column
+				 width="300"
 				 label="FileName"
 				 prop="FileName"
 				></el-table-column>
 				<el-table-column
-				 width="500"
 				 label="FileHash"
 				 prop="FileHash"
 				></el-table-column>
 				<el-table-column
 				 label="FileSize"
 				 prop="FileSize"
+				 width='100px'
 				>
 					<template slot-scope="scope">
 						<!-- api return 'KB' unit -->
@@ -54,9 +48,19 @@
 						</span>
 					</template>
 				</el-table-column>
-				<el-table-column label="Progress">
+				<el-table-column
+				 label="Progress"
+				 v-if="transferType !== 0"
+				>
 					<template slot-scope="scope">
-						<el-progress :percentage="(scope.row.DownloadSize / (scope.row.FileSize?scope.row.FileSize:1))*100"></el-progress>
+						<el-progress
+						 v-if="scope.row.Type === 1"
+						 :percentage="( scope.row.UploadSize / (scope.row.FileSize?scope.row.FileSize:1))*100"
+						></el-progress>
+						<el-progress
+						 v-if="scope.row.Type === 2"
+						 :percentage="( scope.row.DownloadSize / (scope.row.FileSize?scope.row.FileSize:1))*100"
+						></el-progress>
 					</template>
 				</el-table-column>
 				<el-table-column
@@ -64,13 +68,24 @@
 				 prop="Status"
 				></el-table-column>
 				<el-table-column label="opera">
-					<span>pause</span>
-					<span>continue</span>
-					<span>cancel</span>
-					<span>detail</span>
+					<template slot-scope="scope">
+						<div>
+							<span v-if="scope.row.status === 0">continue</span>
+							<span v-if="scope.row.status === 2">pause</span>
+							<i class="el-icon-delete"></i>
+							<i class="el-icon-tickets"></i>
+						</div>
+					</template>
 				</el-table-column>
 			</el-table>
 		</div>
+		<el-dialog
+		 title='New Download'
+		 width='600px'
+		 :visible.sync="switchToggle.newTaskDialog"
+		>
+			<download-dialog v-on:closedialog='hideTaskDialog'></download-dialog>
+		</el-dialog>
 	</div>
 </template>
 <script>
@@ -89,19 +104,133 @@ export default {
 	data() {
 		return {
 			util,
-			switchNewTask: false,
+			switchToggle: {
+				newTaskDialog: false,
+				transferItemDialog: false
+			},
 			TransferConfig: [
 				"completeTransferList",
 				"uploadTransferList",
 				"downloadTransferList"
 			],
+			transferItem: {},
 			transferTypeConfig: ["Completed", "Upload", "Download"],
 			mockFileList: [
 				{
-					Hash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
-					Name: "hahat.txt",
+					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
+					FileName: "hahat.txt",
 					Current: 500,
-					Size: 1536,
+					FileSize: 1536,
+					DownloadCount: 0,
+					ExpiredAt: 1555051356,
+					UpdatedAt: 0,
+					Profit: 0,
+					Privilege: 1
+				},
+				{
+					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
+					FileName: "hahat.txt",
+					Current: 500,
+					FileSize: 1536,
+					DownloadCount: 0,
+					ExpiredAt: 1555051356,
+					UpdatedAt: 0,
+					Profit: 0,
+					Privilege: 1
+				},
+				{
+					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
+					FileName: "hahat.txt",
+					Current: 500,
+					FileSize: 1536,
+					DownloadCount: 0,
+					ExpiredAt: 1555051356,
+					UpdatedAt: 0,
+					Profit: 0,
+					Privilege: 1
+				},
+				{
+					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
+					FileName: "hahat.txt",
+					Current: 500,
+					FileSize: 1536,
+					DownloadCount: 0,
+					ExpiredAt: 1555051356,
+					UpdatedAt: 0,
+					Profit: 0,
+					Privilege: 1
+				},
+				{
+					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
+					FileName: "hahat.txt",
+					Current: 500,
+					FileSize: 1536,
+					DownloadCount: 0,
+					ExpiredAt: 1555051356,
+					UpdatedAt: 0,
+					Profit: 0,
+					Privilege: 1
+				},
+				{
+					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
+					FileName: "hahat.txt",
+					Current: 500,
+					FileSize: 1536,
+					DownloadCount: 0,
+					ExpiredAt: 1555051356,
+					UpdatedAt: 0,
+					Profit: 0,
+					Privilege: 1
+				},
+				{
+					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
+					FileName: "hahat.txt",
+					Current: 500,
+					FileSize: 1536,
+					DownloadCount: 0,
+					ExpiredAt: 1555051356,
+					UpdatedAt: 0,
+					Profit: 0,
+					Privilege: 1
+				},
+				{
+					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
+					FileName: "hahat.txt",
+					Current: 500,
+					FileSize: 1536,
+					DownloadCount: 0,
+					ExpiredAt: 1555051356,
+					UpdatedAt: 0,
+					Profit: 0,
+					Privilege: 1
+				},
+				{
+					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
+					FileName: "hahat.txt",
+					Current: 500,
+					FileSize: 1536,
+					DownloadCount: 0,
+					ExpiredAt: 1555051356,
+					UpdatedAt: 0,
+					Profit: 0,
+					Privilege: 1
+				},
+				{
+					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
+					FileName: "hahat.txt",
+					Current: 500,
+					FileSize: 1536,
+					DownloadCount: 0,
+					ExpiredAt: 1555051356,
+					UpdatedAt: 0,
+					Profit: 0,
+					Privilege: 1
+				},
+				{
+					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
+					FileName: "hahat.txt",
+					Current: 500,
+					FileSize: 1536,
 					DownloadCount: 0,
 					ExpiredAt: 1555051356,
 					UpdatedAt: 0,
@@ -116,16 +245,34 @@ export default {
 			return this.$store.state.Transfer[this.TransferConfig[this.transferType]];
 		}
 	},
-	methods: {}
+	methods: {
+		hideTaskDialog() {
+			this.switchToggle.newTaskDialog = false;
+		}
+	}
 };
 </script>
 <style lang="scss">
+$theme-font-blue: #040f39;
+$brand-blue: #409eff;
+$sucess: #67c23a;
+$danger: #f56c6c;
+$light-grey: #f7f7f7;
 .file-component {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
 	.top-progress {
 		display: flex;
+		height: 80px;
+		align-items: center;
 		.progress {
 			flex: 1;
 		}
+	}
+	.file-list {
+		// flex: 1;
+		height: calc(100% - 80px);
 	}
 }
 </style>

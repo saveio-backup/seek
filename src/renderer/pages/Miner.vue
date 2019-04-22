@@ -4,11 +4,11 @@
 			<div class="aside">
 				<div class="aside-link">
 					<router-link
-					 :class="{'theme-font-blue': fileType == 0}"
+					 :class="{'theme-font-blue-bold': fileType == 0}"
 					 :to="{name:'minerdisk', query:{type:0, page:'miner',controlBar:'close',addrAPI:$api.getDownloadFileList}}"
 					>File</router-link>
 					<router-link
-					 :class="{'theme-font-blue': fileType == 1}"
+					 :class="{'theme-font-blue-bold': fileType == 1}"
 					 :to="{name:'income', query:{type:1}}"
 					>Income</router-link>
 				</div>

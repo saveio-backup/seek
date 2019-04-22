@@ -20,24 +20,94 @@
 					>Transfer</router-link>
 				</div>
 				<div class="coin">
-					<span>Balance: {{balanceTotal}}</span>
-					<el-button type="primary">划转</el-button>
+					<span class="grey-xs bold">Balance: {{filterFloat(balanceTotal).toLocaleString('en-US')}}</span>
+					<el-button
+					 class="asset-transfer"
+					 type="primary"
+					 @click="switchToggle.assetTransferDialog = true"
+					>划转</el-button>
 				</div>
 			</div>
+			<el-dialog
+			 title='Asset'
+			 width='450px'
+			 :visible.sync="switchToggle.assetTransferDialog"
+			 center
+			>
+				<div>To transfer</div>
+				<div class="flex between">
+					<div v-if="withDraw">
+						<p>Channel Amount</p>
+						<p>{{balanceTotal}}</p>
+					</div>
+					<div v-else>
+						<p>Save Amount</p>
+						<p>{{mainCount}}</p>
+					</div>
+					<i class="el-icon-arrow-right"></i>
+					<div v-if="!withDraw">
+						<p>Channel Amount</p>
+						<p>{{balanceTotal}}</p>
+					</div>
+					<div v-else>
+						<p>Save Amount</p>
+						<p>{{mainCount}}</p>
+					</div>
+				</div>
+				<i
+				 class="el-icon-refresh"
+				 @click="withDraw = !withDraw"
+				></i>
+				<el-input
+				 v-model="transferAmount"
+				 placeholder="Fill number"
+				></el-input>
+			</el-dialog>
 			<router-view></router-view>
 		</div>
 	</div>
 </template>
 <script>
+import { filterFloat } from "../assets/config/util";
 export default {
+	mounted() {},
 	data() {
 		return {
+			filterFloat,
+			switchToggle: {
+				assetTransferDialog: false
+			},
+			transferAmount: "",
+			withDraw: true,
 			location: location
 		};
 	},
 	computed: {
+		mainCount: function() {
+			return this.$store.state.Wallet.mainCount;
+		},
 		balanceTotal: function() {
 			return this.$store.state.Home.balanceTotal;
+		}
+	},
+	beforeRouteEnter(to, from, next) {
+		next(vm => {
+			if (to.name === "FileManager") {
+				vm.$router.push({
+					name: "disk",
+					query: {
+						type: 0
+					}
+				});
+			}
+		});
+	},
+	beforeRouteUpdate(to, from, next) {
+		//  electron-vue bug hack
+		if (to.name === "FileManager") {
+			next({ name: "disk", query: { type: 0 } });
+		} else {
+			next();
 		}
 	}
 };
@@ -54,8 +124,9 @@ $grey: #ccc;
 		right: 0px;
 		.top-nav {
 			background: #fff;
+			height: 60px;
 			box-shadow: 0px 2px 4px 0px rgba(231, 231, 235, 0.7);
-			padding: 20px;
+			padding: 10px 20px;
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
@@ -68,6 +139,12 @@ $grey: #ccc;
 				}
 				flex: 1;
 				display: flex;
+			}
+			.asset-transfer {
+				height: 30px;
+				padding: 0px;
+				border-radius: 2px;
+				width: 80px;
 			}
 		}
 	}

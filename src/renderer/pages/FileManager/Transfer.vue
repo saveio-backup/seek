@@ -3,15 +3,18 @@
 		<div class="aside">
 			<div class="aside-link">
 				<p
-				 :class="{'active-blue': transferType == 1}"
+				 class="transform-link"
+				 :class="{'theme-font-blue-bold': transferType == 1}"
 				 @click="transferType = 1"
 				>Upload</p>
 				<p
-				 :class="{'active-blue': transferType == 2}"
+				 class="transform-link"
+				 :class="{'theme-font-blue-bold': transferType == 2}"
 				 @click="transferType = 2 "
 				>Download</p>
 				<p
-				 :class="{'active-blue': transferType == 0}"
+				 class="transform-link"
+				 :class="{'theme-font-blue-bold': transferType == 0}"
 				 @click="transferType = 0"
 				>Complete</p>
 			</div>
@@ -63,6 +66,8 @@ export default {
 $brand-blue: #409eff;
 $sucess: #67c23a;
 $danger: #f56c6c;
+$theme-font-blue: #040f39;
+$light-grey: #f7f7f7;
 #transfer {
 	.aside {
 		display: flex;
@@ -70,16 +75,23 @@ $danger: #f56c6c;
 		justify-content: space-between;
 		align-items: center;
 		position: absolute;
-		top: 80px;
+		top: 60px;
 		bottom: 0;
 		width: 200px;
 		min-height: 400px;
-		background: $sucess;
+		background: $light-grey;
+		color: $theme-font-blue;
 		.aside-link {
 			display: flex;
 			flex-direction: column;
 			width: 100%;
 			padding-left: 50px;
+			.transform-link {
+				cursor: pointer;
+				font-size: 16px;
+				display: flex;
+				padding: 10px 0 10px 0px;
+			}
 		}
 	}
 	.layout-main {

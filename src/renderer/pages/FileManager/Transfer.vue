@@ -4,17 +4,17 @@
 			<div class="aside-link">
 				<p
 				 class="transform-link"
-				 :class="{'theme-font-blue-bold': transferType == 1}"
+				 :class="{'theme-font-blue-bold hover-link': transferType == 1}"
 				 @click="transferType = 1"
 				>Upload</p>
 				<p
 				 class="transform-link"
-				 :class="{'theme-font-blue-bold': transferType == 2}"
+				 :class="{'theme-font-blue-bold hover-link': transferType == 2}"
 				 @click="transferType = 2 "
 				>Download</p>
 				<p
 				 class="transform-link"
-				 :class="{'theme-font-blue-bold': transferType == 0}"
+				 :class="{'theme-font-blue-bold hover-link': transferType == 0}"
 				 @click="transferType = 0"
 				>Complete</p>
 			</div>
@@ -82,15 +82,21 @@ $light-grey: #f7f7f7;
 		background: $light-grey;
 		color: $theme-font-blue;
 		.aside-link {
+			margin-top:20px;
 			display: flex;
 			flex-direction: column;
 			width: 100%;
-			padding-left: 50px;
 			.transform-link {
 				cursor: pointer;
 				font-size: 16px;
 				display: flex;
-				padding: 10px 0 10px 0px;
+				padding: 10px 0 10px 50px;
+				&:hover{
+					background: #e7e7eb;
+				}
+				&.hover-link{
+					background: #e7e7eb;
+				}
 			}
 		}
 	}

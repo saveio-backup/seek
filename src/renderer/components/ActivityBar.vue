@@ -24,6 +24,7 @@
 							 src="../assets/images/aside_file_color.png"
 							 alt=""
 							>
+							<div class="active-display slide-border"></div>
 						</router-link>
 					</li>
 					<li class="action-item">
@@ -41,6 +42,7 @@
 							 src="../assets/images/aside_wallet_color.png"
 							 alt=""
 							>
+							<div class="active-display slide-border"></div>
 						</router-link>
 					</li>
 					<li class="action-item">
@@ -58,6 +60,7 @@
 							 src="../assets/images/aside_miner_color.png"
 							 alt=""
 							>
+							<div class="active-display slide-border"></div>
 						</router-link>
 					</li>
 				</ul>
@@ -112,7 +115,7 @@ $slidebar-active-color: linear-gradient(
 	rgba(138, 247, 255, 1) 100%
 );
 #activity-bar {
-	width: 70px;
+	width: 100px;
 	color: $theme-color;
 	background: $theme-color;
 	.content {
@@ -128,7 +131,7 @@ $slidebar-active-color: linear-gradient(
 			.action-item {
 				display: flex;
 				font-size: 40px;
-				margin: 50px 0;
+				margin: 40px 0;
 				&.item-user {
 					position: relative;
 					font-size: 50px;
@@ -155,9 +158,19 @@ $slidebar-active-color: linear-gradient(
 						display: none;
 					}
 					&.slidebar-active {
-						border-right: solid 1px $slidebar-active-color;
+						position:relative;
 						.active-display {
 							display: inline-block;
+						}
+						.slide-border{
+							width:1.5px;
+							height:100%;
+							position:absolute;
+							right:0px;
+							top:0px;
+							border-radius: 1px;
+							background: $slidebar-active-color;
+							transform: scaleY(1.3);
 						}
 						.active-none {
 							display: none;

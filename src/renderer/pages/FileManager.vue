@@ -17,7 +17,7 @@
 					<router-link
 					 :to="{name:'transfer'}"
 					 active-class="active-blue"
-					>Transfer</router-link>
+					>Transfer <span class="badge">{{transferLength}}</span></router-link>
 				</div>
 				<div class="coin">
 					<span class="grey-xs bold">Balance: {{filterFloat(balanceTotal).toLocaleString('en-US')}}</span>
@@ -88,6 +88,12 @@ export default {
 		},
 		balanceTotal: function() {
 			return this.$store.state.Home.balanceTotal;
+		},
+		transferLength: function() {
+			return (
+				this.$store.state.Transfer.downloadLength +
+				this.$store.state.Transfer.uploadLength
+			);
 		}
 	},
 	beforeRouteEnter(to, from, next) {
@@ -120,13 +126,13 @@ $grey: #ccc;
 		position: absolute;
 		top: 0px;
 		bottom: 0px;
-		left: 70px;
+		left: 100px;
 		right: 0px;
 		.top-nav {
 			background: #fff;
 			height: 60px;
 			box-shadow: 0px 2px 4px 0px rgba(231, 231, 235, 0.7);
-			padding: 10px 20px;
+			padding: 10px 30px 10px 20px;
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
@@ -135,10 +141,27 @@ $grey: #ccc;
 			}
 			.router {
 				& > a {
+					position:relative;
 					padding: 0 20px;
 				}
 				flex: 1;
 				display: flex;
+				.badge{
+					display: inline-block;
+					background:#65A6FF;
+					$width:14px;
+					width:$width;
+					height: $width;
+					line-height: $width;
+					font-size:12px;
+					text-align: center;
+					border-radius: 50%;
+					color:#fff;
+					position: absolute;
+					right:0px;
+					top:0px;
+					// transform: translateX(50%) translateY(-50%)
+				}
 			}
 			.asset-transfer {
 				height: 30px;

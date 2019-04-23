@@ -26,7 +26,7 @@ $light-grey: #f2f2f2;
 .common-main {
 	background:$light-grey;
 	padding: 0 88px;
-	width: calc(100% - 70px);
+	width: calc(100% - 100px);
 }
 .layout-main {
 	position: absolute;

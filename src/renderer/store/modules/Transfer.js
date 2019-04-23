@@ -3,17 +3,33 @@ import api from '../../assets/config/api';
 const state = {
   completeTransferList: [],
   uploadTransferList: [],
-  downloadTransferList: []
+  downloadTransferList: [],
+  downloadProgress: 0,
+  uploadProgress: 0,
+  downloadLength: 0,
+  uploadLength: 0
 }
 let downloadTimer = null;
 let uploadTimer = null;
-const TIME_COUNT = 2000;
+const TIME_COUNT = 3000;
 const mutations = {
   GET_DOWNLOAD_TRANSFER(state, result) {
     state.downloadTransferList = result;
+    state.downloadLength = result.length;
+    let downloadProgress = 0;
+    for (let i = 0; i < result.length; i++) {
+      downloadProgress += result[i].Progress;
+    }
+    state.downloadProgress = downloadProgress / result.length;
   },
   GET_UPLOAD_TRANSFER(state, result) {
     state.uploadTransferList = result;
+    state.uploadLength = result.length;
+    let uploadProgress = 0;
+    for (let i = 0; i < result.length; i++) {
+      uploadProgress += result[i].Progress;
+    }
+    state.uploadProgress = uploadProgress / result.length;
   },
   GET_COMPLETED_TRANSFER(state, result) {
     state.completeTransferList = result;

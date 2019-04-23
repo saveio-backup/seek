@@ -124,7 +124,7 @@
 					 prop="CopyNum"
 					>
 						<el-input-number
-						 :min='1'
+						 :min='0'
 						 v-model="advancedData.CopyNum"
 						 @change='toGetPrice'
 						></el-input-number>
@@ -133,7 +133,10 @@
 					 label="Authority"
 					 prop="Privilege"
 					>
-						<el-select v-model="advancedData.Privilege">
+						<el-select
+						 v-model="advancedData.Privilege"
+						 @change='toGetPrice'
+						>
 							<el-option
 							 label="private"
 							 :value="0"
@@ -314,7 +317,10 @@ export default {
 			const duration = this.advancedData.Duration;
 			const interval = this.advancedData.Interval;
 			const copynum = this.advancedData.CopyNum;
-			const whitelistcount = this.advancedData.WhiteList.length;
+			const whitelistcount =
+				this.advancedData.Privilege === 2
+					? this.advancedData.WhiteList.length
+					: 0;
 			this.$axios
 				.get(this.$api.uploadfee + path, {
 					params: { duration, interval, copynum, whitelistcount }

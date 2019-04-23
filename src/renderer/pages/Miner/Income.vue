@@ -1,8 +1,9 @@
 <template>
 	<div id="income">
 		<div class="header">
-			<p>Income Detail</p>
+			<p class="light-theme-title mb10">Income Detail</p>
 			<el-date-picker
+			class="common-el-input"
 			 v-model="dateRange"
 			 @change='offset = 0'
 			 type="daterange"
@@ -17,7 +18,7 @@
 		<el-table
 		 class="flex1 incomeTable"
 		 ref="incomeTable"
-		 :data="mockData"
+		 :data="result.Incomes"
 		 empty-text="No data"
 		 height='100%'
 		>
@@ -186,7 +187,7 @@ export default {
 	flex-direction: column;
 	& > .header {
 		background: #eeeef1;
-		padding: 20px 30px;
+		padding: 20px 50px;
 	}
 	.incomeTable {
 		height: 100%;

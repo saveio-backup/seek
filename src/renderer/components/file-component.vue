@@ -4,11 +4,14 @@
 		 class="top-progress"
 		 v-if="transferType != 0"
 		>
-			<span>{{transferTypeConfig[transferType]}} progress</span>
-			<el-progress
-			 class="progress"
-			 :percentage="70"
-			></el-progress>
+			<div class="flex1">
+				<p class="grey-xs bold">{{transferTypeConfig[transferType]}} progress</p>
+				<el-progress
+				 class="progress"
+				 :percentage="70"
+				></el-progress>
+			</div>
+
 			<el-button>Pause All</el-button>
 			<el-button>Start all</el-button>
 			<el-button>Cancel All</el-button>
@@ -17,12 +20,15 @@
 			 @click="switchToggle.newTaskDialog=true"
 			>New Task</el-button>
 		</div>
-		<div v-else>
-			Finished {{fileList.length}} Files
+		<div
+		 v-else
+		 class="top-progress"
+		>
+			<p class="theme-font-blue ft14">Finished {{fileList.length}} Files</p>
 		</div>
 		<div class="file-list">
 			<el-table
-			 :data="mockFileList"
+			 :data="fileList"
 			 empty-text='No data'
 			 height="100%"
 			>
@@ -55,11 +61,11 @@
 					<template slot-scope="scope">
 						<el-progress
 						 v-if="scope.row.Type === 1"
-						 :percentage="( scope.row.UploadSize / (scope.row.FileSize?scope.row.FileSize:1))*100"
+						 :percentage="scope.row.Progress*100"
 						></el-progress>
 						<el-progress
 						 v-if="scope.row.Type === 2"
-						 :percentage="( scope.row.DownloadSize / (scope.row.FileSize?scope.row.FileSize:1))*100"
+						 :percentage="scope.row.Progress*100"
 						></el-progress>
 					</template>
 				</el-table-column>
@@ -257,7 +263,7 @@ $theme-font-blue: #040f39;
 $brand-blue: #409eff;
 $sucess: #67c23a;
 $danger: #f56c6c;
-$light-grey: #f7f7f7;
+$light-grey: #f2f2f2;
 .file-component {
 	height: 100%;
 	display: flex;
@@ -265,14 +271,24 @@ $light-grey: #f7f7f7;
 	.top-progress {
 		display: flex;
 		height: 80px;
+		padding: 0 10px;
+		background: $light-grey;
 		align-items: center;
 		.progress {
 			flex: 1;
 		}
 	}
 	.file-list {
-		// flex: 1;
 		height: calc(100% - 80px);
+		.el-table {
+			color: $theme-font-blue;
+			font-weight: bold;
+			thead th {
+				background: #e7e7eb;
+				color: #1b1e2f;
+				font-weight: bold;
+			}
+		}
 	}
 }
 </style>

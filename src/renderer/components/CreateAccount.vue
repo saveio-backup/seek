@@ -1,39 +1,44 @@
 <template>
-	<div id="create-account">
-		<el-form
-		 ref='form'
-		 :model='form'
-		 :rules='rules'
-		>
-			<el-form-item
-			 label="Username"
-			 prop='Label'
+	<div id="create-account " class="account-wrap">
+		<div class=" account-box">
+			<h2 class="theme-font-blue account-title">Create Account</h2>
+			<el-form
+			 ref='form'
+			 :model='form'
+			 :rules='rules'
 			>
-				<el-input v-model="form.Label"></el-input>
-			</el-form-item>
-			<el-form-item
-			 label="Password"
-			 prop='Password'
-			>
-				<el-input
-				 v-model="form.Password"
-				 type="password"
-				></el-input>
-			</el-form-item>
-			<el-form-item
-			 label="Confirm password"
-			 prop='Confirm'
-			>
-				<el-input
-				 v-model="form.Confirm"
-				 type="password"
-				></el-input>
-			</el-form-item>
-		</el-form>
-		<el-button
-		 type='primary'
-		 @click="submitForm('form')"
-		>Submit</el-button>
+				<el-form-item
+				 label="Username"
+				 prop='Label'
+				>
+					<el-input v-model="form.Label"></el-input>
+				</el-form-item>
+				<el-form-item
+				 label="Password"
+				 prop='Password'
+				>
+					<el-input
+					 v-model="form.Password"
+					 type="password"
+					></el-input>
+				</el-form-item>
+				<el-form-item
+				 label="Confirm password"
+				 prop='Confirm'
+				>
+					<el-input
+					 v-model="form.Confirm"
+					 type="password"
+					></el-input>
+				</el-form-item>
+				<p class="grey-xs bold">Please remember this password， if you lose this password， the backup file cannot be decrypted any more</p>
+				<el-button
+				class="account-button"
+				 type='primary'
+				 @click="submitForm('form')"
+				>Submit</el-button>
+			</el-form>
+		</div>
 	</div>
 </template>
 <script>
@@ -108,7 +113,55 @@ export default {
 };
 </script>
 <style lang="scss">
-#create-account {
-	margin: 20px auto;
-}
+$theme-font-blue: #040f39;
+// #create-account {
+// 	.create-box {
+// 		background: #fff;
+// 		width: 100%;
+// 		height: 100%;
+// 	}
+// 	padding: 50px 80px 120px;
+// 	background: #eeeef1;
+// 	width: 100%;
+// 	height: 100vh;
+// 	.create-title {
+// 		text-align: center;
+// 		opacity: 0.6;
+// 		font-weight: bold;
+// 		font-size: 24px;
+// 		padding-top: 60px;
+// 		padding-bottom: 35px;
+// 	}
+// 	.el-form {
+// 		width: 410px;
+// 		margin: 0 auto;
+// 		.el-input__inner {
+// 			&:focus {
+// 				border-color: #dcdfe6;
+// 			}
+// 			height: 35px;
+// 			line-height: 35px;
+// 			border-radius: 2px;
+// 			background: #ebecef;
+// 		}
+// 		.el-form-item.is-success .el-input__inner {
+// 			border-color: #dcdfe6;
+// 		}
+// 		.el-form-item__label {
+// 			&:before {
+// 				content: "";
+// 			}
+// 			height: 24px;
+// 			line-height: 24px;
+// 			color: $theme-font-blue;
+// 			font-weight: bold;
+// 		}
+// 		.create-button{
+// 			display:block;
+// 			border-radius: 2px;
+// 			margin:20px auto 0;
+// 			padding: 8px 20px;
+// 		}
+// 	}
+// }
 </style>

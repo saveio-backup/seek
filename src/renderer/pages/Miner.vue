@@ -6,11 +6,11 @@
 					<router-link
 					 :class="{'theme-font-blue-bold': fileType == 0}"
 					 :to="{name:'minerdisk', query:{type:0, page:'miner',controlBar:'close',addrAPI:$api.getDownloadFileList}}"
-					>File</router-link>
+					><i class="el-icon-document"></i> <span>File</span></router-link>
 					<router-link
 					 :class="{'theme-font-blue-bold': fileType == 1}"
 					 :to="{name:'income', query:{type:1}}"
-					>Income</router-link>
+					><i class="el-icon-tickets"></i> <span>Income</span></router-link>
 				</div>
 			</div>
 			<div class="layout-main">
@@ -50,7 +50,7 @@ $light-grey: #f7f7f7;
 	}
 	& > .content {
 		position: absolute;
-		left: 70px;
+		left: 100px;
 		right: 0px;
 		top: 0;
 		bottom: 0px;
@@ -70,11 +70,20 @@ $light-grey: #f7f7f7;
 		font-size: 16px;
 		.aside-link {
 			display: flex;
+			margin-top: 70px;
 			flex-direction: column;
 			width: 100%;
 			& > a {
+				position: relative;
 				display: flex;
+				align-items: center;
 				padding: 10px 0 10px 50px;
+				i {
+					position: absolute;
+					top: 50%;
+					left: 0px;
+					transform: translateX(100%) translateY(-50%);
+				}
 				&:hover {
 					background: rgba(231, 231, 235, 1);
 				}

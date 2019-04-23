@@ -21,6 +21,12 @@ $theme-color: #1b1e2f;
   color: rgba(125, 125, 125, 0.5);
 }
 
+.light-theme-title {
+  color: $theme-font-blue;
+  opacity: 0.5;
+  font-size: 22px;
+}
+
 .theme-font-blue {
   color: $theme-font-blue;
 }
@@ -34,10 +40,23 @@ $theme-color: #1b1e2f;
   @extend .theme-font-blue-bold
 }
 
-.el-input__inner {
-  @extend .theme-bold;
+.cursor-pointer {
+  cursor: pointer;
 }
 
+
+/* Element UI */
+.common-el-input{
+  $height: 35px;
+  height: $height;
+  line-height: $height;
+  border-radius: 2px;
+  span,i{
+    display: inline-block!important;
+    height: $height!important;
+    line-height: $height!important;
+  }
+}
 .el-popper[x-placement^=bottom] {
   margin: 0px !important;
 }
@@ -59,4 +78,80 @@ $theme-color: #1b1e2f;
 
 .el-select-dropdown__item.selected {
   color: $theme-font-blue;
+}
+
+.account-wrap {
+  .account-box {
+    background: url('../images/sa.png') no-repeat left top;
+    background-color: #fff;
+    width: 100%;
+    height: 100%;
+  }
+
+  padding: 50px 80px 120px;
+  background-color: #eeeef1;
+  width: 100%;
+  height: 100vh;
+
+  .account-title {
+    text-align: center;
+    opacity: 0.6;
+    font-weight: bold;
+    font-size: 24px;
+    padding-top: 60px;
+    padding-bottom: 35px;
+  }
+
+  .el-form {
+    width: 410px;
+    margin: 0 auto;
+
+    &.textarea {
+      width: 500px;
+    }
+
+    .el-input__inner {
+      &:focus {
+        border-color: #dcdfe6;
+      }
+
+      height: 35px;
+      line-height: 35px;
+      border-radius: 2px;
+      background: #ebecef;
+    }
+
+    .el-textarea__inner {
+      &:focus {
+        border-color: #dcdfe6;
+      }
+
+      height:100px;
+      border-radius: 2px;
+      overflow-y: auto;
+      background: #ebecef;
+    }
+
+    .el-form-item.is-success .el-input__inner {
+      border-color: #dcdfe6;
+    }
+
+    .el-form-item__label {
+      &:before {
+        content: "" !important;
+      }
+
+      height: 24px;
+      line-height: 24px;
+      color: $theme-font-blue;
+      font-weight: bold;
+    }
+
+    .account-button {
+      display: block;
+      border-radius: 2px;
+      margin: 20px auto 0;
+      padding: 8px 20px;
+    }
+  }
 }

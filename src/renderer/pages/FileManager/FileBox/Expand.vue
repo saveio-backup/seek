@@ -107,16 +107,16 @@
 </template>
 <script>
 const now = new Date();
-const nextDay = new Date(now.setDate(now.getDate() + 1));
-nextDay.setHours(23);
-nextDay.setMinutes(59);
-nextDay.setSeconds(59);
+// const nextDay = new Date(now.setDate(now.getDate() + 1));
+// nextDay.setHours(23);
+// nextDay.setMinutes(59);
+// nextDay.setSeconds(59);
 export default {
 	data() {
 		const expired =
 			this.$dateFormat.formatTimeByTimestamp(
 				this.$store.state.Filemanager.space.ExpiredAt * 1000
-			) || this.$dateFormat.formatTimeByTimestamp(now);
+			) || this.$dateFormat.formatTimeByTimestamp(now.getTime());
 		return {
 			submitToggle: true, // commit toggle
 			innerVisible: false,

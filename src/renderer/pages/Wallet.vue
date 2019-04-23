@@ -434,6 +434,7 @@ $light-grey: #f7f7f7;
 				width: 100%;
 				margin: 10px 0;
 				padding: 10px 15px;
+				border-radius: 2px;
 				.balance-content {
 					flex: 1;
 					display: flex;
@@ -511,7 +512,7 @@ $light-grey: #f7f7f7;
 						.item-addr {
 							& > i {
 								font-size: 20px;
-								margin: 0 8px;
+								margin-right: 8px;
 							}
 							width: 440px;
 							display: flex;

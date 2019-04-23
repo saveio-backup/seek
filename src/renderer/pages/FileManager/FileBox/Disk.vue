@@ -9,7 +9,7 @@
 					<el-button class="bt bt-upload theme-font-blue">Upload</el-button>
 				</router-link>
 				<el-button
-				 class="bt bt-download theme-font-blue"
+				 class="ml10 bt bt-download theme-font-blue"
 				 @click="toDownload"
 				>
 					Download
@@ -27,7 +27,9 @@
 		 class="func-nav"
 		 v-else
 		>
-			Miner Control
+			<p class='light-theme-title'>
+				Miner Control
+			</p>
 			<div class="fun-search">
 				<el-input
 				 v-model="filterInput"
@@ -41,7 +43,7 @@
 				<el-table
 				 ref='table'
 				 @row-click="clickRow"
-				 :data="mockData"
+				 :data="filterListData"
 				 height="100%"
 				 @selection-change="selectFile"
 				>
@@ -49,7 +51,7 @@
 					<el-table-column
 					 v-if="toggleFilebox"
 					 type="selection"
-					 width="55"
+					 width="30"
 					></el-table-column>
 
 					<el-table-column
@@ -153,7 +155,7 @@
 				<el-button @click="switchToggle.deleteDialog = false">Cancel</el-button>
 				<el-button
 				 type="danger"
-				 @click="toDeleteFile(mockData, executedFile.Hash)"
+				 @click="toDeleteFile(fileListData, executedFile.Hash)"
 				>Delete</el-button>
 			</div>
 		</el-dialog>
@@ -530,10 +532,10 @@ export default {
 	},
 	computed: {
 		filterListData: function() {
-			const filterInput = this.filterInput;
+			// const filterInput = this.filterInput;
 			const fileListData = this.fileListData;
 			return fileListData.filter(item => {
-				return item.Name.indexOf(filterInput) >= 0;
+				return item.Name.indexOf(this.filterInput) >= 0;
 			});
 		}
 	},
@@ -560,12 +562,13 @@ export default {
 $light-blue: #65a6ff;
 $light-grey: #f2f2f2;
 $theme-color: #1b1e2f;
+$theme-font-blue: #040f39;
 #disk {
 	.func-nav {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		padding: 0 50px;
+		padding: 0 50px 0 14px;
 		height: 80px;
 		background: $light-grey;
 		.bt {
@@ -582,13 +585,14 @@ $theme-color: #1b1e2f;
 			}
 		}
 		.fun-search {
-			.el-input__inner{
+			width:240px;
+			.el-input__inner {
 				height: 33px;
 				line-height: 33px;
 				border-radius: 17px;
 				font-weight: normal;
 			}
-			.el-input__icon{
+			.el-input__icon {
 				line-height: 17px;
 			}
 		}
@@ -599,8 +603,12 @@ $theme-color: #1b1e2f;
 		bottom: 0px;
 		width: 100%;
 		.table-element {
+			font-weight: bold;
 			height: 100%;
 			overflow-y: hidden;
+			.el-table{
+				color:$theme-font-blue
+			}
 			thead th {
 				background: rgba(231, 231, 235, 1);
 				color: $theme-color;

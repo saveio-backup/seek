@@ -4,27 +4,27 @@
 			<div class="aside-link">
 				<router-link
 				class="allfile"
-				 :class="{'theme-font-blue-bold': fileType == 0}"
+				 :class="{'theme-font-blue-bold link-hover': fileType == 0}"
 				 :to="{name:'disk', query:{type:0}}"
 				><i class='el-icon-document'></i> <span>All File</span></router-link>
 				<router-link
-				 :class="{'theme-font-blue-bold': fileType == 1}"
+				 :class="{'theme-font-blue-bold link-hover': fileType == 1}"
 				 :to="{name:'disk', query:{type:1}}"
 				>Image</router-link>
 				<router-link
-				 :class="{'theme-font-blue-bold': fileType == 2}"
+				 :class="{'theme-font-blue-bold link-hover': fileType == 2}"
 				 :to="{name:'disk', query:{type:2}}"
 				>Document</router-link>
 				<router-link
-				 :class="{'theme-font-blue-bold': fileType == 3}"
+				 :class="{'theme-font-blue-bold link-hover': fileType == 3}"
 				 :to="{name:'disk', query:{type:3}}"
 				>Video</router-link>
 				<router-link
-				 :class="{'theme-font-blue-bold': fileType == 4}"
+				 :class="{'theme-font-blue-bold link-hover': fileType == 4}"
 				 :to="{name:'disk', query:{type:4}}"
 				>Music</router-link>
 				<router-link
-				 active-class="theme-font-blue-bold"
+				 active-class="theme-font-blue-bold link-hover"
 				 :to="{name:'domain',query:{type:9}}"
 				>Domain</router-link>
 			</div>
@@ -130,6 +130,7 @@ $light-grey: #f7f7f7;
 		font-size: 16px;
 		.aside-link {
 			display: flex;
+			margin-top:25px;
 			flex-direction: column;
 			width: 100%;
 			.allfile{
@@ -145,6 +146,9 @@ $light-grey: #f7f7f7;
 				display: flex;
 				padding: 10px 0 10px 50px;
 				&:hover {
+					background: rgba(231, 231, 235, 1);
+				}
+				&.link-hover{
 					background: rgba(231, 231, 235, 1);
 				}
 			}

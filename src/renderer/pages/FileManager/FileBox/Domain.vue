@@ -1,6 +1,6 @@
 <template>
 	<div>
-		Domain page
+		Domain page ( TO DO )
 	</div>
 </template>
 <script>

@@ -24,7 +24,7 @@
 					<div class="user-name">
 						<!-- <i class="ofont ofont-user"></i> -->
 						<div>
-							<p class="light-blue-xs bold">Welcome !</p>
+							<p class="light-blue-xs bold mb10">Welcome !</p>
 							<p class="theme-bold">{{user.name}}</p>
 						</div>
 					</div>
@@ -113,7 +113,7 @@
 					 prop='ChannelId'
 					 label='Channel'
 					></el-table-column>
-					<el-table-column label='balance'>
+					<el-table-column label='Balance'>
 						<template slot-scope="scope">
 							<div class="light-blue">
 								{{filterFloat(scope.row.Balance).toLocaleString('en-US')}}
@@ -401,6 +401,7 @@ export default {
 $light-grey: #f2f2f2;
 $grey: #ccc;
 $theme-color: #1b1e2f;
+$input-color:rgba(203, 203, 203, 1);
 .el-select-dropdown,
 .el-popper {
 	border: solid 1px #fff;
@@ -434,10 +435,12 @@ $theme-color: #1b1e2f;
 		}
 	}
 	.el-select .el-input__inner:focus {
-		border-color: $theme-color !important;
+		border-color: $input-color !important;
 	}
 	.el-input__inner {
-		border-color: $theme-color !important;
+		border-radius:2px;
+		font-weight: bold;
+		border-color: $input-color !important;
 	}
 	.content {
 		width: 100%;
@@ -550,14 +553,17 @@ $theme-color: #1b1e2f;
 			}
 		}
 		.channels-title {
+			border-radius: 2px;
 			background: #fff;
-			padding: 10px 15px;
+			padding: 20px 15px;
 			color: $grey;
 			margin-top: 20px;
 		}
 		.channels {
 			flex: 1;
 			overflow-y: auto;
+			border-bottom-left-radius: 2px;
+			border-bottom-right-radius:2px;
 			// margin-top: 80px;
 			margin-bottom: 20px;
 			.el-table thead th {

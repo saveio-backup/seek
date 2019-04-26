@@ -17,8 +17,11 @@ let mainWindow
 const winURL = process.env.NODE_ENV === 'development' ?
   `http://localhost:9080/` :
   `file://${__dirname}/index.html`
+import * as node from "./node"
+node.setupConfig(app.getPath("appData"), app.getName())
 
 function createWindow() {
+  node.run(app.getPath("appData"), app.getName())
   /**
    * Initial window options
    */

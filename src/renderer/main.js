@@ -8,8 +8,9 @@ import './assets/css/style.scss'
 import dateFormat from './assets/tool/date'
 import ElementUI from 'element-ui'
 import locale from 'element-ui/lib/locale/lang/en'
-
-Vue.use(ElementUI, { locale })
+Vue.use(ElementUI, {
+  locale
+})
 // import {
 //   Select,
 //   Option,

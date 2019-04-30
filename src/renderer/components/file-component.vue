@@ -86,10 +86,14 @@
 			</el-table>
 		</div>
 		<el-dialog
-		 title='New Download'
 		 width='600px'
+		 center
 		 :visible.sync="switchToggle.newTaskDialog"
 		>
+		<div slot="title">
+			<h2>New Download</h2>
+			<div class="dialog-title-border"></div>
+		</div>
 			<download-dialog v-on:closedialog='hideTaskDialog'></download-dialog>
 		</el-dialog>
 	</div>

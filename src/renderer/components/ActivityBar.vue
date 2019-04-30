@@ -77,24 +77,80 @@
 				 class="setting-ul"
 				 :class="{appear:switchToggle.appear}"
 				>
-					<li class="setting-li">Log Out</li>
+					<li
+					 class="setting-li"
+					 @click="switchToggle.logoutDialog = true"
+					>Log Out</li>
 					<li class="setting-li">Export Wallet</li>
 				</ul>
 			</div>
 		</div>
+		<el-dialog
+		 center
+		 width='600px'
+		 :visible.sync="switchToggle.logoutDialog"
+		>
+			<div slot="title">
+				<h2>Warning</h2>
+				<div class="dialog-title-border"></div>
+			</div>
+			<div>
+				<p class="mt20 text-center">Please ensure that the private key file is properly stored before exiting.</p>
+			</div>
+			<div slot="footer">
+				<el-button type="danger" @click="logOut">Logout</el-button>
+				<el-button
+				 type="primary"
+				 @click="exportWallet"
+				>Export Wallet</el-button>
+			</div>
+		</el-dialog>
 	</div>
 </template>
 <script>
+const { ipcRenderer } = require("electron");
 import "element-ui/lib/theme-chalk/index.css";
 export default {
 	data() {
 		return {
 			switchToggle: {
-				appear: false
+				appear: false,
+				logoutDialog: false
 			}
 		};
 	},
 	methods: {
+		logOut() {
+			this.$axios
+				.post(this.$api.account + "/logout", {})
+				.then(res => {
+					if (res.data.Desc === "SUCCESS" && res.data.Error === 0) {
+						window.localStorage.clear();
+						window.location.href = "/"; // success login link to home page
+					}
+				})
+				.catch(err => {
+					console.error(err);
+				});
+		},
+		exportWallet() {
+			this.$axios
+				.get(this.$api.account + "/export/walletfile")
+				.then(res => {
+					if (res.data.Desc === "SUCCESS" && res.data.Error === 0) {
+						ipcRenderer.send("export-wallet-dialog", res.data.Result.Wallet);
+					}
+					ipcRenderer.once("export-finished", () => {
+						this.$message({
+							message: "Export Success!",
+							type: "success"
+						});
+					});
+				})
+				.catch(err => {
+					console.error(err);
+				});
+		},
 		setAppear() {
 			this.switchToggle.appear = true;
 		},
@@ -158,16 +214,16 @@ $slidebar-active-color: linear-gradient(
 						display: none;
 					}
 					&.slidebar-active {
-						position:relative;
+						position: relative;
 						.active-display {
 							display: inline-block;
 						}
-						.slide-border{
-							width:1.5px;
-							height:100%;
-							position:absolute;
-							right:0px;
-							top:0px;
+						.slide-border {
+							width: 1.5px;
+							height: 100%;
+							position: absolute;
+							right: 0px;
+							top: 0px;
 							border-radius: 1px;
 							background: $slidebar-active-color;
 							transform: scaleY(1.3);
@@ -211,6 +267,10 @@ $slidebar-active-color: linear-gradient(
 				}
 			}
 		}
+	}
+	.el-button {
+		border-radius: 2px;
+		padding: 10px 20px;
 	}
 }
 </style>

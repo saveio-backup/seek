@@ -1,24 +1,25 @@
 <template>
 	<div id="download-dialog">
-		<h2>Donload URL:</h2>
+		<h2 class="theme-font-blue ft18 bold mb10 mt10">Donload URL:</h2>
 		<el-input
 		 v-model="downloadUrl"
 		 @input='toGetFileInfo'
+		 
 		></el-input>
-		<div style="text-align:center; margin-top:20px">
+		<div class="text-center mt20">
 			<div class="flex between">
-				<p>Name:</p>
+				<p class="theme-font-blue bold">Name:</p>
 				<p>{{downloadInfo.Name || ''}}</p>
 			</div>
-			<div class="flex between">
-				<p>Size:</p>
+			<div class="flex between mt10 mb10">
+				<p class="theme-font-blue bold">Size:</p>
 				<p>{{downloadInfo.Size || ''}}</p>
 			</div>
 			<div class="flex between">
-				<p>Cost:</p>
+				<p class="theme-font-blue bold">Cost:</p>
 				<p>{{downloadInfo.Fee || ''}}</p>
 			</div>
-			<el-button type="primary" @click="toDownload">Download</el-button>
+			<el-button class="mt40" type="primary" @click="toDownload">Download</el-button>
 		</div>
 	</div>
 </template>
@@ -70,4 +71,19 @@ export default {
 };
 </script>
 <style lang="scss">
+#download-dialog{
+	padding: 0 30px;
+	.el-input__inner{
+		height:35px;
+		line-height: 35px;
+		font-weight: normal !important;
+    background: #ebecef;
+    border-radius: 2px;
+    border: none;
+	}
+	.el-button{
+		padding: 8px 20px;
+		border-radius: 2px;
+	}
+}
 </style>

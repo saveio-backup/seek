@@ -1,51 +1,55 @@
 <template>
 	<div
 	 id="wallet"
-	 class="common-main"
+	 class=""
 	>
+		<div class="wallet-select">
+			<el-select
+			 v-model='balanceSelected'
+			 @change="changeSelectedAsset"
+			>
+				<div
+				 slot="prefix"
+				 class="prefix-icon"
+				>
+					<img
+					 v-if="balanceLists.length>0"
+					 class="asset-icon"
+					 :src="'static/images/logo/'+balanceLists[balanceSelected].Symbol+'.png'"
+					 alt=""
+					>
+				</div>
+				<el-option
+				 v-for="(item,index) in balanceLists"
+				 :key='index'
+				 :label='item.Symbol'
+				 :value='index'
+				 class="asset-item"
+				>
+					<img
+					 class="asset-icon mr10"
+					 :src="'static/images/logo/'+ item.Symbol+ '.png'"
+					 :alt="item.Symbol"
+					> <span class="">{{item.Symbol}}</span>
+				</el-option>
+			</el-select>
+		</div>
 		<div class="content">
 			<div class="wallet-aside">
-				<div class="wallet-select">
-					<el-select
-					 v-model='balanceSelected'
-					 @change="changeSelectedAsset"
-					>
-						<div
-						 slot="prefix"
-						 class="prefix-icon"
-						>
-							<img
-							 v-if="balanceLists.length>0"
-							 class="asset-icon"
-							 :src="'../../../static/images/logo/'+balanceLists[balanceSelected].Symbol+'.png'"
-							 alt=""
-							>
-						</div>
-						<el-option
-						 v-for="(item,index) in balanceLists"
-						 :key='index'
-						 :label='item.Symbol'
-						 :value='index'
-						 class="asset-item"
-						>
-							<img
-							 class="asset-icon mr10"
-							 :src="'../../../static/images/logo/'+ item.Symbol+ '.png'"
-							 :alt="item.Symbol"
-							> <span class="">{{item.Symbol}}</span>
-						</el-option>
-					</el-select>
-				</div>
 				<div class="wallet-asset">
-					<p class="grey-xs bold">Total Balance</p>
+					<p class="grey-xs bold pl20 pr20">Total Balance</p>
+					<div class="total"> <span class="symbol"></span> <span class="theme-bold">{{parseFloat(balanceLists[balanceSelected].Balance).toFixed(3)}}</span></div>
 					<div
 					 class="balance-content"
 					 v-if="balanceLists && balanceLists.length>0"
 					>
-						<div class="total"> <span class="symbol"></span> <span class="theme-bold">{{parseFloat(balanceLists[balanceSelected].Balance).toFixed(3)}}</span></div>
 						<ul class="child-ul">
-							<li class="child-list">
-								<div class="name"><img class="asset-icon" :src="'../../../static/images/logo/'+balanceLists[balanceSelected].Symbol+'.png'" alt=""> <span class="theme-bold">{{balanceLists[balanceSelected].Symbol}}</span></div>
+							<li class="child-list selected">
+								<div class="name"><img
+									 class="asset-icon"
+									 :src="'static/images/logo/'+balanceLists[balanceSelected].Symbol+'.png'"
+									 alt=""
+									> <span class="theme-bold">{{balanceLists[balanceSelected].Symbol}}</span></div>
 								<div class="balance theme-bold">{{parseFloat(balanceLists[balanceSelected].Balance).toFixed(3)}}</div>
 							</li>
 						</ul>
@@ -90,7 +94,10 @@
 						 v-if="balanceLists.length>0"
 						>
 							<div class="item-addr">
-								<i class="ofont" :class="item.Type ==1 ? 'ofont-transfer_out':'ofont-transfer_in'"></i>
+								<i
+								 class="ofont"
+								 :class="item.Type ==1 ? 'ofont-transfer_out':'ofont-transfer_in'"
+								></i>
 								<div class="addr-info">
 									<p class='from-or-to'>{{item.Type ==1 ? item.To: item.From}}</p>
 									<p class="tx-date grey-xs">{{date.formatTimeByTimestamp(item.Timestamp * 1000)}}</p>
@@ -135,25 +142,25 @@
 				 class="dialog-header el-dialog__header"
 				 slot="title"
 				>
-					<h2>{{balanceLists[balanceSelected].Symbol + ' Wallet'}}</h2>
+					<h2>Please Send {{balanceLists.length>0?balanceLists[balanceSelected].Symbol : 'Test Symbol'}}</h2>
 					<div class="dialog-title-border"></div>
 				</div>
 				<div class="flex ai-center column">
-					<div>Please Send {{balanceLists.length>0?balanceLists[balanceSelected].Symbol : 'Test Symbol'}}</div>
-					<div class="flex ai-center mt10 mb10">
-						<p class="mr10  theme-font-blue bold">{{balanceLists.length>0?balanceLists[balanceSelected].Address : 'Text Addr'}}</p>
+					<div class="flex ai-center mb10">
+						<p class="mr10  theme-font-blue-transparent ft14">{{balanceLists.length>0?balanceLists[balanceSelected].Address : 'Text Addr'}}</p>
 						<i
-						 class="el-icon-document addr_btn"
+						 class="ofont ofont-fuzhi addr_btn"
 						 @click="clipText('.addr_btn')"
 						 :aria-label='balanceLists[balanceSelected].Address'
 						></i>
 					</div>
 					<div id="qrcode-content"></div>
 					<div
-					 class="done mt20"
+					 class="mt20"
 					 slot="footer"
 					>
 						<el-button
+						 class="done"
 						 type="primary"
 						 @click="switchToggle.receiveDialog = false"
 						>Done</el-button>
@@ -225,7 +232,7 @@
 					<li class="asset-list">
 						<img
 						 class="asset-icon-lg"
-						 :src="'../../../static/images/logo/' +balanceLists[balanceSelected].Symbol+'.png'"
+						 :src="'static/images/logo/' +balanceLists[balanceSelected].Symbol+'.png'"
 						 alt=""
 						>
 						<div class="flex1 ml10">
@@ -348,16 +355,17 @@ export default {
 			this.switchToggle.receiveDialog = true;
 			this.$nextTick(() => {
 				if (this.qrcode) {
-					console.log("clear");
 					this.qrcode.clear();
 					this.qrcode.makeCode(this.balanceLists[this.balanceSelected].Address);
 				} else {
-					this.qrcode = new QRCode(
-						document.getElementById("qrcode-content"),
-						this.balanceLists.length > 0
-							? this.balanceLists[this.balanceSelected].Address
-							: "Test QRcode"
-					);
+					this.qrcode = new QRCode(document.getElementById("qrcode-content"), {
+						text:
+							this.balanceLists.length > 0
+								? this.balanceLists[this.balanceSelected].Address
+								: "Qrcode Not Found",
+						width: 128,
+						height: 128
+					});
 				}
 			});
 		},
@@ -406,58 +414,73 @@ $light-grey: #f7f7f7;
 #wallet {
 	display: flex;
 	flex: 1;
+	flex-direction: column;
 	background: #eeeef1;
+	.wallet-select {
+		background: #fff;
+		text-align: center;
+		.el-input__inner {
+			font-size: 20px;
+			color: $theme-font-blue;
+			font-weight: bold;
+			border-color: #fff !important;
+			text-align: center;
+			height: 60px;
+		}
+		.el-select {
+			width: 220px;
+		}
+		.el-select .el-input .el-select__caret {
+			font-size: 22px;
+			font-weight: bold;
+		}
+	}
 	& > .content {
 		width: 100%;
-		padding: 50px 0;
+		height: 100%;
+		padding: 50px 88px;
 		display: flex;
 		.wallet-aside {
 			display: flex;
 			width: 300px;
 			flex-direction: column;
-			justify-content: space-between;
-			.wallet-select {
-				background: #fff;
-				.el-input__inner {
-					border-color: #fff !important;
-					text-align: center;
-				}
-				.el-select {
-					width: 100%;
-				}
-			}
 			.wallet-asset {
 				display: flex;
 				flex-direction: column;
-				flex: 1;
+				// flex: 1;
 				background: #fff;
 				width: 100%;
-				margin: 10px 0;
-				padding: 10px 15px;
+				margin: 0;
+				padding: 10px 0px;
 				border-radius: 2px;
+				.total {
+					border-bottom: solid 1px rgba(204, 204, 204, 0.3);
+					padding: 10px 20px;
+					.symbol {
+						font-size: 13px;
+						vertical-align: text-top;
+					}
+				}
 				.balance-content {
 					flex: 1;
 					display: flex;
 					flex-direction: column;
-					.total {
-						border-bottom: solid 1px #ccc;
-						padding: 10px 0;
-						.symbol {
-							font-size: 13px;
-							vertical-align: text-top;
-						}
-					}
 					.child-ul {
 						flex: 1;
-						padding-top: 20px;
+						min-height: 90px;
 						.child-list {
 							display: flex;
 							justify-content: space-between;
+							padding: 8px 20px;
+							border-bottom: solid 1px rgba(204, 204, 204, 0.3);
 							.name {
 								font-size: 16px;
 							}
 							.balance {
 								font-size: 16px;
+							}
+							&.selected {
+								background-color: rgba(204, 204, 204, 0.3);
 							}
 						}
 					}
@@ -571,26 +594,39 @@ $light-grey: #f7f7f7;
 	.asset-list {
 		padding-top: 20px;
 		display: flex;
-		.el-switch.is-checked .el-switch__core{
+		.el-switch.is-checked .el-switch__core {
 			background-color: $theme-font-blue;
 		}
+	}
+}
+.done {
+	&.el-button {
+		padding: 8px 22px;
+		border-radius: 2px;
 	}
 }
 .send-dialog {
 	.el-input__inner {
 		font-weight: normal !important;
-		background:#EBECEF;
+		background: #ebecef;
 		border-radius: 2px;
 		border: none;
 	}
 	.send-form-wrap {
 		width: 80%;
 		margin: 0 auto;
-		.el-input.is-active .el-input__inner, .el-input__inner:focus {
-			border:none;
+		.el-input.is-active .el-input__inner,
+		.el-input__inner:focus {
+			border: none;
 		}
-		.el-form-item__label{
+		.el-form-item__label {
 			color: $theme-font-blue;
+		}
+	}
+	.el-dialog__footer {
+		.el-button {
+			padding: 8px 22px;
+			border-radius: 2px;
 		}
 	}
 }

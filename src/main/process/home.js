@@ -10,7 +10,7 @@ ipcMain.on('export-wallet-dialog', (event, contents) => {
   }
   dialog.showSaveDialog(option, (filename) => {
     if (!filename) return;
-    console.log(contents);
     fs.writeFileSync(filename, contents, 'utf-8');
+    event.sender.send('export-finished');
   })
 })

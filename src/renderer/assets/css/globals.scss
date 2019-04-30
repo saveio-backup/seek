@@ -29,6 +29,9 @@ $theme-color: #1b1e2f;
 
 .theme-font-blue {
   color: $theme-font-blue;
+  &.transparent{
+    opacity: 0.6;
+  }
 }
 
 .theme-font-blue-bold {
@@ -43,7 +46,15 @@ $theme-color: #1b1e2f;
 .cursor-pointer {
   cursor: pointer;
 }
-
+.text-center{
+  text-align: center;
+}
+.text-left{
+  text-align: left;
+}
+.text-right{
+  text-align: right;
+}
 
 /* Element UI */
 .common-el-input{

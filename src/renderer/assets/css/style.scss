@@ -10,7 +10,7 @@ input,
 button,
 textarea,
 select {
-  font-family: 'Open Sans','SF Pro SC', 'PingFangSC-Regular', 'HanHei SC', 'SF Pro Text', 'Myriad Set Pro', 'SF Pro Icons', 'PingFang SC', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+  font-family: 'Open Sans', 'SF Pro SC', 'PingFangSC-Regular', 'HanHei SC', 'SF Pro Text', 'Myriad Set Pro', 'SF Pro Icons', 'PingFang SC', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
 }
 
 .flex {
@@ -62,30 +62,41 @@ select {
 
 }
 
-.el-dialog__header h2 {
-  font-size: 24px;
-  color: rgba(4, 15, 57, 0.4);
-}
+.el-dialog {
+  border-radius:1px;
+  .el-dialog__header h2 {
+    font-size: 24px;
+    // font-weight: bold;
+    color: $theme-font-blue;
+    opacity: 0.7;
+  }
 
-.el-dialog__header {
-  &.dialog-header {
-    padding: 20px 0px 10px 0;
+  .el-dialog__header {
+    &.dialog-header {
+      padding: 0px 0px 10px 0;
+    }
+  }
+
+  .el-dialog__header {
+    padding-top: 15px;
+
+    .el-dialog__title {
+      color: #9B9FB0;
+      font-weight: bold;
+    }
   }
 }
 
-.el-dialog__header {
-  .el-dialog__title {
-    color: #9B9FB0;
-    font-weight: bold;
-  }
-}
 
 .dialog-title-border {
   height: 1px;
   width: 100%;
   background: #ccc;
-  opacity: 0.4;
+  opacity: 0.3;
+  margin-top: 10px;
 }
-.el-dialog__body,.el-dialog--center .el-dialog__body{
-  padding-top:0px;
+
+.el-dialog__body,
+.el-dialog--center .el-dialog__body {
+  padding-top: 0px;
 }

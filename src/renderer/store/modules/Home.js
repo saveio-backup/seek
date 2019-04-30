@@ -9,7 +9,7 @@ const state = {
 
 const mutations = {
   'SET_BALANCE_TOTAL'(state, result) {
-    state.balanceTotal = result.Balance;
+    state.balanceTotal = result.BalanceFormat;
     state.balanceAddress = result.Channels[0].Address;
     state.channels = result.Channels;
   },
@@ -21,9 +21,17 @@ const mutations = {
 const actions = {
   setChannelBalanceTotal({
     commit
-  }, result) {
-    // do something async
-    commit('SET_BALANCE_TOTAL', result)
+  }) {
+    axios
+      .get(api.host + api.version + "channel")
+      .then(res => {
+        if (res.data.Desc === "SUCCESS" && res.data.Error === 0) {
+          commit('SET_BALANCE_TOTAL', res.data.Result)
+        }
+      })
+      .catch(err => {
+        console.error(err);
+      });
   },
   setRevenue({
     commit

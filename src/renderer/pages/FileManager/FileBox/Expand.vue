@@ -3,7 +3,7 @@
 		<div class="content">
 			<div class="space-header">
 				<div class="space-progress">
-					<div class="grey-xs bold ft20">Used: {{space.Used}} / {{space.Remain}}</div>
+					<div class="theme-font-blue bold mb20">Used: {{space.Used}} / {{space.Remain}}</div>
 					<el-progress
 					 :stroke-width="30"
 					 :percentage="takeSpace"
@@ -12,7 +12,7 @@
 				<el-button @click="expandDialogVisible = true">Get Space</el-button>
 			</div>
 			<div class="space-record">
-				<p class="grey-xs bold ft20">Space adjust record</p>
+				<p class="theme-font-blue bold">Space adjust record</p>
 				<el-table
 				 :data='record'
 				 empty-text='No data'
@@ -23,62 +23,48 @@
 				</el-table>
 			</div>
 			<el-dialog
+			 center
 			 width='600px'
 			 :visible.sync="expandDialogVisible"
 			>
-			<div slot="title">
-				<h2>Expand</h2>
-				<div class="dialog-title-border"></div>
-			</div>
-				<el-dialog
-				 width="30%"
-				 title="Success"
-				 :visible.sync="innerVisible"
-				 append-to-body
-				 center
-				>
-					<span
-					 slot="footer"
-					 class="dialog-footer"
-					>
-						<el-button
-						 type="primary"
-						 @click='innerVisible = false; expandDialogVisible = false'
-						>OK</el-button>
-					</span>
-				</el-dialog>
+				<div slot="title">
+					<h2>Expand</h2>
+					<div class="dialog-title-border"></div>
+				</div>
 				<div class="adjust">
-					<h3>Space Size</h3>
+					<h3 class="theme-font-blue transparent bold ft12">Space Size</h3>
 					<div class="adjust-item">
-						<p class="adjust-title">Current</p>
+						<p class="adjust-title theme-font-blue bold">Current:</p>
 						<div class="adjust-info">
-							<p>{{space.Remain}}GB</p>
-							<p>{{space.Used}}GB / {{space.Used}}GB</p>
+							<p class="theme-font-blue ft14 mr20">{{space.Remain}}GB</p>
+							<p class="grey-xs bold ml20">{{space.Used}}GB / {{space.Used}}GB</p>
 						</div>
 					</div>
 					<div class="adjust-item">
-						<div class="adjust-title">Adjust to</div>
+						<div class="adjust-title theme-font-blue bold">Adjust to:</div>
 						<div class="adjust-info">
 							<el-input-number
+							 class="number"
 							 v-model="spaceSizeGB"
 							 :precision='0'
+							 pleaseholder='Please enter an integer'
 							 :min='1'
 							 @change="addInfo.Size = spaceSizeGB * 1024"
 							></el-input-number>
+							<p class="adjust-title theme-font-blue bold ml10">GB</p>
 						</div>
-						<p style="font-size: 22px;">GB</p>
 					</div>
 				</div>
 				<div class="adjust">
-					<h3>Expiry Date</h3>
+					<h3 class="theme-font-blue transparent bold ft12">Expiry Date</h3>
 					<div class="adjust-item">
-						<p class="adjust-title">Current</p>
+						<p class="adjust-title theme-font-blue bold">Current:</p>
 						<div class="adjust-info">
-							{{expired_old}}
+							<p class="theme-font-blue bold">{{expired_old}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
-						<div class="adjust-title">Adjust to</div>
+						<div class="adjust-title theme-font-blue bold">Adjust to:</div>
 						<div class="adjust-info">
 							<el-date-picker
 							 v-model="expired"
@@ -95,11 +81,11 @@
 				 slot="footer"
 				 class="dialog-footer"
 				>
+					<el-button @click="expandDialogVisible = false">Cancel</el-button>
 					<el-button
 					 type="primary"
 					 @click="addUserSpace"
 					>Pledge</el-button>
-					<el-button @click="expandDialogVisible = false">Cancel</el-button>
 				</span>
 			</el-dialog>
 		</div>
@@ -119,7 +105,6 @@ export default {
 			) || this.$dateFormat.formatTimeByTimestamp(now.getTime());
 		return {
 			submitToggle: true, // commit toggle
-			innerVisible: false,
 			spaceSizeGB: 1,
 			expired,
 			pickerOptions: {
@@ -169,7 +154,11 @@ export default {
 				.then(res => {
 					console.log(res);
 					if (res.data.Error === 0) {
-						this.innerVisible = true;
+						this.expandDialogVisible = false;
+						this.$message({
+							message: "Adjust Successed!",
+							type: "success"
+						});
 					}
 					this.submitToggle = true;
 				})
@@ -196,8 +185,10 @@ $grey: #ccc;
 		.space-header {
 			padding-top: 30px;
 			display: flex;
+			align-items: flex-end;
 			.space-progress {
-				.el-progress-bar__outer, .el-progress-bar__inner{
+				.el-progress-bar__outer,
+				.el-progress-bar__inner {
 					border-radius: 0px;
 				}
 				width: 100%;
@@ -205,30 +196,53 @@ $grey: #ccc;
 					width: 100%;
 				}
 			}
+			.el-button{
+				height:40px;
+			}
 		}
-		.space-record{
+		.space-record {
 			margin-top: 50px;
 		}
 	}
+	.el-dialog__body {
+		padding: 20px 60px;
+	}
 	.adjust {
-		& > h3 {
-			text-align: center;
-		}
-		border-bottom: solid 1px #333;
+		border-bottom: solid 1px #ebecef;
 		margin-bottom: 20px;
 		padding-bottom: 20px;
+		.el-input-number__increase,
+		.el-input-number__decrease {
+			display: none;
+		}
+		.number {
+			.el-input__inner {
+				height: 35px;
+				line-height: 35px;
+				background: #ebecef;
+				border: none;
+				border-radius: 2px;
+				&:focus {
+					border: none;
+				}
+			}
+		}
 	}
 	.adjust-item {
 		display: flex;
 		align-items: center;
+		justify-content: space-between;
+		margin: 15px 0;
 		.adjust-title {
-			width: 100px;
+			font-size: 16px;
+			width: 150px;
 			font-weight: bold;
 		}
 		.adjust-info {
+			flex: 1;
 			width: 200px;
 			display: flex;
-			justify-content: space-between;
+			align-items: center;
 		}
 	}
 	.el-dialog__header {

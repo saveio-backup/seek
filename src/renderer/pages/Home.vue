@@ -8,7 +8,7 @@
 				<el-button
 				 type="danger"
 				 class="log"
-				 @click="logoutOut"
+				 @click="logOut"
 				>Log Out</el-button>
 				<el-button
 				 type="success"
@@ -66,18 +66,26 @@
 						 v-model='balanceSelected'
 						 @change="setBalanceListsIndex"
 						>
-						<div slot="prefix" class="prefix-icon">
-							<img v-if="balanceLists.length>0" class="asset-icon" :src="'../../../static/images/logo/'+balanceLists[balanceSelected].Symbol+'.png'" alt="">
-						</div>
+							<div
+							 slot="prefix"
+							 class="prefix-icon"
+							>
+								<img
+								 v-if="balanceLists.length>0"
+								 class="asset-icon"
+								 :src="'static/images/logo/'+balanceLists[balanceSelected].Symbol+'.png'"
+								 alt=""
+								>
+							</div>
 							<el-option
-							class="asset-item"
+							 class="asset-item"
 							 v-for="(item,index) in balanceLists"
 							 :key='item.Name'
 							 :label='item.Symbol'
 							 :value='index'
 							><img
 								 class="asset-icon mr10"
-								 :src="'../../../static/images/logo/'+ item.Symbol+ '.png'"
+								 :src="'static/images/logo/'+ item.Symbol+ '.png'"
 								 :alt="item.Symbol"
 								> <span class="">{{item.Symbol}}</span></el-option>
 						</el-select>
@@ -90,7 +98,11 @@
 						<div class="balance-item">
 							<div class="balance-top">
 								<div class="flex ai-center">
-									<img class="asset-icon mr10" :src="'../../../static/images/logo/'+balanceLists[balanceSelected].Symbol+'.png'" alt="">
+									<img
+									 class="asset-icon mr10"
+									 :src="'static/images/logo/'+balanceLists[balanceSelected].Symbol+'.png'"
+									 alt=""
+									>
 									<p class="theme-bold">{{ balanceLists[balanceSelected].Symbol}}</p>
 								</div>
 								<p class="theme-bold">{{filterFloat(balanceLists[balanceSelected].Balance).toLocaleString('en-US')}}</p>
@@ -116,7 +128,7 @@
 					<el-table-column label='Balance'>
 						<template slot-scope="scope">
 							<div class="light-blue">
-								{{filterFloat(scope.row.Balance).toLocaleString('en-US')}}
+								{{filterFloat(scope.row.BalanceFormat).toLocaleString('en-US')}}
 							</div>
 						</template>
 					</el-table-column>
@@ -138,7 +150,6 @@ const { ipcRenderer } = require("electron");
 import { filterFloat } from "../assets/config/util";
 export default {
 	mounted() {
-		this.$store.dispatch("setRevenue");
 		this.currentAccount();
 	},
 	data() {
@@ -318,10 +329,11 @@ export default {
 							for (let key in result) {
 								window.localStorage.setItem(key, result[key]);
 							}
+							this.user.name = localStorage.getItem("Label") || "";
 							this.loginStatus = 1; // login success
-							// this.getBalance();
-							this.$store.dispatch("setBalanceLists");
+							this.getBalance();
 							this.getAllChannels();
+							this.$store.dispatch("setRevenue");
 						} else {
 							window.localStorage.clear(); // remove all local infomation
 						}
@@ -332,33 +344,12 @@ export default {
 				});
 		},
 		getBalance() {
-			this.$axios
-				.get(
-					this.$api.balance + "/" + window.localStorage.getItem("Address") || ""
-				)
-				.then(res => {
-					if (res.data.Desc === "SUCCESS") {
-						// const result = res.data.Result;
-						// this.balanceLists = result;
-					}
-				})
-				.catch(err => {
-					console.error(err);
-				});
+			this.$store.dispatch("setBalanceLists");
 		},
 		getAllChannels() {
-			this.$axios
-				.get(this.$api.host + this.$api.version + "channel")
-				.then(res => {
-					if (res.data.Desc === "SUCCESS" && res.data.Error === 0) {
-						this.$store.dispatch("setChannelBalanceTotal", res.data.Result);
-					}
-				})
-				.catch(err => {
-					console.error(err);
-				});
+			this.$store.dispatch("setChannelBalanceTotal");
 		},
-		logoutOut() {
+		logOut() {
 			this.$axios
 				.post(this.$api.account + "/logout", {})
 				.then(res => {
@@ -378,6 +369,12 @@ export default {
 					if (res.data.Desc === "SUCCESS" && res.data.Error === 0) {
 						ipcRenderer.send("export-wallet-dialog", res.data.Result.Wallet);
 					}
+					ipcRenderer.once("export-finished", () => {
+						this.$message({
+							message: "Export Success!",
+							type: "success"
+						});
+					});
 				})
 				.catch(err => {
 					console.error(err);
@@ -401,28 +398,28 @@ export default {
 $light-grey: #f2f2f2;
 $grey: #ccc;
 $theme-color: #1b1e2f;
-$input-color:rgba(203, 203, 203, 1);
+$input-color: rgba(203, 203, 203, 1);
 .el-select-dropdown,
 .el-popper {
 	border: solid 1px #fff;
 	border-top: none;
 }
-.asset-item{
+.asset-item {
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	font-size: 16px;
 }
-.prefix-icon{
+.prefix-icon {
 	margin-left: 15px;
-	height:100%;
-	display:flex;
-	align-items: center
+	height: 100%;
+	display: flex;
+	align-items: center;
 }
-.asset-icon{
+.asset-icon {
 	display: inline-block;
-	width:15px;
-	height:15px;
+	width: 15px;
+	height: 15px;
 }
 #home {
 	display: flex;
@@ -438,7 +435,7 @@ $input-color:rgba(203, 203, 203, 1);
 		border-color: $input-color !important;
 	}
 	.el-input__inner {
-		border-radius:2px;
+		border-radius: 2px;
 		font-weight: bold;
 		border-color: $input-color !important;
 	}
@@ -563,7 +560,7 @@ $input-color:rgba(203, 203, 203, 1);
 			flex: 1;
 			overflow-y: auto;
 			border-bottom-left-radius: 2px;
-			border-bottom-right-radius:2px;
+			border-bottom-right-radius: 2px;
 			// margin-top: 80px;
 			margin-bottom: 20px;
 			.el-table thead th {

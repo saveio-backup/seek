@@ -100,7 +100,5 @@ $light-grey: #f7f7f7;
 			}
 		}
 	}
-	.layout-main {
-	}
 }
 </style>

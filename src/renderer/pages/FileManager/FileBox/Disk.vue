@@ -128,7 +128,7 @@
 			<p>{{executedFile.Name}}</p>
 			<el-input
 			 readonly
-			 :value="executedFile.Hash"
+			 :value="executedFile.Url || executedFile.Hash"
 			>
 				<template slot="append">
 					<i

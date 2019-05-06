@@ -1,5 +1,8 @@
 <template>
 	<div id="app">
+		<section>
+			this is tabs section
+		</section>
 		<activity-bar></activity-bar>
 		<keep-alive>
 			<router-view v-if="$route.meta.keepAlive"></router-view>

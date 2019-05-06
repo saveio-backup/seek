@@ -296,7 +296,7 @@ export default {
 						this.$store.dispatch("setUpload");
 						this.$router.push({ name: "transfer", query: { transferType: 1 } });
 					} else {
-						this.$message.error("Upload Error");
+						this.$message.error(res.data.Desc);
 					}
 				})
 				.catch(() => {

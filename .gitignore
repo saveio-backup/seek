@@ -3,6 +3,8 @@ dist/electron/*
 dist/web/*
 build/*
 !build/icons
+resources/*/
+!resources/win/config.json
 coverage
 node_modules/
 npm-debug.log

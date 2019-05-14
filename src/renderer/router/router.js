@@ -7,7 +7,12 @@ Vue.use(Router)
 export default new Router({
   mode: 'hash',
   routes: [{
-      path: '/',
+      path: '/navigation',
+      name: 'navigation',
+      component: require('../WindowNavigation.vue').default
+    },
+    {
+      path: '/home',
       name: 'home-page',
       component: require('../pages/Home').default,
       meta: {
@@ -118,7 +123,7 @@ export default new Router({
     },
     {
       path: '*',
-      redirect: '/',
+      redirect: '/home',
       meta: {
         keepAlive: false
       }

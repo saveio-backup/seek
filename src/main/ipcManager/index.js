@@ -2,6 +2,9 @@ import {
   ipcMain,
   dialog
 } from 'electron'
+// import {
+//   windows
+// } from '../windowManager/index';
 import fs from 'fs';
 import path from 'path';
 
@@ -34,6 +37,8 @@ ipcMain.on('export-wallet-dialog', (event, contents) => {
   })
 })
 ipcMain.on('upload-file-dialog', (event) => {
+  console.log('upload file dialog');
+  console.log(event);
   dialog.showOpenDialog({
     properties: ['openFile']
   }, (files) => {
@@ -56,4 +61,10 @@ ipcMain.on('string-to-hex', (event, content) => {
   let buf = Buffer.from(content);
   buf = buf.toString('hex');
   event.returnValue = buf;
+})
+
+
+// send data from Main Process
+ipcMain.on('get-windows', (event) => {
+  event.returnValue = '';
 })

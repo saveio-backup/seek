@@ -1,35 +1,27 @@
 <template>
 	<div id="app">
-		<section>
-			this is tabs section
-		</section>
-		<activity-bar></activity-bar>
-		<keep-alive>
-			<router-view v-if="$route.meta.keepAlive"></router-view>
-		</keep-alive>
-		<router-view v-if="!$route.meta.keepAlive"></router-view>
+		<router-view></router-view>
 	</div>
 </template>
 
 <script>
 export default {
 	name: "browser",
-	components: {
-		ActivityBar: require("./components/ActivityBar.vue").default
-	}
 };
 </script>
 
 <style lang='scss'>
 $light-grey: #f2f2f2;
+$tabs-height: 70px;
 #app {
-	display: flex;
 	height: 100vh;
 }
+
 .common-main {
-	background:$light-grey;
+	background: $light-grey;
 	padding: 0 88px;
-	width: calc(100% - 100px);
+	height:100%;
+	width: 100%;
 }
 .layout-main {
 	position: absolute;

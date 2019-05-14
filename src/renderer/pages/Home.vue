@@ -17,6 +17,7 @@
 				>Export Wallet</el-button>
 			</div>
 			<div class="user-meta">
+				<a href="https://ont.io">去ont</a>
 				<div
 				 class="user-meta-left"
 				 v-if="loginStatus === 1"

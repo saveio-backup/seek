@@ -50,7 +50,7 @@ $light-grey: #f7f7f7;
 	}
 	& > .content {
 		position: absolute;
-		left: 100px;
+		left: 0px;
 		right: 0px;
 		top: 0;
 		bottom: 0px;

@@ -4,64 +4,78 @@
 			<div class="composite-bar">
 				<ul class="action-container">
 					<li class="action-item item-user">
-						<router-link to="/"><i class="ofont ofont-user user"></i></router-link>
+						<router-link
+						 to="/home"
+						 class="nav-button"
+						><i class="ofont ofont-user user"></i></router-link>
 					</li>
 					<!-- <li class="action-item">
 						<router-link to="/Appstore"><i class="ofont ofont-menu appstore"></i></router-link>
 					</li> -->
 					<li class="action-item">
-						<router-link
-						 :to="{name:'FileManager'}"
+						<div
+						 class="nav-button"
+						 @click="remoteOpenComponent('FileManager')"
 						 active-class="slidebar-active"
 						>
 							<img
-							 class="active-none"
+							 v-show="activeView.displayURL.indexOf('seek://FileManager')<0"
 							 src="../assets/images/aside_file.png"
 							 alt="Menu"
 							>
 							<img
-							 class="active-display"
+							 v-show="activeView.displayURL.indexOf('seek://FileManager')>=0"
 							 src="../assets/images/aside_file_color.png"
 							 alt=""
 							>
-							<div class="active-display slide-border"></div>
-						</router-link>
+							<div
+							 v-show="activeView.displayURL.indexOf('seek://FileManager')>=0"
+							 class="slide-border"
+							></div>
+						</div>
 					</li>
 					<li class="action-item">
-						<router-link
-						 to="/Wallet"
-						 active-class="slidebar-active"
+						<div
+						 class="nav-button"
+						 @click="remoteOpenComponent('Wallet')"
 						>
 							<img
-							 class="active-none"
+							 v-show="activeView.displayURL.indexOf('seek://Wallet')<0"
 							 src="../assets/images/aside_wallet.png"
 							 alt="Menu"
 							>
 							<img
-							 class="active-display"
+							 v-show="activeView.displayURL.indexOf('seek://Wallet')>=0"
 							 src="../assets/images/aside_wallet_color.png"
 							 alt=""
 							>
-							<div class="active-display slide-border"></div>
-						</router-link>
+							<div
+							 v-show="activeView.displayURL.indexOf('seek://Wallet')>=0"
+							 class="slide-border"
+							></div>
+						</div>
 					</li>
 					<li class="action-item">
-						<router-link
-						 to="/Miner"
+						<div
+						 class="nav-button"
+						 @click="remoteOpenComponent('Miner')"
 						 active-class="slidebar-active"
 						>
 							<img
-							 class="active-none"
+							 v-show="activeView.displayURL.indexOf('seek://Miner')<0"
 							 src="../assets/images/aside_miner.png"
 							 alt="Menu"
 							>
 							<img
-							 class="active-display"
+							 v-show="activeView.displayURL.indexOf('seek://Miner')>=0"
 							 src="../assets/images/aside_miner_color.png"
 							 alt=""
 							>
-							<div class="active-display slide-border"></div>
-						</router-link>
+							<div
+							 v-show="activeView.displayURL.indexOf('seek://Miner')>=0"
+							 class="slide-border"
+							></div>
+						</div>
 					</li>
 				</ul>
 			</div>
@@ -98,7 +112,10 @@
 				<p class="mt20 text-center">Please ensure that the private key file is properly stored before exiting.</p>
 			</div>
 			<div slot="footer">
-				<el-button type="danger" @click="logOut">Logout</el-button>
+				<el-button
+				 type="danger"
+				 @click="logOut"
+				>Logout</el-button>
 				<el-button
 				 type="primary"
 				 @click="exportWallet"
@@ -108,16 +125,31 @@
 	</div>
 </template>
 <script>
-const { ipcRenderer } = require("electron");
 import "element-ui/lib/theme-chalk/index.css";
+import { remote, ipcRenderer } from "electron";
 export default {
+	mounted() {
+		ipcRenderer.on("forceUpdate", () => {
+			this.$forceUpdate();
+			this.views = remote.getCurrentWindow().views;
+		});
+	},
 	data() {
 		return {
 			switchToggle: {
 				appear: false,
 				logoutDialog: false
-			}
+			},
+			views: remote.getCurrentWindow().views
 		};
+	},
+	computed: {
+		activeView: function() {
+			return this.views.find(item => item.isActive);
+		},
+		currentWindow: function() {
+			return remote.getCurrentWindow();
+		}
 	},
 	methods: {
 		logOut() {
@@ -159,6 +191,9 @@ export default {
 		},
 		hideAppear() {
 			this.switchToggle.appear = false;
+		},
+		remoteOpenComponent(path) {
+			this.activeView.openComponent(path);
 		}
 	}
 };
@@ -205,19 +240,13 @@ $slidebar-active-color: linear-gradient(
 					height: 1px;
 					background: rgba(255, 255, 255, 0.2);
 				}
-				a {
+				.nav-button {
 					flex: 1;
 					display: flex;
 					align-items: center;
 					justify-content: center;
-					.active-display {
-						display: none;
-					}
 					&.slidebar-active {
 						position: relative;
-						.active-display {
-							display: inline-block;
-						}
 						.slide-border {
 							width: 1.5px;
 							height: 100%;
@@ -227,9 +256,6 @@ $slidebar-active-color: linear-gradient(
 							border-radius: 1px;
 							background: $slidebar-active-color;
 							transform: scaleY(1.3);
-						}
-						.active-none {
-							display: none;
 						}
 					}
 				}

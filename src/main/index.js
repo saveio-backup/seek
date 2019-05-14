@@ -1,10 +1,13 @@
 'use strict'
 
 import {
-  app,
-  BrowserWindow
+  app
 } from 'electron'
-import './process/ipc.js'
+import './ipcManager'
+import {
+  windows,
+  createWindow
+} from './windowManager/'
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
@@ -13,35 +16,30 @@ if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
 
-let mainWindow
+// let mainWindow
 const winURL = process.env.NODE_ENV === 'development' ?
-  `http://localhost:9080/` :
-  `file://${__dirname}/index.html`
+  `http://localhost:9080/#/navigation` :
+  `file://${__dirname}/index.html#/navigation`
 
-import * as node from "./node"
-node.setupConfig(app.getPath("appData"), app.getName())
+// function createWindow() {
+//   mainWindow = new BrowserWindow({
+//     height: 800,
+//     useContentSize: true,
+//     minWidth: 1200,
+//     minHeight: 563,
+//     width: 1200
+//   })
 
-function createWindow() {
-  node.run(app.getPath("appData"), app.getName())
-  /**
-   * Initial window options
-   */
-  mainWindow = new BrowserWindow({
-    height: 800,
-    useContentSize: true,
-    minWidth: 1200,
-    minHeight: 563,
-    width: 1200
-  })
+//   mainWindow.loadURL(winURL)
 
-  mainWindow.loadURL(winURL)
+//   mainWindow.on('closed', () => {
+//     mainWindow = null
+//   })
+// }
 
-  mainWindow.on('closed', () => {
-    mainWindow = null
-  })
-}
-
-app.on('ready', createWindow)
+app.on('ready', function () {
+  createWindow(winURL)
+})
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
@@ -50,8 +48,8 @@ app.on('window-all-closed', () => {
 })
 
 app.on('activate', () => {
-  if (mainWindow === null) {
-    createWindow()
+  if (Object.keys(windows).length === 0) {
+    createWindow(winURL)
   }
 })
 /**

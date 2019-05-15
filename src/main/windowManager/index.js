@@ -40,6 +40,13 @@ class View {
   get webContents() {
     return this.browserView.webContents;
   }
+  get canGoBack() {
+    return this.webContents.canGoBack()
+  }
+
+  get canGoForward() {
+    return this.webContents.canGoForward()
+  }
   // get displayURL() {
   //   let url = null;
   //   if (this.realURL) {
@@ -70,6 +77,14 @@ class View {
         defaultEncoding: 'utf-8'
       }
     });
+    /* this.browserView.on('app-command', (e, cmd) => {
+      console.log('on app command')
+      onAppCommand(this.browserView, cmd)
+    }) */
+    this.browserView.on('app-command', () => {
+      console.log('on app command')
+      // onAppCommand(this.browserView, cmd)
+    })
     this.browserView.webContents.openDevTools();
   }
   forceUpdate() {
@@ -83,11 +98,10 @@ class View {
     if (url.host === 'localhost:9080') {
       const urlReg = new RegExp(url.origin + url.pathname + '(#/)?');
       this.displayURL = url.href.replace(urlReg, DEFAULT_PROTOCOL + '://')
-    } else if(url.protocol === 'file:'){
+    } else if (url.protocol === 'file:') {
       const urlReg = new RegExp('file://' + url.pathname + '(#/)?');
       this.displayURL = url.href.replace(urlReg, DEFAULT_PROTOCOL + '://')
-    }
-    else {
+    } else {
       this.displayURL = this.url
     }
   }
@@ -171,9 +185,7 @@ class View {
   openComponent(path) {
     const views = this.browserWindow.views;
     const view = views.find(item => {
-      console.log('item.replace:',item.url.replace(/(\\|\/)/g,''))
-      console.log('DEFAULT_URL replace',DEFAULT_URL.replace(/(\\|\/)/g,'') + '#' + path)
-      return item.url.replace(/(\\|\/)/g,'').indexOf(DEFAULT_URL.replace(/(\\|\/)/g,'') + '#' + path) >= 0
+      return item.url.replace(/(\\|\/)/g, '').indexOf(DEFAULT_URL.replace(/(\\|\/)/g, '') + '#' + path) >= 0
     })
     this.browserWindow.findView = view;
     this.browserWindow.defaultUrl = DEFAULT_URL;
@@ -181,8 +193,6 @@ class View {
     if (view) {
       view.setActive();
     } else {
-      console.log('createview');
-      console.log(DEFAULT_URL + '#/' + path)
       createView(this.browserWindow, DEFAULT_URL + '#/' + path, {
         isActive: true
       })
@@ -364,3 +374,16 @@ function removeView(win, view, index) {
   view = null;
   win.views.splice(index, 1);
 }
+
+/* function onAppCommand(browserView, cmd) {
+  switch (cmd) {
+    case 'browser-backward':
+      browserView.webContents.goBack();
+      break
+    case 'browser-forward':
+      browserView.webContents.goForward();
+      break
+    default:
+      break
+  }
+} */

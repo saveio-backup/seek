@@ -47,7 +47,10 @@ app.on('window-all-closed', () => {
   }
 })
 
+import * as node from "./node"
 app.on('activate', () => {
+  node.setupConfig(app.getPath("appData"), app.getName())
+  node.run(app.getPath("appData"), app.getName())
   if (Object.keys(windows).length === 0) {
     createWindow(winURL)
   }

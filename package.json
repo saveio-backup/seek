@@ -1,12 +1,13 @@
 {
-  "name": "browser",
+  "name": "seek",
   "version": "0.0.1",
   "author": "Tianqi Zou",
-  "description": "browser about SAVE",
-  "license": null,
+  "description": "seek about SAVE",
+  "license": "MIT",
   "main": "./dist/electron/main.js",
   "scripts": {
     "build": "node .electron-vue/build.js && electron-builder",
+    "build:win": "node .electron-vue/build.js && electron-builder --w",
     "build:dir": "node .electron-vue/build.js && electron-builder --dir",
     "build:clean": "cross-env BUILD_TARGET=clean node .electron-vue/build.js",
     "build:web": "cross-env BUILD_TARGET=web node .electron-vue/build.js",
@@ -27,6 +28,15 @@
     "directories": {
       "output": "build"
     },
+    "extraFiles": [
+      {
+        "from": "resources/${os}",
+        "to": "Resources/bin",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
     "files": [
       "dist/electron/**/*"
     ],
@@ -56,8 +66,12 @@
     }
   },
   "dependencies": {
+    "app-root-dir": "^1.0.2",
     "axios": "^0.18.0",
+    "cfonts": "^2.4.3",
+    "chalk": "^2.4.2",
     "clipboard": "^2.0.4",
+    "electron-log": "^3.0.5",
     "element-ui": "^2.7.2",
     "spark-md5": "^3.0.0",
     "uninstall": "0.0.0",

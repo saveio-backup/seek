@@ -1,19 +1,22 @@
-// const {
-//   app
-// } = require('electron').remote
-// const fs = require("fs")
-// const userDataPath = app.getPath('userData')
-// const cfg = fs.readFileSync(`${userDataPath}/config.json`)
-// const cfgObj = JSON.parse(cfg)
-// let HOST
-// if (process.env.NODE_ENV == 'development') {
-//   HOST = 'http://192.168.1.124:10235/api/'
-// } else {
-//   if (cfgObj) {
-//     HOST = `http://localhost:${cfgObj.Base.PortBase+cfgObj.Base.HttpRestPortOffset}/api/`
-//   }
-// }
-const HOST = 'http://192.168.1.124:10235/api/';
+const {
+  app
+} = require('electron').remote
+const fs = require("fs")
+const userDataPath = app.getPath('userData')
+const exist = fs.existsSync(`${userDataPath}/config.json`)
+let HOST = 'http://localhost:10235/api/'
+console.log('userDataPath', userDataPath, exist)
+if (exist) {
+  const cfg = fs.readFileSync(`${userDataPath}/config.json`)
+  if (cfg) {
+    const cfgObj = JSON.parse(cfg)
+    console.log('cfgObj', cfgObj)
+    if (cfgObj) {
+      HOST = `http://localhost:${cfgObj.Base.PortBase + cfgObj.Base.HttpRestPortOffset}/api/`
+    }
+  }
+}
+console.log("HOST", HOST)
 const VERSION = 'v1/';
 const API = {
   host: HOST,

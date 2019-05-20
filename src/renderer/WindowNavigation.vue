@@ -1,66 +1,88 @@
 <template>
-	<div id="window-navigation">
-		<section class="window-control-wrapper">
-			<ul class="window-tabs flex">
-				<li
-				 class="window-tab-item"
-				 v-for="(item,index) in views"
-				 :key="index"
-				 :class="{'is-active':item.isActive}"
-				>
-					<span
-					 class="flex1"
-					 @click="remoteSetActive(item,index)"
-					>{{item.title || 'loading...'}}</span>
-					<span
-					 class="close el-icon-close"
-					 @click="remoteDestory(item,index)"
-					></span>
-				</li>
-				<li><span
-					 class="addtab el-icon-plus"
-					 @click='remoteCreate'
-					></span></li>
-			</ul>
+	<div
+	 id="window-navigation"
+	 class="flex"
+	>
+		<activity-bar></activity-bar>
+		<div class="window-main">
+			<section class="window-control-wrapper">
+				<ul class="window-tabs flex">
+					<li
+					 class="window-tab-item"
+					 v-for="(item,index) in views"
+					 :key="index"
+					 :class="{'is-active':item.isActive}"
+					>
 
-			<!-- <div v-if="activeView"> -->
-			<div
-			 class="window-navbar"
-			 v-for="(item,index) in views"
-			 :key="index"
-			>
-				<div
-				 v-show="item.isActive"
-				 class="flex"
-				>
-					<div class="window-navbar-buttons">
-						<div
-						 class="el-icon-arrow-left"
-						 :class="{'disable': !item.canGoBack}"
-						 @click="remoteGoBack"
-						></div>
-						<div class="el-icon-arrow-right" :class="{'disable': !item.canGoForward}" @click="remoteGoForward"></div>
-						<div class="el-icon-refresh" @click="remoteReload"></div>
+						<span
+						 v-if="item.isLoading"
+						 class="el-icon-loading ml10"
+						></span>
+						<img
+						 class="ml10 favicon"
+						 v-if="!item.isLoading && item.favicon"
+						 :src="item.favicon"
+						 alt=""
+						>
+						<span
+						 v-if="!item.isLoading && !item.favicon"
+						 class="el-icon-success ml10"
+						></span>
+						<p
+						 class="window-tab-item-title ml10"
+						 @click="remoteSetActive(item,index)"
+						>{{item.title || 'loading...'}}</p>
+						<p class="flex ai-center close">
+							<span
+							 class="el-icon-close"
+							 @click="remoteDestory(item,index)"
+							></span>
+						</p>
+					</li>
+					<li class="flex ai-center"><span
+						 class="addtab el-icon-plus"
+						 @click='remoteCreate'
+						></span></li>
+				</ul>
+
+				<div class="window-navbar">
+					<div class="flex flex1">
+						<div class="window-navbar-buttons">
+							<div
+							 class="el-icon-arrow-left"
+							 :class="{'disable': !activeView.canGoBack}"
+							 @click="remoteGoBack"
+							></div>
+							<div
+							 class="el-icon-arrow-right"
+							 :class="{'disable': !activeView.canGoForward}"
+							 @click="remoteGoForward"
+							></div>
+							<div
+							 class="el-icon-refresh"
+							 @click="remoteReload"
+							></div>
+						</div>
+						<el-input
+						 ref="inputUrl"
+						 class="input-url"
+						 v-model="activeView.displayURL"
+						 @keyup.esc.native='remoteFormatDisplayURL(activeView)'
+						 @keyup.enter.native='remoteLoadURL(activeView)'
+						></el-input>
 					</div>
-					<el-input
-					 :ref="'inputUrl' + index"
-					 v-model="item.displayURL"
-					 @keyup.esc.native='remoteFormatDisplayURL(item,index)'
-					 @keyup.enter.native='remoteLoadURL(item,index)'
-					></el-input>
 				</div>
-			</div>
-			<!-- </div> -->
 
-		</section>
-		<div class="flex window-main">
-			<activity-bar></activity-bar>
-			<div v-if="!activeView.showBrowserView">
+			</section>
+			<section
+			 class="this-is-browserview"
+			 v-if="!activeView.showBrowserView"
+			>
 				<keep-alive>
 					<router-view v-if="$route.meta.keepAlive"></router-view>
 				</keep-alive>
 				<router-view v-if="!$route.meta.keepAlive"></router-view>
-			</div>
+			</section>
 		</div>
 	</div>
 </template>
@@ -79,7 +101,7 @@ export default {
 	},
 	computed: {
 		activeView: function() {
-			return this.views.find(item => item.isActive);
+			return this.views.find(view => view.isActive);
 		},
 		currentWindow: function() {
 			return remote.getCurrentWindow();
@@ -96,6 +118,7 @@ export default {
 			this.currentWindow.views.map((viewItem, index) => {
 				if (viewIndex === index) {
 					viewItem.isActive = true;
+					// viewItem.resize();
 					this.currentWindow.setBrowserView(view.browserView);
 				} else if (viewItem.isActive === true) {
 					viewItem.isActive = false;
@@ -104,81 +127,140 @@ export default {
 			this.$forceUpdate();
 		},
 		remoteDestory(view, index) {
+			console.log("to use remote destroy");
 			view.destroy(index);
 		},
-		remoteFormatDisplayURL(view, index) {
-			this.$refs["inputUrl" + index][0].blur();
+		remoteFormatDisplayURL(view) {
+			// this.$refs["inputUrl" + index][0].blur();
 			// setTimeout(() => {
 			// 	// waiting data from 'formatDisplayURL' method return 'displayURL'
 			// 	this.$refs["inputUrl" + index][0].select();
 			// }, 0);
 			view.formatDisplayURL();
 		},
-		remoteLoadURL(view, index) {
-			this.$refs["inputUrl" + index][0].blur();
-			// view.loadURL(view.displayURL);
+		remoteLoadURL(view) {
+			// this.$refs["inputUrl" + index][0].blur();
 			view.onNewUrl(view.displayURL);
 		},
 		remoteCreate() {
 			this.activeView.create();
 		},
-		remoteGoBack(){
+		remoteGoBack() {
 			this.activeView.webContents.goBack();
 		},
-		remoteGoForward(){
-			this.activeView.webContents.goForward()
+		remoteGoForward() {
+			this.activeView.webContents.goForward();
 		},
-		remoteReload(){
+		remoteReload() {
 			this.activeView.webContents.reload();
 		}
 	}
 };
 </script>
 <style lang="scss">
+$theme-color: #1b1e2f;
+$theme-color-opacity: rgba(73, 77, 94, 1);
 $light-grey: #f2f2f2;
-$tabs-height: 70px;
+$tabs-height: 80px;
 #window-navigation {
 	height: 100vh;
 }
 .window-control-wrapper {
 	height: $tabs-height;
-	background: #dee1e6;
+	background: $theme-color;
 	.window-tabs {
+		padding: 10px 40px 0 10px;
 		.window-tab-item {
 			&.is-active {
-				background: #cddc39;
+				background: $theme-color-opacity;
+			}
+			.favicon {
+				width: 16px;
+				height: 16px;
+			}
+			.window-tab-item-title {
+				flex: 1;
+				height: 100%;
+				line-height: 30px;
+				padding-right: 20px;
+				width: calc(100% - 26px);
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+				align-items: center;
+				box-sizing: content-box;
 			}
 			.close {
 				position: absolute;
 				right: 5px;
 				top: 50%;
 				transform: translateY(-50%);
-				background: #fff;
+				color: #fff;
 				&:hover {
 					background: #ccc;
 				}
 			}
 			position: relative;
 			cursor: default;
-			border: solid 1px skyblue;
-			width: 200px;
+			border-top-left-radius: 6px;
+			border-top-right-radius: 6px;
+			width: 220px;
 			height: 30px;
 			display: flex;
 			align-items: center;
 			min-width: 50px;
-			font-size: 14px;
-			overflow: hidden;
-			white-space: nowrap;
-			text-overflow: ellipsis;
-			background: #fff;
+			font-size: 12px;
+			color: #fff;
+			background: $theme-color;
+		}
+		.addtab {
+			cursor: pointer;
+			margin-left: 15px;
+			font-size: 8px;
+			padding: 2px 6px;
+			height: 12px;
+			line-height: 12px;
+			color: #fff;
+			transform: skew(10deg);
+			background-color: $theme-color-opacity;
 		}
 	}
-	.window-navbar-buttons {
+	.window-navbar {
 		display: flex;
+		height: 40px;
+		padding: 4px 6px;
+		background: $theme-color-opacity;
 		align-items: center;
+		.input-url {
+			height: 30px;
+			.el-input__inner {
+				&:focus{
+					border:none;
+				}
+				outline: none;
+				border-radius: 15px;
+				color: #fff;
+				background-color: #2c2f44;
+			}
+		}
+		.el-input__inner {
+			height: 100% !important;
+		}
+		.window-navbar-buttons {
+			&>div{
+				margin:0 6px;
+			}
+			display: flex;
+			align-items: center;
+			color: #fff;
+		}
 	}
 }
 .window-main {
+	flex: 1;
+}
+.this-is-browserview {
+	display: none;
 	height: calc(100% - 70px);
 }
 </style>

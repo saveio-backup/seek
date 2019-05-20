@@ -3,7 +3,7 @@
 		<div class="content">
 			<div class="space-header">
 				<div class="space-progress">
-					<div class="theme-font-blue bold mb20">Used: {{space.Used}} / {{space.Remain}}</div>
+					<div class="theme-font-blue bold mb20">Used: {{space.Used}} KB / {{space.Remain}} KB</div>
 					<el-progress
 					 :stroke-width="30"
 					 :percentage="takeSpace"
@@ -36,8 +36,8 @@
 					<div class="adjust-item">
 						<p class="adjust-title theme-font-blue bold">Current:</p>
 						<div class="adjust-info">
-							<p class="theme-font-blue ft14 mr20">{{space.Remain}}GB</p>
-							<p class="grey-xs bold ml20">{{space.Used}}GB / {{space.Used}}GB</p>
+							<p class="theme-font-blue ft14 mr20">{{space.Remain}}KB</p>
+							<p class="grey-xs bold ml20">{{space.Used}}KB / {{space.Used}}KB</p>
 						</div>
 					</div>
 					<div class="adjust-item">
@@ -45,13 +45,12 @@
 						<div class="adjust-info">
 							<el-input-number
 							 class="number"
-							 v-model="spaceSizeGB"
+							 v-model="spaceSizeKB"
 							 :precision='0'
-							 pleaseholder='Please enter an integer'
 							 :min='1'
-							 @change="addInfo.Size = spaceSizeGB * 1024"
+							 @change="addInfo.Size = spaceSizeKB"
 							></el-input-number>
-							<p class="adjust-title theme-font-blue bold ml10">GB</p>
+							<p class="adjust-title theme-font-blue bold ml10">KB</p>
 						</div>
 					</div>
 				</div>
@@ -105,17 +104,18 @@ export default {
 			) || this.$dateFormat.formatTimeByTimestamp(now.getTime());
 		return {
 			submitToggle: true, // commit toggle
-			spaceSizeGB: 1,
+			spaceSizeKB: 1,
 			expired,
 			pickerOptions: {
-				disabledDate: date => {
-					const now = new Date().getTime();
-					return date.getTime() - now < 0;
+				disabledDate: () => {
+					return false;
+					// const now = new Date().getTime();
+					// return date.getTime() - now < 0;
 				}
 			},
 			addInfo: {
 				Addr: window.localStorage.getItem("Address"),
-				Size: 1024,
+				Size: 1,
 				Second: 0
 			},
 			expandDialogVisible: false,
@@ -159,6 +159,7 @@ export default {
 							message: "Adjust Successed!",
 							type: "success"
 						});
+						this.$store.dispatch("setSpace");
 					}
 					this.submitToggle = true;
 				})

@@ -9,9 +9,6 @@ const state = {
   downloadLength: 0,
   uploadLength: 0
 }
-let downloadTimer = null;
-let uploadTimer = null;
-const TIME_COUNT = 3000;
 const mutations = {
   GET_DOWNLOAD_TRANSFER(state, result) {
     state.downloadTransferList = result;
@@ -35,7 +32,9 @@ const mutations = {
     state.completeTransferList = result;
   }
 }
-
+let downloadTimer = null;
+let uploadTimer = null;
+const TIME_COUNT = 3000;
 const actions = {
   setUpload({
     commit

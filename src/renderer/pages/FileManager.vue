@@ -17,7 +17,10 @@
 					<router-link
 					 :to="{name:'transfer'}"
 					 active-class="active-blue"
-					>Transfer <span class="badge" v-show="transferLength>0">{{transferLength}}</span></router-link>
+					>Transfer <span
+						 class="badge"
+						 v-show="transferLength>0"
+						>{{transferLength}}</span></router-link>
 				</div>
 				<div class="coin">
 					<span class="grey-xs bold mr10">Balance: {{filterFloat(balanceTotal).toLocaleString('en-US')}}</span>
@@ -39,13 +42,23 @@
 					<h2>Asset</h2>
 					<div class="dialog-title-border"></div>
 				</div>
+				<div class="flex jc-end">
+					<el-select v-model="channelSelected">
+						<el-option
+						 v-for="item in channels"
+						 :key="item.Address"
+						 :label="item.Address"
+						 :value="item"
+						></el-option>
+					</el-select>
+				</div>
 				<div class="flex between pl30 pr30 mb50 mt20">
 					<div
 					 v-if="withDraw"
 					 class="flex1 text-left"
 					>
 						<p class="theme-font-blue transparent ft12 bold">Channel Amount:</p>
-						<p class="theme-font-blue bold ft20 mt10">{{filterFloat(balanceTotal).toLocaleString('en-US')}} SAVE</p>
+						<p class="theme-font-blue bold ft20 mt10">{{filterFloat(channelSelected.BalanceFormat || 0).toLocaleString('en-US')}} SAVE</p>
 					</div>
 					<div
 					 v-else
@@ -65,7 +78,7 @@
 					 class="flex1 text-right"
 					>
 						<p class="theme-font-blue transparent ft12 bold">Channel Amount</p>
-						<p class="theme-font-blue bold ft20 mt10">{{filterFloat(balanceTotal).toLocaleString('en-US')}} SAVE</p>
+						<p class="theme-font-blue bold ft20 mt10">{{filterFloat(channelSelected.BalanceFormat || 0).toLocaleString('en-US')}} SAVE</p>
 					</div>
 					<div
 					 v-else
@@ -76,10 +89,12 @@
 					</div>
 				</div>
 				<el-input
+				 type="number"
+				 class="transfer-input-number"
 				 v-model="transferAmount"
 				 placeholder="input number"
 				>
-				<template slot="append">SAVE</template>
+					<template slot="append">SAVE</template>
 				</el-input>
 				<div slot="footer">
 					<el-button
@@ -95,10 +110,13 @@
 <script>
 import { filterFloat } from "../assets/config/util";
 export default {
-	mounted() {},
+	mounted() {
+		this.initBalanceRequest();
+	},
 	data() {
 		return {
 			filterFloat,
+			channelSelected: "",
 			switchToggle: {
 				assetTransferDialog: false,
 				transferRequest: true
@@ -109,29 +127,36 @@ export default {
 		};
 	},
 	methods: {
+		emitMessage(msg, type) {
+			this.$message({
+				message: msg,
+				type: type || "info"
+			});
+		},
 		toTransfer() {
 			if (!this.switchToggle.transferRequest) return;
-			this.switchToggle.transferRequest = false;
-			let addr = null;
-			if (this.withDraw) {
-				addr = this.$api.withdrawChannel;
-			} else {
-				addr = this.$api.depositChannel;
+			if (!this.channelSelected) {
+				this.emitMessage("Please Choose Channel Address", "error");
+				return;
+			} else if (!this.transferAmount.trim()) {
+				this.emitMessage("Please input number", "error");
+				return;
 			}
+			this.switchToggle.transferRequest = false;
+			const addr = this.withDraw
+				? this.$api.withdrawChannel
+				: this.$api.depositChannel;
 			this.$axios
 				.post(addr, {
-					Partner: this.balanceAddress,
+					Partner: this.channelSelected.Address,
 					Amount: this.transferAmount
 				})
 				.then(res => {
 					if (res.data.Error === 0) {
-						this.$message({
-							message: "Transfer Success!",
-							type: "success"
-						});
+						this.emitMessage('Transfer Success!','success');
 						this.switchToggle.transferRequest = true;
 						this.switchToggle.assetTransferDialog = false;
-						this.initAllRequest();
+						this.initBalanceRequest();
 					} else {
 						this.$message.error(res.data.Desc || "Transfer Failed");
 					}
@@ -142,7 +167,7 @@ export default {
 					this.switchToggle.transferRequest = true;
 				});
 		},
-		initAllRequest() {
+		initBalanceRequest() {
 			this.$store.dispatch("setBalanceLists");
 			this.$store.dispatch("setChannelBalanceTotal");
 		}
@@ -153,6 +178,9 @@ export default {
 		},
 		balanceAddress: function() {
 			return this.$store.state.Home.balanceAddress;
+		},
+		channels: function() {
+			return this.$store.state.Home.channels;
 		},
 		balanceTotal: function() {
 			return this.$store.state.Home.balanceTotal;
@@ -187,7 +215,7 @@ export default {
 };
 </script>
 <style lang="scss">
-$theme-font-blue:#040f39;
+$theme-font-blue: #040f39;
 $grey: #ccc;
 #fileManager {
 	flex: 1;
@@ -241,29 +269,31 @@ $grey: #ccc;
 		}
 	}
 	.asset-transfer-dialog {
-		.ofont-fasong{
-			color:#CDCFD8;
+		.ofont-fasong {
+			color: #cdcfd8;
 		}
-		.ofont-exchange{
-			color:$theme-font-blue;
+		.ofont-exchange {
+			color: $theme-font-blue;
 		}
-		.el-input {
-			padding: 0 40px;
-			.el-input__inner {
-				background: #ebecef;
-				height: 35px;
-				line-height: 35px;
-				border-radius: 2px;
-				border:none;
-				&:focus{
-					border:none;
+		.transfer-input-number {
+			&.el-input {
+				padding: 0 40px;
+				.el-input__inner {
+					background: #ebecef;
+					height: 35px;
+					line-height: 35px;
+					border-radius: 2px;
+					border: none;
+					&:focus {
+						border: none;
+					}
 				}
-			}
-			.el-input-group__append{
-				background:none;
-				border:none;
-				color:$theme-font-blue;
-				font-weight: bold;
+				.el-input-group__append {
+					background: none;
+					border: none;
+					color: $theme-font-blue;
+					font-weight: bold;
+				}
 			}
 		}
 		.el-button {

@@ -2,6 +2,7 @@
 	<div
 	 id="wallet"
 	 class=""
+	 
 	>
 		<div class="wallet-select">
 			<el-select
@@ -38,7 +39,7 @@
 			<div class="wallet-aside">
 				<div class="wallet-asset">
 					<p class="grey-xs bold pl20 pr20">Total Balance</p>
-					<div class="total"> <span class="symbol"></span> <span class="theme-bold">{{parseFloat(balanceLists[balanceSelected].Balance).toFixed(3)}}</span></div>
+					<div class="total"> <span class="symbol"></span> <span class="theme-bold">{{parseFloat(balanceLists[balanceSelected].BalanceFormat).toFixed(3)}}</span></div>
 					<div
 					 class="balance-content"
 					 v-if="balanceLists && balanceLists.length>0"
@@ -50,7 +51,7 @@
 									 :src="'static/images/logo/'+balanceLists[balanceSelected].Symbol+'.png'"
 									 alt=""
 									> <span class="theme-bold">{{balanceLists[balanceSelected].Symbol}}</span></div>
-								<div class="balance theme-bold">{{parseFloat(balanceLists[balanceSelected].Balance).toFixed(3)}}</div>
+								<div class="balance theme-bold">{{parseFloat(balanceLists[balanceSelected].BalanceFormat).toFixed(3)}}</div>
 							</li>
 						</ul>
 						<div class="set-asset-display"><i
@@ -184,7 +185,7 @@
 					>
 						<div class="flex between mb10">
 							<p class="theme-font-blue-bold">{{balanceLists[balanceSelected].Symbol}}</p>
-							<p>{{parseFloat(balanceLists[balanceSelected].Balance).toFixed(2)}} {{balanceLists[balanceSelected].Symbol}}</p>
+							<p>{{parseFloat(balanceLists[balanceSelected].BalanceFormat).toFixed(2)}} {{balanceLists[balanceSelected].Symbol}}</p>
 						</div>
 						<el-form-item>
 							<el-input
@@ -398,7 +399,7 @@ export default {
 			return this.$store.state.Wallet.transferOut;
 		},
 		balanceLists: function() {
-			return this.$store.state.Wallet.balanceLists;
+			return this.$store.state.Wallet.balanceLists || [];
 		}
 	}
 };
@@ -414,6 +415,7 @@ $light-grey: #f7f7f7;
 #wallet {
 	display: flex;
 	flex: 1;
+	height:100%;
 	flex-direction: column;
 	background: #eeeef1;
 	.wallet-select {

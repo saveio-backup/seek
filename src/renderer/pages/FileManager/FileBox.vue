@@ -3,7 +3,7 @@
 		<div class="aside">
 			<div class="aside-link">
 				<router-link
-				class="allfile"
+				 class="allfile"
 				 :class="{'theme-font-blue-bold link-hover': fileType == 0}"
 				 :to="{name:'disk', query:{type:0}}"
 				><i class='el-icon-document'></i> <span>All File</span></router-link>
@@ -32,10 +32,13 @@
 			 class="aside-progress"
 			 v-if="space"
 			>
-				<p class="grey-xs bold tl">{{space.Used / 1024}}G / {{space.Remain / 1024}}G </p>
+				<p class="grey-xs bold tl">{{space.Used}}KB / {{space.Remain}}KB </p>
 				<el-progress :percentage="takeSpace"></el-progress>
 				<p class="tr">
-					<router-link class="theme-font-blue-bold ft12 link" :to="{name:'expand'}">Expand</router-link>
+					<router-link
+					 class="theme-font-blue-bold ft12 link"
+					 :to="{name:'expand'}"
+					>Expand</router-link>
 				</p>
 			</div>
 		</div>
@@ -47,7 +50,8 @@
 <script>
 export default {
 	mounted() {
-		this.getUserSpace();
+		this.$store.dispatch("setSpace");
+		// this.getUserSpace();
 	},
 	data() {
 		return {
@@ -70,20 +74,6 @@ export default {
 		}
 	},
 	methods: {
-		getUserSpace() {
-			this.$axios
-				.get(this.$api.userspace + window.localStorage.getItem("Address"))
-				.then(res => {
-					if (res.data.Desc === "SUCCESS") {
-						if (res.data.Error === 0) {
-							this.$store.dispatch("setSpace", res.data.Result);
-						}
-					}
-				})
-				.catch(err => {
-					console.error(err);
-				});
-		}
 	},
 	beforeRouteEnter(to, from, next) {
 		next(vm => {
@@ -130,15 +120,15 @@ $light-grey: #f7f7f7;
 		font-size: 16px;
 		.aside-link {
 			display: flex;
-			margin-top:25px;
+			margin-top: 25px;
 			flex-direction: column;
 			width: 100%;
-			.allfile{
-				position:relative;
-				i{
-					position:absolute;
-					top:50%;
-					left:0px;
+			.allfile {
+				position: relative;
+				i {
+					position: absolute;
+					top: 50%;
+					left: 0px;
 					transform: translateX(100%) translateY(-50%);
 				}
 			}
@@ -148,17 +138,17 @@ $light-grey: #f7f7f7;
 				&:hover {
 					background: rgba(231, 231, 235, 1);
 				}
-				&.link-hover{
+				&.link-hover {
 					background: rgba(231, 231, 235, 1);
 				}
 			}
 		}
 		.aside-progress {
 			// flex:1;
-			.link:hover{
-					text-decoration: underline;
-				}
-			
+			.link:hover {
+				text-decoration: underline;
+			}
+
 			width: 100%;
 			padding: 0 10px;
 			margin-bottom: 20px;

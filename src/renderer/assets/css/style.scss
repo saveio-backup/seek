@@ -20,8 +20,16 @@ select {
     justify-content: space-between;
   }
 
+  &.around {
+    justify-content: space-around
+  }
+
   &.jc-center {
     justify-content: center
+  }
+
+  &.jc-end {
+    justify-content: flex-end
   }
 
   &.ai-center {
@@ -32,9 +40,12 @@ select {
     flex-direction: column;
   }
 }
-.disable{
-  color:#ccc;
+
+.disable {
+  color: #ccc;
+  opacity: 0.8;
 }
+
 .flex1 {
   flex: 1;
 }
@@ -65,7 +76,8 @@ select {
 }
 
 .el-dialog {
-  border-radius:1px;
+  border-radius: 1px;
+
   .el-dialog__header h2 {
     font-size: 24px;
     // font-weight: bold;

@@ -19,7 +19,6 @@ $tabs-height: 70px;
 
 .common-main {
 	background: $light-grey;
-	padding: 0 88px;
 	height:100%;
 	width: 100%;
 }

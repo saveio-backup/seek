@@ -1,3 +1,5 @@
+import axios from 'axios';
+import api from '../../assets/config/api';
 const state = {
   space: ''
 }
@@ -11,9 +13,20 @@ const mutations = {
 const actions = {
   setSpace({
     commit
-  },space) {
+  }) {
     // do something async
-    commit('SET_SPACE',space)
+    axios
+      .get(api.userspace + window.localStorage.getItem("Address"))
+      .then(res => {
+        if (res.data.Desc === "SUCCESS") {
+          if (res.data.Error === 0) {
+            commit('SET_SPACE', res.data.Result)
+          }
+        }
+      })
+      .catch(err => {
+        console.error(err);
+      });
   }
 }
 

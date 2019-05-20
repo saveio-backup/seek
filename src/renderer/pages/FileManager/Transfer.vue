@@ -36,7 +36,7 @@
 	</div>
 </template>
 <script>
-import fileComponent from "../../components/file-component.vue";
+import fileComponent from "../../components/FileComponent.vue";
 export default {
 	components: {
 		fileComponent

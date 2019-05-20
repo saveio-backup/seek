@@ -4,16 +4,17 @@
 			<div class="composite-bar">
 				<ul class="action-container">
 					<li class="action-item item-user">
-						<router-link
-						 to="/home"
+						<div
 						 class="nav-button"
-						><i class="ofont ofont-user user"></i></router-link>
+						 @click="remoteOpenComponent('Home')"
+						><i class="ofont ofont-user user"></i></div>
 					</li>
 					<!-- <li class="action-item">
 						<router-link to="/Appstore"><i class="ofont ofont-menu appstore"></i></router-link>
 					</li> -->
 					<li class="action-item">
 						<div
+						 title="FileManager"
 						 class="nav-button"
 						 @click="remoteOpenComponent('FileManager')"
 						 active-class="slidebar-active"
@@ -36,6 +37,7 @@
 					</li>
 					<li class="action-item">
 						<div
+						 title="Wallet"
 						 class="nav-button"
 						 @click="remoteOpenComponent('Wallet')"
 						>
@@ -57,6 +59,7 @@
 					</li>
 					<li class="action-item">
 						<div
+						 title="Miner"
 						 class="nav-button"
 						 @click="remoteOpenComponent('Miner')"
 						 active-class="slidebar-active"
@@ -81,52 +84,19 @@
 			</div>
 			<div
 			 class="setting-bar"
-			 @click="toggleAppear"
-			 v-clickoutside='hideAppear'
+			 @click="toPopCustomControlMenu"
 			>
 				<div style="position:relative; z-index:2">
-					<i class="el-icon-menu"></i>
+					<i class="ofont ofont-menu-point"></i>
 				</div>
-				<ul
-				 class="setting-ul"
-				 :class="{appear:switchToggle.appear}"
-				>
-					<li
-					 class="setting-li"
-					 @click="switchToggle.logoutDialog = true"
-					>Log Out</li>
-					<li class="setting-li">Export Wallet</li>
-				</ul>
 			</div>
 		</div>
-		<el-dialog
-		 center
-		 width='600px'
-		 :visible.sync="switchToggle.logoutDialog"
-		>
-			<div slot="title">
-				<h2>Warning</h2>
-				<div class="dialog-title-border"></div>
-			</div>
-			<div>
-				<p class="mt20 text-center">Please ensure that the private key file is properly stored before exiting.</p>
-			</div>
-			<div slot="footer">
-				<el-button
-				 type="danger"
-				 @click="logOut"
-				>Logout</el-button>
-				<el-button
-				 type="primary"
-				 @click="exportWallet"
-				>Export Wallet</el-button>
-			</div>
-		</el-dialog>
 	</div>
 </template>
 <script>
 import "element-ui/lib/theme-chalk/index.css";
 import { remote, ipcRenderer } from "electron";
+const { Menu } = remote;
 export default {
 	mounted() {
 		ipcRenderer.on("forceUpdate", () => {
@@ -137,7 +107,6 @@ export default {
 	data() {
 		return {
 			switchToggle: {
-				appear: false,
 				logoutDialog: false
 			},
 			views: remote.getCurrentWindow().views
@@ -183,14 +152,17 @@ export default {
 					console.error(err);
 				});
 		},
-		setAppear() {
-			this.switchToggle.appear = true;
-		},
-		toggleAppear() {
-			this.switchToggle.appear = !this.switchToggle.appear;
-		},
-		hideAppear() {
-			this.switchToggle.appear = false;
+		toPopCustomControlMenu() {
+			const that = this;
+			const customControlMenuItems = [
+				{
+					label: "Export Wallet",
+					click() {
+						that.exportWallet();
+					}
+				}
+			];
+			Menu.buildFromTemplate(customControlMenuItems).popup();
 		},
 		remoteOpenComponent(path) {
 			this.activeView.openComponent(path);
@@ -243,20 +215,21 @@ $slidebar-active-color: linear-gradient(
 				.nav-button {
 					flex: 1;
 					display: flex;
+					position: relative;
 					align-items: center;
 					justify-content: center;
+					.slide-border {
+						width: 1.5px;
+						height: 100%;
+						position: absolute;
+						right: 0px;
+						top: 0px;
+						border-radius: 1px;
+						background: $slidebar-active-color;
+						transform: scaleY(1.3);
+					}
 					&.slidebar-active {
 						position: relative;
-						.slide-border {
-							width: 1.5px;
-							height: 100%;
-							position: absolute;
-							right: 0px;
-							top: 0px;
-							border-radius: 1px;
-							background: $slidebar-active-color;
-							transform: scaleY(1.3);
-						}
 					}
 				}
 			}
@@ -270,10 +243,6 @@ $slidebar-active-color: linear-gradient(
 				z-index: 2;
 			}
 			.setting-ul {
-				&.appear {
-					transform: translateX(100%);
-					opacity: 1;
-				}
 				opacity: 0;
 				transition: all 0.5s;
 				width: 150px;

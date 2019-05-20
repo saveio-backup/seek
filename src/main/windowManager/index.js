@@ -20,6 +20,7 @@ class View {
 
     this.browserWindow = win;
     this.url = url;
+    this.isLoading = false;
     this.updateDisplayURL();
     this.isSave = new URL(this.displayURL).protocol === DEFAULT_PROTOCOL + ':'
     this.initBrowserView();
@@ -47,23 +48,11 @@ class View {
   get canGoForward() {
     return this.webContents.canGoForward()
   }
-  // get displayURL() {
-  //   let url = null;
-  //   if (this.realURL) {
-  //     url = new URL(this.realURL);
-  //   } else {
-  //     url = new URL('about:blank')
-  //   }
-  //   if (url.host === 'localhost:9080') {
-  //     return url.href.replace(url.origin, DEFAULT_PROTOCOL+'://')
-  //   } else {
-  //     return this.url
-  //   }
-  // }
 
   initBrowserView(webOpt = {
     sandbox: !this.isSave
   }) {
+    console.log('initBrowserView')
     this.browserView = new BrowserView({
       webPreferences: {
         contextIsolation: false,
@@ -77,21 +66,15 @@ class View {
         defaultEncoding: 'utf-8'
       }
     });
-    /* this.browserView.on('app-command', (e, cmd) => {
-      console.log('on app command')
-      onAppCommand(this.browserView, cmd)
-    }) */
-    this.browserView.on('app-command', () => {
-      console.log('on app command')
-      // onAppCommand(this.browserView, cmd)
-    })
     this.browserView.webContents.openDevTools();
   }
   forceUpdate() {
-    this.url = this.webContents.getURL();
-    this.updateDisplayURL();
-    this.isSave = this.displayURL ? new URL(this.displayURL).protocol === DEFAULT_PROTOCOL + ':' : false
-    this.browserWindow.webContents.send('forceUpdate');
+    if (this && this.browserView) {
+      this.url = this.webContents.getURL();
+      this.updateDisplayURL();
+      this.isSave = this.displayURL ? new URL(this.displayURL).protocol === DEFAULT_PROTOCOL + ':' : false
+      this.browserWindow.webContents.send('forceUpdate');
+    }
   }
   updateDisplayURL() {
     let url = this.url ? new URL(this.url) : new URL('about:blank');
@@ -106,9 +89,27 @@ class View {
     }
   }
   updateEvent() {
-    this.webContents.on('did-fail-load', (event, errorCode, errorDescription) => {
+    this.webContents.on('did-start-loading', () => {
+      console.log('did start loading !!');
+      this.isLoading = true;
+      this.favicon = null;
+      this.browserWindow.webContents.send('forceUpdate');
+    })
+    this.webContents.on('did-stop-loading', () => {
+      console.log('did stop loading')
+      this.isLoading = false;
+      this.browserWindow.webContents.send('forceUpdate');
+    })
+    this.webContents.on('page-favicon-updated', (e, favicons) => {
+      console.log('page favicon update');
+      console.log(favicons);
+      this.favicon = favicons && favicons[0] ? favicons[0] : null
+      this.browserWindow.webContents.send('forceUpdate');
+    })
+    this.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL) => {
       console.error('load Error!!!!!!!!')
       console.error(errorDescription)
+      console.log(validatedURL)
     })
     this.webContents.on('new-window', this.onNewWindow.bind(this))
     this.webContents.on('dom-ready', () => {
@@ -116,12 +117,17 @@ class View {
       this.forceUpdate()
     });
     this.webContents.on('did-navigate', (e, url) => {
-      console.log('did navigage, forceUpdate')
+      console.log('did navigate, forceUpdate')
+      console.log(url);
+      this.forceUpdate()
+    });
+    this.webContents.on('will-redirect', (e, url) => {
+      console.log('will-redirect, forceUpdate')
       console.log(url);
       this.forceUpdate()
     });
     this.webContents.on('will-navigate', (e, url) => {
-      console.log('will-navigate')
+      console.log('will-navigate!!!!!!!')
       console.log(url);
       this.onNewUrl(url, e)
     })
@@ -130,15 +136,16 @@ class View {
       console.log(url)
     })
     // handler hashchange
-    this.webContents.on('did-navigate-in-page', () => {
+    this.webContents.on('did-navigate-in-page', (e, url) => {
       console.log('did-navigate-in-page, forceUpdate')
+      console.log(url)
       this.forceUpdate()
     });
   }
   onNewWindow(e, url, framename, disposition) {
+    console.log('create window');
     e.preventDefault();
     const isActive = (disposition !== 'background-tab');
-    console.log('create window');
     console.log(url);
     createView(this.browserWindow, url, {
       isActive
@@ -155,8 +162,8 @@ class View {
     } else {
       newIsSave = false;
     }
-    console.log('newIsSave: ', newIsSave);
     if (this.isSave !== newIsSave) {
+      console.log('newIsSave: ', newIsSave);
       event && event.preventDefault();
       // this.browserView = null;
       this.isSave = newIsSave;
@@ -169,6 +176,7 @@ class View {
       this.loadURL(urlFormat.href);
       this.setBroserView();
     } else {
+      console.log('nothing happened go on !!!!!');
       this.loadURL(url);
     }
   }
@@ -200,20 +208,15 @@ class View {
   }
   loadURL(newURL) {
     console.log('loadURL!!!!');
-    if (newURL) {
-      console.log('newURL is', newURL)
-    }
     let newURLFormat = null;
     if (newURL) {
       newURLFormat = this.formatURL(newURL);
     } else {
       newURLFormat = this.formatURL(this.realURL);
     }
-    console.log('newURLFormat get:', newURLFormat);
     this.browserView.webContents.loadURL(newURLFormat.href)
   }
   formatURL(newURL) {
-    console.log('formatURL', newURL)
     let newURLFormat = null;
     let browserWindowURLFomat = new URL(this.browserWindow.url);
     try {
@@ -222,12 +225,11 @@ class View {
         newURLFormat.href = 'http://' + newURLFormat.href;
       }
       if ((newURLFormat.href === browserWindowURLFomat.href) || (newURLFormat.href === (browserWindowURLFomat.origin + '/'))) {
-        newURLFormat.href = DEFAULT_URL + '#/home';
+        newURLFormat.href = DEFAULT_URL + '#/Home';
       }
     } catch (error) {
       newURLFormat = new URL('http://' + newURL)
     } finally {}
-    console.log('return newURLFormat', newURLFormat)
     return newURLFormat;
   }
   initView() {
@@ -301,7 +303,10 @@ export function createWindow(url) {
   windows[mainWindow.id] = mainWindow; // add BrowserWindow Instance to windows
   mainWindow.url = url;
   mainWindow.loadURL(url)
-
+  mainWindow.on('app-command', (e, cmd) => {
+    console.log('on app command')
+    onAppCommand(mainWindow, cmd)
+  })
   // Vue can't update DOM while Main process changed (Though it could update it's data)
   // so use Proxy to send IPC :(
   let handlerViews = {
@@ -349,7 +354,6 @@ export function createView(win, url = DEFAULT_URL + '#/') {
   win.views.push(view);
   view.initView();
 }
-
 /* function getWindow(sender) {
   return getTopWindow(electron.BrowserWindow.fromWebContents(sender))
 } */
@@ -362,6 +366,11 @@ function getTopWindow(win) {
   return win
 }
 
+function getActive(win) {
+  win = getTopWindow(win);
+  return win.views.find(view => view.isActive)
+}
+
 function removeView(win, view, index) {
   win = getTopWindow(win);
   if (view.isActive) {
@@ -371,19 +380,23 @@ function removeView(win, view, index) {
       win.views[index - 1].setActive()
     }
   }
-  view = null;
+  view.browserView.destroy();
+  view.browserView = null;
+  win.views[index] = null;
   win.views.splice(index, 1);
 }
 
-/* function onAppCommand(browserView, cmd) {
+function onAppCommand(win, cmd) {
+  win = getTopWindow(win);
+  console.log(cmd);
   switch (cmd) {
     case 'browser-backward':
-      browserView.webContents.goBack();
+      getActive(win).webContents.goBack();
       break
     case 'browser-forward':
-      browserView.webContents.goForward();
+      getActive(win).webContents.goForward();
       break
     default:
       break
   }
-} */
+}

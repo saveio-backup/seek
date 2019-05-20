@@ -4,12 +4,12 @@
 			<div class="upload-header">
 				<h1>Upload File</h1>
 				<span
-				 class="text-underline"
+				 class="text-underline active-blue ft18"
 				 @click="switchToggle.advanced = true"
 				 v-show="!switchToggle.advanced"
 				>Advanced</span>
 				<span
-				 class="text-underline"
+				 class="text-underline active-blue ft18"
 				 @click="switchToggle.advanced = false"
 				 v-show="switchToggle.advanced"
 				>Simple</span>
@@ -38,7 +38,10 @@
 						</el-input>
 					</el-form-item>
 					<el-form-item label="File Size">
-						<p>{{fileSize || '0.00 GB'}}</p>
+						<p class="light-blue">{{fileSize || '0.00 GB'}}</p>
+					</el-form-item>
+					<el-form-item label="Price">
+						<p>{{uploadPrice}}</p>
 					</el-form-item>
 					<el-form-item label="Encryption:">
 						<el-select
@@ -156,20 +159,38 @@
 					 prop="WhiteList"
 					 v-show="advancedData.Privilege === 2"
 					>
-						<el-input
-						 type="textarea"
-						 v-model="wihteListString"
-						 @blur="setWhiteList"
-						></el-input>
+						<div class="whitelist-wrap">
+							<el-tag							
+							 :key="tag"
+							 :disable-transitions="false"
+							 v-for="tag in advancedData.WhiteList"
+							 closable
+							 @close='handleClose(tag)'
+							>{{tag}}</el-tag>
+							<el-input
+							 v-if="switchToggle.whiteListInput"
+							 v-model="wihteListString"
+							 class="save-tag-input"
+							 ref="saveTagInput"
+							 size="small"
+							 @keyup.enter.native="setWhiteList"
+							 @blur="setWhiteList"
+							></el-input>
+							<el-button
+							 v-else
+							 size="small"
+							 @click="showWhitelistInput"
+							> + Add WhiteList</el-button>
+						</div>
 					</el-form-item>
 				</el-form>
-				<div>Price: {{uploadPrice}}</div>
-				<el-button
-				 type="primary"
-				 @click="toUploadFile"
-				>Upload</el-button>
-				<el-button @click="toEmptyUpload">Cancel</el-button>
-				{{advancedData.WhiteList}}
+				<div class="flex jc-center submit-foot">
+					<el-button
+					 type="primary"
+					 @click="toUploadFile"
+					>Upload</el-button>
+					<el-button @click="toEmptyUpload">Cancel</el-button>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -205,6 +226,7 @@ export default {
 			storageCycleSelected: baseKeys[3], // default Permanent
 			storageCycleNumber: 1,
 			switchToggle: {
+				whiteListInput: false,
 				advanced: false, // advanced form
 				upload: true
 			},
@@ -258,10 +280,25 @@ export default {
 				this.toGetPrice();
 			});
 		},
+		handleClose(tag){
+			this.advancedData.WhiteList.splice(this.advancedData.WhiteList.indexOf(tag),1)
+		},
 		setWhiteList() {
-			let array = this.wihteListString.replace(/[\s\r\n]/g, "").split(";");
-			this.advancedData.WhiteList = array;
+			// let array = this.wihteListString.replace(/[\s\r\n]/g, "").split(";");
+			// this.advancedData.WhiteList = array;
+			let inputValue = this.wihteListString.trim();
+			if(inputValue){
+				this.advancedData.WhiteList.push(inputValue)
+			}
+			this.switchToggle.whiteListInput = false;
+			this.wihteListString = '';
 			this.toGetPrice();
+		},
+		showWhitelistInput() {
+			this.switchToggle.whiteListInput = true;
+			this.$nextTick(() => {
+				this.$refs.saveTagInput.$refs.input.focus();
+			});
 		},
 		setDuration() {
 			this.advancedData.Duration =
@@ -339,12 +376,40 @@ export default {
 </script>
 <style lang="scss">
 #upload {
+	height: 100%;
 	& > .content {
+		height: 100%;
+		background: #ededed;
 		padding: 20px 40px;
 		.upload-header {
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
+		}
+		.el-button {
+			border-radius: 0px;
+		}
+		.el-input__inner {
+			border-radius: 0px;
+			height: 35px;
+			line-height: 35px;
+		}
+		.el-input-number {
+			height: 35px;
+			line-height: 35px;
+		}
+		.el-input-group__append {
+			border-radius: 0px;
+			background: #9a9eaf;
+			color: #fff;
+		}
+		.el-form-item__label {
+			font-weight: bold;
+		}
+		h1 {
+			font-size: 24px;
+			color: #ccc;
+			margin-bottom: 40px;
 		}
 		.path-input {
 			width: 400px;
@@ -354,6 +419,14 @@ export default {
 		}
 		.encryptpassword-input {
 			display: inline-block;
+		}
+		.whitelist-wrap {
+			.el-tag{
+				margin-right:10px;
+			}
+			.save-tag-input {
+				width:90px;
+			}
 		}
 	}
 }

@@ -3,30 +3,24 @@
 	 id="home"
 	 class="common-main"
 	>
-		<div class="content">
-			<div v-if="loginStatus">
-				<el-button
-				 type="danger"
-				 class="log"
-				 @click="logOut"
-				>Log Out</el-button>
-				<el-button
-				 type="success"
-				 style="margin-bottom: 20px;"
-				 @click="exportWallet"
-				>Export Wallet</el-button>
-			</div>
+		<div
+		 class="content islogin"
+		 v-if="loginStatus ===1"
+		>
 			<div class="user-meta">
-				<a href="https://ont.io">去ont</a>
-				<div
-				 class="user-meta-left"
-				 v-if="loginStatus === 1"
-				>
+				<div class="user-meta-left">
 					<div class="user-name">
 						<!-- <i class="ofont ofont-user"></i> -->
 						<div>
 							<p class="light-blue-xs bold mb10">Welcome !</p>
-							<p class="theme-bold">{{user.name}}</p>
+							<p class="theme-bold">{{userName}}</p>
+						</div>
+						<div>
+							<el-button
+							 type="danger"
+							 class="log"
+							 @click="switchToggle.logoutDialog = true"
+							>Log Out</el-button>
 						</div>
 					</div>
 					<!-- pause !!! -->
@@ -37,30 +31,35 @@
 							<span class="grey-xs bold">SAVE POWER</span>
 						</div>
 					</div>
-				</div>
-				<div
-				 class="user-meta-left no-user"
-				 v-else
-				>
-					<i class="ofont ofont-user"></i>
-					<div class="please-login">
-						<div class="tologin">
-							<router-link
-							 to="/CreateAccount"
-							 class="button"
-							>Create Account</router-link>
-							<router-link
-							 to="/ImportAccount"
-							 class="button"
-							>Import Accont</router-link>
+					<el-dialog
+					 center
+					 width='600px'
+					 :visible.sync="switchToggle.logoutDialog"
+					>
+						<div slot="title">
+							<h2>Warning</h2>
+							<div class="dialog-title-border"></div>
 						</div>
-					</div>
+						<div>
+							<p class="mt20 text-center">Please ensure that the private key file is properly stored before exiting.</p>
+						</div>
+						<div slot="footer">
+							<el-button
+							 type="danger"
+							 @click="logOut"
+							>Logout</el-button>
+							<el-button
+							 type="primary"
+							 @click="exportWallet"
+							>Export Wallet</el-button>
+						</div>
+					</el-dialog>
 				</div>
 				<div class="user-meta-right">
 					<div class="balance-title">
 						<div class="balance-meta">
 							<p class="grey-xs bold mb10">Total Balance</p>
-							<p class="theme-bold"> {{balanceLists.length>0?filterFloat(balanceLists[balanceSelected].Balance).toLocaleString('en-US'):'0'}}</p>
+							<p class="theme-bold"> {{balanceLists.length>0?filterFloat(balanceLists[balanceSelected].BalanceFormat).toLocaleString('en-US'):'0'}}</p>
 						</div>
 						<el-select
 						 class="asset-select"
@@ -106,11 +105,8 @@
 									>
 									<p class="theme-bold">{{ balanceLists[balanceSelected].Symbol}}</p>
 								</div>
-								<p class="theme-bold">{{filterFloat(balanceLists[balanceSelected].Balance).toLocaleString('en-US')}}</p>
+								<p class="theme-bold">{{filterFloat(balanceLists[balanceSelected].BalanceFormat).toLocaleString('en-US')}}</p>
 							</div>
-							<!-- <div class="balance-bottom">
-								<p>{{balanceLists[balanceSelected].Balance}}</p>
-							</div> -->
 						</div>
 					</div>
 				</div>
@@ -144,6 +140,37 @@
 				</el-table>
 			</div>
 		</div>
+		<div
+		 class="content not-login account-wrap"
+		 v-if="loginStatus === 0"
+		>
+			<div class="account-box flex column jc-center">
+				<h3 class="account-box-sub  mb50"><span>Welcome to</span></h3>
+				<div class="flex between account-box-sub">
+					<div class="save-logo-wrap">
+						<img
+						 src="../assets/images/save_768x316.png"
+						 alt="SAVE"
+						 class="save-logo-image"
+						>
+					</div>
+					<div class="tologin">
+						<router-link
+						 to="/CreateAccount"
+						 class="button"
+						>
+							<el-button type="primary">Create Account</el-button>
+						</router-link>
+						<router-link
+						 to="/ImportAccount"
+						 class="button"
+						>
+							<el-button>Import Account</el-button>
+						</router-link>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 </template>
 <script>
@@ -151,36 +178,19 @@ const { ipcRenderer } = require("electron");
 import { filterFloat } from "../assets/config/util";
 export default {
 	mounted() {
-		this.currentAccount();
+		this.$store.dispatch("setCurrentAccount"); // get login status
 	},
 	data() {
 		return {
+			switchToggle: {
+				logoutDialog: false
+			},
 			filterFloat,
 			balanceValue: "",
 			loginStatus: 0, // 1: login 0: not login
 			user: {
 				name: localStorage.getItem("Label") || ""
 			},
-			// balanceLists: [
-			// 	// {
-			// 	// 	Name: "Save Power",
-			// 	// 	Symbol: "SAVE",
-			// 	// 	Decimals: 0,
-			// 	// 	Balance: "000000"
-			// 	// },
-			// 	// {
-			// 	// 	Name: "NEO",
-			// 	// 	Symbol: "NEO",
-			// 	// 	Decimals: 9,
-			// 	// 	Balance: "0"
-			// 	// },
-			// 	// {
-			// 	// 	Name: "Ontology",
-			// 	// 	Symbol: "ONT",
-			// 	// 	Decimals: 9,
-			// 	// 	Balance: "0"
-			// 	// }
-			// ],
 			balanceSelected: 0,
 			mockChannels: [
 				{
@@ -318,32 +328,6 @@ export default {
 		setBalanceListsIndex(index) {
 			this.balanceSelected = index;
 		},
-		// Confirm login status
-		currentAccount() {
-			this.$axios
-				.get(this.$api.account)
-				.then(res => {
-					const data = res.data;
-					if (data.Error === 0) {
-						if (data.Desc === "SUCCESS" && data.Result.Address) {
-							const result = data.Result;
-							for (let key in result) {
-								window.localStorage.setItem(key, result[key]);
-							}
-							this.user.name = localStorage.getItem("Label") || "";
-							this.loginStatus = 1; // login success
-							this.getBalance();
-							this.getAllChannels();
-							this.$store.dispatch("setRevenue");
-						} else {
-							window.localStorage.clear(); // remove all local infomation
-						}
-					}
-				})
-				.catch(err => {
-					console.error(err);
-				});
-		},
 		getBalance() {
 			this.$store.dispatch("setBalanceLists");
 		},
@@ -383,6 +367,12 @@ export default {
 		}
 	},
 	computed: {
+		// loginStatus: function() {
+		// 	return this.$store.state.Home.loginStatus;
+		// },
+		userName: function() {
+			return localStorage.getItem("Label") || "";
+		},
 		balanceLists: function() {
 			return this.$store.state.Wallet.balanceLists;
 		},
@@ -444,6 +434,39 @@ $input-color: rgba(203, 203, 203, 1);
 		width: 100%;
 		display: flex;
 		flex-direction: column;
+		&.islogin {
+			padding: 20px 88px 0;
+		}
+		&.not-login {
+			align-items: center;
+			.save-logo-image {
+				width: 300px;
+			}
+			.account-box-sub {
+				width: 60%;
+				max-width: 700px;
+				margin-left: auto;
+				margin-right: auto;
+			}
+			.tologin {
+				display: flex;
+				flex-direction: column;
+				justify-content: space-around;
+
+				.button {
+					padding: 10px;
+					color: #fff;
+					font-size: 14px;
+					.el-button {
+						border-radius: 0px;
+					}
+					.el-button--default{
+						color:#040f39;
+						border-color:rgba(4,15,57,0.5);
+					}
+				}
+			}
+		}
 		.user-meta {
 			display: flex;
 			justify-content: space-between;
@@ -476,6 +499,7 @@ $input-color: rgba(203, 203, 203, 1);
 			.user-name {
 				display: flex;
 				align-items: center;
+				justify-content: space-between;
 				height: 90px;
 				border-radius: 2px;
 				background: #fff;
@@ -498,14 +522,6 @@ $input-color: rgba(203, 203, 203, 1);
 				display: flex;
 				flex-direction: column;
 				justify-content: space-between;
-			}
-			.tologin {
-				.button {
-					background: $theme-color;
-					padding: 10px;
-					color: #fff;
-					font-size: 14px;
-				}
 			}
 		}
 		.user-meta-right {

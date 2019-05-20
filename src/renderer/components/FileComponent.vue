@@ -5,16 +5,18 @@
 		 v-if="transferType != 0"
 		>
 			<div class="flex1">
-				<p class="grey-xs bold">{{transferTypeConfig[transferType]}} progress</p>
+				<p class="grey-xs bold" v-if="progress">{{transferTypeConfig[transferType]}} progress</p>
+				<p class="grey-xs bold" v-else>No task</p>
 				<el-progress
+				v-if="progress"
 				 class="progress"
-				 :percentage="70"
+				 :percentage="progress"
 				></el-progress>
 			</div>
 
-			<el-button>Pause All</el-button>
+			<!-- <el-button>Pause All</el-button>
 			<el-button>Start all</el-button>
-			<el-button>Cancel All</el-button>
+			<el-button>Cancel All</el-button> -->
 			<el-button
 			 v-if="transferType == 2"
 			 @click="switchToggle.newTaskDialog=true"
@@ -90,10 +92,10 @@
 		 center
 		 :visible.sync="switchToggle.newTaskDialog"
 		>
-		<div slot="title">
-			<h2>New Download</h2>
-			<div class="dialog-title-border"></div>
-		</div>
+			<div slot="title">
+				<h2>New Download</h2>
+				<div class="dialog-title-border"></div>
+			</div>
 			<download-dialog v-on:closedialog='hideTaskDialog'></download-dialog>
 		</el-dialog>
 	</div>
@@ -251,6 +253,13 @@ export default {
 		};
 	},
 	computed: {
+		totalProgress: function() {
+			let progress = 0;
+			this.fileList.map(file => {
+				progress += file.Progress;
+			});
+			return parseFloat((progress / this.fileList.length).toFixed(2)) || 0;
+		},
 		fileList: function() {
 			return this.$store.state.Transfer[this.TransferConfig[this.transferType]];
 		}
@@ -275,7 +284,7 @@ $light-grey: #f2f2f2;
 	.top-progress {
 		display: flex;
 		height: 80px;
-		padding: 0 10px;
+		padding: 0 20px;
 		background: $light-grey;
 		align-items: center;
 		.progress {

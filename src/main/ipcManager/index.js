@@ -2,9 +2,6 @@ import {
   ipcMain,
   dialog
 } from 'electron'
-// import {
-//   windows
-// } from '../windowManager/index';
 import fs from 'fs';
 import path from 'path';
 
@@ -68,3 +65,6 @@ ipcMain.on('string-to-hex', (event, content) => {
 ipcMain.on('get-windows', (event) => {
   event.returnValue = '';
 })
+
+
+// Open Menu 

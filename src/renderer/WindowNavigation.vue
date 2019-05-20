@@ -159,6 +159,7 @@ export default {
 </script>
 <style lang="scss">
 $theme-color: #1b1e2f;
+$theme-input-color:#2c2f44;
 $theme-color-opacity: rgba(73, 77, 94, 1);
 $light-grey: #f2f2f2;
 $tabs-height: 80px;
@@ -240,7 +241,8 @@ $tabs-height: 80px;
 				outline: none;
 				border-radius: 15px;
 				color: #fff;
-				background-color: #2c2f44;
+				border-color:$theme-input-color;
+				background-color:$theme-input-color;
 			}
 		}
 		.el-input__inner {

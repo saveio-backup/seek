@@ -12,7 +12,7 @@ import {
   URL
 } from 'url';
 export const windows = {}; // map of {[parentWindow.id] => BrowserWindow}
-global.windows = windows;
+// global.windows = windows;
 class View {
   constructor(win, url, option = {
     isActive: true
@@ -384,6 +384,7 @@ function removeView(win, view, index) {
   view.browserView = null;
   win.views[index] = null;
   win.views.splice(index, 1);
+  win.views.length === 0 && win.destroy();
 }
 
 function onAppCommand(win, cmd) {

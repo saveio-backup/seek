@@ -4,7 +4,7 @@ import {
 const fs = require("fs")
 const path = require("path")
 const appRoot = require("app-root-dir").get()
-const exec = require('child_process').exec
+const cp = require('child_process')
 const getPlatform = () => {
     switch (platform()) {
         case 'aix':
@@ -94,11 +94,12 @@ const run = (appDataPath, appName) => {
     let cmdStr = ''
     if (getPlatform() == "win") {
         cfgDir = `${appDataPath}\\${appName}`
-        cmdStr = `.\\edge.exe --config='${cfgDir}'`
+        // cmdStr = `.\\edge.exe --config='${cfgDir}'`
+        cmdStr = `.\\edge.exe`
     } else {
         cfgDir = `${appDataPath}/${appName}`
-        cmdStr = `./edge --config='${cfgDir}'`
-
+        // cmdStr = `./edge --config='${cfgDir}'`
+        cmdStr = `./edge`
     }
     log.debug("[run] run node")
     log.debug("[run] appDataPath", appDataPath)
@@ -107,22 +108,28 @@ const run = (appDataPath, appName) => {
     const resourcesPath = (process.env.NODE_ENV === 'production') ?
         path.join(path.dirname(appRoot), 'bin') :
         path.join(appRoot, 'resources', getPlatform());
-    let workerProcess
     log.debug(cmdStr, resourcesPath)
-    workerProcess = exec(cmdStr, {
-        cwd: resourcesPath
-    })
     log.debug("[run] run node++++++")
+    let workerProcess = cp.spawn(cmdStr, ["--config", cfgDir], {
+        cwd: resourcesPath,
+    })
+    // let workerProcess = cp.exec(cmdStr, {
+    //     cwd: resourcesPath,
+    //     maxBuffer: 5000 * 1024,
+    // })
     workerProcess.stdout.on('data', function (data) {
-        // log.debug('stdout:' + data)
-        console.log(data)
-    })
+        console.log('stdout: ' + data);
+    });
+
     workerProcess.stderr.on('data', function (data) {
-        console.log(data)
-        // log.debug('stdout:' + data)
-    })
+        console.log('stderr: ' + data);
+    });
+
+    workerProcess.on('exit', function (code) {
+        console.log('child process exited with code ' + code);
+    });
     workerProcess.on('close', function (code) {
-        log.error('workerProcess out code' + code)
+        log.error('workerProcess close with code' + code)
     })
 }
 

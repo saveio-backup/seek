@@ -16,6 +16,10 @@ $theme-color: #1b1e2f;
   color: $light-blue;
 }
 
+.dark-grey {
+  color: #9B9FB0;
+}
+
 .grey-xs {
   font-size: 12px;
   color: rgba(125, 125, 125, 0.5);
@@ -29,7 +33,8 @@ $theme-color: #1b1e2f;
 
 .theme-font-blue {
   color: $theme-font-blue;
-  &.transparent{
+
+  &.transparent {
     opacity: 0.6;
   }
 }
@@ -46,28 +51,34 @@ $theme-color: #1b1e2f;
 .cursor-pointer {
   cursor: pointer;
 }
-.text-center{
+
+.text-center {
   text-align: center;
 }
-.text-left{
+
+.text-left {
   text-align: left;
 }
-.text-right{
+
+.text-right {
   text-align: right;
 }
 
 /* Element UI */
-.common-el-input{
+.common-el-input {
   $height: 35px;
   height: $height;
   line-height: $height;
   border-radius: 2px;
-  span,i{
-    display: inline-block!important;
-    height: $height!important;
-    line-height: $height!important;
+
+  span,
+  i {
+    display: inline-block !important;
+    height: $height !important;
+    line-height: $height !important;
   }
 }
+
 .el-popper[x-placement^=bottom] {
   margin: 0px !important;
 }

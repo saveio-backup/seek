@@ -66,7 +66,9 @@ class View {
         defaultEncoding: 'utf-8'
       }
     });
-    this.browserView.webContents.openDevTools();
+    this.browserView.webContents.once('dom-ready', () => {
+      this.browserView.webContents.openDevTools();
+    })
   }
   forceUpdate() {
     if (this && this.browserView) {
@@ -78,6 +80,7 @@ class View {
   }
   updateDisplayURL() {
     let url = this.url ? new URL(this.url) : new URL('about:blank');
+    console.log('url is', url.href)
     if (url.host === 'localhost:9080') {
       const urlReg = new RegExp(url.origin + url.pathname + '(#/)?');
       this.displayURL = url.href.replace(urlReg, DEFAULT_PROTOCOL + '://')
@@ -316,7 +319,9 @@ export function createWindow(url) {
       return true;
     }
   }
-  mainWindow.webContents.openDevTools();
+  mainWindow.webContents.once('dom-ready', () => {
+    mainWindow.webContents.openDevTools();
+  })
   mainWindow.views = new Proxy([], handlerViews) // Proxy Array<View> 
   mainWindow.on('closed', () => {
     mainWindow = null

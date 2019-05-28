@@ -6,7 +6,10 @@
 
 <script>
 export default {
-	name: "browser",
+	mounted() {
+		// this.$store.dispatch("getChannelInitProgress");
+	},
+	name: "browser"
 };
 </script>
 
@@ -19,7 +22,7 @@ $tabs-height: 70px;
 
 .common-main {
 	background: $light-grey;
-	height:100%;
+	height: 100%;
 	width: 100%;
 }
 .layout-main {

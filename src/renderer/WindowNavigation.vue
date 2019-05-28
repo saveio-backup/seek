@@ -66,8 +66,8 @@
 						<el-input
 						 ref="inputUrl"
 						 class="input-url"
-						 v-model="activeView.displayURL"
-						 @keyup.esc.native='remoteFormatDisplayURL(activeView)'
+						 v-model="inputDisplayUrl"
+						 @keyup.esc.native='inputDisplayUrl=activeView.displayURL'
 						 @keyup.enter.native='remoteLoadURL(activeView)'
 						></el-input>
 					</div>
@@ -100,6 +100,9 @@ export default {
 		});
 	},
 	computed: {
+		realUrl: function() {
+			return this.activeView.url;
+		},
 		activeView: function() {
 			return this.views.find(view => view.isActive);
 		},
@@ -107,9 +110,18 @@ export default {
 			return remote.getCurrentWindow();
 		}
 	},
+	watch: {
+		realUrl: function() {
+			this.inputDisplayUrl = this.activeView.displayURL;
+		}
+	},
 	data() {
+		let activeView = (remote.getCurrentWindow().views || []).find(
+			view => view.isActive
+		);
 		window.vue = this;
 		return {
+			inputDisplayUrl: activeView.displayURL || "",
 			views: remote.getCurrentWindow().views || []
 		};
 	},
@@ -118,7 +130,7 @@ export default {
 			this.currentWindow.views.map((viewItem, index) => {
 				if (viewIndex === index) {
 					viewItem.isActive = true;
-					// viewItem.resize();
+					viewItem.resize();
 					this.currentWindow.setBrowserView(view.browserView);
 				} else if (viewItem.isActive === true) {
 					viewItem.isActive = false;
@@ -140,7 +152,8 @@ export default {
 		},
 		remoteLoadURL(view) {
 			// this.$refs["inputUrl" + index][0].blur();
-			view.onNewUrl(view.displayURL);
+			view.url = this.inputDisplayUrl;
+			view.onNewUrl(this.inputDisplayUrl);
 		},
 		remoteCreate() {
 			this.activeView.create();
@@ -159,10 +172,10 @@ export default {
 </script>
 <style lang="scss">
 $theme-color: #1b1e2f;
-$theme-input-color:#2c2f44;
+$theme-input-color: #2c2f44;
 $theme-color-opacity: rgba(73, 77, 94, 1);
 $light-grey: #f2f2f2;
-$tabs-height: 80px;
+$tabs-height: 67px;
 #window-navigation {
 	height: 100vh;
 }
@@ -170,7 +183,7 @@ $tabs-height: 80px;
 	height: $tabs-height;
 	background: $theme-color;
 	.window-tabs {
-		padding: 10px 40px 0 10px;
+		padding: 6px 40px 0 30px;
 		.window-tab-item {
 			&.is-active {
 				background: $theme-color-opacity;
@@ -182,7 +195,7 @@ $tabs-height: 80px;
 			.window-tab-item-title {
 				flex: 1;
 				height: 100%;
-				line-height: 30px;
+				line-height: 28px;
 				padding-right: 20px;
 				width: calc(100% - 26px);
 				overflow: hidden;
@@ -206,7 +219,7 @@ $tabs-height: 80px;
 			border-top-left-radius: 6px;
 			border-top-right-radius: 6px;
 			width: 220px;
-			height: 30px;
+			height: 28px;
 			display: flex;
 			align-items: center;
 			min-width: 50px;
@@ -228,29 +241,29 @@ $tabs-height: 80px;
 	}
 	.window-navbar {
 		display: flex;
-		height: 40px;
+		height: 32px;
 		padding: 4px 6px;
 		background: $theme-color-opacity;
 		align-items: center;
 		.input-url {
-			height: 30px;
+			height: 26px;
 			.el-input__inner {
-				&:focus{
-					border:none;
+				&:focus {
+					border: none;
 				}
 				outline: none;
 				border-radius: 15px;
 				color: #fff;
-				border-color:$theme-input-color;
-				background-color:$theme-input-color;
+				border: none;
+				background-color: $theme-input-color;
 			}
 		}
 		.el-input__inner {
 			height: 100% !important;
 		}
 		.window-navbar-buttons {
-			&>div{
-				margin:0 6px;
+			& > div {
+				margin: 0 6px;
 			}
 			display: flex;
 			align-items: center;
@@ -260,6 +273,7 @@ $tabs-height: 80px;
 }
 .window-main {
 	flex: 1;
+	width: calc(100% - 300px);
 }
 .this-is-browserview {
 	display: none;

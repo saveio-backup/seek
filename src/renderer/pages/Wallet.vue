@@ -2,7 +2,6 @@
 	<div
 	 id="wallet"
 	 class=""
-	 
 	>
 		<div class="wallet-select">
 			<el-select
@@ -39,7 +38,7 @@
 			<div class="wallet-aside">
 				<div class="wallet-asset">
 					<p class="grey-xs bold pl20 pr20">Total Balance</p>
-					<div class="total"> <span class="symbol"></span> <span class="theme-bold">{{parseFloat(balanceLists[balanceSelected].BalanceFormat).toFixed(3)}}</span></div>
+					<div class="total"> <span class="symbol"></span> <span class="theme-bold" v-if="balanceLists && balanceLists.length>0">{{parseFloat(balanceLists[balanceSelected].BalanceFormat).toFixed(3)}}</span></div>
 					<div
 					 class="balance-content"
 					 v-if="balanceLists && balanceLists.length>0"
@@ -185,7 +184,7 @@
 					>
 						<div class="flex between mb10">
 							<p class="theme-font-blue-bold">{{balanceLists[balanceSelected].Symbol}}</p>
-							<p>{{parseFloat(balanceLists[balanceSelected].BalanceFormat).toFixed(2)}} {{balanceLists[balanceSelected].Symbol}}</p>
+							<p v-if="balanceLists && balanceLists.length>0">{{parseFloat(balanceLists[balanceSelected].BalanceFormat).toFixed(2)}} {{balanceLists[balanceSelected].Symbol}}</p>
 						</div>
 						<el-form-item>
 							<el-input
@@ -262,6 +261,7 @@ import QRCode from "../assets/tool/qrcode.min";
 import ClipboardJS from "clipboard";
 export default {
 	mounted() {
+		document.title = "Wallet";
 		this.$store.dispatch("setBalanceLists");
 		this.$store.dispatch("setTxRecords");
 	},
@@ -415,7 +415,7 @@ $light-grey: #f7f7f7;
 #wallet {
 	display: flex;
 	flex: 1;
-	height:100%;
+	height: 100%;
 	flex-direction: column;
 	background: #eeeef1;
 	.wallet-select {

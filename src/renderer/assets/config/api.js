@@ -4,7 +4,8 @@ const {
 const fs = require("fs")
 const userDataPath = app.getPath('userData')
 const exist = fs.existsSync(`${userDataPath}/config.json`)
-let HOST = 'http://localhost:10235/api/'
+let HOST = null;
+// let HOST = 'http://localhost:10235/api/'
 console.log('userDataPath', userDataPath, exist)
 if (exist) {
   const cfg = fs.readFileSync(`${userDataPath}/config.json`)
@@ -24,6 +25,7 @@ const API = {
   account: HOST + VERSION + 'account',
   balance: HOST + VERSION + 'balance',
   userspace: HOST + VERSION + 'dsp/client/userspace/',
+  userspacerecords: HOST + VERSION + 'dsp/client/userspacerecords/',
   getFileList: HOST + VERSION + 'dsp/file/uploadlist/',
   getDownloadFileList: HOST + VERSION + 'dsp/file/downloadlist/',
   transactions: HOST + VERSION + 'transactions/',
@@ -37,6 +39,7 @@ const API = {
   revenue: HOST + VERSION + 'dsp/file/share/revenue',
   income: HOST + VERSION + 'dsp/file/share/income/',
   withdrawChannel: HOST + VERSION + 'channel/withdraw',
-  depositChannel: HOST + VERSION + 'channel/deposit'
+  depositChannel: HOST + VERSION + 'channel/deposit',
+  channelInitProgress: HOST+ VERSION + 'channel/init/progress'
 }
 module.exports = API;

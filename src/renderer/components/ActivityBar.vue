@@ -19,20 +19,10 @@
 						 @click="remoteOpenComponent('FileManager')"
 						 active-class="slidebar-active"
 						>
-							<img
-							 v-show="activeView.displayURL.indexOf('seek://FileManager')<0"
-							 src="../assets/images/aside_file.png"
-							 alt="Menu"
-							>
-							<img
-							 v-show="activeView.displayURL.indexOf('seek://FileManager')>=0"
-							 src="../assets/images/aside_file_color.png"
-							 alt=""
-							>
-							<div
-							 v-show="activeView.displayURL.indexOf('seek://FileManager')>=0"
-							 class="slide-border"
-							></div>
+							<i
+							 class="ofont ofont-file"
+							 :class="{'theme-color-yellow':activeView.displayURL.indexOf('seek://FileManager')>=0}"
+							></i>
 						</div>
 					</li>
 					<li class="action-item">
@@ -41,30 +31,18 @@
 						 class="nav-button"
 						 @click="remoteOpenComponent('Wallet')"
 						>
-							<img
-							 v-show="activeView.displayURL.indexOf('seek://Wallet')<0"
-							 src="../assets/images/aside_wallet.png"
-							 alt="Menu"
-							>
-							<img
-							 v-show="activeView.displayURL.indexOf('seek://Wallet')>=0"
-							 src="../assets/images/aside_wallet_color.png"
-							 alt=""
-							>
-							<div
-							 v-show="activeView.displayURL.indexOf('seek://Wallet')>=0"
-							 class="slide-border"
-							></div>
+						<i class="ofont ofont-wallet" :class="{'theme-color-yellow':activeView.displayURL.indexOf('seek://Wallet')>=0}"></i>
 						</div>
 					</li>
-					<li class="action-item">
+					<li class="action-item item-bottom-line">
 						<div
 						 title="Miner"
 						 class="nav-button"
 						 @click="remoteOpenComponent('Miner')"
 						 active-class="slidebar-active"
 						>
-							<img
+						<i class="ofont ofont-miner" :class="{'theme-color-yellow':activeView.displayURL.indexOf('seek://Miner')>=0}"></i>
+							<!-- <img
 							 v-show="activeView.displayURL.indexOf('seek://Miner')<0"
 							 src="../assets/images/aside_miner.png"
 							 alt="Menu"
@@ -73,11 +51,29 @@
 							 v-show="activeView.displayURL.indexOf('seek://Miner')>=0"
 							 src="../assets/images/aside_miner_color.png"
 							 alt=""
-							>
-							<div
-							 v-show="activeView.displayURL.indexOf('seek://Miner')>=0"
-							 class="slide-border"
-							></div>
+							> -->
+						</div>
+					</li>
+					<li class="action-item">
+						<div
+						 title="Coming Soon.."
+						 class="nav-button"
+						>
+							<span
+							 class="ofont ofont-mall"
+							 style='opacity:0.2'
+							></span>
+						</div>
+					</li>
+					<li class="action-item">
+						<div
+						 title="Coming Soon.."
+						 class="nav-button"
+						>
+							<span
+							 class="ofont ofont-add"
+							 style='opacity:0.2'
+							></span>
 						</div>
 					</li>
 				</ul>
@@ -121,19 +117,6 @@ export default {
 		}
 	},
 	methods: {
-		logOut() {
-			this.$axios
-				.post(this.$api.account + "/logout", {})
-				.then(res => {
-					if (res.data.Desc === "SUCCESS" && res.data.Error === 0) {
-						window.localStorage.clear();
-						window.location.href = "/"; // success login link to home page
-					}
-				})
-				.catch(err => {
-					console.error(err);
-				});
-		},
 		exportWallet() {
 			this.$axios
 				.get(this.$api.account + "/export/walletfile")
@@ -171,6 +154,7 @@ export default {
 };
 </script>
 <style lang="scss">
+$theme-color-yellow: #cddc39;
 $theme-color: #1b1e2f;
 $slidebar-active-color: linear-gradient(
 	110deg,
@@ -178,31 +162,41 @@ $slidebar-active-color: linear-gradient(
 	rgba(138, 247, 255, 1) 100%
 );
 #activity-bar {
-	width: 100px;
+	width: 40px;
 	color: $theme-color;
 	background: $theme-color;
 	.content {
-		position: relative;
-		z-index: 999;
-		height: 100%;
-		color: #767882;
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
+		position: relative;
+		padding-top: 25px;
+		z-index: 999;
+		height: 100%;
+		color: #767882;
+		.theme-color-yellow {
+			color: $theme-color-yellow;
+		}
 		.action-container {
 			text-align: center;
 			.action-item {
 				display: flex;
+				position: relative;
 				font-size: 40px;
-				margin: 40px 0;
+				margin: 25px 0;
+				.ofont {
+					font-size: 30px;
+				}
 				&.item-user {
 					position: relative;
-					font-size: 50px;
 					margin-top: 10px;
 					padding-bottom: 10px;
-					margin-bottom: 40px;
+					margin-bottom: 60px;
 				}
-				&.item-user:after {
+				&.item-bottom-line {
+					padding-bottom: 20px;
+				}
+				&.item-bottom-line:after {
 					content: "";
 					position: absolute;
 					bottom: 0px;
@@ -212,22 +206,16 @@ $slidebar-active-color: linear-gradient(
 					height: 1px;
 					background: rgba(255, 255, 255, 0.2);
 				}
+				img {
+					width: calc(100% - 14px);
+				}
 				.nav-button {
 					flex: 1;
 					display: flex;
 					position: relative;
 					align-items: center;
 					justify-content: center;
-					.slide-border {
-						width: 1.5px;
-						height: 100%;
-						position: absolute;
-						right: 0px;
-						top: 0px;
-						border-radius: 1px;
-						background: $slidebar-active-color;
-						transform: scaleY(1.3);
-					}
+					cursor: pointer;
 					&.slidebar-active {
 						position: relative;
 					}

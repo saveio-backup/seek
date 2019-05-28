@@ -21,6 +21,9 @@
 </template>
 <script>
 export default {
+	mounted(){
+		document.title = 'Miner'
+	},
 	data() {
 		return {
 			fileType: 0

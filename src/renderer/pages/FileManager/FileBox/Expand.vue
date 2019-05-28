@@ -11,15 +11,29 @@
 				</div>
 				<el-button @click="expandDialogVisible = true">Get Space</el-button>
 			</div>
+			<p class="theme-font-blue bold mb20">Space adjust record</p>
 			<div class="space-record">
-				<p class="theme-font-blue bold">Space adjust record</p>
 				<el-table
-				 :data='record'
+				 :data='Records'
+				 ref='recordTable'
 				 empty-text='No data'
+				 height='100%'
 				>
-					<el-table-column prop='space'></el-table-column>
-					<el-table-column prop='period'></el-table-column>
-					<el-table-column prop='cost'></el-table-column>
+					<el-table-column
+					 label='Size'
+					 prop='Size'
+					></el-table-column>
+					<el-table-column label='ExpiredAt'>
+						<template slot-scope="scope">
+							<div class="light-blue">
+								{{ $dateFormat.formatTimeByTimestamp(scope.row.ExpiredAt * 1000)}}
+							</div>
+						</template>
+					</el-table-column>
+					<el-table-column
+					 label='Cost'
+					 prop="Cost"
+					></el-table-column>
 				</el-table>
 			</div>
 			<el-dialog
@@ -37,7 +51,7 @@
 						<p class="adjust-title theme-font-blue bold">Current:</p>
 						<div class="adjust-info">
 							<p class="theme-font-blue ft14 mr20">{{space.Remain}}KB</p>
-							<p class="grey-xs bold ml20">{{space.Used}}KB / {{space.Used}}KB</p>
+							<p class="grey-xs bold ml20">{{space.Used}}KB / {{space.Remain}}KB</p>
 						</div>
 					</div>
 					<div class="adjust-item">
@@ -48,7 +62,7 @@
 							 v-model="spaceSizeKB"
 							 :precision='0'
 							 :min='1'
-							 @change="addInfo.Size = spaceSizeKB"
+							 @change="setSizeValue"
 							></el-input-number>
 							<p class="adjust-title theme-font-blue bold ml10">KB</p>
 						</div>
@@ -67,7 +81,7 @@
 						<div class="adjust-info">
 							<el-date-picker
 							 v-model="expired"
-							 @change='getDateValue'
+							 @change='setDateValue'
 							 :picker-options="pickerOptions"
 							 type="date"
 							 placeholder="Choose date"
@@ -97,30 +111,150 @@ const now = new Date();
 // nextDay.setMinutes(59);
 // nextDay.setSeconds(59);
 export default {
+	mounted() {
+		this.getUserSpaceRecords();
+		// getUserSpaceRecords
+		let element = this.$refs.recordTable.bodyWrapper;
+		this.addListenScroll(element, 100, this.getUserSpaceRecords);
+	},
 	data() {
 		const expired =
 			this.$dateFormat.formatTimeByTimestamp(
 				this.$store.state.Filemanager.space.ExpiredAt * 1000
 			) || this.$dateFormat.formatTimeByTimestamp(now.getTime());
 		return {
+			switchToggle: { loadSwitch: true },
 			submitToggle: true, // commit toggle
 			spaceSizeKB: 1,
 			expired,
 			pickerOptions: {
-				disabledDate: () => {
-					return false;
-					// const now = new Date().getTime();
-					// return date.getTime() - now < 0;
+				disabledDate: date => {
+					const now = new Date().getTime();
+					return date.getTime() - now < 0;
 				}
 			},
 			addInfo: {
 				Addr: window.localStorage.getItem("Address"),
-				Size: 1,
-				Second: 0
+				Size: {
+					Type: 0,
+					Value: "1"
+				},
+				Second: {
+					Type: 0,
+					Value: "0"
+				}
 			},
 			expandDialogVisible: false,
-			record: []
+			Records: [],
+			offset: 0,
+			limit: 20,
+			mockRecords: [
+				{
+					Size: 20480,
+					ExpiredAt: 1558600673,
+					Cost: 276480027
+				},
+				{
+					Size: 10240,
+					ExpiredAt: 1558597073,
+					Cost: 110592036
+				},
+				{
+					Size: 20480,
+					ExpiredAt: 1558600673,
+					Cost: 276480027
+				},
+				{
+					Size: 10240,
+					ExpiredAt: 1558597073,
+					Cost: 110592036
+				},
+				{
+					Size: 20480,
+					ExpiredAt: 1558600673,
+					Cost: 276480027
+				},
+				{
+					Size: 10240,
+					ExpiredAt: 1558597073,
+					Cost: 110592036
+				},
+				{
+					Size: 20480,
+					ExpiredAt: 1558600673,
+					Cost: 276480027
+				},
+				{
+					Size: 10240,
+					ExpiredAt: 1558597073,
+					Cost: 110592036
+				},
+				{
+					Size: 20480,
+					ExpiredAt: 1558600673,
+					Cost: 276480027
+				},
+				{
+					Size: 10240,
+					ExpiredAt: 1558597073,
+					Cost: 110592036
+				},
+				{
+					Size: 20480,
+					ExpiredAt: 1558600673,
+					Cost: 276480027
+				},
+				{
+					Size: 10240,
+					ExpiredAt: 1558597073,
+					Cost: 110592036
+				},
+				{
+					Size: 20480,
+					ExpiredAt: 1558600673,
+					Cost: 276480027
+				},
+				{
+					Size: 10240,
+					ExpiredAt: 1558597073,
+					Cost: 110592036
+				},
+				{
+					Size: 20480,
+					ExpiredAt: 1558600673,
+					Cost: 276480027
+				},
+				{
+					Size: 10240,
+					ExpiredAt: 1558597073,
+					Cost: 110592036
+				},
+				{
+					Size: 20480,
+					ExpiredAt: 1558600673,
+					Cost: 276480027
+				},
+				{
+					Size: 10240,
+					ExpiredAt: 1558597073,
+					Cost: 110592036
+				}
+			]
 		};
+	},
+	watch: {
+		space: {
+			handler: function(newValue) {
+				this.spaceSizeKB = newValue.Remain;
+			},
+			deep: true
+		},
+		expired_old: {
+			handler: function(newValue) {
+				this.expired = newValue;
+			},
+			deep: true
+		}
 	},
 	computed: {
 		expired_old() {
@@ -142,14 +276,69 @@ export default {
 		}
 	},
 	methods: {
+		addListenScroll(element, distance, callback) {
+			element.addEventListener("scroll", function() {
+				console.log(`element.scrollTop is: ${element.scrollTop},
+				element.clientHeight is ${element.clientHeight},
+				distance is ${distance},
+				element.scrollHeight is ${element.scrollHeight}
+				`);
+				if (
+					element.scrollTop + element.clientHeight + distance >=
+					element.scrollHeight
+				) {
+					console.log("scroll Toggle");
+					callback();
+				}
+			});
+		},
+		getUserSpaceRecords() {
+			if (!this.switchToggle.loadSwitch) return;
+			this.switchToggle.loadSwitch = false;
+			this.$axios(
+				this.$api.userspacerecords +
+					localStorage.getItem("Address") +
+					"/" +
+					this.offset * this.limit +
+					"/" +
+					(this.offset * this.limit + this.limit - 1)
+			)
+				.then(res => {
+					if (res.data.Error === 0) {
+						if (res.data.Result.Records.length > 0) {
+							this.offset += 1;
+							this.Records = this.Records.concat(res.data.Result.Records);
+							this.switchToggle.loadSwitch = true;
+							return;
+						} else {
+							this.switchToggle.loadSwitch = false;
+							return;
+						}
+					} else {
+						this.switchToggle.loadSwitch = true;
+						return;
+					}
+				})
+				.catch(err => {
+					console.error(err);
+					this.switchToggle.loadSwitch = true;
+				});
+		},
 		addUserSpace() {
 			if (!this.submitToggle) return;
-			const addr = this.addInfo.Second >= 0 ? "add" : "revoke";
+			this.submitToggle = false;
+			// const addr = this.addInfo.Second.Value >= 0 ? "add" : "revoke";
 			this.$axios
-				.post(this.$api.userspace + addr, {
+				.post(this.$api.userspace + "set", {
 					Addr: this.addInfo.Addr,
-					Second: Math.abs(this.addInfo.Second),
-					Size: this.addInfo.Size
+					Second: {
+						Value: Math.abs(this.addInfo.Second.Value),
+						Type: this.addInfo.Second.Type
+					},
+					Size: {
+						Value: Math.abs(this.addInfo.Size.Value),
+						Type: this.addInfo.Size.Type
+					}
 				})
 				.then(res => {
 					console.log(res);
@@ -168,21 +357,45 @@ export default {
 					this.submitToggle = true;
 				});
 		},
-		getDateValue(e) {
-			console.log(e);
+		setSizeValue() {
+			// this.addInfo.Size.Value = this.spaceSizeKB;
+			if (this.spaceSizeKB - this.space.Remain === 0) {
+				this.addInfo.Size.Value = this.spaceSizeKB;
+				this.addInfo.Size.Type = 0;
+			} else if (this.spaceSizeKB - this.space.Remain > 0) {
+				this.addInfo.Size.Value = this.spaceSizeKB - this.space.Remain;
+				this.addInfo.Size.Type = 1;
+			} else {
+				this.addInfo.Size.Value = this.space.Remain - this.spaceSizeKB;
+				this.addInfo.Size.Type = 2;
+			}
+		},
+		setDateValue(e) {
 			if (!e) return;
-			this.addInfo.Second = Math.floor(
+			this.addInfo.Second.Value = Math.floor(
 				(e.getTime() - new Date(this.expired_old).getTime()) / 1000
 			);
+			if (this.addInfo.Second.Value === 0) {
+				this.addInfo.Second.Type = 0;
+			} else if (this.addInfo.Second.Value > 0) {
+				this.addInfo.Second.Type = 1;
+			} else {
+				this.addInfo.Second.Type = 2;
+			}
 		}
 	}
 };
 </script>
 <style lang="scss">
+$theme-font-blue: #040f39;
 $grey: #ccc;
 #expand {
+	height: 100%;
 	& > .content {
-		padding: 0 50px;
+		height: 100%;
+		padding: 0 50px 10px;
+		display: flex;
+		flex-direction: column;
 		.space-header {
 			padding-top: 30px;
 			display: flex;
@@ -197,12 +410,23 @@ $grey: #ccc;
 					width: 100%;
 				}
 			}
-			.el-button{
-				height:40px;
+			.el-button {
+				height: 40px;
 			}
 		}
 		.space-record {
-			margin-top: 50px;
+			display: flex;
+			flex: 1;
+			flex-direction: column;
+			.el-table {
+				color: $theme-font-blue;
+				font-weight: bold;
+				thead th {
+					background: #e7e7eb;
+					color: #1b1e2f;
+					font-weight: bold;
+				}
+			}
 		}
 	}
 	.el-dialog__body {

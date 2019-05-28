@@ -23,49 +23,57 @@
 						>{{transferLength}}</span></router-link>
 				</div>
 				<div class="coin">
-					<span class="grey-xs bold mr10">Balance: {{filterFloat(balanceTotal).toLocaleString('en-US')}}</span>
-					<el-button
-					 class="asset-transfer"
-					 type="primary"
-					 @click="switchToggle.assetTransferDialog = true"
-					>划转</el-button>
+					<div class="flex jc-end">
+					</div>
+					<div class="ft12 mr10 flex column between">
+						<p>Channel: {{channelBind.ChannelId || 'Not Selected'}}</p>
+						<p v-if="channelBind.TokenAddr">{{channelBind.TokenAddr.replace(channelBind.TokenAddr.slice(5,-5),'...')}}</p>
+					</div>
+					<span class="grey-xs bold mr10">{{filterFloat(channelBind.BalanceFormat || 0).toLocaleString('en-US')}} SAVE</span>
+					<span
+					 class="ofont ofont-menu-point cursor-pointer"
+					 @click="switchToggle.assetSettingDialog = !switchToggle.assetSettingDialog"
+					>
+					</span>
+					<ul
+					 class="asset-opera"
+					 v-show="switchToggle.assetSettingDialog"
+					 @click="switchToggle.assetSettingDialog = false"
+					>
+						<li @click="switchToggle.assetTransferDialog = true">
+							<!-- class="asset-transfer" -->
+							Transfer
+						</li>
+						<li @click="switchToggle.channelListDialog = true">Change Channel</li>
+					</ul>
 				</div>
 			</div>
 			<el-dialog
 			 class="asset-transfer-dialog"
-			 title='Asset'
+			 title='Transfer'
 			 width='550px'
 			 :visible.sync="switchToggle.assetTransferDialog"
 			 center
 			>
 				<div slot="title">
-					<h2>Asset</h2>
+					<h2>Transfer</h2>
 					<div class="dialog-title-border"></div>
-				</div>
-				<div class="flex jc-end">
-					<el-select v-model="channelSelected">
-						<el-option
-						 v-for="item in channels"
-						 :key="item.Address"
-						 :label="item.Address"
-						 :value="item"
-						></el-option>
-					</el-select>
 				</div>
 				<div class="flex between pl30 pr30 mb50 mt20">
 					<div
 					 v-if="withDraw"
 					 class="flex1 text-left"
 					>
-						<p class="theme-font-blue transparent ft12 bold">Channel Amount:</p>
-						<p class="theme-font-blue bold ft20 mt10">{{filterFloat(channelSelected.BalanceFormat || 0).toLocaleString('en-US')}} SAVE</p>
+						<p class="theme-font-blue transparent ft12 bold">Channel</p>
+						<p class="theme-font-blue bold ft20 mt10">{{filterFloat(channelBind.BalanceFormat || 0).toLocaleString('en-US')}}</p>
+						<!-- <p class="theme-font-blue transparent ft12 bold">{{channelBind.Address}}</p> -->
 					</div>
 					<div
 					 v-else
 					 class="flex1 text-left"
 					>
-						<p class="theme-font-blue transparent ft12 bold">Save Amount</p>
-						<p class="theme-font-blue bold ft20 mt10">{{filterFloat(mainCount).toLocaleString('en-US')}} SAVE</p>
+						<p class="theme-font-blue transparent ft12 bold">Wallet</p>
+						<p class="theme-font-blue bold ft20 mt10">{{filterFloat(mainCount).toLocaleString('en-US')}}</p>
 					</div>
 					<div class="flex column between">
 						<i class="ofont ofont-fasong"></i>
@@ -77,19 +85,21 @@
 					 v-if="!withDraw"
 					 class="flex1 text-right"
 					>
-						<p class="theme-font-blue transparent ft12 bold">Channel Amount</p>
-						<p class="theme-font-blue bold ft20 mt10">{{filterFloat(channelSelected.BalanceFormat || 0).toLocaleString('en-US')}} SAVE</p>
+						<p class="theme-font-blue transparent ft12 bold">Channel</p>
+						<p class="theme-font-blue bold ft20 mt10">{{filterFloat(channelBind.BalanceFormat || 0).toLocaleString('en-US')}}</p>
+						<!-- <p class="theme-font-blue transparent ft12 bold">{{channelBind.Address}}</p> -->
 					</div>
 					<div
 					 v-else
 					 class="flex1 text-right"
 					>
-						<p class="theme-font-blue transparent ft12 bold">Save Amount</p>
-						<p class="theme-font-blue bold ft20 mt10">{{filterFloat(mainCount).toLocaleString('en-US')}} SAVE</p>
+						<p class="theme-font-blue transparent ft12 bold">Wallet</p>
+						<p class="theme-font-blue bold ft20 mt10">{{filterFloat(mainCount).toLocaleString('en-US')}}</p>
 					</div>
 				</div>
 				<el-input
 				 type="number"
+				 min='0'
 				 class="transfer-input-number"
 				 v-model="transferAmount"
 				 placeholder="input number"
@@ -103,22 +113,50 @@
 					>Confirm</el-button>
 				</div>
 			</el-dialog>
+			<el-dialog
+			 :visible.sync="switchToggle.channelListDialog"
+			 center
+			>
+				<div slot="title">
+					<h2>Channel Select</h2>
+					<div class="dialog-title-border"></div>
+				</div>
+				<div style="height:400px; overflow:hidden; display:flex;">
+					<channel-list
+					 ref="channellist"
+					 :showRadio='true'
+					></channel-list>
+				</div>
+				<div slot="footer">
+					<el-button
+					 type="primary"
+					 @click="toApplyChange"
+					>Apply</el-button>
+					<el-button @click="toCancelChange">Cancel</el-button>
+				</div>
+			</el-dialog>
 			<router-view></router-view>
 		</div>
 	</div>
 </template>
 <script>
 import { filterFloat } from "../assets/config/util";
+import channelList from "../components/ChannelsList.vue";
 export default {
 	mounted() {
+		document.title = "File Manager";
 		this.initBalanceRequest();
+	},
+	components: {
+		channelList
 	},
 	data() {
 		return {
 			filterFloat,
-			channelSelected: "",
 			switchToggle: {
+				assetSettingDialog: false,
 				assetTransferDialog: false,
+				channelListDialog: false,
 				transferRequest: true
 			},
 			transferAmount: "",
@@ -135,7 +173,7 @@ export default {
 		},
 		toTransfer() {
 			if (!this.switchToggle.transferRequest) return;
-			if (!this.channelSelected) {
+			if (!this.channelBind) {
 				this.emitMessage("Please Choose Channel Address", "error");
 				return;
 			} else if (!this.transferAmount.trim()) {
@@ -148,12 +186,12 @@ export default {
 				: this.$api.depositChannel;
 			this.$axios
 				.post(addr, {
-					Partner: this.channelSelected.Address,
+					Partner: this.channelBind.Address,
 					Amount: this.transferAmount
 				})
 				.then(res => {
 					if (res.data.Error === 0) {
-						this.emitMessage('Transfer Success!','success');
+						this.emitMessage("Transfer Success!", "success");
 						this.switchToggle.transferRequest = true;
 						this.switchToggle.assetTransferDialog = false;
 						this.initBalanceRequest();
@@ -166,6 +204,14 @@ export default {
 					console.error(err);
 					this.switchToggle.transferRequest = true;
 				});
+		},
+		toApplyChange() {
+			this.$refs.channellist.applyChange();
+			this.switchToggle.channelListDialog = false;
+		},
+		toCancelChange() {
+			this.$refs.channellist.initCurrentRow();
+			this.switchToggle.channelListDialog = false;
 		},
 		initBalanceRequest() {
 			this.$store.dispatch("setBalanceLists");
@@ -181,6 +227,9 @@ export default {
 		},
 		channels: function() {
 			return this.$store.state.Home.channels;
+		},
+		channelBind: function() {
+			return this.$store.state.Home.channelBind;
 		},
 		balanceTotal: function() {
 			return this.$store.state.Home.balanceTotal;
@@ -258,6 +307,30 @@ $grey: #ccc;
 					right: 0px;
 					top: 0px;
 					// transform: translateX(50%) translateY(-50%)
+				}
+			}
+			.coin {
+				display: flex;
+				align-items: center;
+				position: relative;
+				.asset-opera {
+					width: 200px;
+					text-align: center;
+					position: absolute;
+					right: 0px;
+					bottom: 0px;
+					padding: 10px 0;
+					background: #fff;
+					z-index: 1;
+					transform: translateY(100%);
+					li {
+						padding: 5px 10px;
+						cursor: pointer;
+						font-size: 14px;
+						&:hover {
+							color: #65a6ff;
+						}
+					}
 				}
 			}
 			.asset-transfer {

@@ -1,6 +1,14 @@
 import {
     platform
 } from 'os';
+const logP = console.log;
+console.log = function (data, ...args) {
+    if (typeof data === 'string' &&  data.indexOf('stdout') >= 0) {
+        return;
+    } else {
+        logP(data, ...args)
+    }
+}
 const fs = require("fs")
 const path = require("path")
 const appRoot = require("app-root-dir").get()
@@ -48,7 +56,10 @@ const baseDirPath = (appDataPath, appName) => {
 }
 
 const setupConfig = async (appDataPath, appName) => {
+
     let cfgPath = cfgFilePath(appDataPath, appName)
+    console.log('!!!!!cfgPath: ', cfgPath);
+    console.log('!!!!appDataPath: ', appDataPath);
     log.debug("[setupConfig] setup cfg")
     log.debug("[setupConfig] appDataPath", appDataPath)
     log.debug("[setupConfig] appname", cfgPath)

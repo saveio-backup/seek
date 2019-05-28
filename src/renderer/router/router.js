@@ -13,7 +13,7 @@ export default new Router({
     },
     {
       path: '/Home',
-      name: 'home-page',
+      name: 'Home',
       component: require('../pages/Home').default,
       meta: {
         keepAlive: true
@@ -21,7 +21,7 @@ export default new Router({
     },
     {
       path: '/CreateAccount',
-      name: 'create-account-page',
+      name: 'CreateAccount',
       component: require('@/components/CreateAccount').default,
       meta: {
         keepAlive: true
@@ -29,7 +29,7 @@ export default new Router({
     },
     {
       path: '/ImportAccount',
-      name: 'import-account-page',
+      name: 'ImportAccount',
       component: require('@/components/ImportAccount').default,
       meta: {
         keepAlive: true
@@ -80,7 +80,9 @@ export default new Router({
           path: '',
           redirect: {
             name: 'disk',
-            type: 0
+            query:{
+              type:0
+            }
           }
         }
       ]

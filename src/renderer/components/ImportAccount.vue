@@ -56,7 +56,7 @@ export default {
 						for (let key in result) {
 							window.localStorage.setItem(key, result[key]);
 						}
-						window.location.href = "/"; // success login link to home page
+						window.location.href = location.origin + location.pathname; // success login link to home page
 					}
 				})
 				.catch(err => {

@@ -112,33 +112,7 @@
 				</div>
 			</div>
 			<div class="channels-title">Channel Balance</div>
-			<div class="channels">
-				<el-table
-				 :data="channels"
-				 height="100%"
-				 empty-text='No data'
-				>
-					<el-table-column
-					 prop='ChannelId'
-					 label='Channel'
-					></el-table-column>
-					<el-table-column label='Balance'>
-						<template slot-scope="scope">
-							<div class="light-blue">
-								{{filterFloat(scope.row.BalanceFormat).toLocaleString('en-US')}}
-							</div>
-						</template>
-					</el-table-column>
-					<el-table-column
-					 prop='TokenAddr'
-					 label='Token Addr'
-					></el-table-column>
-					<el-table-column
-					 prop='HostAddr'
-					 label='DNS'
-					></el-table-column>
-				</el-table>
-			</div>
+			<channels-list></channels-list>
 		</div>
 		<div
 		 class="content not-login account-wrap"
@@ -176,8 +150,13 @@
 <script>
 const { ipcRenderer } = require("electron");
 import { filterFloat } from "../assets/config/util";
+import channelsList from "../components/ChannelsList.vue";
 export default {
+	components: {
+		channelsList
+	},
 	mounted() {
+		document.title = "Home";
 		this.$store.dispatch("setCurrentAccount"); // get login status
 	},
 	data() {
@@ -187,141 +166,11 @@ export default {
 			},
 			filterFloat,
 			balanceValue: "",
-			loginStatus: 0, // 1: login 0: not login
+			// loginStatus: 0, // 1: login 0: not login
 			user: {
 				name: localStorage.getItem("Label") || ""
 			},
-			balanceSelected: 0,
-			mockChannels: [
-				{
-					ChannelId: 101,
-					Balance: 1000000000,
-					BalanceFormat: "1",
-					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
-					HostAddr: "tcp://127.0.0.1:13004",
-					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
-				},
-				{
-					ChannelId: 101,
-					Balance: 1000000000,
-					BalanceFormat: "1",
-					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
-					HostAddr: "tcp://127.0.0.1:13004",
-					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
-				},
-				{
-					ChannelId: 101,
-					Balance: 1000000000,
-					BalanceFormat: "1",
-					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
-					HostAddr: "tcp://127.0.0.1:13004",
-					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
-				},
-				{
-					ChannelId: 101,
-					Balance: 1000000000,
-					BalanceFormat: "1",
-					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
-					HostAddr: "tcp://127.0.0.1:13004",
-					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
-				},
-				{
-					ChannelId: 101,
-					Balance: 1000000000,
-					BalanceFormat: "1",
-					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
-					HostAddr: "tcp://127.0.0.1:13004",
-					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
-				},
-				{
-					ChannelId: 101,
-					Balance: 1000000000,
-					BalanceFormat: "1",
-					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
-					HostAddr: "tcp://127.0.0.1:13004",
-					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
-				},
-				{
-					ChannelId: 101,
-					Balance: 1000000000,
-					BalanceFormat: "1",
-					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
-					HostAddr: "tcp://127.0.0.1:13004",
-					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
-				},
-				{
-					ChannelId: 101,
-					Balance: 1000000000,
-					BalanceFormat: "1",
-					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
-					HostAddr: "tcp://127.0.0.1:13004",
-					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
-				},
-				{
-					ChannelId: 101,
-					Balance: 1000000000,
-					BalanceFormat: "1",
-					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
-					HostAddr: "tcp://127.0.0.1:13004",
-					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
-				},
-				{
-					ChannelId: 101,
-					Balance: 1000000000,
-					BalanceFormat: "1",
-					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
-					HostAddr: "tcp://127.0.0.1:13004",
-					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
-				},
-				{
-					ChannelId: 101,
-					Balance: 1000000000,
-					BalanceFormat: "1",
-					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
-					HostAddr: "tcp://127.0.0.1:13004",
-					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
-				},
-				{
-					ChannelId: 101,
-					Balance: 1000000000,
-					BalanceFormat: "1",
-					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
-					HostAddr: "tcp://127.0.0.1:13004",
-					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
-				},
-				{
-					ChannelId: 101,
-					Balance: 1000000000,
-					BalanceFormat: "1",
-					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
-					HostAddr: "tcp://127.0.0.1:13004",
-					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
-				},
-				{
-					ChannelId: 101,
-					Balance: 1000000000,
-					BalanceFormat: "1",
-					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
-					HostAddr: "tcp://127.0.0.1:13004",
-					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
-				},
-				{
-					ChannelId: 101,
-					Balance: 1000000000,
-					BalanceFormat: "1",
-					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
-					HostAddr: "tcp://127.0.0.1:13004",
-					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
-				},
-				{
-					ChannelId: 101,
-					Balance: 1000000000,
-					BalanceFormat: "1",
-					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
-					HostAddr: "tcp://127.0.0.1:13004",
-					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
-				}
-			]
+			balanceSelected: 0
 		};
 	},
 	methods: {
@@ -340,7 +189,7 @@ export default {
 				.then(res => {
 					if (res.data.Desc === "SUCCESS" && res.data.Error === 0) {
 						window.localStorage.clear();
-						window.location.href = "/"; // success login link to home page
+						window.location.href = location.origin + location.pathname; // success login out link to home page
 					}
 				})
 				.catch(err => {
@@ -367,9 +216,9 @@ export default {
 		}
 	},
 	computed: {
-		// loginStatus: function() {
-		// 	return this.$store.state.Home.loginStatus;
-		// },
+		loginStatus: function() {
+			return this.$store.state.Home.loginStatus;
+		},
 		userName: function() {
 			return localStorage.getItem("Label") || "";
 		},
@@ -378,9 +227,6 @@ export default {
 		},
 		revenue: function() {
 			return this.$store.state.Home.revenue;
-		},
-		channels: function() {
-			return this.$store.state.Home.channels;
 		}
 	}
 };
@@ -435,7 +281,7 @@ $input-color: rgba(203, 203, 203, 1);
 		display: flex;
 		flex-direction: column;
 		&.islogin {
-			padding: 20px 88px 0;
+			padding: 20px 88px 10px;
 		}
 		&.not-login {
 			align-items: center;
@@ -460,9 +306,9 @@ $input-color: rgba(203, 203, 203, 1);
 					.el-button {
 						border-radius: 0px;
 					}
-					.el-button--default{
-						color:#040f39;
-						border-color:rgba(4,15,57,0.5);
+					.el-button--default {
+						color: #040f39;
+						border-color: rgba(4, 15, 57, 0.5);
 					}
 				}
 			}
@@ -568,23 +414,11 @@ $input-color: rgba(203, 203, 203, 1);
 		}
 		.channels-title {
 			border-radius: 2px;
+			height:70px;
 			background: #fff;
 			padding: 20px 15px;
 			color: $grey;
 			margin-top: 20px;
-		}
-		.channels {
-			flex: 1;
-			overflow-y: auto;
-			border-bottom-left-radius: 2px;
-			border-bottom-right-radius: 2px;
-			// margin-top: 80px;
-			margin-bottom: 20px;
-			.el-table thead th {
-				color: $theme-color;
-				font-weight: bold;
-				background: rgba(231, 231, 235, 1);
-			}
 		}
 	}
 }

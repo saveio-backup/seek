@@ -9,6 +9,6 @@ if (!process) {
 module.exports = {
   DEFAULT_URL,
   DEFAULT_PROTOCOL: 'seek',
-  Y_POSITION: 80,
-  X_POSITION:100
+  Y_POSITION: 68,
+  X_POSITION:40
 }

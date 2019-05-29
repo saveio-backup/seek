@@ -160,7 +160,7 @@
 					 v-show="advancedData.Privilege === 2"
 					>
 						<div class="whitelist-wrap">
-							<el-tag							
+							<el-tag
 							 :key="tag"
 							 :disable-transitions="false"
 							 v-for="tag in advancedData.WhiteList"
@@ -280,18 +280,21 @@ export default {
 				this.toGetPrice();
 			});
 		},
-		handleClose(tag){
-			this.advancedData.WhiteList.splice(this.advancedData.WhiteList.indexOf(tag),1)
+		handleClose(tag) {
+			this.advancedData.WhiteList.splice(
+				this.advancedData.WhiteList.indexOf(tag),
+				1
+			);
 		},
 		setWhiteList() {
 			// let array = this.wihteListString.replace(/[\s\r\n]/g, "").split(";");
 			// this.advancedData.WhiteList = array;
 			let inputValue = this.wihteListString.trim();
-			if(inputValue){
-				this.advancedData.WhiteList.push(inputValue)
+			if (inputValue) {
+				this.advancedData.WhiteList.push(inputValue);
 			}
 			this.switchToggle.whiteListInput = false;
-			this.wihteListString = '';
+			this.wihteListString = "";
 			this.toGetPrice();
 		},
 		showWhitelistInput() {
@@ -349,7 +352,7 @@ export default {
 			// let Path = encodeURIComponent(this.uploadFormData.Path);
 			const path = ipcRenderer.sendSync(
 				"string-to-hex",
-				encodeURIComponent(this.uploadFormData.Path)
+				this.uploadFormData.Path
 			);
 			const duration = this.advancedData.Duration;
 			const interval = this.advancedData.Interval;
@@ -364,6 +367,9 @@ export default {
 				})
 				.then(res => {
 					console.log(res);
+					if (res.data.Error === 0) {
+						this.uploadPrice = res.data.Result.FeeFormat
+					}
 				});
 		}
 	},
@@ -421,11 +427,11 @@ export default {
 			display: inline-block;
 		}
 		.whitelist-wrap {
-			.el-tag{
-				margin-right:10px;
+			.el-tag {
+				margin-right: 10px;
 			}
 			.save-tag-input {
-				width:90px;
+				width: 90px;
 			}
 		}
 	}

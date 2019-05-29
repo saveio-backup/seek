@@ -37,7 +37,7 @@ export default {
 		toGetFileInfo() {
 			const path = ipcRenderer.sendSync(
 				"string-to-hex",
-				encodeURIComponent(this.downloadUrl)
+				this.downloadUrl
 			);
 			clearTimeout(timer);
 			timer = setTimeout(() => {

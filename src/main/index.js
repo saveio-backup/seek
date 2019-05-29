@@ -36,10 +36,10 @@ const winURL = process.env.NODE_ENV === 'development' ?
 //     mainWindow = null
 //   })
 // }
-import * as node from "./node"
-node.setupConfig(app.getPath("appData"), app.getName())
+// import * as node from "./node"
+// node.setupConfig(app.getPath("appData"), app.getName())
 app.on('ready', function () {
-  node.run(app.getPath("appData"), app.getName())
+  // node.run(app.getPath("appData"), app.getName())
   createWindow(winURL)
 })
 

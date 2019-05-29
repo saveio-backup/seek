@@ -5,12 +5,12 @@
 		 v-if="transferType != 0"
 		>
 			<div class="flex1">
-				<p class="grey-xs bold" v-if="progress">{{transferTypeConfig[transferType]}} progress</p>
+				<p class="grey-xs bold" v-if="totalProgress">{{transferTypeConfig[transferType]}} progress</p>
 				<p class="grey-xs bold" v-else>No task</p>
 				<el-progress
-				v-if="progress"
+				v-if="totalProgress"
 				 class="progress"
-				 :percentage="progress"
+				 :percentage="totalProgress"
 				></el-progress>
 			</div>
 

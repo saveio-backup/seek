@@ -143,6 +143,8 @@ export default {
 								for (let key in result) {
 									window.localStorage.setItem(key, result[key]);
 								}
+							}else{
+								this.submitSwitch = true;
 							}
 						})
 						.catch(err => {

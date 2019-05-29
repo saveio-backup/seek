@@ -145,6 +145,8 @@ export default {
 					}
 				}
 			];
+			console.log(Menu);
+			console.log(customControlMenuItems);
 			Menu.buildFromTemplate(customControlMenuItems).popup();
 		},
 		remoteOpenComponent(path) {

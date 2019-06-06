@@ -31,6 +31,7 @@
 					</div>
 					<span class="grey-xs bold mr10">{{filterFloat(channelBind.BalanceFormat || 0).toLocaleString('en-US')}} SAVE</span>
 					<span
+					 ref="menuButton"
 					 class="ofont ofont-menu-point cursor-pointer"
 					 @click="switchToggle.assetSettingDialog = !switchToggle.assetSettingDialog"
 					>
@@ -38,7 +39,7 @@
 					<ul
 					 class="asset-opera"
 					 v-show="switchToggle.assetSettingDialog"
-					 @click="switchToggle.assetSettingDialog = false"
+					 v-seekclickoutside="{handler:'hideAssetSettingDialog', exclude:['menuButton']}"
 					>
 						<li @click="switchToggle.assetTransferDialog = true">
 							<!-- class="asset-transfer" -->
@@ -145,6 +146,7 @@ import channelList from "../components/ChannelsList.vue";
 export default {
 	mounted() {
 		document.title = "File Manager";
+		this.$store.dispatch("setCurrentAccount"); // get login status
 		this.initBalanceRequest();
 	},
 	components: {
@@ -165,6 +167,10 @@ export default {
 		};
 	},
 	methods: {
+		hideAssetSettingDialog() {
+			console.log("hideAsset");
+			this.switchToggle.assetSettingDialog = false;
+		},
 		emitMessage(msg, type) {
 			this.$message({
 				message: msg,
@@ -318,11 +324,11 @@ $grey: #ccc;
 					text-align: center;
 					position: absolute;
 					right: 0px;
-					bottom: 0px;
+					top:40px;					
 					padding: 10px 0;
 					background: #fff;
+					border:solid 1px #ccc;
 					z-index: 1;
-					transform: translateY(100%);
 					li {
 						padding: 5px 10px;
 						cursor: pointer;

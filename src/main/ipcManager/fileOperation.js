@@ -7,6 +7,16 @@ import path from 'path';
 
 
 // File operation
+ipcMain.on('open-file-dialog', (event) => {
+  dialog.showOpenDialog({
+    properties: ['openFile']
+  }, (files) => {
+    if (files) {
+      const contents = fs.readFileSync(files[0], 'utf-8');
+      event.sender.send('selected-file', contents)
+    }
+  })
+})
 ipcMain.on('open-wallet-dialog', (event) => {
   dialog.showOpenDialog({
     properties: ['openFile']
@@ -17,10 +27,10 @@ ipcMain.on('open-wallet-dialog', (event) => {
     }
   })
 })
-ipcMain.on('export-wallet-dialog', (event, contents) => {
+ipcMain.on('export-file-dialog', (event, contents, defaultName) => {
   const option = {
-    title: 'Export your Wallet',
-    defaultPath: 'wallet.dat'
+    title: 'Export your file',
+    defaultPath: `${defaultName}.dat`
   }
   dialog.showSaveDialog(option, (filename) => {
     if (!filename) return;

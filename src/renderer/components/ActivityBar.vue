@@ -31,7 +31,10 @@
 						 class="nav-button"
 						 @click="remoteOpenComponent('Wallet')"
 						>
-						<i class="ofont ofont-wallet" :class="{'theme-color-yellow':activeView.displayURL.indexOf('seek://Wallet')>=0}"></i>
+							<i
+							 class="ofont ofont-wallet"
+							 :class="{'theme-color-yellow':activeView.displayURL.indexOf('seek://Wallet')>=0}"
+							></i>
 						</div>
 					</li>
 					<li class="action-item item-bottom-line">
@@ -41,7 +44,10 @@
 						 @click="remoteOpenComponent('Miner')"
 						 active-class="slidebar-active"
 						>
-						<i class="ofont ofont-miner" :class="{'theme-color-yellow':activeView.displayURL.indexOf('seek://Miner')>=0}"></i>
+							<i
+							 class="ofont ofont-miner"
+							 :class="{'theme-color-yellow':activeView.displayURL.indexOf('seek://Miner')>=0}"
+							></i>
 							<!-- <img
 							 v-show="activeView.displayURL.indexOf('seek://Miner')<0"
 							 src="../assets/images/aside_miner.png"
@@ -83,7 +89,7 @@
 			 @click="toPopCustomControlMenu"
 			>
 				<div style="position:relative; z-index:2">
-					<i class="ofont ofont-menu-point"></i>
+					<i class="ofont ofont-menu-more"></i>
 				</div>
 			</div>
 		</div>
@@ -117,37 +123,18 @@ export default {
 		}
 	},
 	methods: {
-		exportWallet() {
-			this.$axios
-				.get(this.$api.account + "/export/walletfile")
-				.then(res => {
-					if (res.data.Desc === "SUCCESS" && res.data.Error === 0) {
-						ipcRenderer.send("export-wallet-dialog", res.data.Result.Wallet);
-					}
-					ipcRenderer.once("export-finished", () => {
-						this.$message({
-							message: "Export Success!",
-							type: "success"
-						});
-					});
-				})
-				.catch(err => {
-					console.error(err);
-				});
-		},
 		toPopCustomControlMenu() {
 			const that = this;
 			const customControlMenuItems = [
 				{
 					label: "Export Wallet",
 					click() {
-						that.exportWallet();
+						that.$exportWallet();						
 					}
 				}
 			];
-			console.log(Menu);
-			console.log(customControlMenuItems);
-			Menu.buildFromTemplate(customControlMenuItems).popup();
+			let menu = Menu.buildFromTemplate(customControlMenuItems);
+			menu.popup({});
 		},
 		remoteOpenComponent(path) {
 			this.activeView.openComponent(path);
@@ -227,11 +214,7 @@ $slidebar-active-color: linear-gradient(
 		.setting-bar {
 			position: relative;
 			text-align: center;
-			font-size: 42px;
-			.el-icon-menu {
-				position: relative;
-				z-index: 2;
-			}
+			font-size: 30px;
 			.setting-ul {
 				opacity: 0;
 				transition: all 0.5s;

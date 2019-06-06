@@ -142,7 +142,7 @@
 				 class="dialog-header el-dialog__header"
 				 slot="title"
 				>
-					<h2>Please Send {{balanceLists.length>0?balanceLists[balanceSelected].Symbol : 'Test Symbol'}}</h2>
+					<h2>Send</h2>
 					<div class="dialog-title-border"></div>
 				</div>
 				<div class="flex ai-center column">
@@ -173,7 +173,7 @@
 			 :visible.sync="switchToggle.sendDialog"
 			>
 				<div slot="title">
-					<h2>{{balanceLists[balanceSelected].Symbol + " Transfer"}}</h2>
+					<h2>Transfer</h2>
 					<div class="dialog-title-border mt10"></div>
 				</div>
 				<div class="send-form-wrap">
@@ -262,6 +262,7 @@ import ClipboardJS from "clipboard";
 export default {
 	mounted() {
 		document.title = "Wallet";
+		this.$store.dispatch("setCurrentAccount"); // get login status
 		this.$store.dispatch("setBalanceLists");
 		this.$store.dispatch("setTxRecords");
 	},
@@ -613,6 +614,12 @@ $light-grey: #f7f7f7;
 		background: #ebecef;
 		border-radius: 2px;
 		border: none;
+	}
+	.ofont-fuzhi{
+		&:hover{
+			font-weight: bold;
+		}
+		cursor: pointer;
 	}
 	.send-form-wrap {
 		width: 80%;

@@ -1,14 +1,20 @@
 import {
     platform
 } from 'os';
-const logP = console.log;
-console.log = function (data, ...args) {
-    if (typeof data === 'string' &&  data.indexOf('stdout') >= 0) {
-        return;
-    } else {
-        logP(data, ...args)
-    }
-}
+// const logP = console.log;
+// const keyWords = ['ProductRegistryImpl.Registry', 'stdout'];
+// console.log = function (data, ...args) {
+//     if (typeof data === 'string') {
+//         if (keyWords.some(keyWord => {
+//                 return data.indexOf(keyWord) >= 0
+//             })) {
+//             return;
+//         }
+
+//     } else {
+//         logP(data, ...args)
+//     }
+// }
 const fs = require("fs")
 const path = require("path")
 const appRoot = require("app-root-dir").get()
@@ -128,16 +134,16 @@ const run = (appDataPath, appName) => {
     //     cwd: resourcesPath,
     //     maxBuffer: 5000 * 1024,
     // })
-    workerProcess.stdout.on('data', function (data) {
-        console.log('stdout: ' + data);
+    workerProcess.stdout.on('data', function () {
+        // console.log('stdout: ' + data);
     });
 
-    workerProcess.stderr.on('data', function (data) {
-        console.log('stderr: ' + data);
+    workerProcess.stderr.on('data', function () {
+        // console.log('stderr: ' + data);
     });
 
-    workerProcess.on('exit', function (code) {
-        console.log('child process exited with code ' + code);
+    workerProcess.on('exit', function () {
+        // console.log('child process exited with code ' + code);
     });
     workerProcess.on('close', function (code) {
         log.error('workerProcess close with code' + code)

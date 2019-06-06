@@ -4,7 +4,7 @@
 			<el-table
 			 :data="channels"
 			 ref="singleTable"
-			 empty-text='No data'
+			 empty-text='No Data'
 			 height='100%'
 			 :highlight-current-row='showRadio'
 			 @current-change="handleCurrentChange"

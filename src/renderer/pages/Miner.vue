@@ -6,11 +6,12 @@
 					<router-link
 					 :class="{'theme-font-blue-bold': fileType == 0}"
 					 :to="{name:'minerdisk', query:{type:0, page:'miner',controlBar:'close',addrAPI:$api.getDownloadFileList}}"
-					><i class="el-icon-document"></i> <span>File</span></router-link>
+					><span>File</span></router-link>
 					<router-link
 					 :class="{'theme-font-blue-bold': fileType == 1}"
 					 :to="{name:'income', query:{type:1}}"
-					><i class="el-icon-tickets"></i> <span>Income</span></router-link>
+					><span>Income</span></router-link>
+					<!-- <i class="el-icon-tickets"></i>  -->
 				</div>
 			</div>
 			<div class="layout-main">
@@ -22,7 +23,8 @@
 <script>
 export default {
 	mounted(){
-		document.title = 'Miner'
+		document.title = 'Miner';
+		this.$store.dispatch("setCurrentAccount"); // get login status
 	},
 	data() {
 		return {

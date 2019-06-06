@@ -10,7 +10,7 @@
 				<el-progress
 				v-if="totalProgress"
 				 class="progress"
-				 :percentage="totalProgress"
+				 :percentage="totalProgress * 100"
 				></el-progress>
 			</div>
 
@@ -31,7 +31,7 @@
 		<div class="file-list">
 			<el-table
 			 :data="fileList"
-			 empty-text='No data'
+			 empty-text='No Data'
 			 height="100%"
 			>
 				<!-- :data="fileList" -->

@@ -19,7 +19,7 @@
 		 class="flex1 incomeTable"
 		 ref="incomeTable"
 		 :data="result.Incomes"
-		 empty-text="No data"
+		 empty-text="No Data"
 		 height='100%'
 		>
 			<el-table-column

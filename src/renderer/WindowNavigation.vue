@@ -22,11 +22,12 @@
 						 class="ml10 favicon"
 						 v-if="!item.isLoading && item.favicon"
 						 :src="item.favicon"
+						 @error='item.isLoading = false; item.favicon = false'
 						 alt=""
 						>
 						<span
 						 v-if="!item.isLoading && !item.favicon"
-						 class="el-icon-success ml10"
+						 class="el-icon-link ml10"
 						></span>
 						<p
 						 class="window-tab-item-title ml10"
@@ -116,6 +117,7 @@ export default {
 		}
 	},
 	data() {
+		
 		let activeView = (remote.getCurrentWindow().views || []).find(
 			view => view.isActive
 		);
@@ -130,7 +132,7 @@ export default {
 			this.currentWindow.views.map((viewItem, index) => {
 				if (viewIndex === index) {
 					viewItem.isActive = true;
-					viewItem.resize();
+					// viewItem.resize(); // will resize whill app-command
 					this.currentWindow.setBrowserView(view.browserView);
 				} else if (viewItem.isActive === true) {
 					viewItem.isActive = false;
@@ -175,7 +177,7 @@ $theme-color: #1b1e2f;
 $theme-input-color: #2c2f44;
 $theme-color-opacity: rgba(73, 77, 94, 1);
 $light-grey: #f2f2f2;
-$tabs-height: 67px;
+$tabs-height: 63px;
 #window-navigation {
 	height: 100vh;
 }
@@ -183,19 +185,31 @@ $tabs-height: 67px;
 	height: $tabs-height;
 	background: $theme-color;
 	.window-tabs {
-		padding: 6px 40px 0 30px;
+		padding: 0px 40px 0 30px;
 		.window-tab-item {
 			&.is-active {
 				background: $theme-color-opacity;
 			}
-			.favicon {
+			position: relative;
+			cursor: default;
+			border-top-left-radius: 6px;
+			border-top-right-radius: 6px;
+			width: 220px;
+			height: 30px;
+			display: flex;
+			align-items: center;
+			min-width: 50px;
+			font-size: 12px;
+			color: #fff;
+			background: $theme-color;
+						.favicon {
 				width: 16px;
 				height: 16px;
 			}
 			.window-tab-item-title {
 				flex: 1;
 				height: 100%;
-				line-height: 28px;
+				line-height: 30px;
 				padding-right: 20px;
 				width: calc(100% - 26px);
 				overflow: hidden;
@@ -214,18 +228,6 @@ $tabs-height: 67px;
 					background: #ccc;
 				}
 			}
-			position: relative;
-			cursor: default;
-			border-top-left-radius: 6px;
-			border-top-right-radius: 6px;
-			width: 220px;
-			height: 28px;
-			display: flex;
-			align-items: center;
-			min-width: 50px;
-			font-size: 12px;
-			color: #fff;
-			background: $theme-color;
 		}
 		.addtab {
 			cursor: pointer;

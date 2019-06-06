@@ -6,7 +6,7 @@
 				 class="allfile"
 				 :class="{'theme-font-blue-bold link-hover': fileType == 0}"
 				 :to="{name:'disk', query:{type:0}}"
-				><i class='el-icon-document'></i> <span>All File</span></router-link>
+				><span>All File</span></router-link>
 				<router-link
 				 :class="{'theme-font-blue-bold link-hover': fileType == 1}"
 				 :to="{name:'disk', query:{type:1}}"
@@ -23,16 +23,16 @@
 				 :class="{'theme-font-blue-bold link-hover': fileType == 4}"
 				 :to="{name:'disk', query:{type:4}}"
 				>Music</router-link>
-				<router-link
+				<!-- <router-link
 				 active-class="theme-font-blue-bold link-hover"
 				 :to="{name:'domain',query:{type:9}}"
-				>Domain</router-link>
+				>Domain</router-link> -->
 			</div>
 			<div
 			 class="aside-progress"
 			 v-if="space"
 			>
-				<p class="grey-xs bold tl">{{space.Used}}KB / {{space.Remain}}KB </p>
+				<p class="grey-xs bold tl">{{util.bytesToSize(space.Used *1000)}} / {{util.bytesToSize((space.Remain + space.Used)*1024)}} </p>
 				<el-progress :percentage="takeSpace"></el-progress>
 				<p class="tr">
 					<router-link
@@ -48,6 +48,7 @@
 	</div>
 </template>
 <script>
+import util from "../../assets/config/util";
 export default {
 	mounted() {
 		this.$store.dispatch("setSpace");
@@ -55,6 +56,7 @@ export default {
 	},
 	data() {
 		return {
+			util,
 			files: []
 		};
 	},
@@ -63,18 +65,15 @@ export default {
 			return this.$store.state.Filemanager.space;
 		},
 		takeSpace: function() {
-			if (this.space.Remain) {
-				return (this.space.Used / this.space.Remain) * 100;
-			} else {
-				return 100;
-			}
+			return (
+				(this.space.Used / (this.space.Remain + this.space.Used)) * 100 || 0
+			);
 		},
 		fileType: function() {
 			return this.$route.query.type;
 		}
 	},
-	methods: {
-	},
+	methods: {},
 	beforeRouteEnter(to, from, next) {
 		next(vm => {
 			if (to.name === "filebox") {

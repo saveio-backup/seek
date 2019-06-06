@@ -203,6 +203,7 @@ class View {
     this.browserWindow.addPath = path;
     if (view) {
       view.setActive();
+      // view.resize();
     } else {
       createView(this.browserWindow, DEFAULT_URL + '#/' + path, {
         isActive: true
@@ -310,6 +311,9 @@ export function createWindow(url) {
     console.log('on app command')
     onAppCommand(mainWindow, cmd)
   })
+  mainWindow.on('resize', () => {
+    resizeAll(mainWindow);
+  })
   // Vue can't update DOM while Main process changed (Though it could update it's data)
   // so use Proxy to send IPC :(
   let handlerViews = {
@@ -390,6 +394,28 @@ function removeView(win, view, index) {
   win.views[index] = null;
   win.views.splice(index, 1);
   win.views.length === 0 && win.destroy();
+}
+
+function resizeAll(win) {
+  let {
+    width,
+    height
+  } = win.getContentBounds();
+  const views = win.views;
+  const length = views.length;
+  for (let i = 0; i < length; i++) {
+    views[i].browserView.setBounds({
+      x: X_POSITION,
+      y: Y_POSITION,
+      width: width - X_POSITION,
+      height: height - Y_POSITION
+    });
+    views[i].browserView.setAutoResize({
+      width: true,
+      height: true
+    });
+  }
+
 }
 
 function onAppCommand(win, cmd) {

@@ -24,11 +24,17 @@ const mutations = {
   },
   'SET_CHANNEL_BIND'(state, Id) {
     state.channelBind = {};
-    state.channels.map(channel => {
+    let result = state.channels.some(channel => {
       if (channel.ChannelId.toString() === Id) {
         state.channelBind = channel;
+        return true;
+      } else {
+        return false;
       }
     })
+    if (!result) {
+      state.channelBind = state.channels[0] || {};
+    }
   },
   'SET_CHANNEL_PROGRESS'(state, progress) {
     state.initChannelProgress = progress;
@@ -77,7 +83,7 @@ const actions = {
             try {
               const progress = await axios.get(api.channelInitProgress)
               if (progress.data.Error === 0 && (progress.data.Result.Progress < 1)) { // but no Channel
-                rebackToCreateAccount(commit,progress.data.Result.Progress);
+                rebackToCreateAccount(commit, progress.data.Result.Progress);
                 this.dispatch('getChannelInitProgress'); // Loop loading progress
               } else if (progress.data.Error === 0) { // both Wallet and Channel exist
                 const result = data.Result;
@@ -98,7 +104,12 @@ const actions = {
             commit('SET_CURRENT_ACCOUNT', 0) // login fail
             window.localStorage.clear(); // remove all local infomation
           }
-        } else {
+        } else { // if user not login and not in Homepage
+          if (location.href.indexOf('Home') < 0) {
+            router.replace({
+              name: 'Home'
+            })
+          }
           commit('SET_CURRENT_ACCOUNT', 0) // login fail Or no user
         }
       })
@@ -107,7 +118,9 @@ const actions = {
         console.error(err);
       });
   },
-  getChannelInitProgress({commit}) {
+  getChannelInitProgress({
+    commit
+  }) {
     clearInterval(timer.channelInitProgress);
     timer.channelInitProgress = setInterval(() => {
       axios.get(api.channelInitProgress).then(res => {
@@ -129,7 +142,7 @@ const actions = {
   }
 }
 
-function rebackToCreateAccount(commit,progress) {
+function rebackToCreateAccount(commit, progress) {
   commit('SET_CURRENT_ACCOUNT', 0) // login fail
   commit('SET_CHANNEL_PROGRESS', progress)
   router.replace({

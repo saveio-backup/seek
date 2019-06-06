@@ -40,18 +40,20 @@
 							<h2>Warning</h2>
 							<div class="dialog-title-border"></div>
 						</div>
-						<div>
-							<p class="mt20 text-center">Please ensure that the private key file is properly stored before exiting.</p>
-						</div>
-						<div slot="footer">
-							<el-button
-							 type="danger"
-							 @click="logOut"
-							>Logout</el-button>
-							<el-button
-							 type="primary"
-							 @click="exportWallet"
-							>Export Wallet</el-button>
+						<div class="loading-content">
+							<div class="mb20">
+								<p class="mt20 text-center">Please ensure that the private key file is properly stored before exiting.</p>
+							</div>
+							<div slot="footer">
+								<el-button
+								 type="danger"
+								 @click="logOut"
+								>Logout</el-button>
+								<el-button
+								 type="primary"
+								 @click="$exportWallet"
+								>Export Wallet</el-button>
+							</div>
 						</div>
 					</el-dialog>
 				</div>
@@ -162,6 +164,7 @@ export default {
 	data() {
 		return {
 			switchToggle: {
+				loading: null,
 				logoutDialog: false
 			},
 			filterFloat,
@@ -184,6 +187,11 @@ export default {
 			this.$store.dispatch("setChannelBalanceTotal");
 		},
 		logOut() {
+			this.switchToggle.loading = this.$loading({
+				lock: true,
+				text: "logging out",
+				target: ".loading-content"
+			});
 			this.$axios
 				.post(this.$api.account + "/logout", {})
 				.then(res => {
@@ -193,6 +201,8 @@ export default {
 					}
 				})
 				.catch(err => {
+					this.switchToggle.loading.close();
+					this.switchToggle.loading = null;
 					console.error(err);
 				});
 		},
@@ -201,7 +211,11 @@ export default {
 				.get(this.$api.account + "/export/walletfile")
 				.then(res => {
 					if (res.data.Desc === "SUCCESS" && res.data.Error === 0) {
-						ipcRenderer.send("export-wallet-dialog", res.data.Result.Wallet);
+						ipcRenderer.send(
+							"export-file-dialog",
+							res.data.Result.Wallet,
+							"Wallet"
+						);
 					}
 					ipcRenderer.once("export-finished", () => {
 						this.$message({
@@ -414,7 +428,7 @@ $input-color: rgba(203, 203, 203, 1);
 		}
 		.channels-title {
 			border-radius: 2px;
-			height:70px;
+			height: 70px;
 			background: #fff;
 			padding: 20px 15px;
 			color: $grey;

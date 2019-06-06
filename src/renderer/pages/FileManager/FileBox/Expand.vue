@@ -3,20 +3,23 @@
 		<div class="content">
 			<div class="space-header">
 				<div class="space-progress">
-					<div class="theme-font-blue bold mb20">Used: {{space.Used}} KB / {{space.Remain}} KB</div>
+					<div class="theme-font-blue bold mb10 ft14">Used: {{util.bytesToSize(space.Used * 1024)}} / {{util.bytesToSize((space.Used + space.Remain) *1024)}}</div>
 					<el-progress
 					 :stroke-width="30"
 					 :percentage="takeSpace"
 					></el-progress>
 				</div>
-				<el-button @click="expandDialogVisible = true">Get Space</el-button>
+				<el-button
+				 ref='getspace'
+				 @click="expandDialogVisible = true"
+				>Get Space</el-button>
 			</div>
-			<p class="theme-font-blue bold mb20">Space adjust record</p>
+			<p class="theme-font-blue bold mt40 mb10 ft14">Space adjust record</p>
 			<div class="space-record">
 				<el-table
 				 :data='Records'
 				 ref='recordTable'
-				 empty-text='No data'
+				 empty-text='No Data'
 				 height='100%'
 				>
 					<el-table-column
@@ -45,66 +48,94 @@
 					<h2>Expand</h2>
 					<div class="dialog-title-border"></div>
 				</div>
-				<div class="adjust">
-					<h3 class="theme-font-blue transparent bold ft12">Space Size</h3>
-					<div class="adjust-item">
-						<p class="adjust-title theme-font-blue bold">Current:</p>
-						<div class="adjust-info">
-							<p class="theme-font-blue ft14 mr20">{{space.Remain}}KB</p>
-							<p class="grey-xs bold ml20">{{space.Used}}KB / {{space.Remain}}KB</p>
+				<div class="loading-content">
+					<div class="adjust">
+						<h3 class="theme-font-blue transparent bold ft12">Space Size</h3>
+						<div class="adjust-item">
+							<p class="adjust-title theme-font-blue bold">Current:</p>
+							<div class="adjust-info">
+								<p class="theme-font-blue ft14 mr20">{{util.bytesToSize(space.Remain *1024)}}</p>
+								<p class="grey-xs bold ml20">{{util.bytesToSize(space.Used *1024)}} / {{util.bytesToSize(space.Remain*1024)}}</p>
+							</div>
+						</div>
+						<div class="adjust-item">
+							<div class="adjust-title theme-font-blue bold">Adjust to:</div>
+							<div class="adjust-info">
+								<el-input-number
+								 class="number"
+								 v-model="adjustSize"
+								 :precision='0'
+								 :min='1'
+								 @blur="userSpaceCost"
+								></el-input-number>
+								<!-- @change="setSizeValue" -->
+								<el-select
+								 class="sizeunit"
+								 @change="userSpaceCost"
+								 v-model="sizeUnit"
+								>
+									<el-option
+									 label="MB"
+									 :value="sizeRange['MB']"
+									>
+
+									</el-option>
+									<el-option
+									 label="GB"
+									 :value="sizeRange['GB']"
+									></el-option>
+								</el-select>
+							</div>
 						</div>
 					</div>
-					<div class="adjust-item">
-						<div class="adjust-title theme-font-blue bold">Adjust to:</div>
-						<div class="adjust-info">
-							<el-input-number
-							 class="number"
-							 v-model="spaceSizeKB"
-							 :precision='0'
-							 :min='1'
-							 @change="setSizeValue"
-							></el-input-number>
-							<p class="adjust-title theme-font-blue bold ml10">KB</p>
+					<div class="adjust">
+						<h3 class="theme-font-blue transparent bold ft12">Expiry Date</h3>
+						<div class="adjust-item">
+							<p class="adjust-title theme-font-blue bold">Current:</p>
+							<div class="adjust-info">
+								<p class="theme-font-blue bold">{{expired_old}}</p>
+							</div>
+						</div>
+						<div class="adjust-item">
+							<div class="adjust-title theme-font-blue bold">Adjust to:</div>
+							<div class="adjust-info">
+								<el-date-picker
+								 v-model="expired"
+								 @change='setDateValue'
+								 :picker-options="pickerOptions"
+								 type="date"
+								 placeholder="Choose date"
+								>
+								</el-date-picker>
+							</div>
 						</div>
 					</div>
+					<div v-show='cost.TransferType' class="mb20">
+						<div v-if="cost.TransferType == 1">
+							Will cost about {{parseFloat(cost.FeeFormat).toFixed(3)}} Save
+						</div>
+						<div v-if="cost.TransferType ==2">
+							Will come back to you about {{parseFloat(cost.FeeFormat).toFixed(3)}} Save
+						</div>
+					</div>
+					<span
+					 slot="footer"
+					 class="dialog-footer"
+					>
+						<el-button @click="expandDialogVisible = false">Cancel</el-button>
+						<el-button
+						 type="primary"
+						 @click="setUserSpace"
+						>Pledge</el-button>
+					</span>
 				</div>
-				<div class="adjust">
-					<h3 class="theme-font-blue transparent bold ft12">Expiry Date</h3>
-					<div class="adjust-item">
-						<p class="adjust-title theme-font-blue bold">Current:</p>
-						<div class="adjust-info">
-							<p class="theme-font-blue bold">{{expired_old}}</p>
-						</div>
-					</div>
-					<div class="adjust-item">
-						<div class="adjust-title theme-font-blue bold">Adjust to:</div>
-						<div class="adjust-info">
-							<el-date-picker
-							 v-model="expired"
-							 @change='setDateValue'
-							 :picker-options="pickerOptions"
-							 type="date"
-							 placeholder="Choose date"
-							>
-							</el-date-picker>
-						</div>
-					</div>
-				</div>
-				<span
-				 slot="footer"
-				 class="dialog-footer"
-				>
-					<el-button @click="expandDialogVisible = false">Cancel</el-button>
-					<el-button
-					 type="primary"
-					 @click="addUserSpace"
-					>Pledge</el-button>
-				</span>
+
 			</el-dialog>
 		</div>
 	</div>
 </template>
 <script>
+import util from "../../../assets/config/util";
 const now = new Date();
 // const nextDay = new Date(now.setDate(now.getDate() + 1));
 // nextDay.setHours(23);
@@ -118,14 +149,22 @@ export default {
 		this.addListenScroll(element, 100, this.getUserSpaceRecords);
 	},
 	data() {
+		// const expired =
+		// 	this.$dateFormat.formatTimeByTimestamp(
+		// 		this.$store.state.Filemanager.space.ExpiredAt * 1000
+		// 	) || this.$dateFormat.formatTimeByTimestamp(now.getTime());
 		const expired =
-			this.$dateFormat.formatTimeByTimestamp(
-				this.$store.state.Filemanager.space.ExpiredAt * 1000
-			) || this.$dateFormat.formatTimeByTimestamp(now.getTime());
+			this.$store.state.Filemanager.space.ExpiredAt * 1000 || now.getTime();
 		return {
-			switchToggle: { loadSwitch: true },
+			util,
+			sizeUnit: 1048576,
+			sizeRange: {
+				MB: 1024,
+				GB: 1048576
+			},
+			adjustSize: 1,
+			switchToggle: { loadSwitch: true, loading: "" },
 			submitToggle: true, // commit toggle
-			spaceSizeKB: 1,
 			expired,
 			pickerOptions: {
 				disabledDate: date => {
@@ -144,6 +183,7 @@ export default {
 					Value: "0"
 				}
 			},
+			cost: {},
 			expandDialogVisible: false,
 			Records: [],
 			offset: 0,
@@ -243,15 +283,20 @@ export default {
 		};
 	},
 	watch: {
-		space: {
-			handler: function(newValue) {
-				this.spaceSizeKB = newValue.Remain;
-			},
-			deep: true
+		expandDialogVisible: function() {
+			// update adjustSize when open dialog
+			this.adjustSize = (
+				(this.space.Remain + this.space.Used) /
+				this.sizeUnit
+			).toFixed(2);
 		},
 		expired_old: {
-			handler: function(newValue) {
-				this.expired = newValue;
+			handler: function() {
+				if (this.$store.state.Filemanager.space.ExpiredAt) {
+					this.expired = new Date(
+						this.$store.state.Filemanager.space.ExpiredAt * 1000
+					);
+				}
 			},
 			deep: true
 		}
@@ -268,21 +313,19 @@ export default {
 			return this.$store.state.Filemanager.space;
 		},
 		takeSpace: function() {
-			if (this.space.Remain) {
-				return (this.space.Used / this.space.Remain) * 100;
-			} else {
-				return 100;
-			}
+			return (
+				(this.space.Used / (this.space.Used + this.space.Remain)) * 100 || 0
+			);
 		}
 	},
 	methods: {
 		addListenScroll(element, distance, callback) {
 			element.addEventListener("scroll", function() {
-				console.log(`element.scrollTop is: ${element.scrollTop},
+				/* 				console.log(`element.scrollTop is: ${element.scrollTop},
 				element.clientHeight is ${element.clientHeight},
 				distance is ${distance},
 				element.scrollHeight is ${element.scrollHeight}
-				`);
+				`); */
 				if (
 					element.scrollTop + element.clientHeight + distance >=
 					element.scrollHeight
@@ -324,9 +367,16 @@ export default {
 					this.switchToggle.loadSwitch = true;
 				});
 		},
-		addUserSpace() {
+		setUserSpace() {
 			if (!this.submitToggle) return;
+			this.setDateValue(this.expired);
+			this.setSizeValue();
 			this.submitToggle = false;
+			this.switchToggle.loading = this.$loading({
+				lock: true,
+				text: "Expanding",
+				target: ".loading-content"
+			});
 			// const addr = this.addInfo.Second.Value >= 0 ? "add" : "revoke";
 			this.$axios
 				.post(this.$api.userspace + "set", {
@@ -341,7 +391,6 @@ export default {
 					}
 				})
 				.then(res => {
-					console.log(res);
 					if (res.data.Error === 0) {
 						this.expandDialogVisible = false;
 						this.$message({
@@ -349,29 +398,75 @@ export default {
 							type: "success"
 						});
 						this.$store.dispatch("setSpace");
+						this.setDateValue(); // no param  rest date.Type = 0
+						this.cost = {};
+					} else {
+						this.$message({
+							message: "Adjust Error, please check your expiry date or wallet.",
+							type: "error"
+						});
 					}
 					this.submitToggle = true;
+					this.switchToggle.loading.close();
 				})
 				.catch(err => {
 					console.error(err);
 					this.submitToggle = true;
+					this.switchToggle.loading.close();
+				});
+		},
+		userSpaceCost() {
+			console.log("cost");
+			this.setSizeValue();
+			this.$axios
+				.post(this.$api.userspace + "cost", {
+					Addr: this.addInfo.Addr,
+					Second: {
+						Value: Math.abs(this.addInfo.Second.Value),
+						Type: this.addInfo.Second.Type
+					},
+					Size: {
+						Value: Math.abs(this.addInfo.Size.Value),
+						Type: this.addInfo.Size.Type
+					}
+				})
+				.then(res => {
+					if (res.data.Error === 0) {
+						this.cost = res.data.Result;
+					}
 				});
 		},
 		setSizeValue() {
-			// this.addInfo.Size.Value = this.spaceSizeKB;
-			if (this.spaceSizeKB - this.space.Remain === 0) {
-				this.addInfo.Size.Value = this.spaceSizeKB;
+			// this.addInfo.Size.Value = this.adjustSize;
+			if (
+				this.adjustSize * this.sizeUnit -
+					(this.space.Remain + this.space.Used) ===
+				0
+			) {
+				this.addInfo.Size.Value = this.adjustSize * this.sizeUnit;
 				this.addInfo.Size.Type = 0;
-			} else if (this.spaceSizeKB - this.space.Remain > 0) {
-				this.addInfo.Size.Value = this.spaceSizeKB - this.space.Remain;
+			} else if (
+				this.adjustSize * this.sizeUnit -
+					(this.space.Remain + this.space.Used) >
+				0
+			) {
+				this.addInfo.Size.Value =
+					this.adjustSize * this.sizeUnit -
+					(this.space.Remain + this.space.Used);
 				this.addInfo.Size.Type = 1;
 			} else {
-				this.addInfo.Size.Value = this.space.Remain - this.spaceSizeKB;
+				this.addInfo.Size.Value =
+					this.space.Remain + this.space.Used - this.adjustSize * this.sizeUnit;
 				this.addInfo.Size.Type = 2;
 			}
 		},
 		setDateValue(e) {
-			if (!e) return;
+			if (!e) {
+				this.addInfo.Second.Type = 0;
+				return;
+			}
+			console.log("expired: ", this.expired);
+			console.log("e is:", e);
 			this.addInfo.Second.Value = Math.floor(
 				(e.getTime() - new Date(this.expired_old).getTime()) / 1000
 			);
@@ -382,6 +477,7 @@ export default {
 			} else {
 				this.addInfo.Second.Type = 2;
 			}
+			this.userSpaceCost();
 		}
 	}
 };
@@ -468,6 +564,10 @@ $grey: #ccc;
 			width: 200px;
 			display: flex;
 			align-items: center;
+			.sizeunit {
+				width: 100px;
+				margin: 0 20px;
+			}
 		}
 	}
 	.el-dialog__header {

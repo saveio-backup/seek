@@ -226,6 +226,7 @@ export default {
 			storageCycleSelected: baseKeys[3], // default Permanent
 			storageCycleNumber: 1,
 			switchToggle: {
+				loading: null,
 				whiteListInput: false,
 				advanced: false, // advanced form
 				upload: true
@@ -323,26 +324,41 @@ export default {
 		},
 		toUploadFile() {
 			if (!this.switchToggle.upload) return;
-			this.switchToggle.upload = false; // set toggle
-			let data = null;
-			data = this.switchToggle.advanced
-				? Object.assign(this.uploadFormData, this.advancedData)
-				: this.uploadFormData;
-			this.$axios
-				.post(this.$api.upload, data)
-				.then(res => {
-					this.switchToggle.upload = true;
-					if (res.data.Error === 0) {
-						this.$store.dispatch("setUpload");
-						this.$router.push({ name: "transfer", query: { transferType: 1 } });
-					} else {
-						this.$message.error(res.data.Desc);
-					}
-				})
-				.catch(() => {
-					this.$message.error("Upload Error");
-					this.switchToggle.upload = true;
+			this.$refs.uploadForm.validate(valid => {
+				if (!valid) return;
+				this.switchToggle.upload = false; // set toggle
+				this.switchToggle.loading = this.$loading({
+					lock: true,
+					text: "Uploading..",
+					target: "#upload"
 				});
+				let data = null;
+				data = this.switchToggle.advanced
+					? Object.assign(this.uploadFormData, this.advancedData)
+					: this.uploadFormData;
+				this.$axios
+					.post(this.$api.upload, data)
+					.then(res => {
+						this.switchToggle.upload = true;
+						if (res.data.Error === 0) {
+							this.$store.dispatch("setUpload");
+							this.$router.push({
+								name: "transfer",
+								query: { transferType: 1 }
+							});
+						} else if (res.data.Error === 54002) {
+							this.$message.error("You don't have enough storage space to use");
+						} else {
+							this.$message.error(res.data.Desc);
+						}
+						this.switchToggle.loading.close();
+					})
+					.catch(() => {
+						this.$message.error("Upload Error");
+						this.switchToggle.upload = true;
+						this.switchToggle.loading.close();
+					});
+			});
 		},
 		toGetPrice() {
 			if (!this.switchToggle.advanced) {
@@ -368,7 +384,11 @@ export default {
 				.then(res => {
 					console.log(res);
 					if (res.data.Error === 0) {
-						this.uploadPrice = res.data.Result.FeeFormat
+						this.uploadPrice = res.data.Result.FeeFormat;
+					} else if (res.data.Error === 54002) {
+						this.$message.error("You don't have enough storage space to use");
+					} else {
+						this.$message.error(res.data.Desc);
 					}
 				});
 		}

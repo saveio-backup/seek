@@ -38,7 +38,7 @@
 					<router-link
 					 class="theme-font-blue-bold ft12 link"
 					 :to="{name:'expand'}"
-					>Expand</router-link>
+					>Upgrade Storage</router-link>
 				</p>
 			</div>
 		</div>

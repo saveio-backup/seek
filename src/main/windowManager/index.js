@@ -66,9 +66,9 @@ class View {
         defaultEncoding: 'utf-8'
       }
     });
-    this.browserView.webContents.once('dom-ready', () => {
-      this.browserView.webContents.openDevTools();
-    })
+
+    this.browserView.webContents.openDevTools();
+
   }
   forceUpdate() {
     if (this && this.browserView) {
@@ -80,7 +80,6 @@ class View {
   }
   updateDisplayURL() {
     let url = this.url ? new URL(this.url) : new URL('about:blank');
-    console.log('url is', url.href)
     if (url.host === 'localhost:9080') {
       const urlReg = new RegExp(url.origin + url.pathname + '(#/)?');
       this.displayURL = url.href.replace(urlReg, DEFAULT_PROTOCOL + '://')
@@ -93,19 +92,17 @@ class View {
   }
   updateEvent() {
     this.webContents.on('did-start-loading', () => {
-      console.log('did start loading !!');
+      // console.log('did start loading !!');
       this.isLoading = true;
       this.favicon = null;
       this.browserWindow.webContents.send('forceUpdate');
     })
     this.webContents.on('did-stop-loading', () => {
-      console.log('did stop loading')
+      // console.log('did stop loading')
       this.isLoading = false;
       this.browserWindow.webContents.send('forceUpdate');
     })
     this.webContents.on('page-favicon-updated', (e, favicons) => {
-      console.log('page favicon update');
-      console.log(favicons);
       this.favicon = favicons && favicons[0] ? favicons[0] : null
       this.browserWindow.webContents.send('forceUpdate');
     })
@@ -116,12 +113,12 @@ class View {
     })
     this.webContents.on('new-window', this.onNewWindow.bind(this))
     this.webContents.on('dom-ready', () => {
-      console.log('dom-ready, forceUpdate')
+      // console.log('dom-ready, forceUpdate')
       this.forceUpdate()
     });
     this.webContents.on('did-navigate', (e, url) => {
-      console.log('did navigate, forceUpdate')
-      console.log(url);
+      // console.log('did navigate, forceUpdate')
+      // console.log(url);
       this.forceUpdate()
     });
     this.webContents.on('will-redirect', (e, url) => {
@@ -155,7 +152,7 @@ class View {
     })
   }
   onNewUrl(url, event) {
-    console.log('onNewUrl', url)
+    console.log('new url is: ', url);
     let newIsSave = null;
     const urlFormat = this.formatURL(url);
     if (urlFormat.protocol === DEFAULT_PROTOCOL + ':') { // is ours custom 'seek://' html page?
@@ -223,17 +220,20 @@ class View {
   formatURL(newURL) {
     let newURLFormat = null;
     let browserWindowURLFomat = new URL(this.browserWindow.url);
+    console.log('browserWindowURLFormat is', browserWindowURLFomat);
     try {
       newURLFormat = new URL(newURL)
-      if (newURLFormat.pathname.indexOf('/') !== 0) {
-        newURLFormat.href = 'http://' + newURLFormat.href;
-      }
+      console.log('before format newURLFormat is: ', newURLFormat);
+      // if (newURLFormat.pathname.indexOf('/') !== 0) {
+      //   newURLFormat.href = 'http://' + newURLFormat.href;
+      // }
       if ((newURLFormat.href === browserWindowURLFomat.href) || (newURLFormat.href === (browserWindowURLFomat.origin + '/'))) {
         newURLFormat.href = DEFAULT_URL + '#/Home';
       }
     } catch (error) {
-      newURLFormat = new URL('http://' + newURL)
+      newURLFormat = new URL('seek://' + newURL)
     } finally {}
+    console.log('finally newURLForamt is: ', newURLFormat);
     return newURLFormat;
   }
   initView() {
@@ -301,7 +301,10 @@ export function createWindow(url) {
     fullscreenWindowTitle: true,
     webPreferences: {
       webSecurity: true,
-      allowRunningInsecureContent: false
+      sandbox:false,
+      nodeIntegration:true,
+      enableRemoteModule: true,
+      allowRunningInsecureContent: true
     }
   })
   windows[mainWindow.id] = mainWindow; // add BrowserWindow Instance to windows
@@ -323,9 +326,9 @@ export function createWindow(url) {
       return true;
     }
   }
-  mainWindow.webContents.once('dom-ready', () => {
-    mainWindow.webContents.openDevTools();
-  })
+
+  mainWindow.webContents.openDevTools();
+
   mainWindow.views = new Proxy([], handlerViews) // Proxy Array<View> 
   mainWindow.on('closed', () => {
     mainWindow = null

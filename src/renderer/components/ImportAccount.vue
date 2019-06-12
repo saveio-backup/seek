@@ -21,6 +21,7 @@
 					<el-input
 					 v-model="data.Password"
 					 placeholder="Password"
+					 @keyup.enter.native='importAccont'
 					></el-input>
 					<p
 					 class="light-blue ft14 cursor-pointer text-right mt10 mb50"
@@ -64,6 +65,7 @@
 						>
 							<el-input
 							 v-model="privateKeyForm.Confirm"
+							 @keyup.enter.native='importAccont'
 							 type="password"
 							></el-input>
 						</el-form-item>
@@ -160,6 +162,12 @@ export default {
 			}
 		},
 		importAccountWithWalletFile() {
+			if (this.switchToggle.loading) return;
+			this.switchToggle.loading = this.$loading({
+				lock: true,
+				text: "Importing",
+				target: ".loading"
+			});
 			this.$axios
 				.post(this.$api.account + "/import/walletfile", this.data)
 				.then(res => {
@@ -170,12 +178,19 @@ export default {
 						}
 						window.location.href = location.origin + location.pathname; // success login link to home page
 					} else if ((res.data.Error = 50015)) {
+						this.switchToggle.loading.close();
+						this.switchToggle.loading = null;
 						this.$message.error("Account not exit or Wrong Password");
 					} else {
+						this.switchToggle.loading.close();
+						this.switchToggle.loading = null;
 						this.$message.error(res.data.Desc);
 					}
 				})
 				.catch(err => {
+					this.switchToggle.loading.close();
+					this.switchToggle.loading = null;
+					this.$message.error("Login Error!");
 					console.error(err);
 				});
 		},

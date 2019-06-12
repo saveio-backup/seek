@@ -51,70 +51,104 @@
 			</div>
 			<el-dialog
 			 class="asset-transfer-dialog"
-			 title='Transfer'
 			 width='550px'
+			 :close-on-click-modal='false'
 			 :visible.sync="switchToggle.assetTransferDialog"
 			 center
 			>
-				<div slot="title">
-					<h2>Transfer</h2>
-					<div class="dialog-title-border"></div>
-				</div>
-				<div class="flex between pl30 pr30 mb50 mt20">
-					<div
-					 v-if="withDraw"
-					 class="flex1 text-left"
-					>
-						<p class="theme-font-blue transparent ft12 bold">Channel</p>
-						<p class="theme-font-blue bold ft20 mt10">{{filterFloat(channelBind.BalanceFormat || 0).toLocaleString('en-US')}}</p>
-						<!-- <p class="theme-font-blue transparent ft12 bold">{{channelBind.Address}}</p> -->
+				<div class="loading-content">
+					<div slot="title">
+						<h2>Transfer</h2>
+						<div class="dialog-title-border"></div>
 					</div>
-					<div
-					 v-else
-					 class="flex1 text-left"
-					>
-						<p class="theme-font-blue transparent ft12 bold">Wallet</p>
-						<p class="theme-font-blue bold ft20 mt10">{{filterFloat(mainCount).toLocaleString('en-US')}}</p>
+					<div class="flex between pl30 pr30 mb20 mt20">
+						<div
+						 v-if="withDraw"
+						 class="flex1 text-left"
+						>
+							<p class="theme-font-blue transparent ft12 bold">Channel</p>
+							<p class="theme-font-blue bold ft20 mt10">{{filterFloat(channelBind.BalanceFormat || 0).toLocaleString('en-US')}}</p>
+							<!-- <p class="theme-font-blue transparent ft12 bold">{{channelBind.Address}}</p> -->
+						</div>
+						<div
+						 v-else
+						 class="flex1 text-left"
+						>
+							<p class="theme-font-blue transparent ft12 bold">Wallet</p>
+							<p class="theme-font-blue bold ft20 mt10">{{filterFloat(mainCount).toLocaleString('en-US')}}</p>
+						</div>
+						<div class="flex column between">
+							<i class="ofont ofont-fasong"></i>
+							<i
+							 class="ofont ofont-exchange ft20"
+							 @click="withDraw = !withDraw"
+							></i></div>
+						<div
+						 v-if="!withDraw"
+						 class="flex1 text-right"
+						>
+							<p class="theme-font-blue transparent ft12 bold">Channel</p>
+							<p class="theme-font-blue bold ft20 mt10">{{filterFloat(channelBind.BalanceFormat || 0).toLocaleString('en-US')}}</p>
+							<!-- <p class="theme-font-blue transparent ft12 bold">{{channelBind.Address}}</p> -->
+						</div>
+						<div
+						 v-else
+						 class="flex1 text-right"
+						>
+							<p class="theme-font-blue transparent ft12 bold">Wallet</p>
+							<p class="theme-font-blue bold ft20 mt10">{{filterFloat(mainCount).toLocaleString('en-US')}}</p>
+						</div>
 					</div>
-					<div class="flex column between">
-						<i class="ofont ofont-fasong"></i>
-						<i
-						 class="ofont ofont-exchange ft20"
-						 @click="withDraw = !withDraw"
-						></i></div>
-					<div
-					 v-if="!withDraw"
-					 class="flex1 text-right"
+					<!-- <el-input
+					 type="number"
+					 min='0'
+					 class="transfer-input"
+					 v-model="transferAmount"
+					 placeholder="input number"
 					>
-						<p class="theme-font-blue transparent ft12 bold">Channel</p>
-						<p class="theme-font-blue bold ft20 mt10">{{filterFloat(channelBind.BalanceFormat || 0).toLocaleString('en-US')}}</p>
-						<!-- <p class="theme-font-blue transparent ft12 bold">{{channelBind.Address}}</p> -->
-					</div>
-					<div
-					 v-else
-					 class="flex1 text-right"
+						<template slot="append">SAVE</template>
+					</el-input> -->
+					<el-form
+					 ref="transferForm"
+					 class="transferForm"
+					 :model="transferInfo"
+					 :rules="transferRules"
 					>
-						<p class="theme-font-blue transparent ft12 bold">Wallet</p>
-						<p class="theme-font-blue bold ft20 mt10">{{filterFloat(mainCount).toLocaleString('en-US')}}</p>
+						<el-form-item
+						 label="Amount"
+						 prop="Amount"
+						>
+							<el-input
+							 type="number"
+							 min='0'
+							 class="transfer-input"
+							 v-model="transferInfo.Amount"
+							 placeholder="input number"
+							>
+							</el-input>
+						</el-form-item>
+						<el-form-item
+						 label="Password"
+						 prop="Password"
+						>
+							<el-input
+							 class="transfer-input"
+							 v-model="transferInfo.Password"
+							 @keyup.enter.native='toTransfer'
+							 type="password"
+							></el-input>
+						</el-form-item>
+					</el-form>
+					<div slot="footer">
+						<el-button
+						 type="primary"
+						 @click="toTransfer"
+						>Confirm</el-button>
 					</div>
-				</div>
-				<el-input
-				 type="number"
-				 min='0'
-				 class="transfer-input-number"
-				 v-model="transferAmount"
-				 placeholder="input number"
-				>
-					<template slot="append">SAVE</template>
-				</el-input>
-				<div slot="footer">
-					<el-button
-					 type="primary"
-					 @click="toTransfer"
-					>Confirm</el-button>
 				</div>
 			</el-dialog>
 			<el-dialog
+			:close-on-click-modal='false'
 			 :visible.sync="switchToggle.channelListDialog"
 			 center
 			>
@@ -156,12 +190,31 @@ export default {
 		return {
 			filterFloat,
 			switchToggle: {
+				loading: null,
 				assetSettingDialog: false,
 				assetTransferDialog: false,
-				channelListDialog: false,
-				transferRequest: true
+				channelListDialog: false
 			},
-			transferAmount: "",
+			transferInfo: {
+				Amount: "",
+				Password: ""
+			},
+			transferRules: {
+				Amount: [
+					{
+						required: true,
+						message: "Please fill amount",
+						trigger: "blur"
+					}
+				],
+				Password: [
+					{
+						required: true,
+						message: "Please fill password",
+						trigger: "blur"
+					}
+				]
+			},
 			withDraw: true,
 			location: location
 		};
@@ -178,38 +231,50 @@ export default {
 			});
 		},
 		toTransfer() {
-			if (!this.switchToggle.transferRequest) return;
+			if (this.switchToggle.loading) return;
 			if (!this.channelBind) {
 				this.emitMessage("Please Choose Channel Address", "error");
 				return;
-			} else if (!this.transferAmount.trim()) {
-				this.emitMessage("Please input number", "error");
-				return;
 			}
-			this.switchToggle.transferRequest = false;
-			const addr = this.withDraw
-				? this.$api.withdrawChannel
-				: this.$api.depositChannel;
-			this.$axios
-				.post(addr, {
-					Partner: this.channelBind.Address,
-					Amount: this.transferAmount
-				})
-				.then(res => {
-					if (res.data.Error === 0) {
-						this.emitMessage("Transfer Success!", "success");
-						this.switchToggle.transferRequest = true;
-						this.switchToggle.assetTransferDialog = false;
-						this.initBalanceRequest();
-					} else {
-						this.$message.error(res.data.Desc || "Transfer Failed");
-					}
-					this.switchToggle.transferRequest = true;
-				})
-				.catch(err => {
-					console.error(err);
-					this.switchToggle.transferRequest = true;
-				});
+			this.$refs.transferForm.validate(valid => {
+				if (valid) {
+					this.switchToggle.loading = this.$loading({
+						lock: true,
+						text: "Transaction processing....",
+						target: ".loading-content"
+					});
+					const addr = this.withDraw
+						? this.$api.withdrawChannel
+						: this.$api.depositChannel;
+					this.$axios
+						.post(addr, {
+							Partner: this.channelBind.Address,
+							Amount: this.transferInfo.Amount,
+							Password: this.transferInfo.Password
+						})
+						.then(res => {
+							if (res.data.Error === 0) {
+								this.transferInfo.Amount = 0; // reset
+								this.transferInfo.Password = ""; // reset
+								this.emitMessage("Transfer Success!", "success");
+								this.switchToggle.assetTransferDialog = false;
+								this.initBalanceRequest();
+							} else if (res.data.Error === 50015) {
+								this.$message.error("Wrong Password");
+							} else {
+								this.$message.error(res.data.Desc || "Transfer Failed");
+							}
+							this.switchToggle.loading.close();
+							this.switchToggle.loading = null;
+						})
+						.catch(err => {
+							console.error(err);
+							this.switchToggle.loading.close();
+							this.switchToggle.loading = null;
+							this.$message.error("Transfer Failed");
+						});
+				}
+			});
 		},
 		toApplyChange() {
 			this.$refs.channellist.applyChange();
@@ -324,10 +389,10 @@ $grey: #ccc;
 					text-align: center;
 					position: absolute;
 					right: 0px;
-					top:40px;					
+					top: 40px;
 					padding: 10px 0;
 					background: #fff;
-					border:solid 1px #ccc;
+					border: solid 1px #ccc;
 					z-index: 1;
 					li {
 						padding: 5px 10px;
@@ -348,15 +413,17 @@ $grey: #ccc;
 		}
 	}
 	.asset-transfer-dialog {
+		.transferForm {
+			padding: 0 30px;
+		}
 		.ofont-fasong {
 			color: #cdcfd8;
 		}
 		.ofont-exchange {
 			color: $theme-font-blue;
 		}
-		.transfer-input-number {
+		.transfer-input {
 			&.el-input {
-				padding: 0 40px;
 				.el-input__inner {
 					background: #ebecef;
 					height: 35px;

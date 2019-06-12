@@ -41,6 +41,7 @@
 					>
 						<el-input
 						 v-model="form.Confirm"
+						 @keyup.enter.native="submitForm('form')"
 						 type="password"
 						></el-input>
 					</el-form-item>
@@ -133,8 +134,9 @@
 					<span :class="{'ft30 ml10 mr10':loopFontIndex === 1}">blocks</span>
 					<span :class="{'ft30 ml10 mr10':loopFontIndex === 2}">at</span>
 					<span :class="{'ft30 ml10 mr10':loopFontIndex === 3}">the</span>
-					<span :class="{'ft30 ml10 mr10':loopFontIndex === 4}">of </span>
-					<span :class="{'ft30 ml10 mr10':loopFontIndex === 5}">light</span> ……</p>
+					<span :class="{'ft30 ml10 mr10':loopFontIndex === 4}">speed</span>
+					<span :class="{'ft30 ml10 mr10':loopFontIndex === 5}">of </span>
+					<span :class="{'ft30 ml10 mr10':loopFontIndex === 6}">light</span> ……</p>
 			</div>
 		</div>
 	</div>
@@ -222,7 +224,7 @@ export default {
 		},
 		loopFont() {
 			setInterval(() => {
-				if (this.loopFontIndex >= 5) {
+				if (this.loopFontIndex >= 6) {
 					this.loopFontIndex = 0;
 				} else {
 					this.loopFontIndex++;

@@ -134,15 +134,15 @@ const run = (appDataPath, appName) => {
     //     cwd: resourcesPath,
     //     maxBuffer: 5000 * 1024,
     // })
-    workerProcess.stdout.on('data', function () {
+    workerProcess.stdout.on('data', function (data) {
         // console.log('stdout: ' + data);
     });
 
-    workerProcess.stderr.on('data', function () {
+    workerProcess.stderr.on('data', function (data) {
         // console.log('stderr: ' + data);
     });
 
-    workerProcess.on('exit', function () {
+    workerProcess.on('exit', function (code) {
         // console.log('child process exited with code ' + code);
     });
     workerProcess.on('close', function (code) {

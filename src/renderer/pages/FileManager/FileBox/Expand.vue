@@ -12,7 +12,7 @@
 				<el-button
 				 ref='getspace'
 				 @click="expandDialogVisible = true"
-				>Get Space</el-button>
+				>Storage</el-button>
 			</div>
 			<p class="theme-font-blue bold mt40 mb10 ft14">Space adjust record</p>
 			<div class="space-record">
@@ -45,7 +45,7 @@
 			 :visible.sync="expandDialogVisible"
 			>
 				<div slot="title">
-					<h2>Expand</h2>
+					<h2>Storage</h2>
 					<div class="dialog-title-border"></div>
 				</div>
 				<div class="loading-content">
@@ -112,10 +112,10 @@
 					</div>
 					<div v-show='cost.TransferType' class="mb20">
 						<div v-if="cost.TransferType == 1">
-							Will cost about {{parseFloat(cost.FeeFormat).toFixed(3)}} Save
+							Payment about {{parseFloat(cost.FeeFormat).toFixed(3)}} Save
 						</div>
 						<div v-if="cost.TransferType ==2">
-							Will come back to you about {{parseFloat(cost.FeeFormat).toFixed(3)}} Save
+							Refund about {{parseFloat(cost.FeeFormat).toFixed(3)}} Save
 						</div>
 					</div>
 					<span
@@ -126,7 +126,7 @@
 						<el-button
 						 type="primary"
 						 @click="setUserSpace"
-						>Pledge</el-button>
+						>Update</el-button>
 					</span>
 				</div>
 
@@ -374,7 +374,7 @@ export default {
 			this.submitToggle = false;
 			this.switchToggle.loading = this.$loading({
 				lock: true,
-				text: "Expanding",
+				text: "Upgrading",
 				target: ".loading-content"
 			});
 			// const addr = this.addInfo.Second.Value >= 0 ? "add" : "revoke";

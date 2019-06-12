@@ -1,9 +1,11 @@
 'use strict'
 
 import {
-  app
+  app,
+  protocol
 } from 'electron'
 import './ipcManager'
+import './protocols/protocols' // custom protocol
 import {
   windows,
   createWindow
@@ -16,26 +18,10 @@ if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
 
-// let mainWindow
 const winURL = process.env.NODE_ENV === 'development' ?
   `http://localhost:9080/#/navigation` :
   `file://${__dirname}/index.html#/navigation`
 
-// function createWindow() {
-//   mainWindow = new BrowserWindow({
-//     height: 800,
-//     useContentSize: true,
-//     minWidth: 1200,
-//     minHeight: 563,
-//     width: 1200
-//   })
-
-//   mainWindow.loadURL(winURL)
-
-//   mainWindow.on('closed', () => {
-//     mainWindow = null
-//   })
-// }
 import * as node from "./node"
 node.setupConfig(app.getPath("appData"), app.getName())
 app.on('ready', function () {

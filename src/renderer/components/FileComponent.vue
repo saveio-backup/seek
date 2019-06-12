@@ -5,18 +5,20 @@
 		 v-if="transferType != 0"
 		>
 			<div class="flex1">
-				<p class="grey-xs bold" v-if="totalProgress">{{transferTypeConfig[transferType]}} progress</p>
-				<p class="grey-xs bold" v-else>No task</p>
+				<p
+				 class="grey-xs bold"
+				 v-if="totalProgress"
+				>{{transferTypeConfig[transferType]}} progress</p>
+				<p
+				 class="grey-xs bold"
+				 v-else
+				>No task</p>
 				<el-progress
-				v-if="totalProgress"
+				 v-if="totalProgress"
 				 class="progress"
 				 :percentage="totalProgress * 100"
 				></el-progress>
 			</div>
-
-			<!-- <el-button>Pause All</el-button>
-			<el-button>Start all</el-button>
-			<el-button>Cancel All</el-button> -->
 			<el-button
 			 v-if="transferType == 2"
 			 @click="switchToggle.newTaskDialog=true"
@@ -34,7 +36,6 @@
 			 empty-text='No Data'
 			 height="100%"
 			>
-				<!-- :data="fileList" -->
 				<el-table-column
 				 width="300"
 				 label="FileName"
@@ -80,8 +81,8 @@
 						<div>
 							<span v-if="scope.row.status === 0">continue</span>
 							<span v-if="scope.row.status === 2">pause</span>
+							<span v-if="!scope.row.IsUploadAction"><i class="el-icon-tickets"></i></span>
 							<i class="el-icon-delete"></i>
-							<i class="el-icon-tickets"></i>
 						</div>
 					</template>
 				</el-table-column>

@@ -38,7 +38,10 @@
 			<div class="wallet-aside">
 				<div class="wallet-asset">
 					<p class="grey-xs bold pl20 pr20">Total Balance</p>
-					<div class="total"> <span class="symbol"></span> <span class="theme-bold" v-if="balanceLists && balanceLists.length>0">{{parseFloat(balanceLists[balanceSelected].BalanceFormat).toFixed(3)}}</span></div>
+					<div class="total"> <span class="symbol"></span> <span
+						 class="theme-bold"
+						 v-if="balanceLists && balanceLists.length>0"
+						>{{parseFloat(balanceLists[balanceSelected].BalanceFormat).toFixed(3)}}</span></div>
 					<div
 					 class="balance-content"
 					 v-if="balanceLists && balanceLists.length>0"
@@ -142,7 +145,7 @@
 				 class="dialog-header el-dialog__header"
 				 slot="title"
 				>
-					<h2>Send</h2>
+					<h2>Receive</h2>
 					<div class="dialog-title-border"></div>
 				</div>
 				<div class="flex ai-center column">
@@ -171,50 +174,69 @@
 			 width='600px'
 			 center
 			 :visible.sync="switchToggle.sendDialog"
+			 :close-on-click-modal='false'
 			>
 				<div slot="title">
 					<h2>Transfer</h2>
 					<div class="dialog-title-border mt10"></div>
 				</div>
-				<div class="send-form-wrap">
-					<el-form
-					 ref='form'
-					 :model="sendInfo"
-					 :rules="sendRules"
-					>
-						<div class="flex between mb10">
-							<p class="theme-font-blue-bold">{{balanceLists[balanceSelected].Symbol}}</p>
-							<p v-if="balanceLists && balanceLists.length>0">{{parseFloat(balanceLists[balanceSelected].BalanceFormat).toFixed(2)}} {{balanceLists[balanceSelected].Symbol}}</p>
-						</div>
-						<el-form-item>
-							<el-input
-							 v-model="sendInfo.Amount"
-							 placeholder="Input amount"
-							 type="number"
-							 @blur="setFixed"
-							></el-input>
-						</el-form-item>
-						<el-form-item
-						 class="theme-font-blue-bold"
-						 label="Send to"
+				<div class="loading-content">
+					<div class="send-form-wrap">
+						<el-form
+						 ref='transferForm'
+						 :model="sendInfo"
+						 :rules="sendRules"
 						>
-							<el-input
-							 v-model="sendInfo.To"
-							 :placeholder="'Input ' +balanceLists[balanceSelected].Symbol+' address'"
-							></el-input>
-						</el-form-item>
-					</el-form>
-					<div class="flex between">
-						<span></span>
-						<div>Miner Fee: 0.01 {{balanceLists[balanceSelected].Symbol}}</div>
+							<div class="flex between mb10">
+								<p class="theme-font-blue-bold">{{balanceLists[balanceSelected].Symbol}}</p>
+								<p v-if="balanceLists && balanceLists.length>0">{{parseFloat(balanceLists[balanceSelected].BalanceFormat).toFixed(2)}} {{balanceLists[balanceSelected].Symbol}}</p>
+							</div>
+							<el-form-item
+							 class="theme-font-blue-bold"
+							 label="Amount"
+							 prop="Amount"
+							>
+								<el-input
+								 v-model="sendInfo.Amount"
+								 placeholder="Input amount"
+								 type="number"
+								 @blur="setFixed"
+								></el-input>
+							</el-form-item>
+							<el-form-item
+							 class="theme-font-blue-bold"
+							 label="Send to"
+							 prop="To"
+							>
+								<el-input
+								 v-model="sendInfo.To"
+								 :placeholder="'Input ' +balanceLists[balanceSelected].Symbol+' address'"
+								></el-input>
+							</el-form-item>
+							<el-form-item
+							 class="theme-font-blue-bold"
+							 label="Password"
+							 prop="Password"
+							>
+								<el-input
+								 v-model="sendInfo.Password"
+								 @keyup.enter.native='sendTransfer'
+								 type="password"
+								></el-input>
+							</el-form-item>
+						</el-form>
+						<div class="flex between">
+							<span></span>
+							<div>Miner Fee: 0.01 {{balanceLists[balanceSelected].Symbol}}</div>
+						</div>
 					</div>
+					<span slot="footer">
+						<el-button
+						 type="primary"
+						 @click="sendTransfer"
+						>Transfer</el-button>
+					</span>
 				</div>
-				<span slot="footer">
-					<el-button
-					 type="primary"
-					 @click="sendTransfer"
-					>Transfer</el-button>
-				</span>
 			</el-dialog>
 			<el-dialog
 			 width='600px'
@@ -269,28 +291,37 @@ export default {
 	data() {
 		return {
 			switchToggle: {
+				loading: null,
 				receiveDialog: false,
 				sendDialog: false,
 				assetDialog: false
 			},
 			txDetailIndex: -1,
 			sendInfo: {
+				To: "",
 				Amount: "",
-				To: ""
+				Password: ""
 			},
 			qrcode: null,
 			sendRules: {
-				account: [
+				Amount: [
 					{
 						required: true,
-						message: "Please fill account",
+						message: "Please fill amount",
 						trigger: "blur"
 					}
 				],
-				to: [
+				To: [
 					{
 						required: true,
 						message: "Please fill address",
+						trigger: "blur"
+					}
+				],
+				Password: [
+					{
+						required: true,
+						message: "Please fill password",
 						trigger: "blur"
 					}
 				]
@@ -372,15 +403,50 @@ export default {
 			});
 		},
 		setFixed() {
-			this.sendInfo.Amount = parseFloat(this.sendInfo.Amount).toFixed(9);
+			this.sendInfo.Amount = this.sendInfo.Amount
+				? parseFloat(this.sendInfo.Amount).toFixed(9)
+				: "";
 		},
 		sendTransfer() {
-			this.setFixed();
-			const sendInfo = this.sendInfo;
-			sendInfo.Asset = this.balanceLists[this.balanceSelected].Symbol;
-			this.$axios.post(this.$api.transfer, sendInfo).then(res => {
-				if (res.data.Error === 0) {
-					this.switchToggle.sendDialog = false;
+			if (this.switchToggle.loading) return;
+			this.$refs.transferForm.validate(valid => {
+				if (valid) {
+					this.switchToggle.loading = this.$loading({
+						lock: true,
+						text: "Transaction processing....",
+						target: ".loading-content"
+					});
+					this.setFixed();
+					const sendInfo = this.sendInfo;
+					sendInfo.Asset = this.balanceLists[this.balanceSelected].Symbol;
+					this.$axios
+						.post(this.$api.transfer, sendInfo)
+						.then(res => {
+							if (res.data.Error === 0) {
+								this.sendInfo.Password = "";
+								this.switchToggle.sendDialog = false;
+								this.$message({
+									message: "Successful transfer",
+									type: "success"
+								});
+							} else if (res.data.Error === 50015) {
+								this.$message.error("Wrong Password");
+							}else if (res.data.Error === 40002){
+								this.$message.error("Transaction failed, please check your Address.");
+							}
+							else{
+								this.$message.error(res.data.Desc);
+							}
+							this.switchToggle.loading.close();
+							this.switchToggle.loading = null;
+						})
+						.catch(() => {
+							this.switchToggle.loading.close();
+							this.switchToggle.loading = null;
+							this.$message.error(
+								"Transaction failed. Please try again later."
+							);
+						});
 				}
 			});
 		},
@@ -440,7 +506,7 @@ $light-grey: #f7f7f7;
 	}
 	& > .content {
 		width: 100%;
-		height: 100%;
+		height: calc(100% - 60px);
 		padding: 50px 88px;
 		display: flex;
 		.wallet-aside {
@@ -615,8 +681,8 @@ $light-grey: #f7f7f7;
 		border-radius: 2px;
 		border: none;
 	}
-	.ofont-fuzhi{
-		&:hover{
+	.ofont-fuzhi {
+		&:hover {
 			font-weight: bold;
 		}
 		cursor: pointer;

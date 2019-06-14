@@ -37,10 +37,10 @@
 							>Browser</el-button>
 						</el-input>
 					</el-form-item>
-					<el-form-item label="File Size">
+					<el-form-item label="File Size:">
 						<p class="light-blue">{{fileSize || '0.00 GB'}}</p>
 					</el-form-item>
-					<el-form-item label="Price">
+					<el-form-item label="Gas fee:">
 						<p>{{uploadPrice}}</p>
 					</el-form-item>
 					<el-form-item label="Encryption:">
@@ -321,6 +321,9 @@ export default {
 			this.uploadFormData.EncryptPassword = "";
 			this.fileSize = 0;
 			this.switchToggle.advanced = false;
+			this.$router.push({
+				name: "filebox"
+			});
 		},
 		toUploadFile() {
 			if (!this.switchToggle.upload) return;

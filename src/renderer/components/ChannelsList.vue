@@ -28,7 +28,10 @@
 				 prop='HostAddr'
 				 label='DNS'
 				></el-table-column>
-				<el-table-column width="80" v-if="showRadio">
+				<el-table-column
+				 width="80"
+				 v-if="showRadio"
+				>
 					<span class="channel-radio"></span>
 				</el-table-column>
 			</el-table>
@@ -193,12 +196,21 @@ export default {
 	},
 	methods: {
 		initCurrentRow() {
-			this.channels.map((channel, index) => {
-				if (channel.ChannelId.toString() === localStorage.getItem("channelBindId")) {
+			let result = this.channels.some((channel, index) => {
+				if (
+					channel.ChannelId.toString() === localStorage.getItem("channelBindId")
+				) {
 					this.currentRow = channel;
 					this.setCurrent(this.channels[index]);
+					return true;
+				} else {
+					return false;
 				}
 			});
+			if (!result) {
+				// if no bind in localstorage ,  choose first channel
+				this.setCurrent(this.channels[0]);
+			}
 		},
 		setCurrent(row) {
 			this.$refs.singleTable.setCurrentRow(row);
@@ -206,7 +218,9 @@ export default {
 		handleCurrentChange(currentRow, oldCurrentRow) {
 			this.currentRow = currentRow ? currentRow : oldCurrentRow;
 			this.channels.map((channel, index) => {
-				if (channel.ChannelId.toString() === this.currentRow.ChannelId.toString()) {
+				if (
+					channel.ChannelId.toString() === this.currentRow.ChannelId.toString()
+				) {
 					this.setCurrent(this.channels[index]);
 				}
 			});

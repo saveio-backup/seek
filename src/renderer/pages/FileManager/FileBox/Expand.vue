@@ -110,7 +110,10 @@
 							</div>
 						</div>
 					</div>
-					<div v-show='cost.TransferType' class="mb20">
+					<div
+					 v-show='cost.TransferType'
+					 class="mb20"
+					>
 						<div v-if="cost.TransferType == 1">
 							Payment about {{parseFloat(cost.FeeFormat).toFixed(3)}} Save
 						</div>
@@ -369,14 +372,14 @@ export default {
 		},
 		setUserSpace() {
 			if (!this.submitToggle) return;
-			this.setDateValue(this.expired);
-			this.setSizeValue();
 			this.submitToggle = false;
 			this.switchToggle.loading = this.$loading({
 				lock: true,
 				text: "Upgrading",
 				target: ".loading-content"
 			});
+			this.setDateValue(this.expired);
+			this.setSizeValue();
 			// const addr = this.addInfo.Second.Value >= 0 ? "add" : "revoke";
 			this.$axios
 				.post(this.$api.userspace + "set", {

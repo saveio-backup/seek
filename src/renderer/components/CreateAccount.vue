@@ -291,7 +291,11 @@ export default {
 						for (let key in result) {
 							window.localStorage.setItem(key, result[key]);
 						}
-					} else {
+					}else if(data.Error === 40002) {
+						this.$message.error("Create Failed. Private key verification failed.");
+						this.switchToggle.loading.close();
+					}
+					else {
 						this.$message.error(res.data.Desc || "Create Failed");
 						this.switchToggle.loading.close();
 					}

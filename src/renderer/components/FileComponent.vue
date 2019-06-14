@@ -132,6 +132,9 @@ export default {
 				{
 					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
 					FileName: "hahat.txt",
+					Status:2,
+					IsUploadAction: false,
+					Type:2,
 					Current: 500,
 					FileSize: 1536,
 					DownloadCount: 0,

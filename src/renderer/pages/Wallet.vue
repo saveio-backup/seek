@@ -59,6 +59,7 @@
 						<div class="set-asset-display"><i
 							 @click="switchToggle.assetDialog = true"
 							 class="el-icon-plus"
+							 style="cursor:pointer"
 							></i></div>
 					</div>
 				</div>

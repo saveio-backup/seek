@@ -114,7 +114,7 @@
 				</div>
 			</div>
 			<div class="channels-title">Channel Balance</div>
-			<channels-list></channels-list>
+			<channels-list :showTransfer='true'></channels-list>
 		</div>
 		<div
 		 class="content not-login account-wrap"

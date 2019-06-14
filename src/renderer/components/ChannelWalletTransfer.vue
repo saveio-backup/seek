@@ -6,8 +6,8 @@
 			 class="flex1 text-left"
 			>
 				<p class="theme-font-blue transparent ft12 bold">Channel</p>
-				<p class="theme-font-blue bold ft20 mt10">{{filterFloat(channelBind.BalanceFormat || 0).toLocaleString('en-US')}}</p>
-				<!-- <p class="theme-font-blue transparent ft12 bold">{{channelBind.Address}}</p> -->
+				<p class="theme-font-blue bold ft20 mt10">{{filterFloat(channelSelected.BalanceFormat || 0).toLocaleString('en-US')}}</p>
+				<!-- <p class="theme-font-blue transparent ft12 bold">{{channelSelected.Address}}</p> -->
 			</div>
 			<div
 			 v-else
@@ -27,8 +27,8 @@
 			 class="flex1 text-right"
 			>
 				<p class="theme-font-blue transparent ft12 bold">Channel</p>
-				<p class="theme-font-blue bold ft20 mt10">{{filterFloat(channelBind.BalanceFormat || 0).toLocaleString('en-US')}}</p>
-				<!-- <p class="theme-font-blue transparent ft12 bold">{{channelBind.Address}}</p> -->
+				<p class="theme-font-blue bold ft20 mt10">{{filterFloat(channelSelected.BalanceFormat || 0).toLocaleString('en-US')}}</p>
+				<!-- <p class="theme-font-blue transparent ft12 bold">{{channelSelected.Address}}</p> -->
 			</div>
 			<div
 			 v-else
@@ -84,7 +84,7 @@
 import { filterFloat } from "../assets/config/util";
 export default {
 	props: {
-		channelBind: {
+		channelSelected: {
 			required: true,
 			type: Object // 0 upload 1 download
 		}
@@ -119,7 +119,7 @@ export default {
 	methods: {
 		toTransfer() {
 			if (this.switchToggle.loading) return;
-			if (!this.channelBind) {
+			if (!this.channelSelected) {
 				this.emitMessage("Please Choose Channel Address", "error");
 				return;
 			}
@@ -135,7 +135,7 @@ export default {
 						: this.$api.depositChannel;
 					this.$axios
 						.post(addr, {
-							Partner: this.channelBind.Address,
+							Partner: this.channelSelected.Address,
 							Amount: this.transferInfo.Amount,
 							Password: this.transferInfo.Password
 						})

@@ -1,6 +1,9 @@
 <template>
 	<div id="channels-vue">
-		<div class="channels">
+		<div
+		 class="channels"
+		 v-if="channels"
+		>
 			<el-table
 			 :data="channels"
 			 ref="singleTable"
@@ -34,23 +37,67 @@
 				>
 					<span class="channel-radio"></span>
 				</el-table-column>
+				<el-table-column
+				 width="80"
+				 v-if="showTransfer"
+				>
+					<template slot-scope="scope">
+						<span @click="openTransfer(scope.row)">Transfer</span>
+					</template>
+				</el-table-column>
 			</el-table>
 		</div>
+		<el-dialog
+		 class="asset-transfer-dialog"
+		 width='550px'
+		 :close-on-click-modal='false'
+		 :visible.sync="switchToggle.assetTransferDialog"
+		 center
+		>
+			<div slot="title">
+				<h2>Transfer</h2>
+				<div class="dialog-title-border"></div>
+			</div>
+			<div class="loading-content">
+				<channel-wallet-transfer
+				 ref="channelwallettransfer"
+				 :channelSelected='channelSelected'
+				></channel-wallet-transfer>
+				<div slot="footer">
+					<el-button
+					 type="primary"
+					 @click="toConfirm"
+					>Confirm</el-button>
+				</div>
+			</div>
+		</el-dialog>
 	</div>
 </template>
 <script>
 import { filterFloat } from "../assets/config/util";
+import channelWalletTransfer from "./ChannelWalletTransfer.vue";
 export default {
+	components: {
+		channelWalletTransfer
+	},
 	props: {
 		showRadio: {
+			required: false,
+			default: false
+		},
+		showTransfer: {
 			required: false,
 			default: false
 		}
 	},
 	data() {
 		return {
+			switchToggle: {
+				assetTransferDialog: false
+			},
 			currentRow: {},
 			filterFloat,
+			channelSelected: {},
 			mockChannels: [
 				{
 					ChannelId: 107,
@@ -207,7 +254,7 @@ export default {
 					return false;
 				}
 			});
-			if (!result) {
+			if (!result && this.channels.length > 0) {
 				// if no bind in localstorage ,  choose first channel
 				this.setCurrent(this.channels[0]);
 			}
@@ -216,6 +263,10 @@ export default {
 			this.$refs.singleTable.setCurrentRow(row);
 		},
 		handleCurrentChange(currentRow, oldCurrentRow) {
+			console.log("curreuntRow is");
+			console.log(currentRow);
+			console.log("oldCurrentRow is ");
+			console.log(oldCurrentRow);
 			this.currentRow = currentRow ? currentRow : oldCurrentRow;
 			this.channels.map((channel, index) => {
 				if (
@@ -231,6 +282,13 @@ export default {
 				"setChannelBind",
 				localStorage.getItem("channelBindId") || ""
 			);
+		},
+		openTransfer(channelSelected) {
+			this.channelSelected = channelSelected;
+			this.switchToggle.assetTransferDialog = true;
+		},
+		toConfirm() {
+			this.$refs["channelwallettransfer"].toTransfer();
 		}
 	},
 	computed: {

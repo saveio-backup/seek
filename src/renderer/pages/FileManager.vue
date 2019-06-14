@@ -61,7 +61,7 @@
 					<div class="dialog-title-border"></div>
 				</div>
 				<div class="loading-content">
-					<channel-wallet-transfer ref="channelwallettransfer" :channelBind='channelBind'></channel-wallet-transfer>
+					<channel-wallet-transfer ref="channelwallettransfer" :channelSelected='channelBind'></channel-wallet-transfer>
 					<div slot="footer">
 						<el-button
 						 type="primary"

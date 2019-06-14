@@ -222,6 +222,7 @@
 								<el-input
 								 v-model="sendInfo.Password"
 								 @keyup.enter.native='sendTransfer'
+								 show-password
 								 type="password"
 								></el-input>
 							</el-form-item>

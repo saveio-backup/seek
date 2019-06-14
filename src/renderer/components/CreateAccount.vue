@@ -33,6 +33,7 @@
 						<el-input
 						 v-model="form.Password"
 						 type="password"
+					 	 show-password
 						></el-input>
 					</el-form-item>
 					<el-form-item
@@ -42,6 +43,7 @@
 						<el-input
 						 v-model="form.Confirm"
 						 @keyup.enter.native="submitForm('form')"
+					 	 show-password
 						 type="password"
 						></el-input>
 					</el-form-item>

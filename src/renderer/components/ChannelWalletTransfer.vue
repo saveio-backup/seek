@@ -73,6 +73,7 @@
 				<el-input
 				 class="transfer-input"
 				 v-model="transferInfo.Password"
+				 show-password
 				 @keyup.enter.native='toTransfer'
 				 type="password"
 				></el-input>

@@ -13,7 +13,8 @@
 					 cols="30"
 					 rows="10"
 					 placeholder="key"
-					></el-input>
+					>
+					</el-input>
 					<div class="tr mb20"><a
 						 @click='importWallet'
 						 class="light-blue ft14 cursor-pointer"
@@ -21,6 +22,9 @@
 					<el-input
 					 v-model="data.Password"
 					 placeholder="Password"
+					 type="password"
+					 :rows="2"
+					 show-password
 					 @keyup.enter.native='importAccont'
 					></el-input>
 					<p
@@ -56,6 +60,7 @@
 						>
 							<el-input
 							 v-model="privateKeyForm.Password"
+					 		 show-password
 							 type="password"
 							></el-input>
 						</el-form-item>
@@ -66,6 +71,7 @@
 							<el-input
 							 v-model="privateKeyForm.Confirm"
 							 @keyup.enter.native='importAccont'
+					 		 show-password
 							 type="password"
 							></el-input>
 						</el-form-item>

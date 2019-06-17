@@ -7,7 +7,10 @@
 						<div
 						 class="nav-button"
 						 @click="remoteOpenComponent('Home')"
-						><i class="ofont ofont-user user"></i></div>
+						>
+							<i v-if="!user.name" class="ofont ofont-user user user-first"></i>
+							<i v-else class="user-first">{{user.name | firstString}}</i>
+						</div>
 					</li>
 					<!-- <li class="action-item">
 						<router-link to="/Appstore"><i class="ofont ofont-menu appstore"></i></router-link>
@@ -106,12 +109,22 @@ export default {
 			this.views = remote.getCurrentWindow().views;
 		});
 	},
+	filters: {
+		firstString(value) {
+			if(!value) return '';
+			value += '';
+			return value[0];
+		}
+	},
 	data() {
 		return {
 			switchToggle: {
 				logoutDialog: false
 			},
-			views: remote.getCurrentWindow().views
+			views: remote.getCurrentWindow().views,
+			user: {
+				name: localStorage.getItem("Label") || ""
+			}
 		};
 	},
 	computed: {
@@ -207,6 +220,20 @@ $slidebar-active-color: linear-gradient(
 					cursor: pointer;
 					&.slidebar-active {
 						position: relative;
+					}
+
+					.user-first {
+						font-size: 16px;
+						width: 22px;
+						height: 22px;
+						line-height: 22px;
+						display: block;
+						text-align: center;
+						border-radius: 50%;
+						border: 1px solid #767882;
+						color: #767882;
+						font-style: inherit;
+						user-select: none;
 					}
 				}
 			}

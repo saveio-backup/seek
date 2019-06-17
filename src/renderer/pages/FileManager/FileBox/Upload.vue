@@ -10,7 +10,7 @@
 				>Advanced</span>
 				<span
 				 class="text-underline active-blue ft18"
-				 @click="switchToggle.advanced = false"
+				 @click="hiddenAdvanced"
 				 v-show="switchToggle.advanced"
 				>Simple</span>
 			</div>
@@ -40,9 +40,9 @@
 					<el-form-item label="File Size:">
 						<p class="light-blue">{{fileSize || '0.00 GB'}}</p>
 					</el-form-item>
-					<el-form-item label="Gas fee:">
+					<!-- <el-form-item label="Gas fee:">
 						<p>{{uploadPrice}}</p>
-					</el-form-item>
+					</el-form-item> -->
 					<el-form-item label="Encryption:">
 						<el-select
 						 v-model="encryptionToggle"
@@ -184,6 +184,10 @@
 						</div>
 					</el-form-item>
 				</el-form>
+				<div class="flex jc-center price-div">
+					<p>Gas fee: {{uploadPrice}} SAVE</p>
+					<p>balance: {{mainCount}} SAVE</p>
+				</div>
 				<div class="flex jc-center submit-foot">
 					<el-button
 					 type="primary"
@@ -267,6 +271,17 @@ export default {
 		this.setDataInterval();
 	},
 	methods: {
+		advancedDataInit() {
+			this.advancedData = {
+				Duration: 0,
+				Interval: 0,
+				Privilege: 1,
+				CopyNum: 3,
+				WhiteList: []
+			}
+			this.verificationCycleSelected = this.baseKeys[1];
+			this.verificationCycleNumber = 1;
+		},
 		setEncryptPassword() {
 			if (!this.encryptionToggle) {
 				this.uploadFormData.EncryptPassword = "";
@@ -394,9 +409,17 @@ export default {
 						this.$message.error(res.data.Desc);
 					}
 				});
+		},
+		hiddenAdvanced() {
+			this.advancedDataInit();
+			this.setDataInterval();
+			this.switchToggle.advanced = false;
 		}
 	},
 	computed: {
+		mainCount() {
+			return this.$store.state.Wallet.mainCount;
+		}
 		// storageCycleNumber: function() {
 		// 	return this.verificationCycleNumber * this.advancedData.Times;
 		// }
@@ -455,6 +478,11 @@ export default {
 			}
 			.save-tag-input {
 				width: 90px;
+			}
+		}
+		.price-div {
+			p {
+				margin: 0 15px 15px;
 			}
 		}
 	}

@@ -39,6 +39,12 @@ const mutations = {
   'SET_CHANNEL_PROGRESS'(state, progress) {
     state.initChannelProgress = progress;
   },
+  'SET_CURRENT_HEIGHT'(state, progress) {
+    state.currentHeight = progress;
+  },
+  'SET_TOTAL_HEIGHT'(state, progress) {
+    state.totalHeight = progress;
+  },
   'SET_REVENUE'(state, result) {
     state.revenue = result;
   },
@@ -131,6 +137,8 @@ const actions = {
             window.location.href = location.origin + location.pathname; // success login link to home page
           }
           commit('SET_CHANNEL_PROGRESS', res.data.Result.Progress)
+          commit('SET_CURRENT_HEIGHT', res.data.Result.Now)
+          commit('SET_TOTAL_HEIGHT', res.data.Result.End)
         }
       });
     }, timer.COUNT_INTERVAL);

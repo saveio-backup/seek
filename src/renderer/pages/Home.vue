@@ -10,17 +10,31 @@
 			<div class="user-meta">
 				<div class="user-meta-left">
 					<div class="user-name">
-						<!-- <i class="ofont ofont-user"></i> -->
-						<div>
-							<p class="light-blue-xs bold mb10">Welcome !</p>
-							<p class="theme-bold">{{userName}}</p>
+						<div class="user-name-left">
+							<div class="user-name-first-wrapper">
+								<i v-if="!user.name" class="ofont ofont-user user user-first"></i>
+								<i v-else class="user-first">{{user.name | firstString}}</i>
+							</div>
+							<div>
+								<p class="bold grey-xs ft20">Welcome <span class="light-blue"> {{userName}}</span></p>
+								<p class="ft12">
+									<span class="address" :title="user.address" style="">
+										{{user.address}}
+									</span>
+									<i
+									class="ofont ofont-fuzhi addr_btn"
+									@click="clipText('.addr_btn')"
+									:aria-label='balanceLists[balanceSelected].Address'
+									></i>
+								</p>
+							</div>
 						</div>
 						<div>
-							<el-button
+							<!-- <el-button
 							 type="danger"
 							 class="log"
 							 @click="switchToggle.logoutDialog = true"
-							>Log Out</el-button>
+							>Log Out</el-button> -->
 						</div>
 					</div>
 					<!-- pause !!! -->
@@ -153,6 +167,7 @@
 const { ipcRenderer } = require("electron");
 import { filterFloat } from "../assets/config/util";
 import channelsList from "../components/ChannelsList.vue";
+import ClipboardJS from "clipboard";
 export default {
 	components: {
 		channelsList
@@ -160,6 +175,13 @@ export default {
 	mounted() {
 		document.title = "Home";
 		this.$store.dispatch("setCurrentAccount"); // get login status
+	},
+	filters: {
+		firstString(value) {
+			if(!value) return '';
+			value += '';
+			return value[0];
+		}
 	},
 	data() {
 		return {
@@ -171,12 +193,31 @@ export default {
 			balanceValue: "",
 			// loginStatus: 0, // 1: login 0: not login
 			user: {
-				name: localStorage.getItem("Label") || ""
+				name: localStorage.getItem("Label") || "",
+				address: localStorage.getItem("Address") || "",
 			},
 			balanceSelected: 0
 		};
 	},
 	methods: {
+		clipText(el) {
+			console.log("clip");
+			const clip = new ClipboardJS(el, {
+				text: function(trigger) {
+					return trigger.getAttribute("aria-label");
+				}
+			});
+			clip.on("success", e => {
+				this.$message({
+					message: "Link Copied",
+					duration: 1200,
+					type: "success"
+				});
+				console.log("success");
+				console.log(e);
+				clip.destroy();
+			});
+		},
 		setBalanceListsIndex(index) {
 			this.balanceSelected = index;
 		},
@@ -364,8 +405,50 @@ $input-color: rgba(203, 203, 203, 1);
 				border-radius: 2px;
 				background: #fff;
 				padding: 5px 10px;
+
 				.ofont-user {
 					margin: 0 8px;
+				}
+
+				.user-name-left {
+					display: flex;
+					align-items: center;
+					justify-content: space-between;
+					height: 90px;
+				}
+
+				.user-name-first-wrapper {
+					width: 44px;
+					height: 44px;
+					text-align: center;
+					line-height: 42px;
+					border-radius: 50%;
+					border: 1px solid black;
+					margin-right: 15px;
+					user-select: none;
+
+					.user-first {
+						font-style: initial;
+						margin: 0;
+						font-size: 28px;											
+					}
+				}
+
+				.ofont-fuzhi {
+					position: relative;
+					top: -2px;
+					
+					&:hover {
+						font-weight: bold;
+					}
+					cursor: pointer;
+				}
+
+				.address {
+					display:inline-block;
+					width:230px;
+					overflow:hidden;
+					text-overflow: ellipsis;
 				}
 			}
 			.user-revenue {

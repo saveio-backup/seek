@@ -130,7 +130,7 @@
 				<p
 				 class="ft12 mt20 dark-grey bold "
 				 style="text-align:center"
-				>{{(initChannelProgress*100).toFixed(2) +'%'}}</p>
+				>{{(initChannelProgress*100).toFixed(2) +'%'}} (#{{currentHeihgt}} / #{{totalHeight}})</p>
 				<p class="ft12 dark-grey bold text-center mt20">
 					<span :class="{'ft30 ml10 mr10':loopFontIndex === 0}">Synchronizing</span>
 					<span :class="{'ft30 ml10 mr10':loopFontIndex === 1}">blocks</span>
@@ -215,6 +215,16 @@ export default {
 				this.switchToggle.loading = null;
 			}
 			return this.$store.state.Home.initChannelProgress;
+		},
+		currentHeihgt: function() {
+			if (this.$store.state.Home.initChannelProgress) {
+				return this.$store.state.Home.currentHeight || 0;
+			}
+		},
+		totalHeight: function() {
+			if (this.$store.state.Home.initChannelProgress) {
+				return this.$store.state.Home.totalHeight || 0;
+			}
 		}
 	},
 	methods: {

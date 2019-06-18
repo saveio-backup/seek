@@ -87,6 +87,7 @@
 					>Send</p>
 				</div>
 				<ul class="tx-ul">
+					<!-- this[txType] -->
 					<li
 					 class="tx-li"
 					 v-for="(item,index) in this[txType]"
@@ -289,11 +290,19 @@ export default {
 		this.$store.dispatch("setCurrentAccount"); // get login status
 		this.$store.dispatch("setBalanceLists");
 		this.$store.dispatch("setTxRecords");
+		this.addListenScroll(
+			document.querySelector(".tx-ul"),
+			100,
+			this.loadTxRecords
+		);
 	},
 	data() {
 		return {
+			QRCode,
+			date,
 			switchToggle: {
 				loading: null,
+				loadSwitch: true,
 				receiveDialog: false,
 				sendDialog: false,
 				assetDialog: false
@@ -328,9 +337,7 @@ export default {
 					}
 				]
 			},
-			QRCode,
-			myAddr: window.localStorage.Address,
-			date,
+			cancelReachBottomTxRequest: null,
 			mockTxRecords: [
 				{
 					From: "ALspSTkzC6CW4yVCLpihACaG9LpGVmvf5D",
@@ -349,6 +356,76 @@ export default {
 					AmountFormat: "1000000",
 					Asset: "save",
 					Timestamp: 1554865433,
+					FeeFormat: "0.01",
+					BlockHeight: 100
+				},
+				{
+					From: "ALspSTkzC6CW4yVCLpihACaG9LpGVmvf5D",
+					To: "AGeTrARjozPVLhuzMxZq36THMtvsrZNAHq",
+					Amount: 1000000000000000,
+					AmountFormat: "1000000",
+					Asset: "save",
+					Timestamp: 1554808002,
+					FeeFormat: "0.01",
+					BlockHeight: 100
+				},
+				{
+					From: "ALspSTkzC6CW4yVCLpihACaG9LpGVmvf5D",
+					To: "AGeTrARjozPVLhuzMxZq36THMtvsrZNAHq",
+					Amount: 1000000000000000,
+					AmountFormat: "1000000",
+					Asset: "save",
+					Timestamp: 1554808002,
+					FeeFormat: "0.01",
+					BlockHeight: 100
+				},
+				{
+					From: "ALspSTkzC6CW4yVCLpihACaG9LpGVmvf5D",
+					To: "AGeTrARjozPVLhuzMxZq36THMtvsrZNAHq",
+					Amount: 1000000000000000,
+					AmountFormat: "1000000",
+					Asset: "save",
+					Timestamp: 1554808002,
+					FeeFormat: "0.01",
+					BlockHeight: 100
+				},
+				{
+					From: "ALspSTkzC6CW4yVCLpihACaG9LpGVmvf5D",
+					To: "AGeTrARjozPVLhuzMxZq36THMtvsrZNAHq",
+					Amount: 1000000000000000,
+					AmountFormat: "1000000",
+					Asset: "save",
+					Timestamp: 1554808002,
+					FeeFormat: "0.01",
+					BlockHeight: 100
+				},
+				{
+					From: "ALspSTkzC6CW4yVCLpihACaG9LpGVmvf5D",
+					To: "AGeTrARjozPVLhuzMxZq36THMtvsrZNAHq",
+					Amount: 1000000000000000,
+					AmountFormat: "1000000",
+					Asset: "save",
+					Timestamp: 1554808002,
+					FeeFormat: "0.01",
+					BlockHeight: 100
+				},
+				{
+					From: "ALspSTkzC6CW4yVCLpihACaG9LpGVmvf5D",
+					To: "AGeTrARjozPVLhuzMxZq36THMtvsrZNAHq",
+					Amount: 1000000000000000,
+					AmountFormat: "1000000",
+					Asset: "save",
+					Timestamp: 1554808002,
+					FeeFormat: "0.01",
+					BlockHeight: 100
+				},
+				{
+					From: "ALspSTkzC6CW4yVCLpihACaG9LpGVmvf5D",
+					To: "AGeTrARjozPVLhuzMxZq36THMtvsrZNAHq",
+					Amount: 1000000000000000,
+					AmountFormat: "1000000",
+					Asset: "save",
+					Timestamp: 1554808002,
 					FeeFormat: "0.01",
 					BlockHeight: 100
 				},
@@ -384,6 +461,22 @@ export default {
 				console.log("success");
 				console.log(e);
 				clip.destroy();
+			});
+		},
+		addListenScroll(element, distance, callback) {
+			element.addEventListener("scroll", function() {
+				// console.log(`element.scrollTop is: ${element.scrollTop},
+				// element.clientHeight is ${element.clientHeight},
+				// distance is ${distance},
+				// element.scrollHeight is ${element.scrollHeight}
+				// `);
+				if (
+					element.scrollTop + element.clientHeight + distance >=
+					element.scrollHeight
+				) {
+					console.log("scroll Toggle");
+					callback();
+				}
 			});
 		},
 		getQRCode() {
@@ -433,10 +526,11 @@ export default {
 								});
 							} else if (res.data.Error === 50015) {
 								this.$message.error("Wrong Password");
-							}else if (res.data.Error === 40002){
-								this.$message.error("Transaction failed, please check your Address.");
-							}
-							else{
+							} else if (res.data.Error === 40002) {
+								this.$message.error(
+									"Transaction failed, please check your Address."
+								);
+							} else {
 								this.$message.error(res.data.Desc);
 							}
 							this.switchToggle.loading.close();
@@ -452,7 +546,68 @@ export default {
 				}
 			});
 		},
+		loadTxRecords() {
+			if (!this.switchToggle.loadSwitch) return;
+			this.$store.dispatch("cancelTxRequest");
+			this.switchToggle.loadSwitch = false;
+			const asset = this.balanceLists[this.balanceSelected].Symbol || "";
+			const limit = 10;
+			const height = this.$store.state.Wallet.BlockHeight;
+			this.$axios
+				.get(
+					this.$api.transactions +
+						window.localStorage.Address +
+						"/0?asset=" +
+						asset +
+						"&limit=" +
+						limit +
+						"&height=" +
+						height,
+					{
+						cancelToken: new this.$axios.CancelToken(c => {
+							this.cancelReachBottomTxRequest = c;
+						})
+					}
+				)
+				.then(res => {
+					if (res.data.Error === 0) {
+						const transferIn = [];
+						const transferOut = [];
+						const result = res.data.Result;
+						for (let i = 0; i < result.length; i++) {
+							if (result[i].Type === 1) {
+								transferOut.push(result[i]);
+							} else if (result[i].Type === 2) {
+								transferIn.push(result[i]);
+							}
+							if ((i = result.length - 1)) {
+								this.$store.commit("SET_BLOCK_HEIGHT", result[i].BlockHeight);
+							}
+						}
+						this.$store.commit("SET_TX_RECORDS", this.txRecords.concat(result));
+						this.$store.commit(
+							"SET_TRANSFER_IN",
+							this.transferIn.concat(transferIn)
+						);
+						this.$store.commit(
+							"SET_TRANSFER_OUT",
+							this.txRecords.concat(transferOut)
+						);
+						this.$store.dispatch("setTxRecords", {
+							asset
+						});
+					}
+				})
+				.catch(err => {
+					console.log(err);
+				})
+				.finally(() => {
+					this.switchToggle.loadSwitch = true;
+				});
+		},
 		changeSelectedAsset() {
+			this.cancelReachBottomTxRequest && this.cancelReachBottomTxRequest();
+			this.$store.dispatch("cancelTxRequest");
 			const asset = this.balanceLists[this.balanceSelected].Symbol || "";
 			this.$store.dispatch("setTxRecords", { asset });
 		}

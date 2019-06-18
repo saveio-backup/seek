@@ -133,7 +133,7 @@
 				<template slot="append">
 					<i
 					 class="el-icon-document addr_btn"
-					 @click="clipText('.addr_btn')"
+					 @click="toClipboard(executedFile.Url || executedFile.Hash)"
 					 :aria-label='executedFile.Hash'
 					></i>
 				</template>
@@ -165,10 +165,12 @@
 import date from "../../../assets/tool/date";
 import util from "../../../assets/config/util";
 import ClipboardJS from "clipboard";
+import { clipboard } from "electron";
 let tableElement;
 export default {
 	data() {
 		return {
+			clipboard,
 			toggleFilebox: false,
 			date,
 			util,
@@ -380,7 +382,6 @@ export default {
 			],
 			fileListData: [],
 			privilegeConfig: ["Private", "Public", "Whitelist"],
-			offsetArray: [],
 			fileSelected: [],
 			controlBar: true,
 			type: "",
@@ -425,6 +426,14 @@ export default {
 				clip.destroy();
 			});
 		},
+		toClipboard(text) {
+			clipboard.writeText(text);
+			this.$message({
+				message: "Link Copied",
+				duration: 1200,
+				type: "success"
+			});
+		},
 		clickRow(row) {
 			this.$refs.table.clearSelection();
 			this.$refs.table.toggleRowSelection(row);
@@ -453,14 +462,13 @@ export default {
 		getFileLists() {
 			if (!this.switchToggle.load) return;
 			this.switchToggle.load = false; // if your are loading list now,  the switch will be set to false
-			let offset = this.offsetArray[this.type] || 0;
 			let addr =
 				this.addrAPI +
 				this.type +
 				"/" +
-				offset * this.limitCount +
+				this.fileListData.length +
 				"/" +
-				(offset * this.limitCount + this.limitCount - 1);
+				this.limitCount;
 			this.$axios
 				.get(addr)
 				.then(res => {
@@ -468,9 +476,6 @@ export default {
 						const result = res.data.Result;
 						if (result.length) {
 							// do sth
-							this.offsetArray[this.type] = this.offsetArray[this.type]
-								? this.offsetArray[this.type] + 1
-								: 1;
 							this.fileListData = this.fileListData.concat(result);
 						} else {
 							this.switchToggle.load = false;
@@ -535,7 +540,7 @@ export default {
 			// const filterInput = this.filterInput;
 			const fileListData = this.fileListData;
 			return fileListData.filter(item => {
-				return item.Name.indexOf(this.filterInput) >= 0;
+				return item.Name.indexOf(this.filterInput) >= 0 && item.Url;
 			});
 		}
 	},
@@ -550,7 +555,6 @@ export default {
 	},
 	beforeRouteUpdate(to, from, next) {
 		this.type = to.query.type;
-		this.offsetArray = [];
 		this.switchToggle.load = true;
 		this.fileListData = [];
 		this.getFileLists();
@@ -585,7 +589,7 @@ $theme-font-blue: #040f39;
 			}
 		}
 		.fun-search {
-			width:240px;
+			width: 240px;
 			.el-input__inner {
 				height: 33px;
 				line-height: 33px;
@@ -606,8 +610,8 @@ $theme-font-blue: #040f39;
 			font-weight: bold;
 			height: 100%;
 			overflow-y: hidden;
-			.el-table{
-				color:$theme-font-blue
+			.el-table {
+				color: $theme-font-blue;
 			}
 			thead th {
 				background: rgba(231, 231, 235, 1);
@@ -617,6 +621,14 @@ $theme-font-blue: #040f39;
 			.rowName {
 				.opera {
 					display: none;
+					[class^="el-icon-"] {
+						margin: 0px 4px;
+						font-size: 18px;
+						cursor: pointer;
+						&:hover{
+							color: $light-blue;
+						}
+					}
 				}
 				&:hover {
 					.opera {
@@ -624,6 +636,12 @@ $theme-font-blue: #040f39;
 					}
 				}
 			}
+		}
+	}
+	.el-input-group__append {
+		[class^="el-icon-"] {
+			font-size:18px;
+			cursor: pointer;
 		}
 	}
 }

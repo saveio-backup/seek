@@ -3,9 +3,8 @@
 		<div class="header">
 			<p class="light-theme-title mb10">Income Detail</p>
 			<el-date-picker
-			class="common-el-input"
+			 class="common-el-input"
 			 v-model="dateRange"
-			 @change='offset = 0'
 			 type="daterange"
 			 unlink-panels
 			 range-separator="to"
@@ -118,7 +117,6 @@ export default {
 			],
 			result: { TotalIncome: 0, TotalIncomeFormat: 0, Incomes: [] },
 			loadSwitch: true,
-			offset: 0,
 			limit: 20
 		};
 	},
@@ -151,9 +149,9 @@ export default {
 				"/" +
 				Math.floor(new Date(this.dateRange[1]).getTime() / 1000) +
 				"/" +
-				this.offset * this.limit +
+				this.result.Incomes.length +
 				"/" +
-				(this.offset * this.limit + this.limit - 1);
+				this.limit;
 			this.$axios
 				.get(addr)
 				.then(res => {
@@ -163,7 +161,6 @@ export default {
 						this.result.TotalIncome = result.TotalIncome;
 						this.result.TotalIncomeFormat = result.TotalIncomeFormat;
 						if (result.Incomes.length > 0) {
-							this.offset = this.offset + 1;
 							this.result.Incomes = this.result.Incomes.concat(result.Incomes);
 						} else {
 							this.loadSwitch = false;

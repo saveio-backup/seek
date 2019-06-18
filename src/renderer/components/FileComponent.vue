@@ -64,11 +64,11 @@
 					<template slot-scope="scope">
 						<el-progress
 						 v-if="scope.row.Type === 1"
-						 :percentage="scope.row.Progress*100"
+						 :percentage="scope.row.Progress||0*100"
 						></el-progress>
 						<el-progress
 						 v-if="scope.row.Type === 2"
-						 :percentage="scope.row.Progress*100"
+						 :percentage="scope.row.Progress||0*100"
 						></el-progress>
 					</template>
 				</el-table-column>
@@ -132,9 +132,9 @@ export default {
 				{
 					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
 					FileName: "hahat.txt",
-					Status:2,
+					Status: 2,
 					IsUploadAction: false,
-					Type:2,
+					Type: 2,
 					Current: 500,
 					FileSize: 1536,
 					DownloadCount: 0,
@@ -285,6 +285,9 @@ $light-grey: #f2f2f2;
 	height: 100%;
 	display: flex;
 	flex-direction: column;
+	.el-progress__text {
+		display: inline-block !important;
+	}
 	.top-progress {
 		display: flex;
 		height: 80px;

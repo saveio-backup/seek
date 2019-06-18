@@ -1,11 +1,14 @@
 import axios from 'axios';
 import api from '../../assets/config/api';
+const CancelToken = axios.CancelToken;
+let txTransSourceCancel;
 const state = {
   mainCount: 0,
   balanceLists: [],
   txRecords: [],
   transferIn: [],
-  transferOut: []
+  transferOut: [],
+  BlockHeight: '',
 }
 
 const mutations = {
@@ -28,6 +31,9 @@ const mutations = {
   },
   SET_TRANSFER_OUT(state, result) {
     state.transferOut = result;
+  },
+  SET_BLOCK_HEIGHT(state, height) {
+    state.BlockHeight = height;
   }
 }
 const timer = {
@@ -40,7 +46,7 @@ const actions = {
     commit
   }, config) {
     clearInterval(timer.txRecordsTimer);
-    requestTransActions(commit, config);
+    requestTransActions.bind(this, commit, config)();
   },
   setBalanceLists({
     commit
@@ -50,6 +56,9 @@ const actions = {
     timer.balanceListsTimer = setInterval(() => {
       requestBalanceLists(commit)
     }, timer.COUNT_INTERVAL);
+  },
+  cancelTxRequest() {
+    txTransSourceCancel('request cancel!');
   }
 }
 
@@ -72,30 +81,47 @@ function requestBalanceLists(commit) {
 function requestTransActions(commit, config) {
   let {
     asset = '',
-      limit = '10',
+      limit = state.txRecords.length || 10,
       height = ''
   } = config || {};
-  axios.get(api.transactions + window.localStorage.Address + '/0?asset=' + asset + '&limit=' + limit + '&height=' + height).then(res => {
-    if (res.data.Error === 0) {
-      const transferIn = [];
-      const transferOut = [];
-      const result = res.data.Result;
-      for (let i = 0; i < result.length; i++) {
-        if (result[i].Type === 1) {
-          transferOut.push(result[i]);
-        } else if (result[i].Type === 2) {
-          transferIn.push(result[i]);
+  axios.get(api.transactions + window.localStorage.Address + '/0?asset=' + asset + '&limit=' + limit + '&height=' + height, {
+      cancelToken: new CancelToken(c => {
+        txTransSourceCancel = c;
+      })
+    }).then(res => {
+      if (res.data.Error === 0) {
+        const transferIn = [];
+        const transferOut = [];
+        const result = res.data.Result;
+        for (let i = 0; i < result.length; i++) {
+          if (result[i].Type === 1) {
+            transferOut.push(result[i]);
+          } else if (result[i].Type === 2) {
+            transferIn.push(result[i]);
+          }
+          if (i = result.length - 1) {
+            commit('SET_BLOCK_HEIGHT', result[i].BlockHeight)
+          }
         }
+        commit('SET_TX_RECORDS', result);
+        commit('SET_TRANSFER_IN', transferIn);
+        commit('SET_TRANSFER_OUT', transferOut);
       }
-      commit('SET_TX_RECORDS', result);
-      commit('SET_TRANSFER_IN', transferIn);
-      commit('SET_TRANSFER_OUT', transferOut);
-    }
-  }).finally(() => {
-    // setTimeout(() => {
-    //   requestTransActions(commit, config);
-    // }, timer.COUNT_INTERVAL);
-  })
+    }).catch(thrown => {
+      if (axios.isCancel(thrown)) {
+        console.log('Request canceled', thrown.message);
+      } else {
+        console.error('request error');
+        console.error(thrown);
+      }
+    })
+    .finally(() => {
+      setTimeout(() => {
+        this.dispatch('setTxRecords', {
+          asset
+        }); // heart loading
+      }, 3000);
+    })
 }
 export default {
   state,

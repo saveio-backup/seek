@@ -24,8 +24,13 @@
 				>
 					<el-table-column
 					 label='Size'
-					 prop='Size'
-					></el-table-column>
+					>
+					<template slot-scope="scope">
+						<div>
+							{{util.bytesToSize(scope.row.Size * 1024)}}
+						</div>
+					</template>
+					</el-table-column>
 					<el-table-column label='ExpiredAt'>
 						<template slot-scope="scope">
 							<div class="light-blue">
@@ -35,8 +40,15 @@
 					</el-table-column>
 					<el-table-column
 					 label='Cost'
-					 prop="Cost"
-					></el-table-column>
+					>
+					<template slot-scope="scope">
+						<div>
+							<div>
+								{{parseFloat(scope.row.CostFormat)}} SAVE
+							</div>
+						</div>
+					</template>
+					</el-table-column>
 				</el-table>
 			</div>
 			<el-dialog
@@ -189,7 +201,6 @@ export default {
 			cost: {},
 			expandDialogVisible: false,
 			Records: [],
-			offset: 0,
 			limit: 20,
 			mockRecords: [
 				{
@@ -338,23 +349,36 @@ export default {
 				}
 			});
 		},
-		getUserSpaceRecords() {
-			if (!this.switchToggle.loadSwitch) return;
+		getUserSpaceRecords(amount) {
+			if (!this.switchToggle.loadSwitch && !amount) return;
 			this.switchToggle.loadSwitch = false;
-			this.$axios(
-				this.$api.userspacerecords +
+			let addr = null;
+			if (amount) {
+				addr =
+					this.$api.userspacerecords +
+					localStorage.getItem("Address") +
+					"/0/" +
+					amount;
+			} else {
+				addr =
+					this.$api.userspacerecords +
 					localStorage.getItem("Address") +
 					"/" +
-					this.offset * this.limit +
+					this.Records.length +
 					"/" +
-					(this.offset * this.limit + this.limit - 1)
-			)
+					this.limit;
+			}
+			this.$axios(addr)
 				.then(res => {
 					if (res.data.Error === 0) {
 						if (res.data.Result.Records.length > 0) {
-							this.offset += 1;
-							this.Records = this.Records.concat(res.data.Result.Records);
-							this.switchToggle.loadSwitch = true;
+							if (amount) {
+								this.Records = res.data.Result.Records;
+								this.switchToggle.loadSwitch = true;
+							} else {
+								this.Records = this.Records.concat(res.data.Result.Records);
+								this.switchToggle.loadSwitch = true;
+							}
 							return;
 						} else {
 							this.switchToggle.loadSwitch = false;
@@ -401,6 +425,7 @@ export default {
 							type: "success"
 						});
 						this.$store.dispatch("setSpace");
+						this.getUserSpaceRecords(this.Records.length + 1);
 						this.setDateValue(); // no param  rest date.Type = 0
 						this.cost = {};
 					} else {

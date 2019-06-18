@@ -519,7 +519,7 @@ export default {
 					this.$axios
 						.post(this.$api.download, {
 							Hash: downloadFiles[i].Hash,
-							MaxPeerNum: 10
+							MaxPeerNum: 1
 						})
 						.then(res => {
 							console.log("downloading");

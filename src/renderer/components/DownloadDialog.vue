@@ -52,7 +52,7 @@ export default {
 			this.$axios
 				.post(this.$api.download, {
 					Hash: this.downloadUrl,
-					MaxPeerNum: 10
+					MaxPeerNum: 1
 				})
 				.then(res => {
 					if (res.data.Error === 0) {

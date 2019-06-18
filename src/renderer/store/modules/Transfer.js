@@ -40,42 +40,15 @@ const actions = {
     commit
   }) {
     clearInterval(uploadTimer);
-    // uploadTimer = setInterval(() => {
-    //   axios.get(api.transferlist + '/1/0/0').then(res => {
-    //     if (res.data.Error === 0) {
-    //       this.dispatch('setComplete');
-    //       const result = res.data.Result.Transfers;
-    //       if (res.data.Result.IsTransfering) {} else {
-    //         clearInterval(uploadTimer);
-    //       }
-    //       commit('GET_UPLOAD_TRANSFER', result)
-    //     }
-    //   }).catch(() => {
-    //     clearInterval(uploadTimer);
-    //   })
-    // }, TIME_COUNT);
-    uploadTransferListRequest.bind(this,commit)();
+    uploadTransferListRequest.bind(this, commit)();
     uploadTimer = setInterval(uploadTransferListRequest.bind(this, commit), TIME_COUNT);
   },
   setDownload({
     commit
   }) {
     clearInterval(downloadTimer);
-    downloadTimer = setInterval(() => {
-      axios.get(api.transferlist + '/2/0/0').then(res => {
-        if (res.data.Error === 0) {
-          this.dispatch('setComplete');
-          const result = res.data.Result.Transfers;
-          if (res.data.Result.IsTransfering) {} else {
-            clearInterval(downloadTimer);
-          }
-          commit('GET_DOWNLOAD_TRANSFER', result)
-        }
-      }).catch((error) => {
-        console.error(error)
-        clearInterval(downloadTimer);
-      })
-    }, TIME_COUNT);
+    downloadTransferListRequest.bind(this, commit)();
+    downloadTimer = setInterval(downloadTransferListRequest.bind(this, commit), TIME_COUNT)
   },
   setComplete({
     commit
@@ -87,6 +60,22 @@ const actions = {
       }
     })
   }
+}
+
+function downloadTransferListRequest(commit) {
+  axios.get(api.transferlist + '/2/0/0').then(res => {
+    if (res.data.Error === 0) {
+      this.dispatch('setComplete');
+      const result = res.data.Result.Transfers;
+      if (res.data.Result.IsTransfering) {} else {
+        clearInterval(downloadTimer);
+      }
+      commit('GET_DOWNLOAD_TRANSFER', result)
+    }
+  }).catch((error) => {
+    console.error(error)
+    clearInterval(downloadTimer);
+  })
 }
 
 function uploadTransferListRequest(commit) {

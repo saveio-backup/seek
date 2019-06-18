@@ -18,13 +18,12 @@
 							<div>
 								<p class="bold grey-xs ft20">Welcome <span class="light-blue"> {{userName}}</span></p>
 								<p class="ft12">
-									<span class="address" :title="user.address" style="">
+									<span class="address" :title="user.address">
 										{{user.address}}
 									</span>
 									<i
 									class="ofont ofont-fuzhi addr_btn"
-									@click="clipText('.addr_btn')"
-									:aria-label='balanceLists[balanceSelected].Address'
+									@click="clipText"
 									></i>
 								</p>
 							</div>
@@ -164,10 +163,9 @@
 	</div>
 </template>
 <script>
-const { ipcRenderer } = require("electron");
+const { ipcRenderer, clipboard } = require("electron");
 import { filterFloat } from "../assets/config/util";
 import channelsList from "../components/ChannelsList.vue";
-import ClipboardJS from "clipboard";
 export default {
 	components: {
 		channelsList
@@ -202,20 +200,11 @@ export default {
 	methods: {
 		clipText(el) {
 			console.log("clip");
-			const clip = new ClipboardJS(el, {
-				text: function(trigger) {
-					return trigger.getAttribute("aria-label");
-				}
-			});
-			clip.on("success", e => {
-				this.$message({
-					message: "Link Copied",
-					duration: 1200,
-					type: "success"
-				});
-				console.log("success");
-				console.log(e);
-				clip.destroy();
+			clipboard.writeText(this.user.address);
+			this.$message({
+				message: "Link Copied",
+				duration: 1200,
+				type: "success"
 			});
 		},
 		setBalanceListsIndex(index) {

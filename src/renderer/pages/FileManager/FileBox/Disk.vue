@@ -10,7 +10,7 @@
 				</router-link>
 				<el-button
 				 class="ml10 bt bt-download theme-font-blue"
-				 @click="toDownload"
+				 @click="batchDownload"
 				>
 					Download
 				</el-button>
@@ -62,19 +62,22 @@
 						<template slot-scope="scope">
 							<div class="flex between rowName">
 								<span>{{ scope.row.Name }}</span>
+								<!-- @click="executedFile = scope.row" -->
 								<div
 								 v-if="page === 'filebox'"
 								 class="opera"
-								 @click="executedFile = scope.row"
 								><i
-									 @click="switchToggle.shareDialog = true"
+									 @click.stop="shareFile(scope.row)"
 									 class="el-icon-share"
 									></i>
-									<i class="el-icon-download"></i>
+									<i class="el-icon-download"
+										@click.stop="downloadFile(scope.row)"
+									></i>
 									<i
-									 @click="switchToggle.deleteDialog =true"
+									 @click.stop="deleteFile(scope.row)"
 									 class="el-icon-delete"
 									></i>
+									 <!-- @click.stop="switchToggle.deleteDialog = true" -->
 								</div>
 							</div>
 						</template>
@@ -393,7 +396,8 @@ export default {
 			},
 			page: "",
 			addrAPI: "",
-			limitCount: 20
+			limitCount: 20,
+			currentFile: null
 		};
 	},
 	mounted() {
@@ -489,16 +493,32 @@ export default {
 					this.switchToggle.load = true;
 				});
 		},
-		toDownload() {
-			const fileSelected = this.fileSelected;
-			const length = fileSelected.length;
+		shareFile(file) {
+			this.executedFile = file;
+			this.switchToggle.shareDialog = true;
+		},
+		downloadFile(file) {
+			this.toDownload([file]);
+		},
+		batchDownload() {
+			const NO_DOWNLOAD_FILE_MSG = 'Please select the file you want to download.';
+			if(!this.fileSelected || this.fileSelected.length === 0) {
+				this.$message({
+					message: NO_DOWNLOAD_FILE_MSG
+				});
+				return;
+			}
+			this.toDownload(this.fileSelected);
+		},
+		toDownload(downloadFiles) {
+			const length = downloadFiles.length;
 			const commitAll = [];
 			for (let i = 0; i < length; i++) {
 				console.log(i);
 				commitAll.push(
 					this.$axios
 						.post(this.$api.download, {
-							Hash: fileSelected[i].Hash,
+							Hash: downloadFiles[i].Hash,
 							MaxPeerNum: 10
 						})
 						.then(res => {
@@ -518,6 +538,10 @@ export default {
 					});
 				})
 			);
+		},
+		deleteFile(file) {
+			this.executedFile = file;
+			this.switchToggle.deleteDialog = true;
 		},
 		toDeleteFile(dataList, hash) {
 			this.switchToggle.deleteDialog = false;

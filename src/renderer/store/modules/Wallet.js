@@ -81,7 +81,7 @@ function requestBalanceLists(commit) {
 function requestTransActions(commit, config) {
   let {
     asset = '',
-      limit = state.txRecords.length || 10,
+      limit = state.txRecords.length || 30,
       height = ''
   } = config || {};
   axios.get(api.transactions + window.localStorage.Address + '/0?asset=' + asset + '&limit=' + limit + '&height=' + height, {
@@ -106,6 +106,11 @@ function requestTransActions(commit, config) {
         commit('SET_TX_RECORDS', result);
         commit('SET_TRANSFER_IN', transferIn);
         commit('SET_TRANSFER_OUT', transferOut);
+        setTimeout(() => {
+          this.dispatch('setTxRecords', {
+            asset
+          }); // heart loading
+        }, 3000);
       }
     }).catch(thrown => {
       if (axios.isCancel(thrown)) {
@@ -115,13 +120,7 @@ function requestTransActions(commit, config) {
         console.error(thrown);
       }
     })
-    .finally(() => {
-      setTimeout(() => {
-        this.dispatch('setTxRecords', {
-          asset
-        }); // heart loading
-      }, 3000);
-    })
+    .finally(() => {})
 }
 export default {
   state,

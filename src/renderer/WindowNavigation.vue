@@ -45,7 +45,24 @@
 						 @click='remoteCreate'
 						></span></li>
 				</ul>
-
+				<div
+				 v-if="platform === 'win32'"
+				 class="winform"
+				>
+					<a
+					 class="minimize ofont ofont-min"
+					 @click="windowMin"
+					></a>
+					<a
+					 class="maximize ofont"
+					 :class="{'ofont-unmaximize':isMaximized,'ofont-max':!isMaximized}"
+					 @click="windowResize"
+					></a>
+					<a
+					 class="close ofont ofont-close"
+					 @click="closeWindow"
+					></a>
+				</div>
 				<div class="window-navbar">
 					<div class="flex flex1">
 						<div class="window-navbar-buttons">
@@ -99,6 +116,8 @@ export default {
 			this.$forceUpdate();
 			this.views = remote.getCurrentWindow().views;
 		});
+		this.setIsMaximized();
+		window.addEventListener("resize", this.setIsMaximized);
 	},
 	computed: {
 		realUrl: function() {
@@ -122,6 +141,9 @@ export default {
 		);
 		window.vue = this;
 		return {
+			remote,
+			isMaximized: true,
+			platform: remote.process.platform,
 			inputDisplayUrl: activeView.displayURL || "",
 			views: remote.getCurrentWindow().views || []
 		};
@@ -167,6 +189,23 @@ export default {
 		},
 		remoteReload() {
 			this.activeView.webContents.reload();
+		},
+		setIsMaximized() {
+			this.isMaximized = remote.getCurrentWindow().isMaximized();
+		},
+		windowMin() {
+			remote.getCurrentWindow().minimize();
+		},
+		windowResize() {
+			let win = remote.getCurrentWindow();
+			if (win.isMaximized()) {
+				win.unmaximize();
+			} else {
+				win.maximize();
+			}
+		},
+		closeWindow() {
+			remote.getCurrentWindow().close();
 		}
 	}
 };
@@ -184,11 +223,11 @@ $tabs-height: 63px;
 	height: $tabs-height;
 	background: $theme-color;
 	.window-tabs {
-		padding: 0px 40px 0 30px;
+		-webkit-app-region: drag;
+		position: relative;
+		padding-left: 30px;
+		margin-right: 100px;
 		.window-tab-item {
-			&.is-active {
-				background: $theme-color-opacity;
-			}
 			position: relative;
 			cursor: default;
 			border-top-left-radius: 6px;
@@ -201,7 +240,10 @@ $tabs-height: 63px;
 			font-size: 12px;
 			color: #fff;
 			background: $theme-color;
-						.favicon {
+			&.is-active {
+				background: $theme-color-opacity;
+			}
+			.favicon {
 				width: 16px;
 				height: 16px;
 			}
@@ -238,6 +280,23 @@ $tabs-height: 63px;
 			color: #fff;
 			transform: skew(10deg);
 			background-color: $theme-color-opacity;
+		}
+	}
+	.winform {
+		display: flex;
+		position: absolute;
+		right: 0px;
+		top: 0px;
+		justify-content: space-around;
+		align-items: center;
+		width: 100px;
+		height: 30px;
+		color: rgba(255, 255, 255, 0.5);
+		& > a {
+			flex: 1;
+			$height: 30px;
+			line-height: $height;
+			text-align: center;
 		}
 	}
 	.window-navbar {

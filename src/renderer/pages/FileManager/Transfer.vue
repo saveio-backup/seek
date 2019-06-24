@@ -6,12 +6,18 @@
 				 class="transform-link"
 				 :class="{'theme-font-blue-bold hover-link': transferType == 1}"
 				 @click="transferType = 1"
-				>Upload</p>
+				><span>Upload</span> <span
+					 class="badge"
+					 v-show="uploadLength>0"
+					>{{uploadLength}}</span></p>
 				<p
 				 class="transform-link"
 				 :class="{'theme-font-blue-bold hover-link': transferType == 2}"
 				 @click="transferType = 2 "
-				>Download</p>
+				>Download <span
+					 class="badge"
+					 v-show="downloadLength>0"
+					>{{downloadLength}}</span></p>
 				<p
 				 class="transform-link"
 				 :class="{'theme-font-blue-bold hover-link': transferType == 0}"
@@ -43,8 +49,16 @@ export default {
 	},
 	data() {
 		return {
-			transferType: 0
+			transferType: 0,
 		};
+	},
+	computed: {
+		downloadLength: function() {
+			this.$store.state.Transfer.downloadLength;
+		},
+		uploadLength: function() {
+			this.$store.state.Transfer.uploadLength;
+		}
 	},
 	beforeRouteEnter(to, from, next) {
 		next(vm => {
@@ -82,7 +96,7 @@ $light-grey: #f7f7f7;
 		background: $light-grey;
 		color: $theme-font-blue;
 		.aside-link {
-			margin-top:20px;
+			margin-top: 20px;
 			display: flex;
 			flex-direction: column;
 			width: 100%;
@@ -91,11 +105,24 @@ $light-grey: #f7f7f7;
 				font-size: 16px;
 				display: flex;
 				padding: 10px 0 10px 50px;
-				&:hover{
+				&:hover {
 					background: #e7e7eb;
 				}
-				&.hover-link{
+				&.hover-link {
 					background: #e7e7eb;
+				}
+				.badge {
+					display: inline-block;
+					background: #65a6ff;
+					$width: 14px;
+					width: $width;
+					height: $width;
+					line-height: $width;
+					font-size: 12px;
+					text-align: center;
+					border-radius: 50%;
+					color: #fff;
+					margin-left:4px;
 				}
 			}
 		}

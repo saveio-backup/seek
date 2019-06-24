@@ -284,6 +284,7 @@ export function createWindow(url) {
 
   let mainWindow = new BrowserWindow({
     height: 800,
+    frame:false,
     useContentSize: true,
     minWidth: 1200,
     minHeight: 563,

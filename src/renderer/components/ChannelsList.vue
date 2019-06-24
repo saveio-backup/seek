@@ -42,7 +42,10 @@
 				 v-if="showTransfer"
 				>
 					<template slot-scope="scope">
-						<span @click="openTransfer(scope.row)">Transfer</span>
+						<span
+						 class="light-blue cursor-pointer"
+						 @click="openTransfer(scope.row)"
+						>Transfer</span>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -60,6 +63,7 @@
 			</div>
 			<div class="loading-content">
 				<channel-wallet-transfer
+				 @closeDialog='switchToggle.assetTransferDialog = false'
 				 ref="channelwallettransfer"
 				 :channelSelected='channelSelected'
 				></channel-wallet-transfer>

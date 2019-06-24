@@ -118,7 +118,7 @@ export default {
 		};
 	},
 	methods: {
-		toTransfer() {
+		toTransfer() {			
 			if (this.switchToggle.loading) return;
 			if (!this.channelSelected) {
 				this.emitMessage("Please Choose Channel Address", "error");
@@ -149,7 +149,7 @@ export default {
 									message: "Transfer Success!",
 									type: "success"
 								});
-								this.switchToggle.assetTransferDialog = false;
+								this.$emit("closeDialog");
 								this.initBalanceRequest();
 							} else if (res.data.Error === 50015) {
 								this.$message.error("Wrong Password");

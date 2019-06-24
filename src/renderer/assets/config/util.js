@@ -1,7 +1,6 @@
 const result = {
   bytesToSize(bytes) {
     if (bytes === 0) return '0 Byte';
-    console.log(bytes);
     var k = 1024;
 
     sizes = ['Byte', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];

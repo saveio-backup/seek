@@ -22,14 +22,12 @@
 				 empty-text='No Data'
 				 height='100%'
 				>
-					<el-table-column
-					 label='Size'
-					>
-					<template slot-scope="scope">
-						<div>
-							{{util.bytesToSize(scope.row.Size * 1024)}}
-						</div>
-					</template>
+					<el-table-column label='Size'>
+						<template slot-scope="scope">
+							<div>
+								{{util.bytesToSize(scope.row.Size * 1024)}}
+							</div>
+						</template>
 					</el-table-column>
 					<el-table-column label='ExpiredAt'>
 						<template slot-scope="scope">
@@ -38,16 +36,14 @@
 							</div>
 						</template>
 					</el-table-column>
-					<el-table-column
-					 label='Cost'
-					>
-					<template slot-scope="scope">
-						<div>
+					<el-table-column label='Cost'>
+						<template slot-scope="scope">
 							<div>
-								{{parseFloat(scope.row.CostFormat)}} SAVE
+								<div>
+									{{parseFloat(scope.row.CostFormat)}} SAVE
+								</div>
 							</div>
-						</div>
-					</template>
+						</template>
 					</el-table-column>
 				</el-table>
 			</div>
@@ -66,8 +62,8 @@
 						<div class="adjust-item">
 							<p class="adjust-title theme-font-blue bold">Current:</p>
 							<div class="adjust-info">
-								<p class="theme-font-blue ft14 mr20">{{util.bytesToSize(space.Remain *1024)}}</p>
-								<p class="grey-xs bold ml20">{{util.bytesToSize(space.Used *1024)}} / {{util.bytesToSize(space.Remain*1024)}}</p>
+								<p class="theme-font-blue ft14 mr20">{{util.bytesToSize( (space.Used + space.Remain)*1024)}}</p>
+								<p class="grey-xs bold ml20">{{util.bytesToSize(space.Used *1024)}} / {{util.bytesToSize( (space.Used + space.Remain)*1024)}}</p>
 							</div>
 						</div>
 						<div class="adjust-item">
@@ -151,7 +147,7 @@
 </template>
 <script>
 import util from "../../../assets/config/util";
-const now = new Date();
+const _NOW = new Date();
 // const nextDay = new Date(now.setDate(now.getDate() + 1));
 // nextDay.setHours(23);
 // nextDay.setMinutes(59);
@@ -168,8 +164,6 @@ export default {
 		// 	this.$dateFormat.formatTimeByTimestamp(
 		// 		this.$store.state.Filemanager.space.ExpiredAt * 1000
 		// 	) || this.$dateFormat.formatTimeByTimestamp(now.getTime());
-		const expired =
-			this.$store.state.Filemanager.space.ExpiredAt * 1000 || now.getTime();
 		return {
 			util,
 			sizeUnit: 1048576,
@@ -180,11 +174,12 @@ export default {
 			adjustSize: 1,
 			switchToggle: { loadSwitch: true, loading: "" },
 			submitToggle: true, // commit toggle
-			expired,
+			expired: "",
 			pickerOptions: {
 				disabledDate: date => {
-					const now = new Date().getTime();
-					return date.getTime() - now < 0;
+					// (this.space.ExpiredAt * 1000)
+					// const now = new Date().getTime();
+					return date.getTime() - (this.space.ExpiredAt * 1000) < 0;
 				}
 			},
 			addInfo: {
@@ -303,24 +298,21 @@ export default {
 				(this.space.Remain + this.space.Used) /
 				this.sizeUnit
 			).toFixed(2);
-		},
-		expired_old: {
-			handler: function() {
-				if (this.$store.state.Filemanager.space.ExpiredAt) {
-					this.expired = new Date(
-						this.$store.state.Filemanager.space.ExpiredAt * 1000
-					);
-				}
-			},
-			deep: true
 		}
 	},
 	computed: {
 		expired_old() {
+			if (this.$store.state.Filemanager.space.ExpiredAt) {
+				this.expired = new Date(
+					this.$store.state.Filemanager.space.ExpiredAt * 1000
+				);
+			} else {
+				this.expired = _NOW.getTime();
+			}
 			return (
 				this.$dateFormat.formatTimeByTimestamp(
 					this.$store.state.Filemanager.space.ExpiredAt * 1000
-				) || this.$dateFormat.formatTimeByTimestamp(now)
+				) || this.$dateFormat.formatTimeByTimestamp(_NOW)
 			);
 		},
 		space() {

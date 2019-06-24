@@ -70,14 +70,15 @@
 									 @click.stop="shareFile(scope.row)"
 									 class="el-icon-share"
 									></i>
-									<i class="el-icon-download"
-										@click.stop="downloadFile(scope.row)"
+									<i
+									 class="el-icon-download"
+									 @click.stop="downloadFile(scope.row)"
 									></i>
 									<i
 									 @click.stop="deleteFile(scope.row)"
 									 class="el-icon-delete"
 									></i>
-									 <!-- @click.stop="switchToggle.deleteDialog = true" -->
+									<!-- @click.stop="switchToggle.deleteDialog = true" -->
 								</div>
 							</div>
 						</template>
@@ -90,7 +91,7 @@
 							</span>
 						</template>
 					</el-table-column>
-					<el-table-column
+					<!-- <el-table-column
 					 label="Download statistics"
 					 prop="DownloadCount"
 					></el-table-column>
@@ -98,6 +99,13 @@
 						<template slot-scope="scope">
 							<div class="light-blue">
 								{{scope.row.Profit}}
+							</div>
+						</template>
+					</el-table-column> -->
+					<el-table-column label="Date">
+						<template slot-scope="scope">
+							<div class="light-blue">
+								{{date.formatTime(new Date(scope.row.UpdatedAt * 1000))}}
 							</div>
 						</template>
 					</el-table-column>
@@ -501,8 +509,9 @@ export default {
 			this.toDownload([file]);
 		},
 		batchDownload() {
-			const NO_DOWNLOAD_FILE_MSG = 'Please select the file you want to download.';
-			if(!this.fileSelected || this.fileSelected.length === 0) {
+			const NO_DOWNLOAD_FILE_MSG =
+				"Please select the file you want to download.";
+			if (!this.fileSelected || this.fileSelected.length === 0) {
 				this.$message({
 					message: NO_DOWNLOAD_FILE_MSG
 				});
@@ -649,7 +658,7 @@ $theme-font-blue: #040f39;
 						margin: 0px 4px;
 						font-size: 18px;
 						cursor: pointer;
-						&:hover{
+						&:hover {
 							color: $light-blue;
 						}
 					}
@@ -664,7 +673,7 @@ $theme-font-blue: #040f39;
 	}
 	.el-input-group__append {
 		[class^="el-icon-"] {
-			font-size:18px;
+			font-size: 18px;
 			cursor: pointer;
 		}
 	}

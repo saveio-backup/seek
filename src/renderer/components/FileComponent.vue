@@ -76,7 +76,7 @@
 				 label="Status"
 				 prop="Status"
 				></el-table-column>
-				<el-table-column label="opera">
+				<el-table-column label="Action">
 					<template slot-scope="scope">
 						<div>
 							<span v-if="scope.row.status === 0">continue</span>

@@ -5,4 +5,5 @@
  */
  
 import './fileOperation';
+import './dialogOperation';
 import './nodeTools.js';

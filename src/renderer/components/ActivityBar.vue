@@ -141,8 +141,23 @@ export default {
 			const customControlMenuItems = [
 				{
 					label: "Export Wallet",
+					// visible: new Boolean(user.name),
 					click() {
-						that.$exportWallet();						
+						that.$exportWallet();		
+					}
+				},
+				{
+					label: "Log Out",
+					// visible: new Boolean(user.name),
+					click() {
+						that.logout();						
+					}
+				},
+				{
+					label: "Export Private Key",
+					// visible: new Boolean(user.name),
+					click() {
+						that.exportPrivateKey();				
 					}
 				}
 			];
@@ -151,6 +166,15 @@ export default {
 		},
 		remoteOpenComponent(path) {
 			this.activeView.openComponent(path);
+		},
+		logout() {
+			const LOGOUT_URL = '/dialog/logout'
+			ipcRenderer.send('dialog-open', LOGOUT_URL);
+		},
+		exportPrivateKey() {
+			// console.log('exportPrivateKey')
+			const LOGOUT_URL = '/dialog/exportPrivateKey'
+			ipcRenderer.send('dialog-open', LOGOUT_URL);
 		}
 	}
 };

@@ -2,6 +2,7 @@ import {
   BrowserWindow,
   BrowserView
 } from 'electron'
+import dialogView from './dialogView'
 import {
   DEFAULT_URL,
   DEFAULT_PROTOCOL,
@@ -12,6 +13,7 @@ import {
   URL
 } from 'url';
 export const windows = {}; // map of {[parentWindow.id] => BrowserWindow}
+export let dialogViewObj = null;
 // global.windows = windows;
 class View {
   constructor(win, url, option = {
@@ -68,7 +70,6 @@ class View {
     });
 
     this.browserView.webContents.openDevTools();
-
   }
   forceUpdate() {
     if (this && this.browserView) {
@@ -152,6 +153,8 @@ class View {
     })
   }
   onNewUrl(url, event) {
+    const win = this.browserWindow;
+    win.setBrowserView(this.browserView); //if have dialog browserView
     console.log('new url is: ', url);
     let newIsSave = null;
     const urlFormat = this.formatURL(url);
@@ -180,16 +183,6 @@ class View {
       this.loadURL(url);
     }
   }
-  // openComponent() {
-  //   // const fix = DEFAULT_URL + '#/';
-  //   // let arr = [fix + 'Wallet', fix + 'Filemanager', fix + 'Miner', fix + 'Wallet', fix + 'Filemanager', fix + 'Miner']
-  //   let arr1 = ['https://electronjs.org/docs/api/browser-window', 'https://regexper.com/#123%28%5C%23%5C%2F%29%3F', 'https://simulatedgreg.gitbooks.io/electron-vue/content/cn/using-static-assets.html', 'https://element.eleme.io/#/zh-CN/component/input']
-  //   arr1.map(item => {
-  //     createView(this.browserWindow, item, {
-  //       isActive: true
-  //     })
-  //   })
-  // }
   openComponent(path) {
     const views = this.browserWindow.views;
     const view = views.find(item => {
@@ -339,6 +332,7 @@ export function createWindow(url) {
   // createView(mainWindow,'https://telegram.org/');
   // createView(mainWindow, 'http://127.0.0.1:8080/')
   createView(mainWindow);
+  dialogViewObj = new dialogView(mainWindow);
 }
 
 // seam as handlerViews

@@ -117,7 +117,6 @@ export default {
 		}
 	},
 	data() {
-		
 		let activeView = (remote.getCurrentWindow().views || []).find(
 			view => view.isActive
 		);

@@ -40,6 +40,7 @@ const API = {
   income: HOST + VERSION + 'dsp/file/share/income/',
   withdrawChannel: HOST + VERSION + 'channel/withdraw',
   depositChannel: HOST + VERSION + 'channel/deposit',
-  channelInitProgress: HOST+ VERSION + 'channel/init/progress'
+  channelInitProgress: HOST+ VERSION + 'channel/init/progress',
+  exportPrivateKey: HOST+ VERSION + 'account/export/privatekey',
 }
 module.exports = API;

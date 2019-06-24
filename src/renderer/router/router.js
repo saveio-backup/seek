@@ -124,6 +124,26 @@ export default new Router({
       }
     },
     {
+      path: '/dialog',
+      name: 'Dialog',
+      component: require('../pages/Dialog.vue').default,
+      meta: {
+        keepAlive: true
+      },
+      children: [
+        {
+          path: 'exportPrivateKey',
+          name: 'ExportPrivateKey',
+          component: require('../pages/Dialog/ExportPrivateKey.vue').default
+        },
+        {
+          path: 'logout',
+          name: 'Logout',
+          component: require('../pages/Dialog/Logout.vue').default
+        }
+      ]
+    },
+    {
       path: '*',
       redirect: '/Home',
       meta: {

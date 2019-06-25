@@ -8,6 +8,7 @@
 			<section class="window-control-wrapper">
 				<ul class="window-tabs flex">
 					<li
+					 draggable="true"
 					 class="window-tab-item"
 					 v-for="(item,index) in views"
 					 :key="index"
@@ -215,7 +216,7 @@ $theme-color: #1b1e2f;
 $theme-input-color: #2c2f44;
 $theme-color-opacity: rgba(73, 77, 94, 1);
 $light-grey: #f2f2f2;
-$tabs-height: 63px;
+$tabs-height: 68px;
 #window-navigation {
 	height: 100vh;
 }
@@ -230,10 +231,11 @@ $tabs-height: 63px;
 		.window-tab-item {
 			position: relative;
 			cursor: default;
+			-webkit-app-region: no-drag;
 			border-top-left-radius: 6px;
 			border-top-right-radius: 6px;
 			width: 220px;
-			height: 30px;
+			height: 35px;
 			display: flex;
 			align-items: center;
 			min-width: 50px;
@@ -250,7 +252,7 @@ $tabs-height: 63px;
 			.window-tab-item-title {
 				flex: 1;
 				height: 100%;
-				line-height: 30px;
+				line-height: 35px;
 				padding-right: 20px;
 				width: calc(100% - 26px);
 				overflow: hidden;
@@ -271,6 +273,7 @@ $tabs-height: 63px;
 			}
 		}
 		.addtab {
+			-webkit-app-region: no-drag;
 			cursor: pointer;
 			margin-left: 15px;
 			font-size: 8px;
@@ -290,11 +293,11 @@ $tabs-height: 63px;
 		justify-content: space-around;
 		align-items: center;
 		width: 100px;
-		height: 30px;
+		height: 35px;
 		color: rgba(255, 255, 255, 0.5);
 		& > a {
 			flex: 1;
-			$height: 30px;
+			$height: 35px;
 			line-height: $height;
 			text-align: center;
 		}

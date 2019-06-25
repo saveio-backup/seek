@@ -155,7 +155,6 @@ class View {
   onNewUrl(url, event) {
     const win = this.browserWindow;
     win.setBrowserView(this.browserView); //if have dialog browserView
-    console.log('new url is: ', url);
     let newIsSave = null;
     const urlFormat = this.formatURL(url);
     if (urlFormat.protocol === DEFAULT_PROTOCOL + ':') { // is ours custom 'seek://' html page?
@@ -179,7 +178,6 @@ class View {
       this.loadURL(urlFormat.href);
       this.setBroserView();
     } else {
-      console.log('nothing happened go on !!!!!');
       this.loadURL(url);
     }
   }
@@ -213,10 +211,8 @@ class View {
   formatURL(newURL) {
     let newURLFormat = null;
     let browserWindowURLFomat = new URL(this.browserWindow.url);
-    console.log('browserWindowURLFormat is', browserWindowURLFomat);
     try {
       newURLFormat = new URL(newURL)
-      console.log('before format newURLFormat is: ', newURLFormat);
       // if (newURLFormat.pathname.indexOf('/') !== 0) {
       //   newURLFormat.href = 'http://' + newURLFormat.href;
       // }
@@ -226,7 +222,6 @@ class View {
     } catch (error) {
       newURLFormat = new URL('seek://' + newURL)
     } finally {}
-    console.log('finally newURLForamt is: ', newURLFormat);
     return newURLFormat;
   }
   initView() {

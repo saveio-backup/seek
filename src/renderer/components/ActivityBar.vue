@@ -3,7 +3,7 @@
 		<div class="content">
 			<div class="composite-bar">
 				<ul class="action-container">
-					<li class="action-item item-user">
+					<!-- <li class="action-item item-user">
 						<div
 						 class="nav-button"
 						 @click="remoteOpenComponent('Home')"
@@ -11,7 +11,7 @@
 							<i v-if="!user.name" class="ofont ofont-user user user-first"></i>
 							<i v-else class="user-first">{{user.name | firstString}}</i>
 						</div>
-					</li>
+					</li> -->
 					<!-- <li class="action-item">
 						<router-link to="/Appstore"><i class="ofont ofont-menu appstore"></i></router-link>
 					</li> -->
@@ -21,10 +21,10 @@
 						 class="nav-button"
 						 @click="remoteOpenComponent('FileManager')"
 						 active-class="slidebar-active"
+						:class="{'theme-color-yellow':activeView.displayURL.indexOf('seek://FileManager')>=0}"
 						>
 							<i
-							 class="ofont ofont-file"
-							 :class="{'theme-color-yellow':activeView.displayURL.indexOf('seek://FileManager')>=0}"
+							 class="ofont ofont-wenjianjia-"
 							></i>
 						</div>
 					</li>
@@ -33,10 +33,10 @@
 						 title="Wallet"
 						 class="nav-button"
 						 @click="remoteOpenComponent('Wallet')"
+						:class="{'theme-color-yellow':activeView.displayURL.indexOf('seek://Wallet')>=0}"
 						>
 							<i
-							 class="ofont ofont-wallet"
-							 :class="{'theme-color-yellow':activeView.displayURL.indexOf('seek://Wallet')>=0}"
+							 class="ofont ofont-qianbao"
 							></i>
 						</div>
 					</li>
@@ -46,10 +46,10 @@
 						 class="nav-button"
 						 @click="remoteOpenComponent('Miner')"
 						 active-class="slidebar-active"
+						:class="{'theme-color-yellow':activeView.displayURL.indexOf('seek://Miner')>=0}"
 						>
 							<i
-							 class="ofont ofont-miner"
-							 :class="{'theme-color-yellow':activeView.displayURL.indexOf('seek://Miner')>=0}"
+							 class="ofont ofont-wakuang"
 							></i>
 							<!-- <img
 							 v-show="activeView.displayURL.indexOf('seek://Miner')<0"
@@ -67,10 +67,11 @@
 						<div
 						 title="Coming Soon.."
 						 class="nav-button"
+						 style="background:none;"
 						>
 							<span
-							 class="ofont ofont-mall"
-							 style='opacity:0.2'
+							 class="ofont ofont-dapp1"
+							 style='color:#C7CAD0;background:none;cursor:not-allowed;'
 							></span>
 						</div>
 					</li>
@@ -78,10 +79,11 @@
 						<div
 						 title="Coming Soon.."
 						 class="nav-button"
+						 style="background:none;"
 						>
 							<span
-							 class="ofont ofont-add"
-							 style='opacity:0.2'
+							 class="ofont ofont-tianjia"
+							 style='color:#C7CAD0;cursor:not-allowed;'
 							></span>
 						</div>
 					</li>
@@ -108,13 +110,6 @@ export default {
 			this.$forceUpdate();
 			this.views = remote.getCurrentWindow().views;
 		});
-	},
-	filters: {
-		firstString(value) {
-			if(!value) return '';
-			value += '';
-			return value[0];
-		}
 	},
 	data() {
 		return {
@@ -172,7 +167,6 @@ export default {
 			ipcRenderer.send('dialog-open', LOGOUT_URL);
 		},
 		exportPrivateKey() {
-			// console.log('exportPrivateKey')
 			const LOGOUT_URL = '/dialog/exportPrivateKey'
 			ipcRenderer.send('dialog-open', LOGOUT_URL);
 		}
@@ -180,8 +174,10 @@ export default {
 };
 </script>
 <style lang="scss">
-$theme-color-yellow: #cddc39;
-$theme-color: #1b1e2f;
+$theme-color-yellow: #4F5154;
+// $theme-color: #1b1e2f;
+$theme-color: #DFE2E9;
+
 $slidebar-active-color: linear-gradient(
 	110deg,
 	rgba(101, 166, 255, 1) 0%,
@@ -191,17 +187,22 @@ $slidebar-active-color: linear-gradient(
 	width: 40px;
 	color: $theme-color;
 	background: $theme-color;
+	height: calc(100% - 62px);
+
 	.content {
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
 		position: relative;
-		padding-top: 25px;
+		padding-top: 50px;
 		z-index: 999;
 		height: 100%;
-		color: #767882;
+		color: #808185;
+		box-shadow:inset -15px 0px  10px -15px rgba(182,182,182,0.3);
+
 		.theme-color-yellow {
 			color: $theme-color-yellow;
+			background: #C0C6D1;
 		}
 		.action-container {
 			text-align: center;
@@ -209,9 +210,9 @@ $slidebar-active-color: linear-gradient(
 				display: flex;
 				position: relative;
 				font-size: 40px;
-				margin: 25px 0;
+				margin: 5px 0;
 				.ofont {
-					font-size: 30px;
+					font-size: 24px;
 				}
 				&.item-user {
 					position: relative;
@@ -220,18 +221,18 @@ $slidebar-active-color: linear-gradient(
 					margin-bottom: 60px;
 				}
 				&.item-bottom-line {
-					padding-bottom: 20px;
+					padding-bottom: 25px;
 				}
-				&.item-bottom-line:after {
-					content: "";
-					position: absolute;
-					bottom: 0px;
-					left: 50%;
-					transform: translateX(-50%);
-					width: 75%;
-					height: 1px;
-					background: rgba(255, 255, 255, 0.2);
-				}
+				// &.item-bottom-line:after {
+				// 	content: "";
+				// 	position: absolute;
+				// 	bottom: 0px;
+				// 	left: 50%;
+				// 	transform: translateX(-50%);
+				// 	width: 75%;
+				// 	height: 1px;
+				// 	background: rgba(255, 255, 255, 0.2);
+				// }
 				img {
 					width: calc(100% - 14px);
 				}
@@ -242,30 +243,46 @@ $slidebar-active-color: linear-gradient(
 					align-items: center;
 					justify-content: center;
 					cursor: pointer;
+					height: 40px;
+					// font-size: 18px;
+
+					&:hover {
+						transition: all .2s ease;
+						color: $theme-color-yellow;
+						background: #C0C6D1;
+					}
+
+					&:active {
+						opacity: .7;
+					}
+
 					&.slidebar-active {
 						position: relative;
 					}
 
-					.user-first {
-						font-size: 16px;
-						width: 22px;
-						height: 22px;
-						line-height: 22px;
-						display: block;
-						text-align: center;
-						border-radius: 50%;
-						border: 1px solid #767882;
-						color: #767882;
-						font-style: inherit;
-						user-select: none;
-					}
+					// .user-first {
+					// 	font-size: 16px;
+					// 	width: 22px;
+					// 	height: 22px;
+					// 	line-height: 22px;
+					// 	display: block;
+					// 	text-align: center;
+					// 	border-radius: 50%;
+					// 	border: 1px solid #767882;
+					// 	color: #767882;
+					// 	font-style: inherit;
+					// 	user-select: none;
+					// }
 				}
 			}
 		}
 		.setting-bar {
 			position: relative;
 			text-align: center;
+			color: #202020;
 			font-size: 30px;
+			top: -30px;
+			
 			.setting-ul {
 				opacity: 0;
 				transition: all 0.5s;

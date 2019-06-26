@@ -10,7 +10,7 @@ input,
 button,
 textarea,
 select {
-  font-family: 'Open Sans', 'SF Pro SC', 'PingFangSC-Regular', 'HanHei SC', 'SF Pro Text', 'Myriad Set Pro', 'SF Pro Icons', 'PingFang SC', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+  font-family: 'Montserrat-Medium', 'Open Sans', 'SF Pro SC', 'PingFangSC-Regular', 'HanHei SC', 'SF Pro Text', 'Myriad Set Pro', 'SF Pro Icons', 'PingFang SC', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
 }
 
 .flex {
@@ -117,4 +117,16 @@ select {
 .el-dialog__body,
 .el-dialog--center .el-dialog__body {
   padding-top: 0px;
+}
+
+// bottom
+.seek-btn {
+  // width:120px;
+  height:32px;
+  background:rgba(255,255,255,1);
+  border-radius:16px;
+  line-height: 32px;
+  color: #2F8FF0;
+  font-size: 12px;
+  padding: 0 15px;
 }

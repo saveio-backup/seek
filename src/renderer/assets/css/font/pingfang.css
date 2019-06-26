@@ -18,3 +18,8 @@
   font-family: 'SF Pro SC';
   src: url('./PingFangSC-Regular.woff2') format('woff2')
 }
+
+@font-face {
+  font-family: 'Montserrat-Medium';
+  src: url('./Montserrat-Medium.ttf') format('woff2')
+}

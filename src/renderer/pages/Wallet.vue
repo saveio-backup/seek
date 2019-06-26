@@ -936,10 +936,14 @@ $light-grey: #f7f7f7;
 		border: none;
 	}
 	.ofont-fuzhi {
-		&:hover {
-			font-weight: bold;
-		}
 		cursor: pointer;
+		&:hover {
+			opacity: .7;
+		}
+		
+		&:active {
+			opacity: 1;
+		}
 	}
 	.send-form-wrap {
 		width: 80%;

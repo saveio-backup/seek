@@ -14,7 +14,7 @@ export default {
 </script>
 
 <style lang='scss'>
-$light-grey: #f2f2f2;
+$light-grey: #F9F9FB;
 $tabs-height: 70px;
 #app {
 	height: 100vh;

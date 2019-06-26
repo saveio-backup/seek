@@ -288,6 +288,7 @@ export function createWindow(url) {
     autoHideMenuBar: true,
     fullscreenable: true,
     fullscreenWindowTitle: true,
+    frame: false,
     webPreferences: {
       webSecurity: true,
       sandbox:false,

@@ -1,9 +1,7 @@
 <template>
 	<div
 	 id="window-navigation"
-	 class="flex"
 	>
-		<activity-bar></activity-bar>
 		<div class="window-main">
 			<section class="window-control-wrapper">
 				<ul class="window-tabs flex">
@@ -13,6 +11,7 @@
 					 v-for="(item,index) in views"
 					 :key="index"
 					 :class="{'is-active':item.isActive}"
+						@click="remoteSetActive(item,index)"
 					>
 
 						<span
@@ -32,16 +31,17 @@
 						></span>
 						<p
 						 class="window-tab-item-title ml10"
-						 @click="remoteSetActive(item,index)"
 						>{{item.title || 'loading...'}}</p>
-						<p class="flex ai-center close">
+							 
+						<p class="flex ai-center close" @click.stop="remoteDestory(item,index)">
+							 <!-- class="el-icon-close" -->
 							<span
-							 class="el-icon-close"
-							 @click="remoteDestory(item,index)"
+								class="ofont-guanbi ofont-close ofont ft8"
 							></span>
 						</p>
 					</li>
-					<li class="flex ai-center"><span
+					<li class="flex ai-center">
+						<span
 						 class="addtab el-icon-plus"
 						 @click='remoteCreate'
 						></span></li>
@@ -50,23 +50,33 @@
 				 v-if="platform === 'win32'"
 				 class="winform"
 				>
+					 <!-- class="minimize ofont ofont-min" -->
 					<a
-					 class="minimize ofont ofont-min"
 					 @click="windowMin"
+					 class="window-min ofont ofont-zuixiaohua"
 					></a>
+					 <!-- class="maximize ofont" -->
 					<a
-					 class="maximize ofont"
-					 :class="{'ofont-unmaximize':isMaximized,'ofont-max':!isMaximized}"
+					class="window-resize ofont maximize"
+					 :class="{'ofont-suoxiao':isMaximized,'ofont-fangda':!isMaximized}"
 					 @click="windowResize"
 					></a>
+					 <!-- class="close ofont ofont-close" -->
 					<a
-					 class="close ofont ofont-close"
+						class="window-close ofont ofont-guanbi"
 					 @click="closeWindow"
 					></a>
 				</div>
 				<div class="window-navbar">
 					<div class="flex flex1">
 						<div class="window-navbar-buttons">
+							<div
+							class="nav-button"
+							@click="remoteOpenComponent('Home')"
+							>
+								<i v-if="user.name" class="ofont ofont-user user user-first"></i>
+								<i v-else class="user-first">{{user.name | firstString}}</i>
+							</div>
 							<div
 							 class="el-icon-arrow-left"
 							 :class="{'disable': !activeView.canGoBack}"
@@ -103,6 +113,7 @@
 				<router-view v-if="!$route.meta.keepAlive"></router-view>
 			</section>
 		</div>
+		<activity-bar></activity-bar>
 	</div>
 </template>
 <script>
@@ -131,6 +142,13 @@ export default {
 			return remote.getCurrentWindow();
 		}
 	},
+	filters: {
+		firstString(value) {
+			if(!value) return '';
+			value += '';
+			return value[0];
+		}
+	},
 	watch: {
 		realUrl: function() {
 			this.inputDisplayUrl = this.activeView.displayURL;
@@ -146,7 +164,10 @@ export default {
 			isMaximized: true,
 			platform: remote.process.platform,
 			inputDisplayUrl: activeView.displayURL || "",
-			views: remote.getCurrentWindow().views || []
+			views: remote.getCurrentWindow().views || [],
+			user: {
+				name: localStorage.getItem("Label") || ""
+			}
 		};
 	},
 	methods: {
@@ -178,6 +199,9 @@ export default {
 			// this.$refs["inputUrl" + index][0].blur();
 			view.url = this.inputDisplayUrl;
 			view.onNewUrl(this.inputDisplayUrl);
+		},
+		remoteOpenComponent(path) {
+			this.activeView.openComponent(path);
 		},
 		remoteCreate() {
 			this.activeView.create();
@@ -212,11 +236,14 @@ export default {
 };
 </script>
 <style lang="scss">
-$theme-color: #1b1e2f;
-$theme-input-color: #2c2f44;
-$theme-color-opacity: rgba(73, 77, 94, 1);
+$theme-color: #DFE2E9;
+// $theme-input-color: #2c2f44;
+$theme-input-color: #DFE2E9;
+// $theme-color-opacity: rgba(73, 77, 94, 1);
+$theme-color-opacity: rgba(246, 246, 248, 1);
+$theme-color-opacity-hover: rgba(246, 246, 248, .5);
 $light-grey: #f2f2f2;
-$tabs-height: 68px;
+$tabs-height: 62px;
 #window-navigation {
 	height: 100vh;
 }
@@ -226,25 +253,56 @@ $tabs-height: 68px;
 	.window-tabs {
 		-webkit-app-region: drag;
 		position: relative;
-		padding-left: 30px;
-		margin-right: 100px;
+		padding-left: 87px;
+		margin-right: 20px;
+		padding-top: 5px;
+
 		.window-tab-item {
+			padding: 0px 20px 0 5px;
+			&.is-active {
+				background: $theme-color-opacity;
+				&::after {
+					opacity: 0;
+				}
+
+				&:hover {
+					background: $theme-color-opacity;
+					transition: all 0 ease;
+				}
+			}
+
+			&:hover {
+				background: $theme-color-opacity-hover;
+				transition: all .3s ease;
+			}
+
+			&::after {
+				display: block;
+				content: "";
+				height: 15px;
+				width: 1px;
+				background: #202020;
+				opacity: .2;
+				position: absolute;
+				right: -1px;
+				top: 6px;
+			}
+
 			position: relative;
 			cursor: default;
 			-webkit-app-region: no-drag;
 			border-top-left-radius: 6px;
 			border-top-right-radius: 6px;
-			width: 220px;
-			height: 35px;
+			// width: 220px;
+			width: 188px;
+			height: 25px;
 			display: flex;
 			align-items: center;
 			min-width: 50px;
 			font-size: 12px;
-			color: #fff;
-			background: $theme-color;
-			&.is-active {
-				background: $theme-color-opacity;
-			}
+			// color: #fff;
+			color: #202020;
+			// background: $theme-color;
 			.favicon {
 				width: 16px;
 				height: 16px;
@@ -252,9 +310,10 @@ $tabs-height: 68px;
 			.window-tab-item-title {
 				flex: 1;
 				height: 100%;
-				line-height: 35px;
+				line-height: 20px;
 				padding-right: 20px;
 				width: calc(100% - 26px);
+				padding-top: 7px;
 				overflow: hidden;
 				white-space: nowrap;
 				text-overflow: ellipsis;
@@ -263,12 +322,20 @@ $tabs-height: 68px;
 			}
 			.close {
 				position: absolute;
-				right: 5px;
+				right: 7px;
 				top: 50%;
 				transform: translateY(-50%);
-				color: #fff;
+				// color: #fff;
+				color: #202020;
+				border-radius: 50%;
+				padding: 4px;
+
 				&:hover {
-					background: #ccc;
+					background: rgba(144, 144, 144, .2);
+				}
+
+				&:active {
+					background: rgba(144, 144, 144, .4);
 				}
 			}
 		}
@@ -276,47 +343,119 @@ $tabs-height: 68px;
 			-webkit-app-region: no-drag;
 			cursor: pointer;
 			margin-left: 15px;
-			font-size: 8px;
-			padding: 2px 6px;
-			height: 12px;
-			line-height: 12px;
-			color: #fff;
-			transform: skew(10deg);
-			background-color: $theme-color-opacity;
+			font-size: 9px;
+			height: 18px;
+			width: 18px;
+			line-height: 18px;
+			text-align: center;
+			color: #202020;
+			font-weight: 900;
+			opacity: .7;
+			border-radius: 50%;
+
+			&:hover {
+				background-color: rgba(144, 144, 144, .3);
+			}
+
+			&:active {
+				background-color: rgba(144, 144, 144, .5);
+			}
 		}
 	}
 	.winform {
 		display: flex;
 		position: absolute;
-		right: 0px;
+		left: 0px;
 		top: 0px;
 		justify-content: space-around;
 		align-items: center;
-		width: 100px;
-		height: 35px;
+		width: 87px;
+		height: 30px;
+		padding: 2px 5px 0 10px;
 		color: rgba(255, 255, 255, 0.5);
+		-webkit-app-region: no-drag;
+
+		&:hover {
+			a.ofont {
+				&::before {
+					opacity: 1;
+				}
+			}
+		}
+
 		& > a {
-			flex: 1;
-			$height: 35px;
-			line-height: $height;
+			$height: 12px;
+			line-height: 11px;
 			text-align: center;
+			width: 12px;
+			height: 12px;
+			display: block;
+			border-radius: 50%;
+			border: 1px solid rgba(32, 32, 32, .1);
+			font-size: 6px;
+			color: #202020;
+			
+			&::before {
+				opacity: 0;
+			}
+
+			
+
+
+			&.window-min {
+				background: #FF635B;
+				font-size: 1px;
+
+				&:active {
+					background: #DD4139;
+				}
+			}
+
+			&.window-resize {
+				background: #FFC331;
+
+				&.ofont-suoxiao {
+					font-size: 9px;
+				}
+
+				&.ofont-fangda {
+					font-size: 7px;
+				}
+
+				&:active {
+					background: #DDA110;
+				}
+			}
+
+			&.window-close {
+				background: #29CE42;
+
+				&:active {
+					background: #07AC20;					
+				}
+			}
 		}
 	}
 	.window-navbar {
 		display: flex;
 		height: 32px;
-		padding: 4px 6px;
+		padding: 4px 16px 4px 6px;
 		background: $theme-color-opacity;
+		box-sizing: border-box;
 		align-items: center;
+		border-bottom: 1px solid #CFD2D9;
 		.input-url {
-			height: 26px;
+			height: 22px;
 			.el-input__inner {
 				&:focus {
 					border: none;
 				}
 				outline: none;
 				border-radius: 15px;
-				color: #fff;
+				// color: #fff;
+				color: #202020;
+				font-size: 12px;
+				opacity: .7;
 				border: none;
 				background-color: $theme-input-color;
 			}
@@ -326,17 +465,52 @@ $tabs-height: 68px;
 		}
 		.window-navbar-buttons {
 			& > div {
-				margin: 0 6px;
+				margin: 0 5px;
+				padding: 1px;
+				border-radius: 50%;
+				font-size: 16px;
+
+				&:not(.disable) {
+					&:hover {
+						opacity: .7;
+					}
+	
+					&:active {
+						opacity: 1;
+					}
+				}
 			}
+
 			display: flex;
 			align-items: center;
-			color: #fff;
+			color: #202020;
+			
+			.nav-button {
+				width: 16px;
+				height: 16px;
+				background: #A1A1A1;
+				line-height: 16px;
+				font-size: 12px;
+				text-align: center;
+				color: white;
+				user-select: none;
+				font-weight: 500;
+				margin-right: 20px;
+
+				i {
+					font-style: inherit;
+				}
+			}
+
+			.user-first {
+				font-size: 12px;
+			}
 		}
 	}
 }
 .window-main {
 	flex: 1;
-	width: calc(100% - 300px);
+	width: 100%;
 }
 .this-is-browserview {
 	display: none;

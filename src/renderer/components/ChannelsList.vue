@@ -13,37 +13,59 @@
 			 @current-change="handleCurrentChange"
 			>
 				<el-table-column
-				 prop='ChannelId'
 				 label='Channel'
-				></el-table-column>
+				>
+					<template slot-scope="scope">
+						<div class="bold">{{scope.row.ChannelId}}</div>
+					</template>
+				</el-table-column>
 				<el-table-column label='Balance'>
 					<template slot-scope="scope">
-						<div class="light-blue">
+						<div class="grey-xs ft14">
 							{{filterFloat(scope.row.BalanceFormat).toLocaleString('en-US')}}
 						</div>
 					</template>
 				</el-table-column>
 				<el-table-column
-				 prop='TokenAddr'
 				 label='Addr'
-				></el-table-column>
+				>
+				<template slot-scope="scope">
+					<div class="grey-xs ft14">
+						{{scope.row.TokenAddr}}
+					</div>
+				</template>
+				</el-table-column>
 				<el-table-column
-				 prop='HostAddr'
 				 label='DNS'
-				></el-table-column>
+				>
+					<template slot-scope="scope">
+						<div class="grey-xs ft14">
+							{{scope.row.HostAddr}}
+						</div>
+					</template>
+				</el-table-column>
 				<el-table-column
 				 width="80"
 				 v-if="showRadio"
 				>
 					<span class="channel-radio"></span>
 				</el-table-column>
+				<!-- <el-table-column
+				 label="Created Time"
+				>
+					<template slot-scope="scope">
+						<div class="grey-xs ft14">
+							{{scope.row.HostAddr}}
+						</div>
+					</template>
+				</el-table-column> -->
 				<el-table-column
-				 width="80"
+				width="80"
 				 v-if="showTransfer"
 				>
 					<template slot-scope="scope">
 						<span
-						 class="light-blue cursor-pointer"
+						 class="light-blue cursor-pointer cursor-click user-no-select"
 						 @click="openTransfer(scope.row)"
 						>Transfer</span>
 					</template>
@@ -303,20 +325,27 @@ export default {
 };
 </script>
 <style lang="scss">
-$theme-color: #1b1e2f;
+$theme-color: #202020;
 #channels-vue {
 	flex: 1;
 	overflow: hidden;
+	border-radius: 6px;
+	box-shadow:0px 2px 20px 0px rgba(196, 196, 196, 0.24);
 }
 .channels {
 	height: 100%;
 	overflow-y: auto;
 	border-bottom-left-radius: 2px;
 	border-bottom-right-radius: 2px;
+	padding: 0 30px;
+	background: #fff;
+	.el-table {
+		color: $theme-color;
+	}
 	.el-table thead th {
 		color: $theme-color;
 		font-weight: bold;
-		background: rgba(231, 231, 235, 1);
+		background: rgba(255, 2555, 255, 1);
 	}
 	.current-row {
 		.channel-radio {

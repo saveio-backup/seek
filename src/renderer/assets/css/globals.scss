@@ -52,6 +52,19 @@ $theme-color: #1b1e2f;
   cursor: pointer;
 }
 
+.cursor-click {
+  &:hover {
+    opacity: .7;
+  }
+  &:active {
+    opacity: 1;
+  }
+}
+
+.user-no-select {
+  user-select: none;
+}
+
 .text-center {
   text-align: center;
 }

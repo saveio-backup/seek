@@ -69,7 +69,10 @@ export default new Router({
         {
           path: 'transfer',
           name: 'transfer',
-          component: require('../pages/FileManager/Transfer.vue').default
+          component: require('../pages/FileManager/Transfer.vue').default,
+          meta: {
+            keepAlive: false
+          },
         },
         {
           path: 'discovery',
@@ -80,8 +83,8 @@ export default new Router({
           path: '',
           redirect: {
             name: 'disk',
-            query:{
-              type:0
+            query: {
+              type: 0
             }
           }
         }
@@ -129,8 +132,7 @@ export default new Router({
       meta: {
         keepAlive: true
       },
-      children: [
-        {
+      children: [{
           path: 'exportPrivateKey',
           name: 'ExportPrivateKey',
           component: require('../pages/Dialog/ExportPrivateKey.vue').default

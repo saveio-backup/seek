@@ -87,7 +87,7 @@
 							 class="light-blue"
 							>Upload Completed</span>
 						</div>
-						<div v-if="scope.row.Status === 4">
+						<div v-else-if="scope.row.Status === 4">
 							<span
 							 class="light-error"
 							 v-if="!scope.row.IsUploadAction"
@@ -96,6 +96,10 @@
 							 v-else
 							 class="light-error"
 							>Upload Failed</span>
+						</div>
+						<div v-else>
+							<span							 
+							>Processing</span>
 						</div>
 					</template>
 				</el-table-column>
@@ -115,7 +119,7 @@
 							<span
 							 title="Decrypt"
 							 @click="setFileSelected(scope.row)"
-							 v-if="scope.row.IsUploadAction"
+							 v-if="!scope.row.IsUploadAction"
 							><i class="el-icon-lock"></i> </span>
 							<!-- <i class="el-icon-delete"></i> -->
 						</div>

@@ -163,11 +163,9 @@ export default {
 			this.activeView.openComponent(path);
 		},
 		logout() {
-			const LOGOUT_URL = '/dialog/logout'
 			ipcRenderer.send('dialog-open', 'logout');
 		},
 		exportPrivateKey() {
-			const LOGOUT_URL = '/dialog/exportPrivateKey'
 			ipcRenderer.send('dialog-open', 'exportPrivateKey');
 		}
 	}

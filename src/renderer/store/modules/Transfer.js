@@ -1,5 +1,6 @@
 import axios from 'axios';
 import api from '../../assets/config/api';
+// clearInterval = function () {};
 const state = {
   completeTransferList: [],
   uploadTransferList: [],

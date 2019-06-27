@@ -49,7 +49,7 @@ export default {
 	},
 	data() {
 		return {
-			transferType: 0,
+			transferType: 2,
 		};
 	},
 	computed: {
@@ -65,10 +65,12 @@ export default {
 			vm.$store.dispatch("setUpload");
 			vm.$store.dispatch("setDownload");
 			vm.$store.dispatch("setComplete");
-			vm.transferType = to.query.transferType >= 0 ? to.query.transferType : 2;
+			console.log(vm.transferType);
+			vm.transferType = to.query.transferType >= 0 ? to.query.transferType : vm.transferType;
 		});
 	},
 	beforeRouteUpdate(to, from, next) {
+		console.log('router update!!!!');
 		next(() => {
 			this.transferType =
 				to.query.transferType >= 0 ? to.query.transferType : 2;

@@ -2,6 +2,7 @@
 	<div class="exportPrivateKey">
 		<el-dialog
 		 width='550px'
+		 :before-close="closeDialog"
 		 :close-on-click-modal='false'
 		 :visible.sync="exportPrivateKeyToggle"
 		 center
@@ -24,6 +25,7 @@
 						<el-input
 						 v-model="dialogForm.password"
 						 placeholder="Input password"
+						 @keyup.enter.native='exportPrivateKey'
 						 type="password"
 						></el-input>
 					</el-form-item>
@@ -85,7 +87,7 @@ export default {
 						return;
 					}
 					ipcRenderer.once("export-finished", () => {
-            ipcRenderer.send("open-info-dialog", { info: "Export Success!" });
+            // ipcRenderer.send("open-info-dialog", { info: "Export Success!" });
             this.$refs.dialogForm.resetFields();
             this.closeDialog();
 						// this.exportPrivateKeyToggle = false;

@@ -6,13 +6,13 @@
 		<div class="account-box">
 			<h2
 			 class="theme-font-blue account-title"
-			 v-if="(initChannelProgress >0) && (initChannelProgress <1)"
+			 v-if="accountStatus === 1"
 			>Block synchronization</h2>
 			<h2
 			 class="theme-font-blue account-title"
-			 v-if="(initChannelProgress <= 0) || (initChannelProgress >= 1)"
+			 v-if="accountStatus === 0"
 			>Create Account</h2>
-			<div v-if="(initChannelProgress <= 0) || (initChannelProgress >= 1)">
+			<div v-if="accountStatus === 0">
 				<el-form
 				 class="form"
 				 v-show="step === 0"
@@ -33,7 +33,7 @@
 						<el-input
 						 v-model="form.Password"
 						 type="password"
-					 	 show-password
+						 show-password
 						></el-input>
 					</el-form-item>
 					<el-form-item
@@ -43,7 +43,7 @@
 						<el-input
 						 v-model="form.Confirm"
 						 @keyup.enter.native="submitForm('form')"
-					 	 show-password
+						 show-password
 						 type="password"
 						></el-input>
 					</el-form-item>
@@ -110,7 +110,7 @@
 			</div>
 			<div
 			 class="progress-wrap"
-			 v-if="(initChannelProgress >0) && (initChannelProgress <1)"
+			 v-if="accountStatus === 1"
 			>
 				<div class="flex ai-center">
 					<div class="create-progress">
@@ -150,6 +150,7 @@ export default {
 		document.title = "CreateAccount";
 		this.loopFont();
 		this.$store.dispatch("getChannelInitProgress");
+		this.getAccountStatus();
 	},
 	data() {
 		let validatePassword = (rule, value, callback) => {
@@ -163,7 +164,7 @@ export default {
 			clipboard,
 			loopFontIndex: 0,
 			// initChannelProgress: 0.5,
-			createStatus: 0, // 0: nothing, 1: creating
+			accountStatus: "", // 0: no account, 1:account exist
 			progress: 0,
 			switchToggle: {
 				loading: null,
@@ -228,6 +229,20 @@ export default {
 		}
 	},
 	methods: {
+		getAccountStatus() {
+			this.$axios
+				.get(this.$api.account)
+				.then(res => {
+					if (res.data.Error === 0 && res.data.Result.Address) {
+						this.accountStatus = 1;
+					} else {
+						this.accountStatus = 0;
+					}
+				})
+				.catch(err => {
+					console.error(err);
+				});
+		},
 		importFile() {
 			ipcRenderer.send("open-file-dialog");
 			ipcRenderer.once("selected-file", (event, content) => {
@@ -303,11 +318,12 @@ export default {
 						for (let key in result) {
 							window.localStorage.setItem(key, result[key]);
 						}
-					}else if(data.Error === 40002) {
-						this.$message.error("Create Failed. Private key verification failed.");
+					} else if (data.Error === 40002) {
+						this.$message.error(
+							"Create Failed. Private key verification failed."
+						);
 						this.switchToggle.loading.close();
-					}
-					else {
+					} else {
 						this.$message.error(res.data.Desc || "Create Failed");
 						this.switchToggle.loading.close();
 					}

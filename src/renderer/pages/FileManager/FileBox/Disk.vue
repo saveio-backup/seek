@@ -63,20 +63,28 @@
 							<div class="flex between rowName">
 								<span>{{ scope.row.Name }}</span>
 								<!-- @click="executedFile = scope.row" -->
-								<div
-								 v-if="page === 'filebox'"
-								 class="opera"
-								><i
+								<div class="opera"><i
 									 @click.stop="shareFile(scope.row)"
+									 title="Share"
 									 class="el-icon-share"
 									></i>
 									<i
+									 v-if="page === 'filebox'"
 									 class="el-icon-download"
+									 title="Download"
 									 @click.stop="downloadFile(scope.row)"
 									></i>
 									<i
+									 v-if="page === 'filebox'"
+									 title="Delete"
 									 @click.stop="deleteFile(scope.row)"
 									 class="el-icon-delete"
+									></i>
+									<i
+									 v-if="page === 'miner' && scope.row.Path"
+									 @click="showInFolder(scope.row.Path)"
+									 class="ofont ofont-file"
+									 title="Open Folder"
 									></i>
 									<!-- @click.stop="switchToggle.deleteDialog = true" -->
 								</div>
@@ -95,28 +103,31 @@
 					 label="Download statistics"
 					 prop="DownloadCount"
 					></el-table-column>-->
-					<el-table-column v-if="page ==='miner'" label="Profit">
+					<el-table-column
+					 v-if="page ==='miner'"
+					 label="Profit"
+					>
 						<template slot-scope="scope">
 							<div class="light-blue">
 								{{scope.row.Profit}}
 							</div>
 						</template>
-					</el-table-column> 
+					</el-table-column>
 					<el-table-column label="Date">
 						<template slot-scope="scope">
 							<div class="light-blue">
-								{{date.formatTime(new Date(scope.row.DownloadAt * 1000))}}
+								{{date.formatTime(new Date( (scope.row.DownloadAt||scope.row.UpdatedAt) * 1000))}}
 							</div>
 						</template>
 					</el-table-column>
-					<el-table-column
+					<!-- <el-table-column
 					 label="Last Share"
 					 v-if="page ==='miner'"
 					>
 						<template slot-scope="scope">
 							<span>{{date.formatTime(new Date(scope.row.LastShareAt * 1000))}}</span>
 						</template>
-					</el-table-column>
+					</el-table-column> -->
 					<el-table-column
 					 label="Type"
 					 v-if="page === 'filebox'"
@@ -176,7 +187,8 @@
 import date from "../../../assets/tool/date";
 import util from "../../../assets/config/util";
 import ClipboardJS from "clipboard";
-import { clipboard } from "electron";
+import { clipboard, shell } from "electron";
+
 let tableElement;
 export default {
 	data() {
@@ -446,6 +458,9 @@ export default {
 				type: "success"
 			});
 		},
+		showInFolder(path) {
+			shell.showItemInFolder(path);
+		},
 		clickRow(row) {
 			this.$refs.table.clearSelection();
 			this.$refs.table.toggleRowSelection(row);
@@ -570,7 +585,6 @@ export default {
 	},
 	computed: {
 		filterListData: function() {
-			// const filterInput = this.filterInput;
 			const fileListData = this.fileListData;
 			return fileListData.filter(item => {
 				return item.Name.indexOf(this.filterInput) >= 0 && item.Url;
@@ -581,7 +595,13 @@ export default {
 		next(vm => {
 			vm.type = to.query.type;
 			vm.controlBar = to.query.controlBar;
-			vm.addrAPI = to.query.addrAPI || vm.$api.getFileList;
+			if (to.query.addrAPI) {
+				vm.addrAPI = to.query.addrAPI;
+			} else if (to.query.page === "miner") {
+				vm.addrAPI = vm.$api.getDownloadFileList;
+			} else {
+				vm.addrAPI = vm.$api.getFileList;
+			}
 			// vm.page = to.query.type || "filebox";
 			vm.getFileLists();
 		});

@@ -4,11 +4,11 @@
 			<div class="aside">
 				<div class="aside-link">
 					<router-link
-					 :class="{'theme-font-blue-bold': fileType == 0}"
+					 :class="{'theme-font-blue-bold link-hover': fileType == 0}"
 					 :to="{name:'minerdisk', query:{type:0, page:'miner',controlBar:'close'}}"
 					><span>File</span></router-link>
 					<router-link
-					 :class="{'theme-font-blue-bold': fileType == 1}"
+					 :class="{'theme-font-blue-bold link-hover': fileType == 1}"
 					 :to="{name:'income', query:{type:1}}"
 					><span>Income</span></router-link>
 					<!-- <i class="el-icon-tickets"></i>  -->
@@ -90,6 +90,9 @@ $light-grey: #f7f7f7;
 					transform: translateX(100%) translateY(-50%);
 				}
 				&:hover {
+					background: rgba(231, 231, 235, 1);
+				}
+				&.link-hover{
 					background: rgba(231, 231, 235, 1);
 				}
 			}

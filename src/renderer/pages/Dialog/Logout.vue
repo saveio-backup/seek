@@ -3,6 +3,7 @@
 		<el-dialog
 		 center
 		 width='600px'
+		 :before-close="closeDialog"
 		 :close-on-click-modal='false'
 		 :visible.sync="logoutToggle"
 		>
@@ -56,7 +57,8 @@ export default {
 					if (res.data.Desc === "SUCCESS" && res.data.Error === 0) {
 						window.localStorage.clear();
 						this.logoutUploadViews();
-						ipcRenderer.send("open-info-dialog", { info: "Logout Success!" });
+						this.closeDialog();
+						// ipcRenderer.send("open-info-dialog", { info: "Logout Success!" });
 					} else {
 						this.$message.error(res.data.Desc);
 					}

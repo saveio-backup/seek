@@ -61,7 +61,10 @@
 					<div class="dialog-title-border"></div>
 				</div>
 				<div class="loading-content">
-					<channel-wallet-transfer ref="channelwallettransfer" :channelSelected='channelBind'></channel-wallet-transfer>
+					<channel-wallet-transfer
+					 ref="channelwallettransfer"
+					 :channelSelected='channelBind'
+					></channel-wallet-transfer>
 					<div slot="footer">
 						<el-button
 						 type="primary"
@@ -93,7 +96,10 @@
 					<el-button @click="toCancelChange">Cancel</el-button>
 				</div>
 			</el-dialog>
-			<router-view></router-view>
+			<keep-alive>
+				<router-view></router-view>
+			</keep-alive>
+
 		</div>
 	</div>
 </template>
@@ -149,8 +155,8 @@ export default {
 			console.log("hideAsset");
 			this.switchToggle.assetSettingDialog = false;
 		},
-		toConfirm(){
-			this.$refs['channelwallettransfer'].toTransfer();
+		toConfirm() {
+			this.$refs["channelwallettransfer"].toTransfer();
 		},
 		// toTransfer() {
 		// 	if (this.switchToggle.loading) return;

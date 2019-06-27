@@ -1,4 +1,4 @@
-import {
+/* import {
   app,
   protocol
 } from 'electron'
@@ -65,4 +65,4 @@ function seekStreamProtocol(request, callback) {
     headers,
     data: fs.createReadStream(url)
   })
-}
+} */

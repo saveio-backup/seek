@@ -16,7 +16,7 @@
 				<el-progress
 				 v-if="totalProgress"
 				 class="progress"
-				 :percentage="totalProgress * 100"
+				 :percentage="parseFloat(totalProgress * 100).toFixed(0)"
 				></el-progress>
 			</div>
 			<el-button
@@ -64,25 +64,60 @@
 					<template slot-scope="scope">
 						<el-progress
 						 v-if="scope.row.Type === 1"
-						 :percentage="scope.row.Progress||0*100"
+						 :percentage="parseFloat((scope.row.Progress||0)*100).toFixed(2)"
 						></el-progress>
 						<el-progress
 						 v-if="scope.row.Type === 2"
-						 :percentage="scope.row.Progress||0*100"
+						 :percentage="parseFloat((scope.row.Progress||0)* 100).toFixed(2)"
 						></el-progress>
 					</template>
 				</el-table-column>
 				<el-table-column
 				 label="Status"
 				 prop="Status"
-				></el-table-column>
-				<el-table-column label="Action">
+				>
 					<template slot-scope="scope">
-						<div>
-							<span v-if="scope.row.status === 0">continue</span>
-							<span v-if="scope.row.status === 2">pause</span>
-							<span v-if="!scope.row.IsUploadAction"><i class="el-icon-tickets"></i></span>
-							<i class="el-icon-delete"></i>
+						<div v-if="scope.row.Status === 3">
+							<span
+							 class="light-blue"
+							 v-if="!scope.row.IsUploadAction"
+							>Download Completed</span>
+							<span
+							 v-else
+							 class="light-blue"
+							>Upload Completed</span>
+						</div>
+						<div v-if="scope.row.Status === 4">
+							<span
+							 class="light-error"
+							 v-if="!scope.row.IsUploadAction"
+							>Download Failed</span>
+							<span
+							 v-else
+							 class="light-error"
+							>Upload Failed</span>
+						</div>
+					</template>
+				</el-table-column>
+				<el-table-column align="right">
+					<template slot-scope="scope">
+						<div class="action">
+							<!-- <span v-if="scope.row.status === 0">continue</span>
+							<span v-if="scope.row.status === 2">pause</span> -->
+							<!-- <span v-if="!scope.row.IsUploadAction"><i class="el-icon-tickets"></i></span> -->
+							<span
+							 title="Open folder"
+							 v-if="!scope.row.IsUploadAction"
+							><i
+								 class="ofont ofont-file"
+								 @click="showInFolder(scope.row.Path)"
+								></i></span>
+							<span
+							 title="Decrypt"
+							 @click="setFileSelected(scope.row)"
+							 v-if="scope.row.IsUploadAction"
+							><i class="el-icon-lock"></i> </span>
+							<!-- <i class="el-icon-delete"></i> -->
 						</div>
 					</template>
 				</el-table-column>
@@ -99,11 +134,28 @@
 			</div>
 			<download-dialog v-on:closedialog='hideTaskDialog'></download-dialog>
 		</el-dialog>
+		<el-dialog
+		 width="600px"
+		 :visible.sync="switchToggle.decryptDialog"
+		 title="Input Password"
+		>
+			<div class="loading-content">
+				<el-input v-model="fileSelected.Password" class="mt20"></el-input>
+				<div slot="footer">
+					<el-button
+					 class="done mt20"
+					 type="primary"
+					 @click="toDecrypt"
+					>Confirm</el-button>
+				</div>
+			</div>
+		</el-dialog>
 	</div>
 </template>
 <script>
 import util from "../assets/config/util";
 import downloadDialog from "./DownloadDialog.vue";
+import { shell } from "electron";
 export default {
 	props: {
 		transferType: {
@@ -118,8 +170,10 @@ export default {
 		return {
 			util,
 			switchToggle: {
+				loading: null,
 				newTaskDialog: false,
-				transferItemDialog: false
+				transferItemDialog: false,
+				decryptDialog: false
 			},
 			TransferConfig: [
 				"completeTransferList",
@@ -128,6 +182,10 @@ export default {
 			],
 			transferItem: {},
 			transferTypeConfig: ["Completed", "Upload", "Download"],
+			fileSelected: {
+				Path: "",
+				Password: ""
+			},
 			mockFileList: [
 				{
 					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
@@ -271,6 +329,48 @@ export default {
 	methods: {
 		hideTaskDialog() {
 			this.switchToggle.newTaskDialog = false;
+		},
+		showInFolder(path) {
+			shell.showItemInFolder(path);
+		},
+		setFileSelected(file) {
+			this.fileSelected.Path = file.Path;
+			this.switchToggle.decryptDialog = true;
+		},
+		toDecrypt() {
+			if (this.switchToggle.loading) return;
+			this.switchToggle.loading = this.$loading({
+				lock: true,
+				text: "Processing..",
+				target: ".loading-content"
+			});
+			this.$axios
+				.post(this.$api.decrypt, this.fileSelected)
+				.then(res => {
+					if (res.data.Error === 0) {
+						this.$message({
+							message: "Decryption successed",
+							type: "success"
+						});
+						this.fileList.Password = "";
+						this.fileList.Path = "";
+						this.switchToggle.decryptDialog = false;
+					} else if (res.data.Erro === 50015) {
+						this.$message({
+							message: "Wrong Password",
+							type: "error"
+						});
+					} else {
+						this.$message.error("Decription failed.");
+					}
+				})
+				.catch(err => {
+					console.log(err);
+					this.$message.error("Wrong");
+				}).finally(()=>{
+					this.switchToggle.loading.close();
+					this.switchToggle.loading = null;
+				});
 		}
 	}
 };
@@ -309,6 +409,11 @@ $light-grey: #f2f2f2;
 				font-weight: bold;
 			}
 		}
+	}
+	.action > span {
+		margin-right: 5px;
+		font-size: 18px;
+		cursor: pointer;
 	}
 }
 </style>

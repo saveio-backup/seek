@@ -5,7 +5,7 @@
 				<div class="aside-link">
 					<router-link
 					 :class="{'theme-font-blue-bold': fileType == 0}"
-					 :to="{name:'minerdisk', query:{type:0, page:'miner',controlBar:'close',addrAPI:$api.getDownloadFileList}}"
+					 :to="{name:'minerdisk', query:{type:0, page:'miner',controlBar:'close'}}"
 					><span>File</span></router-link>
 					<router-link
 					 :class="{'theme-font-blue-bold': fileType == 1}"

@@ -109,8 +109,7 @@ export default new Router({
           query: {
             controlBar: 'close',
             type: 0,
-            page: 'miner',
-            addrAPI: api.getDownloadFileList
+            page: 'miner'
           }
         }
       }]

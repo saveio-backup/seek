@@ -94,18 +94,18 @@
 					<!-- <el-table-column
 					 label="Download statistics"
 					 prop="DownloadCount"
-					></el-table-column>
-					<el-table-column label="Profit">
+					></el-table-column>-->
+					<el-table-column v-if="page ==='miner'" label="Profit">
 						<template slot-scope="scope">
 							<div class="light-blue">
 								{{scope.row.Profit}}
 							</div>
 						</template>
-					</el-table-column> -->
+					</el-table-column> 
 					<el-table-column label="Date">
 						<template slot-scope="scope">
 							<div class="light-blue">
-								{{date.formatTime(new Date(scope.row.UpdatedAt * 1000))}}
+								{{date.formatTime(new Date(scope.row.DownloadAt * 1000))}}
 							</div>
 						</template>
 					</el-table-column>

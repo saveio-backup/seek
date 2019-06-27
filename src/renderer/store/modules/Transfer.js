@@ -40,7 +40,7 @@ const actions = {
     commit
   }) {
     clearInterval(uploadTimer);
-    // uploadTransferListRequest.bind(this, commit)();
+    uploadTransferListRequest.bind(this, commit)();
     uploadTimer = setInterval(uploadTransferListRequest.bind(this, commit), TIME_COUNT);
   },
   setDownload({

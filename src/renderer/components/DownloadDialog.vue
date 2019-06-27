@@ -17,7 +17,7 @@
 			</div>
 			<div class="flex between">
 				<p class="theme-font-blue bold">Cost:</p>
-				<p>{{downloadInfo.Fee || ''}}</p>
+				<p>{{downloadInfo.FeeFormat || ''}}</p>
 			</div>
 			<el-button class="mt40" type="primary" @click="toDownload">Download</el-button>
 		</div>
@@ -51,7 +51,7 @@ export default {
 		toDownload() {
 			this.$axios
 				.post(this.$api.download, {
-					Hash: this.downloadUrl,
+					Url: this.downloadUrl,
 					MaxPeerNum: 1
 				})
 				.then(res => {

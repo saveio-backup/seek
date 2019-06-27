@@ -1,6 +1,7 @@
 $light-grey: #f7f7f7;
 $theme-font-blue: #040f39;
 $light-blue: #65A6FF;
+$light-error:#e9546b;
 $theme-color: #1b1e2f;
 
 .bold {
@@ -15,7 +16,9 @@ $theme-color: #1b1e2f;
   font-size: 12px;
   color: $light-blue;
 }
-
+.light-error{
+  color:$light-error;
+}
 .dark-grey {
   color: #9B9FB0;
 }

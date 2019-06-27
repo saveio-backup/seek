@@ -164,11 +164,11 @@ export default {
 		},
 		logout() {
 			const LOGOUT_URL = '/dialog/logout'
-			ipcRenderer.send('dialog-open', LOGOUT_URL);
+			ipcRenderer.send('dialog-open', 'logout');
 		},
 		exportPrivateKey() {
 			const LOGOUT_URL = '/dialog/exportPrivateKey'
-			ipcRenderer.send('dialog-open', LOGOUT_URL);
+			ipcRenderer.send('dialog-open', 'exportPrivateKey');
 		}
 	}
 };

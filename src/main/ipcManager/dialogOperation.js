@@ -6,8 +6,10 @@ import {
 import { dialogViewObj } from './../windowManager/index'
 
 // File operation
-ipcMain.on('dialog-open', (event, url) => {
-  dialogViewObj.loadUrl(url);
+ipcMain.on('dialog-open', (event, selector) => {
+  // dialogViewObj.loadUrl(url);
+  dialogViewObj.setMenuSelector(selector);
+  dialogViewObj.addBrowserView();
 })
 
 // File operation

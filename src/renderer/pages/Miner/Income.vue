@@ -183,11 +183,15 @@ export default {
 	display: flex;
 	flex-direction: column;
 	& > .header {
-		background: #eeeef1;
-		padding: 20px 50px;
+		background: #F9F9FB;
+		padding: 20px 20px;
+		border-bottom: 1px solid rgba(32, 32, 32, .1);		
 	}
 	.incomeTable {
 		height: 100%;
+	}
+	.el-table {
+		padding-top: 20px;
 	}
 }
 </style>

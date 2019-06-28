@@ -6,7 +6,7 @@
 				 class="allfile"
 				 :class="{'theme-font-blue-bold link-hover': fileType == 0}"
 				 :to="{name:'disk', query:{type:0}}"
-				><span>All File</span></router-link>
+				><span><i class="el-icon-arrow-down"></i><span class="ofont ofont-weibiaoti--"></span> File</span></router-link>
 				<router-link
 				 :class="{'theme-font-blue-bold link-hover': fileType == 1}"
 				 :to="{name:'disk', query:{type:1}}"
@@ -32,11 +32,11 @@
 			 class="aside-progress"
 			 v-if="space"
 			>
-				<p class="grey-xs bold tl">{{util.bytesToSize(space.Used *1000)}} / {{util.bytesToSize((space.Remain + space.Used)*1024)}} </p>
+				<p class="tl aside-progress-num"><i class="ofont ofont-chucun"></i>{{util.bytesToSize(space.Used *1000)}} / {{util.bytesToSize((space.Remain + space.Used)*1024)}} </p>
 				<el-progress :percentage="takeSpace"></el-progress>
-				<p class="tr">
+				<p>
 					<router-link
-					 class="theme-font-blue-bold ft12 link"
+					 class="active-blue ft12 link"
 					 :to="{name:'expand'}"
 					>Upgrade Storage</router-link>
 				</p>
@@ -101,13 +101,13 @@ $theme-font-blue: #040f39;
 $brand-blue: #409eff;
 $sucess: #67c23a;
 $danger: #f56c6c;
-$light-grey: #f7f7f7;
+$light-grey: #F9F9FB;
 #file-box {
 	display: flex;
 	.aside {
 		display: flex;
 		flex-direction: column;
-		justify-content: space-between;
+		// justify-content: space-between;
 		align-items: center;
 		position: absolute;
 		top: 60px;
@@ -122,35 +122,72 @@ $light-grey: #f7f7f7;
 			margin-top: 25px;
 			flex-direction: column;
 			width: 100%;
+
 			.allfile {
 				position: relative;
-				i {
-					position: absolute;
-					top: 50%;
-					left: 0px;
-					transform: translateX(100%) translateY(-50%);
+				& > span {
+					i {
+						position: absolute;
+						top: 50%;
+						left: 0px;
+						transform: translateX(100%) translateY(-50%);
+					}
+					& > span {
+						position: absolute;
+						top: 50%;
+						left: 20px;
+						transform: translateX(100%) translateY(-50%);
+					}
 				}
 			}
 			& > a {
 				display: flex;
-				padding: 10px 0 10px 50px;
+				padding: 10px 0 10px 60px;
+				border-radius: 0 50px 50px 0;
+				color: rgba(32, 32, 32, .7);
+				font-weight: 500;
+				font-size: 14px;
+				transition: all .3s ease;
+				user-select: none;
 				&:hover {
-					background: rgba(231, 231, 235, 1);
+					background: #EDEFF4;
+					color: #2F8FF0;
+					// background: rgba(231, 231, 235, 1);
+				}
+				&:active {
+					opacity: .7;
 				}
 				&.link-hover {
-					background: rgba(231, 231, 235, 1);
+					background: #EDEFF4;
+					color: #2F8FF0;
+					// background: rgba(231, 231, 235, 1);
 				}
 			}
 		}
 		.aside-progress {
-			// flex:1;
-			.link:hover {
-				text-decoration: underline;
-			}
-
+			margin-top: 70px;
+			padding-left: 62px;
 			width: 100%;
-			padding: 0 10px;
 			margin-bottom: 20px;
+			.link {
+				user-select: none;
+				&:hover {
+					text-decoration: underline;
+				}
+				&:active {
+					opacity: .7;
+				}
+			}
+			.aside-progress-num {
+				font-size: 12px;
+				color: rgba(32, 32, 32, .7);
+				position: relative;
+				i {
+					position: absolute;
+					top: 0;
+					left: -20px;
+				}
+			}
 			.el-progress-bar {
 				padding-right: 0px;
 			}

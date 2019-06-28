@@ -6,7 +6,7 @@
 				 class="transform-link"
 				 :class="{'theme-font-blue-bold hover-link': transferType == 1}"
 				 @click="transferType = 1"
-				><span>Upload</span> <span
+				><span><i class="ofont ofont-shangchuan"></i>Upload</span> <span
 					 class="badge"
 					 v-show="uploadLength>0"
 					>{{uploadLength}}</span></p>
@@ -14,7 +14,7 @@
 				 class="transform-link"
 				 :class="{'theme-font-blue-bold hover-link': transferType == 2}"
 				 @click="transferType = 2 "
-				>Download <span
+				><i class="ofont ofont-xiazai"></i>Download <span
 					 class="badge"
 					 v-show="downloadLength>0"
 					>{{downloadLength}}</span></p>
@@ -22,7 +22,7 @@
 				 class="transform-link"
 				 :class="{'theme-font-blue-bold hover-link': transferType == 0}"
 				 @click="transferType = 0"
-				>Complete</p>
+				><i class="ofont ofont-wancheng"></i>Complete</p>
 			</div>
 		</div>
 		<div class="layout-main">
@@ -83,7 +83,7 @@ $brand-blue: #409eff;
 $sucess: #67c23a;
 $danger: #f56c6c;
 $theme-font-blue: #040f39;
-$light-grey: #f7f7f7;
+$light-grey: #F9F9FB;
 #transfer {
 	.aside {
 		display: flex;
@@ -103,15 +103,32 @@ $light-grey: #f7f7f7;
 			flex-direction: column;
 			width: 100%;
 			.transform-link {
-				cursor: pointer;
-				font-size: 16px;
 				display: flex;
-				padding: 10px 0 10px 50px;
+				padding: 10px 0 10px 60px;
+				border-radius: 0 50px 50px 0;
+				color: rgba(32, 32, 32, .7);
+				font-weight: 500;
+				font-size: 14px;
+				transition: all .3s ease;
+				cursor: pointer;
+				user-select: none;
+				position: relative;
+				i {
+					position: absolute;
+					top: 50%;
+					left: 20px;
+					transform: translateX(100%) translateY(-50%);
+				}
 				&:hover {
-					background: #e7e7eb;
+					background: #EDEFF4;
+					color: #2F8FF0;
+				}
+				&:active {
+					opacity: .7;
 				}
 				&.hover-link {
-					background: #e7e7eb;
+					background: #EDEFF4;
+					color: #2F8FF0;
 				}
 				.badge {
 					display: inline-block;
@@ -128,6 +145,9 @@ $light-grey: #f7f7f7;
 				}
 			}
 		}
+	}
+	.top-progress {
+		border-bottom: 1px solid rgba(32, 32, 32, .1);
 	}
 }
 </style>

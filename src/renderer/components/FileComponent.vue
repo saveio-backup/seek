@@ -10,7 +10,7 @@
 				 v-if="totalProgress"
 				>{{transferTypeConfig[transferType]}} progress</p>
 				<p
-				 class="grey-xs bold"
+				 class="grey-xs bold user-no-select"
 				 v-else
 				>No task</p>
 				<el-progress
@@ -28,7 +28,7 @@
 		 v-else
 		 class="top-progress"
 		>
-			<p class="theme-font-blue ft14">Finished {{fileList.length}} Files</p>
+			<p class="theme-font-blue ft14 user-no-select">Finished {{fileList.length}} Files</p>
 		</div>
 		<div class="file-list">
 			<el-table
@@ -384,7 +384,7 @@ $theme-font-blue: #040f39;
 $brand-blue: #409eff;
 $sucess: #67c23a;
 $danger: #f56c6c;
-$light-grey: #f2f2f2;
+$light-grey: #F9F9FB;
 .file-component {
 	height: 100%;
 	display: flex;
@@ -407,10 +407,11 @@ $light-grey: #f2f2f2;
 		.el-table {
 			color: $theme-font-blue;
 			font-weight: bold;
+			padding-top: 20px;
 			thead th {
-				background: #e7e7eb;
+				background: #F9F9FB;
 				color: #1b1e2f;
-				font-weight: bold;
+				// font-weight: bold;
 			}
 		}
 	}

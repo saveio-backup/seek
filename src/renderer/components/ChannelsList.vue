@@ -92,6 +92,7 @@
 				<div slot="footer">
 					<el-button
 					 type="primary"
+					 class="primary"
 					 @click="toConfirm"
 					>Confirm</el-button>
 				</div>
@@ -341,11 +342,17 @@ $theme-color: #202020;
 	background: #fff;
 	.el-table {
 		color: $theme-color;
-	}
-	.el-table thead th {
-		color: $theme-color;
-		font-weight: bold;
 		background: rgba(255, 2555, 255, 1);
+
+		td {
+			background: rgba(255, 2555, 255, 1);
+		}
+		
+		thead th {
+			color: $theme-color;
+			// font-weight: bold;
+			background: rgba(255, 2555, 255, 1);
+		}
 	}
 	.current-row {
 		.channel-radio {

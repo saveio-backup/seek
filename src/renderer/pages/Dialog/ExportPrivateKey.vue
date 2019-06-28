@@ -34,6 +34,7 @@
 			<div slot="footer">
 				<el-button
 				 type="primary"
+         class="primary"
 				 @click="exportPrivateKey"
 				>Export</el-button>
 				<el-button @click="closeDialog">Cancel</el-button>
@@ -59,6 +60,7 @@ export default {
 						message: "Please fill password",
 						trigger: "blur"
 					}
+<<<<<<< HEAD
 				]
 			}
 		};
@@ -105,6 +107,48 @@ export default {
 		// this.exportPrivateKeyToggle = true;
 	}
 };
+=======
+        ]
+      }
+    }
+  },
+  watch: {
+    exportPrivateKeyToggle(newVal, oldVal) {
+      if(!newVal) {
+        this.$emit('closeDialog', {timeout: 500})
+      }
+    }
+  },
+  methods: {
+    exportPrivateKey() {
+      this.$refs.dialogForm.validate(valid => {
+        if(!valid) return;
+        let params = {
+          password: this.dialogForm.password
+        }
+        this.exportPrivateKeyByPassword(params).then(res => {
+          if (res.data.Desc === "SUCCESS" && res.data.Error === 0) {
+            ipcRenderer.send("export-file-dialog", res.data.Result.PrivateKey, 'PrivateKey');
+          } else {
+            this.$message.error(res.data.Desc);
+            return;
+          }
+          ipcRenderer.once("export-finished", () => {
+            // ipcRenderer.send('open-info-dialog', {info:'Export Success!'})
+            this.exportPrivateKeyToggle = false;
+          });        
+        })
+      })
+    },
+    exportPrivateKeyByPassword(params) {
+      return this.$axios.get(this.$api.exportPrivateKey + '/' + params.password)
+    }
+  },
+  mounted() {
+    this.exportPrivateKeyToggle = true;
+  }
+}
+>>>>>>> page style amend
 </script>
 
 <style scoped>

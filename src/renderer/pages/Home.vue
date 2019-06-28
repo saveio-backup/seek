@@ -22,7 +22,7 @@
 										{{user.address}}
 									</span>
 									<i
-									class="ofont ofont-fuzhi addr_btn"
+									class="ofont ofont-fuzhi"
 									@click="clipText"
 									></i>
 								</p>
@@ -50,7 +50,7 @@
 				</div>
 				<div class="user-meta-center">
 					<p class="grey-xs bold ft14 user-meta-title">Total Balance:</p>
-					<p class="total-num">12,300.00<span> SAVE</span></p>
+					<p class="total-num">{{currentChannelTotal}}<span> SAVE</span></p>
 					<div id="balance-view" class="balanceView"></div>
 				</div>
 				<div class="user-meta-right">
@@ -428,6 +428,14 @@ export default {
 		channels: function() {
 			return this.$store.state.Home.channels;
 		},
+		currentChannelTotal() {
+			let sum = 0;
+			for(let value of this.channels) {
+				let balanceNum = value.Balance || 0;
+				sum += balanceNum;
+			}
+			return sum/1000000000;
+		},
 		// get [max, max - 1, max - 2, [min array]]
 		currentChannelData: function() {
 			if(!this.channels) return [];
@@ -462,7 +470,7 @@ export default {
 					sum += value.Balance
 				}
 				arr.push({
-					BalanceFormat: sum/100000000,
+					BalanceFormat: sum/1000000000,
 					ChannelId: 'remain',
 				});
 			}

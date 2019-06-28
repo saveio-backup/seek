@@ -31,7 +31,7 @@
 					</el-table-column>
 					<el-table-column label='ExpiredAt'>
 						<template slot-scope="scope">
-							<div class="light-blue">
+							<div>
 								{{ $dateFormat.formatTimeByTimestamp(scope.row.ExpiredAt * 1000)}}
 							</div>
 						</template>
@@ -136,6 +136,7 @@
 						<el-button @click="expandDialogVisible = false">Cancel</el-button>
 						<el-button
 						 type="primary"
+						 class="primary"
 						 @click="setUserSpace"
 						>Update</el-button>
 					</span>
@@ -512,6 +513,7 @@ $grey: #ccc;
 		padding: 0 50px 10px;
 		display: flex;
 		flex-direction: column;
+		background: #F9F9FB;
 		.space-header {
 			padding-top: 30px;
 			display: flex;
@@ -527,7 +529,7 @@ $grey: #ccc;
 				}
 			}
 			.el-button {
-				height: 40px;
+				// height: 40px;
 			}
 		}
 		.space-record {
@@ -538,9 +540,9 @@ $grey: #ccc;
 				color: $theme-font-blue;
 				font-weight: bold;
 				thead th {
-					background: #e7e7eb;
+					background: #F9F9FB;
 					color: #1b1e2f;
-					font-weight: bold;
+					// font-weight: bold;
 				}
 			}
 		}

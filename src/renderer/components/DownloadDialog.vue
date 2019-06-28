@@ -19,7 +19,7 @@
 				<p class="theme-font-blue bold">Cost:</p>
 				<p>{{downloadInfo.FeeFormat || ''}}</p>
 			</div>
-			<el-button class="mt40" type="primary" @click="toDownload">Download</el-button>
+			<el-button class="mt40 primary" type="primary" @click="toDownload">Download</el-button>
 		</div>
 	</div>
 </template>
@@ -80,10 +80,6 @@ export default {
     background: #ebecef;
     border-radius: 2px;
     border: none;
-	}
-	.el-button{
-		padding: 8px 20px;
-		border-radius: 2px;
 	}
 }
 </style>

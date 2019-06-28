@@ -6,10 +6,10 @@
 		>
 			<div class="fun-button">
 				<router-link :to="{name:'upload'}">
-					<el-button class="bt bt-upload theme-font-blue">Upload</el-button>
+					<el-button class="primary theme-font-blue">Upload</el-button>
 				</router-link>
 				<el-button
-				 class="ml10 bt bt-download theme-font-blue"
+				 class="ml10 bt-download theme-font-blue"
 				 @click="batchDownload"
 				>
 					Download
@@ -94,7 +94,7 @@
 					<el-table-column label="Size">
 						<template slot-scope="scope">
 							<!-- api return 'KB' unit -->
-							<span>
+							<span class="td-grey">
 								{{util.bytesToSize(scope.row.Size * 1024)}}
 							</span>
 						</template>
@@ -115,7 +115,7 @@
 					</el-table-column>
 					<el-table-column label="Date">
 						<template slot-scope="scope">
-							<div class="light-blue">
+							<div class="td-grey">
 								{{date.formatTime(new Date( (scope.row.DownloadAt||scope.row.UpdatedAt) * 1000))}}
 							</div>
 						</template>
@@ -125,7 +125,7 @@
 					 v-if="page ==='miner'"
 					>
 						<template slot-scope="scope">
-							<span>{{date.formatTime(new Date(scope.row.LastShareAt * 1000))}}</span>
+							<span class="td-grey">{{date.formatTime(new Date(scope.row.LastShareAt * 1000))}}</span>
 						</template>
 					</el-table-column> -->
 					<el-table-column
@@ -133,7 +133,7 @@
 					 v-if="page === 'filebox'"
 					>
 						<template slot-scope="scope">
-							<span>
+							<span class="td-grey">
 								{{privilegeConfig[scope.row.Privilege]}}
 							</span>
 						</template>
@@ -186,7 +186,6 @@
 <script>
 import date from "../../../assets/tool/date";
 import util from "../../../assets/config/util";
-import ClipboardJS from "clipboard";
 import { clipboard, shell } from "electron";
 
 let tableElement;
@@ -433,22 +432,29 @@ export default {
 	},
 	methods: {
 		clipText(el) {
-			console.log("clip");
-			const clip = new ClipboardJS(el, {
-				text: function(trigger) {
-					return trigger.getAttribute("aria-label");
-				}
+			clipboard.writeText(this.executedFile.Hash);
+			this.$message({
+				message: "Link Copied",
+				duration: 1200,
+				type: "success"
 			});
-			clip.on("success", e => {
-				this.$message({
-					message: "Link Copied",
-					duration: 1200,
-					type: "success"
-				});
-				console.log("success");
-				console.log(e);
-				clip.destroy();
-			});
+
+			// console.log("clip");
+			// const clip = new ClipboardJS(el, {
+			// 	text: function(trigger) {
+			// 		return trigger.getAttribute("aria-label");
+			// 	}
+			// });
+			// clip.on("success", e => {
+			// 	this.$message({
+			// 		message: "Link Copied",
+			// 		duration: 1200,
+			// 		type: "success"
+			// 	});
+			// 	console.log("success");
+			// 	console.log(e);
+			// 	clip.destroy();
+			// });
 		},
 		toClipboard(text) {
 			clipboard.writeText(text);
@@ -617,7 +623,7 @@ export default {
 </script>
 <style lang="scss">
 $light-blue: #65a6ff;
-$light-grey: #f2f2f2;
+$light-grey: #F9F9FB;
 $theme-color: #1b1e2f;
 $theme-font-blue: #040f39;
 #disk {
@@ -625,9 +631,10 @@ $theme-font-blue: #040f39;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		padding: 0 50px 0 14px;
+		padding: 0 30px 0 14px;
 		height: 80px;
 		background: $light-grey;
+		border-bottom: 1px solid rgba(32, 32, 32, .1);
 		.bt {
 			width: 100px;
 			height: 33px;
@@ -635,22 +642,48 @@ $theme-font-blue: #040f39;
 			border-color: $theme-color;
 			border-radius: 2px;
 			background: none;
+			box-shadow:0px 0px 4px 0px rgba(0,122,255,0.3);
+			border-radius:16px;
+			border:1px solid rgba(47,143,240,1);
+			color: #2F8FF0;
+
+			&:hover {
+				opacity: .7;
+			}
+
+			&:active {
+				opacity: 1;
+			}
+
 			&.bt-upload {
 				color: #fff;
 				background: $light-blue;
 				border: none;
+				background:linear-gradient(90deg,rgba(19,175,250,1) 0%,rgba(62,126,235,1) 100%);
+				box-shadow:0px 4px 6px 0px rgba(111,139,173,0.21);
+				border-radius: 16px;
 			}
 		}
 		.fun-search {
 			width: 240px;
+			
 			.el-input__inner {
 				height: 33px;
 				line-height: 33px;
 				border-radius: 17px;
 				font-weight: normal;
+				background: #EDEFF4;
+				border: 0;
+				color: rgba(32, 32, 32, .7);
+				padding-left: 40px;
 			}
-			.el-input__icon {
-				line-height: 17px;
+			.el-input__prefix {
+				left: 10px;
+				.el-input__icon {
+					line-height: 34px;
+					font-size: 16px;
+					color: rgba(32, 32, 32, .4);
+				}
 			}
 		}
 	}
@@ -659,27 +692,27 @@ $theme-font-blue: #040f39;
 		top: 80px;
 		bottom: 0px;
 		width: 100%;
+		padding-top: 20px;
+		background: #F9F9FB;
+
 		.table-element {
-			font-weight: bold;
+			// font-weight: bold;
 			height: 100%;
 			overflow-y: hidden;
-			.el-table {
-				color: $theme-font-blue;
-			}
-			thead th {
-				background: rgba(231, 231, 235, 1);
-				color: $theme-color;
-				font-weight: bold;
-			}
 			.rowName {
 				.opera {
 					display: none;
+					color: rgba(32, 32, 32, .4);
+					font-weight: bold;
 					[class^="el-icon-"] {
 						margin: 0px 4px;
 						font-size: 18px;
 						cursor: pointer;
 						&:hover {
 							color: $light-blue;
+						}
+						&:active {
+							opacity: .7;
 						}
 					}
 				}
@@ -689,6 +722,9 @@ $theme-font-blue: #040f39;
 					}
 				}
 			}
+		}
+		.td-grey {
+			color: rgba(32, 32, 32, .4);
 		}
 	}
 	.el-input-group__append {

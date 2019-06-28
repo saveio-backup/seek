@@ -3,50 +3,63 @@
 	 id="wallet"
 	 class=""
 	>
-		<div class="wallet-select">
-			<el-select
-			 v-model='balanceSelected'
-			 @change="changeSelectedAsset"
-			>
-				<div
-				 slot="prefix"
-				 class="prefix-icon"
-				>
-					<img
-					 v-if="balanceLists.length>0"
-					 class="asset-icon"
-					 :src="'static/images/logo/'+balanceLists[balanceSelected].Symbol+'.png'"
-					 alt=""
-					>
-				</div>
-				<el-option
-				 v-for="(item,index) in balanceLists"
-				 :key='index'
-				 :label='item.Symbol'
-				 :value='index'
-				 class="asset-item"
-				>
-					<img
-					 class="asset-icon mr10"
-					 :src="'static/images/logo/'+ item.Symbol+ '.png'"
-					 :alt="item.Symbol"
-					> <span class="">{{item.Symbol}}</span>
-				</el-option>
-			</el-select>
-		</div>
 		<div class="content">
 			<div class="wallet-aside">
-				<div class="wallet-asset">
-					<p class="grey-xs bold pl20 pr20">Total Balance</p>
-					<div class="total"> <span class="symbol"></span> <span
-						 class="theme-bold"
+				<div class="person-info">
+					<p class="person-info-name ft24">{{user.name || ''}}</p>
+					<p class="person-info-address ft14">
+						<span class="address" :title="user.address || ''">
+							{{user.address || ''}}
+						</span>
+						<i
+						class="ofont ofont-fuzhi"
+						@click="clipSaveAddress"
+						></i>
+					</p>
+				</div>
+				<div class="balance-content-wrapper">
+					<div class="wallet-select user-no-select">
+						<el-select
+						v-model='balanceSelected'
+						@change="changeSelectedAsset"
+						>
+							<div
+							slot="prefix"
+							class="prefix-icon"
+							>
+								<img
+								v-if="balanceLists.length>0"
+								class="asset-icon"
+								:src="'static/images/logo/'+balanceLists[balanceSelected].Symbol+'.png'"
+								alt=""
+								>
+							</div>
+							<el-option
+							v-for="(item,index) in balanceLists"
+							:key='index'
+							:label='item.Symbol'
+							:value='index'
+							class="asset-item"
+							>
+								<img
+								class="asset-icon mr10"
+								:src="'static/images/logo/'+ item.Symbol+ '.png'"
+								:alt="item.Symbol"
+								> <span class="">{{item.Symbol}}</span>
+							</el-option>
+						</el-select>
+					</div>
+					<div class="wallet-asset">
+						<p class="ft14 user-no-select">Total Balance:</p>
+						<div class="total"> <span class="symbol"></span> <span
 						 v-if="balanceLists && balanceLists.length>0"
 						>{{parseFloat(balanceLists[balanceSelected].BalanceFormat).toFixed(3)}}</span></div>
+					</div>
 					<div
 					 class="balance-content"
 					 v-if="balanceLists && balanceLists.length>0"
 					>
-						<ul class="child-ul">
+						<!-- <ul class="child-ul">
 							<li class="child-list selected">
 								<div class="name"><img
 									 class="asset-icon"
@@ -55,17 +68,34 @@
 									> <span class="theme-bold">{{balanceLists[balanceSelected].Symbol}}</span></div>
 								<div class="balance theme-bold">{{parseFloat(balanceLists[balanceSelected].BalanceFormat).toFixed(3)}}</div>
 							</li>
-						</ul>
-						<div class="set-asset-display"><i
-							 @click="switchToggle.assetDialog = true"
+						</ul> -->
+						<div
+						 class="asset-display-li asset-display">
+							<div class="asset-display-logo">
+								<img
+								v-if="balanceLists.length>0"
+								class="asset-icon"
+								:src="'static/images/logo/'+balanceLists[balanceSelected].Symbol+'.png'"
+								alt=""
+								>
+								<span class="asset-display-logo-name">{{balanceLists[balanceSelected].Symbol}}</span>
+							</div>
+							<div class="asset-display-num">
+								<p :title="parseFloat(balanceLists[balanceSelected].BalanceFormat).toFixed(3) || 0">{{parseFloat(balanceLists[balanceSelected].BalanceFormat).toFixed(3) || 0}}</p>
+								<p class="asset-display-grey">$ 0</p>
+							</div> 
+						</div>
+						<div @click="switchToggle.assetDialog = true"
+						 class="asset-display-li set-asset-display"><i	 
 							 class="el-icon-plus"
-							 style="cursor:pointer"
-							></i></div>
+						></i></div>
 					</div>
-				</div>
-				<div class="wallet-deal">
-					<div @click="getQRCode"><i class="ofont ofont-transfer_in"></i> <span class="theme-bold">Receive</span></div>
-					<div @click="switchToggle.sendDialog =true"><i class="ofont ofont-transfer_out"></i> <span class="theme-bold">Send</span></div>
+					<div class="wallet-deal">
+						<el-button class="primary" @click="getQRCode"><i class="ofont ofont-transfer_in"></i> <span>Receive</span></el-button>
+						<el-button @click="switchToggle.sendDialog = true"><i class="ofont ofont-transfer_out"></i> <span>Send</span></el-button>
+						<!-- <div @click="getQRCode"><i class="ofont ofont-transfer_in"></i> <span class="theme-bold">Receive</span></div> -->
+						<!-- <div @click="switchToggle.sendDialog =true"><i class="ofont ofont-transfer_out"></i> <span class="theme-bold">Send</span></div> -->
+					</div>
 				</div>
 			</div>
 			<div class="wallet-layout-main">
@@ -73,23 +103,23 @@
 					<p
 					 @click="txType = 'txRecords';txDetailIndex =-1"
 					 class="select-button"
-					 :class="{'theme-font-blue-bold':txType === 'txRecords'}"
+					 :class="{'current-select':txType === 'txRecords'}"
 					>All Transfer</p>
 					<p
 					 class="select-button"
 					 @click="txType = 'transferIn';txDetailIndex =-1"
-					 :class="{'theme-font-blue-bold':txType === 'transferIn'}"
+					 :class="{'current-select':txType === 'transferIn'}"
 					> Receive</p>
 					<p
 					 class="select-button"
 					 @click="txType = 'transferOut';txDetailIndex =-1"
-					 :class="{'theme-font-blue-bold':txType === 'transferOut'}"
+					 :class="{'current-select':txType === 'transferOut'}"
 					>Send</p>
 				</div>
 				<ul class="tx-ul">
 					<!-- this[txType] -->
 					<!-- v-for="(item,index) in this[txType]" -->
-					<!-- v-for="(item,index) in mockTxRecords" -->
+						<!-- v-for="(item,index) in mockTxRecords" -->
 					<li
 					 class="tx-li"
 					 v-for="(item,index) in this[txType]"
@@ -106,14 +136,14 @@
 								 :class="item.Type ==1 ? 'ofont-transfer_out':'ofont-transfer_in'"
 								></i>
 								<div class="addr-info">
-									<p class='from-or-to'>{{item.Type ==1 ? item.To: item.From}}</p>
+									<p class='from-or-to'>{{item.Type ==1 ? item.To.replace(item.To.slice(5,-5),'...'): item.From.replace(item.From.slice(5,-5),'...')}}</p>
 									<p class="tx-date grey-xs">{{date.formatTimeByTimestamp(item.Timestamp * 1000)}}</p>
 								</div>
 							</div>
-							<div class="item-amount theme-bold">{{item.Type ==1 ? '-':'+'}} {{item.AmountFormat}} {{item.Asset}}</div>
-							<div v-if="item.BlockHeight>0">
+							<div class="item-amount">{{item.Type ==1 ? '-':'+'}} {{item.AmountFormat}} {{item.Asset}}</div>
+							<div class="item-more" v-if="item.BlockHeight>0">
 								<i class="el-icon-success"></i>
-								<!-- <i class="el-icon-more"></i> -->
+								<i class="el-icon-more"></i>
 							</div>
 						</div>
 						<div
@@ -158,8 +188,8 @@
 						<i
 						 class="ofont ofont-fuzhi addr_btn"
 						 @click="clipText('.addr_btn')"
-						 :aria-label='balanceLists[balanceSelected].Address'
 						></i>
+						 <!-- :aria-label='balanceLists[balanceSelected].Address' -->
 					</div>
 					<div id="qrcode-content"></div>
 					<div
@@ -167,7 +197,7 @@
 					 slot="footer"
 					>
 						<el-button
-						 class="done"
+						 class="done primary"
 						 type="primary"
 						 @click="switchToggle.receiveDialog = false"
 						>Done</el-button>
@@ -238,6 +268,7 @@
 					<span slot="footer">
 						<el-button
 						 type="primary"
+						 class="primary"
 						 @click="sendTransfer"
 						>Transfer</el-button>
 					</span>
@@ -275,6 +306,7 @@
 				<span slot="footer">
 					<el-button
 					 type="primary"
+					 class="primary"
 					 @click="switchToggle.assetDialog = false"
 					>Comfirm</el-button>
 				</span>
@@ -285,7 +317,8 @@
 <script>
 import date from "../assets/tool/date";
 import QRCode from "../assets/tool/qrcode.min";
-import ClipboardJS from "clipboard";
+// import ClipboardJS from "clipboard";
+const { clipboard } = require("electron");
 export default {
 	mounted() {
 		document.title = "Wallet";
@@ -538,26 +571,29 @@ export default {
 				}
 			],
 			balanceSelected: 0,
-			txType: "txRecords"
+			txType: "txRecords",
+			user: {
+				name: localStorage.getItem("Label") || "",
+				address: localStorage.getItem("Address") || "",
+			}
 		};
 	},
 	methods: {
-		clipText(el) {
-			console.log("clip");
-			const clip = new ClipboardJS(el, {
-				text: function(trigger) {
-					return trigger.getAttribute("aria-label");
-				}
+		clipSaveAddress() {
+			clipboard.writeText(this.user.address);
+			this.$message({
+				message: "Link Copied",
+				duration: 1200,
+				type: "success"
 			});
-			clip.on("success", e => {
-				this.$message({
-					message: "Link Copied",
-					duration: 1200,
-					type: "success"
-				});
-				console.log("success");
-				console.log(e);
-				clip.destroy();
+		},
+		clipText(el) {
+			const that = this;
+			clipboard.writeText(that.balanceLists[that.balanceSelected].Address);
+			that.$message({
+				message: "Link Copied",
+				duration: 1200,
+				type: "success"
 			});
 		},
 		addListenScroll(element, distance, callback) {
@@ -726,7 +762,8 @@ export default {
 };
 </script>
 <style lang="scss">
-$theme-font-blue: #040f39;
+// $theme-font-blue: #040f39;
+$theme-font-blue: #202020;
 $light-grey: #f7f7f7;
 // .el-select,
 // .el-select:hover .el-input__inner:focus,
@@ -738,88 +775,190 @@ $light-grey: #f7f7f7;
 	flex: 1;
 	height: 100%;
 	flex-direction: column;
-	background: #eeeef1;
-	.wallet-select {
-		background: #fff;
-		text-align: center;
-		.el-input__inner {
-			font-size: 20px;
-			color: $theme-font-blue;
-			font-weight: bold;
-			border-color: #fff !important;
-			text-align: center;
-			height: 60px;
-		}
-		.el-select {
-			width: 220px;
-		}
-		.el-select .el-input .el-select__caret {
-			font-size: 22px;
-			font-weight: bold;
-		}
-	}
+	background: #F9F9FB;
 	& > .content {
 		width: 100%;
-		height: calc(100% - 60px);
-		padding: 50px 88px;
+		// height: calc(100% - 60px);
+		height: 100%;
+		padding: 60px 108px;
 		display: flex;
 		.wallet-aside {
 			display: flex;
-			width: 300px;
+			width: 284px;
 			flex-direction: column;
-			.wallet-asset {
-				display: flex;
-				flex-direction: column;
-				// flex: 1;
-				background: #fff;
+			justify-content: space-between;
+			.person-info {
 				width: 100%;
-				margin: 0;
-				padding: 10px 0px;
-				border-radius: 2px;
-				.total {
-					border-bottom: solid 1px rgba(204, 204, 204, 0.3);
-					padding: 10px 20px;
-					.symbol {
-						font-size: 13px;
-						vertical-align: text-top;
+				height: 119px;
+				box-shadow:0px 2px 20px 0px rgba(196,196,196,0.24);
+				border-radius:6px;
+				background: #fff;
+				color: #202020;
+				display: flex;
+				justify-content: space-between;
+				flex-direction: column;
+				padding: 24px 16px;
+				.person-info-name {
+					font-weight: 400;
+				}
+				.person-info-address {
+					color: rgba(32,32, 32, .4);
+					.address {
+						display: inline-block;
+						width: 230px;
+						overflow:hidden;
+						text-overflow: ellipsis;
+					}
+					& > i {
+						position: relative;
+						top: -2px;
+						cursor: pointer;
+						&:hover{
+							color: rgba(32,32, 32, .7);
+						}
+						&:active {
+							color: rgba(32,32, 32, .4);
+						}
 					}
 				}
+			}
+			.balance-content-wrapper {
+				background: #fff;
+				height: calc(100% - 135px);
+				box-shadow:0px 2px 20px 0px rgba(196,196,196,0.24);
+				border-radius:6px;
+				padding: 0 15px;
+				overflow: auto;
+				.wallet-select {
+					text-align: right;
+					border-bottom: 1px solid rgba(0, 0, 0, .1);
+					.el-input__inner {
+						font-size: 14px;
+						color: $theme-font-blue;
+						font-weight: bold;
+						border-color: #fff !important;
+						text-align: center;
+						height: 60px;
+					}
+					.el-select {
+						width: 140px;
+					}
+					.el-select .el-input .el-select__caret {
+						font-size: 16px;
+						font-weight: bold;
+						top: -1px;
+						position: relative;
+					}
+					.prefix-icon {
+						margin-left: 20px;
+					}
+				}
+				.wallet-asset {
+					display: flex;
+					flex-direction: column;
+					width: 100%;
+					margin: 0;
+					padding: 15px 0px;
+					border-radius: 2px;
+					& > p {
+						color: rgba(32, 32, 32, .4);
+					}
+					.total {
+						padding: 10px 0px;
+						font-size: 32px;
+						.symbol {
+							font-size: 13px;
+							vertical-align: text-top;
+						}
+					}
+				}		
 				.balance-content {
 					flex: 1;
 					display: flex;
 					flex-direction: column;
-					.child-ul {
-						flex: 1;
-						min-height: 90px;
-						.child-list {
-							display: flex;
-							justify-content: space-between;
-							padding: 8px 20px;
-							border-bottom: solid 1px rgba(204, 204, 204, 0.3);
-							.name {
-								font-size: 16px;
+					// .child-ul {
+					// 	flex: 1;
+					// 	min-height: 90px;
+					// 	.child-list {
+					// 		display: flex;
+					// 		justify-content: space-between;
+					// 		padding: 8px 20px;
+					// 		border-bottom: solid 1px rgba(204, 204, 204, 0.3);
+					// 		.name {
+					// 			font-size: 16px;
+					// 		}
+					// 		.balance {
+					// 			font-size: 16px;
+					// 		}
+					// 		&.selected {
+					// 			// background-color: rgba(204, 204, 204, 0.3);
+					// 		}
+					// 	}
+					// }
+					.asset-display-li {
+						cursor: pointer;
+						user-select: none;
+						background: #F8F9FA;
+						text-align: center;
+						color: #202020;
+						height: 60px;
+						width: 100%;
+						line-height: 60px;
+						font-size: 16px;
+						font-weight: bold;
+						margin-top: 10px;
+						&.asset-display {
+							padding: 0 15px;
+							.asset-display-logo {
+								width: 40%;
+								text-align: left;
+								float: left;
+								.asset-icon {
+									position: relative;
+									top: 2px;
+								}
+								.asset-display-logo-name {
+									margin-left: 5px;
+								}
 							}
-							.balance {
+							.asset-display-num {
+								width: 60%;
+								text-align: right;
+								float: right;
+								padding: 10px;
 								font-size: 16px;
+								font-weight: 500;
+								p {
+									height: 20px;
+									line-height: 20px;
+									overflow: hidden;
+									text-overflow:ellipsis;
+									white-space: nowrap;
+									&.asset-display-grey {
+										color: rgba(32, 32, 32, .4);
+									}
+								}
 							}
-							&.selected {
-								background-color: rgba(204, 204, 204, 0.3);
+						}
+						&.set-asset-display {
+							color: rgba(32, 32, 32, .4);
+							&:hover {
+								opacity: .7;
+							}
+							&.set-asset-display:active {
+								opacity: 1;
 							}
 						}
 					}
-					.set-asset-display {
-						text-align: center;
-					}
 				}
-			}
-			.wallet-deal {
-				display: flex;
-				justify-content: space-between;
-				font-size: 16px;
-				background: #fff;
-				padding: 15px 20px;
-				& > div {
-					cursor: pointer;
+				.wallet-deal {
+					display: flex;
+					justify-content: space-between;
+					font-size: 16px;
+					padding: 15px 20px;
+					& > div {
+						cursor: pointer;
+					}
 				}
 			}
 		}
@@ -830,16 +969,33 @@ $light-grey: #f7f7f7;
 			background: #fff;
 			margin-left: 30px;
 			overflow: auto;
+			box-shadow:0px 2px 20px 0px rgba(196,196,196,0.24);
+			border-radius:6px;
+			padding: 0 30px;
 			.tx-select {
 				.select-button {
 					cursor: pointer;
 				}
 				display: flex;
 				align-items: center;
-				font-size: 16px;
-				height: 60px;
+				font-size: 14px;
+				height: 68px;
+				border-bottom: 1px solid rgba(0, 0, 0, .1);
 				.select-button {
-					padding: 0px 20px;
+					margin-right: 35px;
+					cursor: pointer;
+					user-select: none;
+					color: rgba(32, 32, 32, .7);
+					&:hover {
+						color: #2F8FF0;
+					}
+					&:active {
+						opacity: .7;
+						color: #2F8FF0;
+					}
+					&.current-select {
+						color: #2F8FF0;
+					}
 				}
 			}
 			.tx-ul {
@@ -851,16 +1007,25 @@ $light-grey: #f7f7f7;
 						display: flex;
 						align-items: center;
 						font-size: 16px;
-						padding: 10px 0;
-						border-top: solid 1px rgba(204, 204, 204, 0.3);
-						width: calc(100% - 40px);
-						margin: 0 auto;
+						padding: 10px 10px 10px 0;
+						border-top: 1px solid rgba(204, 204, 204, 0.3);
+						// width: calc(100% - 20px);
+						// margin: 0 auto;
+						// &:first-child {
+						// 	border: 0;
+						// }
 						.item-addr {
 							& > i {
 								font-size: 20px;
-								margin-right: 8px;
+								margin-right: 15px;
+								&.ofont-transfer_out {
+									color: #FF4F78;
+								}
+								&.ofont-transfer_in {
+									color: #52A1FF
+								}
 							}
-							width: 440px;
+							width: 160px;
 							display: flex;
 							align-items: center;
 							font-size: 12px;
@@ -872,14 +1037,26 @@ $light-grey: #f7f7f7;
 							}
 							.from-or-to {
 								color: $theme-font-blue;
-								font-weight: bold;
+								// font-weight: bold;
 							}
 						}
 						.item-amount {
 							flex: 1;
+							font-size: 24px;
+							color: #202020;
+							text-align: center;
 						}
-						.el-icon-success {
-							color: #49c269;
+						.item-more {
+							display: flex;
+							justify-content: space-between;
+							flex-direction: column;
+							.el-icon-success {
+								color: #49c269;
+							}
+							.el-icon-more {
+								color: #040F39;
+								opacity: .4;
+							}
 						}
 					}
 					.tx-li-item-detail {
@@ -959,7 +1136,6 @@ $light-grey: #f7f7f7;
 	.el-dialog__footer {
 		.el-button {
 			padding: 8px 22px;
-			border-radius: 2px;
 		}
 	}
 }

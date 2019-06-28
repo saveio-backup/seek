@@ -18,6 +18,7 @@
 				<div slot="footer">
 					<el-button
 					 type="primary"
+           class="primary"
 					 @click="logout"
 					>Logout</el-button>
 					<el-button @click="closeDialog">Cancel</el-button>

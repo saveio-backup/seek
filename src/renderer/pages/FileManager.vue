@@ -2,7 +2,11 @@
 	<div id="fileManager">
 		<div class="content">
 			<div class="top-nav">
-				<div class="logo">SAVE</div>
+				<!-- <div class="logo">SAVE</div> -->
+				<div class="ft14 mr10 flex column between channel-info">
+					<p class="channel-info-first">Channel {{channelBind.ChannelId || 'Not Selected'}}</p>
+					<p class="channel-info-last" v-if="channelBind.TokenAddr">{{channelBind.TokenAddr.replace(channelBind.TokenAddr.slice(5,-5),'...')}}</p>
+				</div>
 				<!-- {{location.href}}  -->
 				<div class="router">
 					<router-link
@@ -25,17 +29,15 @@
 				<div class="coin">
 					<div class="flex jc-end">
 					</div>
-					<div class="ft12 mr10 flex column between">
-						<p>Channel: {{channelBind.ChannelId || 'Not Selected'}}</p>
-						<p v-if="channelBind.TokenAddr">{{channelBind.TokenAddr.replace(channelBind.TokenAddr.slice(5,-5),'...')}}</p>
+					<span class="mr10 ft22">{{filterFloat(channelBind.BalanceFormat || 0).toLocaleString('en-US')}} SAVE</span>
+					<div class="coin-more">
+						<span
+						ref="menuButton"
+						class="ofont ofont-menu-point cursor-pointer"
+						@click="switchToggle.assetSettingDialog = !switchToggle.assetSettingDialog"
+						>
+						</span>
 					</div>
-					<span class="grey-xs bold mr10">{{filterFloat(channelBind.BalanceFormat || 0).toLocaleString('en-US')}} SAVE</span>
-					<span
-					 ref="menuButton"
-					 class="ofont ofont-menu-point cursor-pointer"
-					 @click="switchToggle.assetSettingDialog = !switchToggle.assetSettingDialog"
-					>
-					</span>
 					<ul
 					 class="asset-opera"
 					 v-show="switchToggle.assetSettingDialog"
@@ -68,6 +70,7 @@
 					<div slot="footer">
 						<el-button
 						 type="primary"
+						 class="primary"
 						 @click="toConfirm"
 						>Confirm</el-button>
 					</div>
@@ -91,6 +94,7 @@
 				<div slot="footer">
 					<el-button
 					 type="primary"
+					 class="primary"
 					 @click="toApplyChange"
 					>Apply</el-button>
 					<el-button @click="toCancelChange">Cancel</el-button>
@@ -276,18 +280,37 @@ $grey: #ccc;
 		.top-nav {
 			background: #fff;
 			height: 60px;
+			position: relative;
+			z-index: 9;
 			box-shadow: 0px 2px 4px 0px rgba(231, 231, 235, 0.7);
 			padding: 10px 30px 10px 20px;
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
+			.channel-info {
+				font-weight: 400;
+				color: #202020;
+				width: 190px;
+				.channel-info-last{
+					opacity: .4;
+					margin-top: 2px;
+				}
+			}
 			.logo {
 				width: 200px;
 			}
 			.router {
+				color: rgba(32, 32, 32, .7);
+				font-size: 18px;
 				& > a {
 					position: relative;
-					padding: 0 20px;
+					padding-right: 48px;
+					&:hover {
+						opacity: .7;
+					}
+					&:active {
+						opacity: 1;						
+					}
 				}
 				flex: 1;
 				display: flex;
@@ -312,6 +335,25 @@ $grey: #ccc;
 				display: flex;
 				align-items: center;
 				position: relative;
+				.coin-more {
+					width: 40px;
+					height: 40px;
+					border-radius: 50%;
+					background: #F1F3F7;
+					text-align: center;
+					line-height: 40px;
+					border: 1px solid #F0F2F6;
+					span {
+						font-size: 24px;
+						color: rgba(90, 33, 33, 0.5);
+					}
+					&:hover {
+						opacity: .7;
+					}
+					&:active {
+						opacity: 1;
+					}
+				}
 				.asset-opera {
 					width: 200px;
 					text-align: center;
@@ -320,14 +362,21 @@ $grey: #ccc;
 					top: 40px;
 					padding: 10px 0;
 					background: #fff;
-					border: solid 1px #ccc;
+					box-shadow:0px 2px 4px 0px rgba(231,231,235,0.8);
 					z-index: 1;
+					transition: all .3 ease;
 					li {
 						padding: 5px 10px;
 						cursor: pointer;
 						font-size: 14px;
+						user-select: none;
+						color: rgba(32, 32, 32, .7);
 						&:hover {
-							color: #65a6ff;
+							color: rgba(32, 32, 32, 1);
+							background: #F1F3F7;
+						}
+						&:active {
+							opacity: .7;
 						}
 					}
 				}

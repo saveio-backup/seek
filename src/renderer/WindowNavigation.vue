@@ -46,27 +46,7 @@
 						 @click='remoteCreate'
 						></span></li>
 				</ul>
-				<div
-				 v-if="platform === 'win32'"
-				 class="winform"
-				>
-					 <!-- class="minimize ofont ofont-min" -->
-					<a
-					 @click="windowMin"
-					 class="window-min ofont ofont-zuixiaohua"
-					></a>
-					 <!-- class="maximize ofont" -->
-					<a
-					class="window-resize ofont maximize"
-					 :class="{'ofont-suoxiao':isMaximized,'ofont-fangda':!isMaximized}"
-					 @click="windowResize"
-					></a>
-					 <!-- class="close ofont ofont-close" -->
-					<a
-						class="window-close ofont ofont-guanbi"
-					 @click="closeWindow"
-					></a>
-				</div>
+				
 				<div class="window-navbar">
 					<div class="flex flex1">
 						<div class="window-navbar-buttons">
@@ -74,7 +54,7 @@
 							class="nav-button"
 							@click="remoteOpenComponent('Home')"
 							>
-								<i v-if="user.name" class="ofont ofont-user user user-first"></i>
+								<i v-if="!user.name" class="ofont ofont-user user user-first"></i>
 								<i v-else class="user-first">{{user.name | firstString}}</i>
 							</div>
 							<div
@@ -101,7 +81,28 @@
 						></el-input>
 					</div>
 				</div>
+				<div
+				 v-if="platform === 'win32'"
+				 class="winform"
+				>
+					<!-- class="window-min ofont ofont-zuixiaohua" -->
+					<a
+					 @click="windowMin"
+					class="minimize ofont ofont-min"
+					></a>
+					 <!-- class="maximize ofont" -->
+					<a
+						class="window-resize ofont maximize"
+						:class="{'ofont-unmaximize':isMaximized,'ofont-max':!isMaximized}"
+						@click="windowResize"
+					></a>
+					<!-- class="window-close ofont ofont-guanbi" -->
+					<a
+					class="window-close close ofont ofont-close"
+					 	@click="closeWindow"
+					></a>
 
+				</div>
 			</section>
 			<section
 			 class="this-is-browserview"
@@ -151,6 +152,9 @@ export default {
 	},
 	watch: {
 		realUrl: function() {
+			this.user = {
+				name: localStorage.getItem("Label") || ""
+			}
 			this.inputDisplayUrl = this.activeView.displayURL;
 		}
 	},
@@ -253,8 +257,8 @@ $tabs-height: 62px;
 	.window-tabs {
 		-webkit-app-region: drag;
 		position: relative;
-		padding-left: 87px;
-		margin-right: 20px;
+		padding-left: 75px;
+		margin-right: 100px;
 		padding-top: 5px;
 
 		.window-tab-item {
@@ -365,13 +369,12 @@ $tabs-height: 62px;
 	.winform {
 		display: flex;
 		position: absolute;
-		left: 0px;
+		right: 0px;
 		top: 0px;
-		justify-content: space-around;
+		justify-content: space-between;
 		align-items: center;
-		width: 87px;
-		height: 30px;
-		padding: 2px 5px 0 10px;
+		width: 96px;
+		height: 24px;
 		color: rgba(255, 255, 255, 0.5);
 		-webkit-app-region: no-drag;
 
@@ -384,54 +387,29 @@ $tabs-height: 62px;
 		}
 
 		& > a {
-			$height: 12px;
-			line-height: 11px;
+			line-height: 24px;
 			text-align: center;
-			width: 12px;
-			height: 12px;
+			width: 32px;
+			height: 24px;
 			display: block;
-			border-radius: 50%;
-			border: 1px solid rgba(32, 32, 32, .1);
-			font-size: 6px;
-			color: #202020;
-			
-			&::before {
-				opacity: 0;
+			font-size: 12px;
+			color: #8B8D8F;
+			transition: all .3s ease;
+			&:hover {
+				background: #C7CACF;
+				color: #202020;
 			}
-
-			
-
-
-			&.window-min {
-				background: #FF635B;
-				font-size: 1px;
-
-				&:active {
-					background: #DD4139;
-				}
-			}
-
-			&.window-resize {
-				background: #FFC331;
-
-				&.ofont-suoxiao {
-					font-size: 9px;
-				}
-
-				&.ofont-fangda {
-					font-size: 7px;
-				}
-
-				&:active {
-					background: #DDA110;
-				}
+			&:active {
+				background: #B2B4B8;
 			}
 
 			&.window-close {
-				background: #29CE42;
-
+				&:hover {
+					background: #E81123;
+					color: #fff;
+				}
 				&:active {
-					background: #07AC20;					
+					background: #E36571;
 				}
 			}
 		}

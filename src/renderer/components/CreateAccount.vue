@@ -78,7 +78,7 @@
 					<el-button @click="clipboard.writeText(validation.PrivateKey)">Copy</el-button>
 					<el-button @click="$exportFile(validation.PrivateKey,'PrivateKey')">Save as File</el-button>
 					<p
-					 class="mt20 mb20 ft14"
+					 clsas="mt20 mb20 ft14"
 					 style="color:#e95464"
 					>Keep this Scrit key safe.You can always use this key to get your wallet back without any password if something happens to your browser or computer. But make sure to protect it — anyone who gets this key could steal your wallet. It’s probably safest to write it down on a piece of paper, or wherever else you keep important info.</p>
 					<el-button @click="setStep(1)">Return</el-button>
@@ -104,6 +104,7 @@
 					<el-button @click="setStep(2)">Return</el-button>
 					<el-button
 					 type="primary"
+					 class="primary"
 					 @click="importAccountWithPrivatekey"
 					>Done</el-button>
 				</div>

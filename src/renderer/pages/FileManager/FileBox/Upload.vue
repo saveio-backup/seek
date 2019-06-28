@@ -191,6 +191,7 @@
 				<div class="flex jc-center submit-foot">
 					<el-button
 					 type="primary"
+					 class="primary"
 					 @click="toUploadFile"
 					>Upload</el-button>
 					<el-button @click="toEmptyUpload">Cancel</el-button>
@@ -431,7 +432,7 @@ export default {
 	height: 100%;
 	& > .content {
 		height: 100%;
-		background: #ededed;
+		background: #F9F9FB;
 		padding: 20px 40px;
 		.upload-header {
 			display: flex;

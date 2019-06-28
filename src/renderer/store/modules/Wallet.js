@@ -81,7 +81,7 @@ function requestBalanceLists(commit) {
 function requestTransActions(commit, config) {
   let {
     asset = '',
-      limit = state.txRecords.length || 30,
+      limit = state.txRecords.length >= 30 ? state.txRecords.length : 30,
       height = ''
   } = config || {};
   axios.get(api.transactions + window.localStorage.Address + '/0?asset=' + asset + '&limit=' + limit + '&height=' + height, {

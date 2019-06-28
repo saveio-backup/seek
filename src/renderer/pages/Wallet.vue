@@ -171,6 +171,7 @@
 		 class="send-dialog"
 		>
 			<el-dialog
+			:close-on-click-modal='false'
 			 :visible.sync='switchToggle.receiveDialog'
 			 width="600px"
 			 center
@@ -276,6 +277,7 @@
 			</el-dialog>
 			<el-dialog
 			 width='600px'
+			 :close-on-click-modal='false'
 			 :visible.sync="switchToggle.assetDialog"
 			 center
 			>

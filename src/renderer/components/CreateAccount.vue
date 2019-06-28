@@ -314,6 +314,7 @@ export default {
 				.then(res => {
 					const data = res.data;
 					if (data.Desc === "SUCCESS") {
+						this.accountStatus = 1;
 						this.$store.dispatch("getChannelInitProgress");
 						const result = data.Result;
 						for (let key in result) {
@@ -357,7 +358,6 @@ $theme-font-blue: #040f39;
 				margin: 20px 0;
 				padding: 4px 8px;
 				font-size: 14px;
-				background: yellow;
 				text-align: center;
 			}
 			&.el-loading-text {

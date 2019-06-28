@@ -49,15 +49,15 @@ export default {
 	},
 	data() {
 		return {
-			transferType: 2,
+			transferType: 2
 		};
 	},
 	computed: {
 		downloadLength: function() {
-			this.$store.state.Transfer.downloadLength;
+			return this.$store.state.Transfer.downloadLength;
 		},
 		uploadLength: function() {
-			this.$store.state.Transfer.uploadLength;
+			return this.$store.state.Transfer.uploadLength;
 		}
 	},
 	beforeRouteEnter(to, from, next) {
@@ -66,11 +66,12 @@ export default {
 			vm.$store.dispatch("setDownload");
 			vm.$store.dispatch("setComplete");
 			console.log(vm.transferType);
-			vm.transferType = to.query.transferType >= 0 ? to.query.transferType : vm.transferType;
+			vm.transferType =
+				to.query.transferType >= 0 ? to.query.transferType : vm.transferType;
 		});
 	},
 	beforeRouteUpdate(to, from, next) {
-		console.log('router update!!!!');
+		console.log("router update!!!!");
 		next(() => {
 			this.transferType =
 				to.query.transferType >= 0 ? to.query.transferType : 2;
@@ -141,7 +142,7 @@ $light-grey: #F9F9FB;
 					text-align: center;
 					border-radius: 50%;
 					color: #fff;
-					margin-left:4px;
+					margin-left: 4px;
 				}
 			}
 		}

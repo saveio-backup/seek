@@ -17,7 +17,7 @@
 		"ChannelPortOffset": 3004,
 		"ChannelProtocol": "kcp",
 		"ChannelClientType": "rpc",
-		"ChannelRevealTimeout": "250",
+		"ChannelRevealTimeout": "200",
 		"DBPath": "./DB",
 		"PpListenAddr": "",
 		"PpBootstrap": null,

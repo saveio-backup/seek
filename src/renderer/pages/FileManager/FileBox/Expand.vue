@@ -50,6 +50,7 @@
 			<el-dialog
 			 center
 			 width='600px'
+			 :close-on-click-modal='false'
 			 :visible.sync="expandDialogVisible"
 			>
 				<div slot="title">

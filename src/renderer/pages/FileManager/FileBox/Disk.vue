@@ -109,7 +109,7 @@
 					>
 						<template slot-scope="scope">
 							<div class="light-blue">
-								{{scope.row.Profit}}
+								{{parseFloat(scope.row.Profit / 1000000000).toFixed(9)}}
 							</div>
 						</template>
 					</el-table-column>
@@ -143,6 +143,7 @@
 		</div>
 		<el-dialog
 		 title='Share'
+		 :close-on-click-modal='false'
 		 :visible.sync="switchToggle.shareDialog"
 		 center
 		>
@@ -168,6 +169,7 @@
 		</el-dialog>
 		<el-dialog
 		 title="Notice"
+		 :close-on-click-modal='false'
 		 :visible.sync="switchToggle.deleteDialog"
 		 center
 		>
@@ -548,7 +550,7 @@ export default {
 				commitAll.push(
 					this.$axios
 						.post(this.$api.download, {
-							Hash: downloadFiles[i].Hash,
+							Url: downloadFiles[i].Url,
 							MaxPeerNum: 1
 						})
 						.then(res => {

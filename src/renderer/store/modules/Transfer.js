@@ -1,6 +1,7 @@
 import axios from 'axios';
 import api from '../../assets/config/api';
-// clearInterval = function () {};
+// const transferClear = clearInterval;
+const transferClear = function () {};
 const state = {
   completeTransferList: [],
   uploadTransferList: [],
@@ -40,14 +41,14 @@ const actions = {
   setUpload({
     commit
   }) {
-    clearInterval(uploadTimer);
+    transferClear(uploadTimer);
     uploadTransferListRequest.bind(this, commit)();
     uploadTimer = setInterval(uploadTransferListRequest.bind(this, commit), TIME_COUNT);
   },
   setDownload({
     commit
   }) {
-    clearInterval(downloadTimer);
+    transferClear(downloadTimer);
     downloadTransferListRequest.bind(this, commit)();
     downloadTimer = setInterval(downloadTransferListRequest.bind(this, commit), TIME_COUNT)
   },
@@ -69,13 +70,13 @@ function downloadTransferListRequest(commit) {
       this.dispatch('setComplete');
       const result = res.data.Result.Transfers;
       if (res.data.Result.IsTransfering) {} else {
-        clearInterval(downloadTimer);
+        transferClear(downloadTimer);
       }
       commit('GET_DOWNLOAD_TRANSFER', result)
     }
   }).catch((error) => {
     console.error(error)
-    clearInterval(downloadTimer);
+    transferClear(downloadTimer);
   })
 }
 
@@ -85,12 +86,12 @@ function uploadTransferListRequest(commit) {
       this.dispatch('setComplete');
       const result = res.data.Result.Transfers;
       if (res.data.Result.IsTransfering) {} else {
-        clearInterval(uploadTimer);
+        transferClear(uploadTimer);
       }
       commit('GET_UPLOAD_TRANSFER', result)
     }
   }).catch(() => {
-    clearInterval(uploadTimer);
+    transferClear(uploadTimer);
   })
 }
 export default {

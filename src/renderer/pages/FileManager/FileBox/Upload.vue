@@ -4,12 +4,12 @@
 			<div class="upload-header">
 				<h1>Upload File</h1>
 				<span
-				 class="text-underline active-blue ft18"
+				 class="active-blue ft14 user-no-select cursor-pointer cursor-click"
 				 @click="switchToggle.advanced = true"
 				 v-show="!switchToggle.advanced"
 				>Advanced</span>
 				<span
-				 class="text-underline active-blue ft18"
+				 class="active-blue ft14 user-no-select cursor-pointer cursor-click"
 				 @click="hiddenAdvanced"
 				 v-show="switchToggle.advanced"
 				>Simple</span>
@@ -19,33 +19,28 @@
 				 ref="uploadForm"
 				 :model="uploadFormData"
 				 :rules="rules"
+				 hide-required-asterisk
 				 label-position="left"
 				 label-width="200px"
 				>
 					<el-form-item
 					 label="Choose File:"
+					 class="form-vertical"
 					 prop="Path"
 					>
-						<el-input
-						 v-model="uploadFormData.Path"
-						 :readonly="true"
-						 class="path-input"
-						>
-							<el-button
-							 slot="append"
-							 @click="selectUpload"
-							>Browser</el-button>
-						</el-input>
+						<p class="path-input">{{uploadFormData.Path}}</p>
+						<el-button
+							class="form-right"
+							@click="selectUpload"
+						>Browser</el-button>
 					</el-form-item>
-					<el-form-item label="File Size:">
+					<el-form-item class="form-vertical" label="File Size:">
 						<p class="light-blue">{{fileSize || '0.00 GB'}}</p>
 					</el-form-item>
-					<!-- <el-form-item label="Gas fee:">
-						<p>{{uploadPrice}}</p>
-					</el-form-item> -->
 					<el-form-item label="Encryption:">
 						<el-select
 						 v-model="encryptionToggle"
+						 class="form-right"
 						 @change="setEncryptPassword"
 						>
 							<el-option
@@ -59,7 +54,7 @@
 						</el-select>
 						<el-form-item
 						 prop="EncryptPassword"
-						 class="encryptpassword-input"
+						 class="encryptpassword-input form-right-second"
 						 v-show="encryptionToggle"
 						>
 							<el-input
@@ -80,13 +75,18 @@
 				 label-width="200px"
 				>
 					<el-form-item label="Storage Cycle:">
-						<el-input-number
+						<!-- <el-input-number
+						> </el-input-number> -->
+						<el-input 
 						 v-model="storageCycleNumber"
 						 :min="1"
 						 @change="setDuration"
 						 :disabled="advancedData.Duration === 0"
-						> </el-input-number>
+							type="number"
+							class="form-right-second-inside"
+						></el-input>
 						<el-select
+						 class="form-right"
 						 v-model="storageCycleSelected"
 						 @change="setDuration"
 						>
@@ -102,14 +102,18 @@
 					 label="Integrity verification cycle:"
 					 prop="Interval"
 					>
-						<el-input-number
-						 v-model="verificationCycleNumber"
-						 :min='1'
-						 @change="setDataInterval"
-						 class="cyclenumber-input"
+						<!-- <el-input-number
 						>
-						</el-input-number>
+						</el-input-number> -->
+						<el-input 
+							v-model="verificationCycleNumber"
+							:min='1'
+							@change="setDataInterval"
+							class="form-right-second-inside"
+							type="number"
+						></el-input>
 						<el-select
+						 class="form-right"
 						 v-model="verificationCycleSelected"
 						 @change="setDataInterval"
 						>
@@ -126,17 +130,26 @@
 					 label="Backups"
 					 prop="CopyNum"
 					>
-						<el-input-number
+						<!-- <el-input-number
+							class="form-right"
 						 :min='0'
 						 v-model="advancedData.CopyNum"
 						 @change='toGetPrice'
-						></el-input-number>
+						></el-input-number> -->
+						<el-input 
+							type="number"
+							:min="0"
+							class="form-right"
+							v-model="advancedData.CopyNum"
+							@change='toGetPrice'						
+						></el-input>
 					</el-form-item>
 					<el-form-item
 					 label="Authority"
 					 prop="Privilege"
 					>
 						<el-select
+						 class="form-right"
 						 v-model="advancedData.Privilege"
 						 @change='toGetPrice'
 						>
@@ -157,20 +170,14 @@
 					<el-form-item
 					 label="whitelist"
 					 prop="WhiteList"
+					 class="no-bottom-border"
 					 v-show="advancedData.Privilege === 2"
 					>
 						<div class="whitelist-wrap">
-							<el-tag
-							 :key="tag"
-							 :disable-transitions="false"
-							 v-for="tag in advancedData.WhiteList"
-							 closable
-							 @close='handleClose(tag)'
-							>{{tag}}</el-tag>
 							<el-input
 							 v-if="switchToggle.whiteListInput"
 							 v-model="wihteListString"
-							 class="save-tag-input"
+							 class="save-tag-input form-right"
 							 ref="saveTagInput"
 							 size="small"
 							 @keyup.enter.native="setWhiteList"
@@ -179,14 +186,29 @@
 							<el-button
 							 v-else
 							 size="small"
+							 class="form-right"
 							 @click="showWhitelistInput"
 							> + Add WhiteList</el-button>
 						</div>
 					</el-form-item>
+					<el-form-item class="whitelist-form-item"
+						v-show="advancedData.Privilege === 2"
+					>
+						<div class="whitelist">
+							<el-tag
+							:key="tag"
+							:disable-transitions="false"
+							v-for="tag in advancedData.WhiteList"
+							closable
+							@close='handleClose(tag)'
+							>{{tag}}</el-tag>
+						</div>
+					</el-form-item>
 				</el-form>
-				<div class="flex jc-center price-div">
-					<p>Gas fee: {{uploadPrice}} SAVE</p>
-					<p>balance: {{mainCount}} SAVE</p>
+				<div class="flex price-div">
+					<div class="price-div-bg">SA</div>
+					<p class="price-gas-fee">Gas fee: {{uploadPrice}} SAVE</p>
+					<p class="price-balance">balance: {{mainCount}} SAVE</p>
 				</div>
 				<div class="flex jc-center submit-foot">
 					<el-button
@@ -430,17 +452,16 @@ export default {
 <style lang="scss">
 #upload {
 	height: 100%;
+	background: #F9F9FB;
 	& > .content {
 		height: 100%;
-		background: #F9F9FB;
+		width: 670px;
+		margin: 0 auto;
 		padding: 20px 40px;
 		.upload-header {
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
-		}
-		.el-button {
-			border-radius: 0px;
 		}
 		.el-input__inner {
 			border-radius: 0px;
@@ -456,13 +477,101 @@ export default {
 			background: #9a9eaf;
 			color: #fff;
 		}
+		.el-form-item {
+			border-bottom: 1px solid rgba(0, 0, 0, .1);
+			padding-bottom: 15px
+		}
 		.el-form-item__label {
 			font-weight: bold;
+			color: #202020;
 		}
+		.el-select {
+			input {
+				width: 150px;
+				height: 32px;
+				border: 1px solid rgba(4,15,57,0.2);
+				border-radius: 2px;
+				color: rgba(32, 32, 32, .4);
+			}
+		}
+		.form-right {
+			position: absolute;
+			right: 0;
+			top: 50%;
+			transform: translateY(-50%);
+			transition: none;
+			&.el-input {
+				width: 150px;
+				height: 32px;
+				input {
+					border: 1px solid #DEE2EA;
+					border-radius: 2px;
+					background: #F1F3F7;
+					color: rgba(32, 32, 32, .4);
+				}
+			}
+		}
+		.form-right-second {
+			position: absolute;
+			right: 120px;
+			top: 50%;
+			transform: translateY(-50%);
+			padding-bottom: 0;
+			input {
+				width: 150px;
+				height: 32px;
+				border: 1px solid #DEE2EA;
+				border-radius: 2px;
+				background: #F1F3F7;
+				color: rgba(32, 32, 32, .4);
+			}
+		}
+		.form-right-second-inside {
+			position: absolute;
+			right: 170px;
+			width: 150px;
+			top: 50%;
+			transform: translateY(-50%);
+			padding-bottom: 0;
+			input {
+				width: 150px;
+				height: 32px;
+				border: 1px solid #DEE2EA;
+				border-radius: 2px;
+				background: #F1F3F7;
+				color: rgba(32, 32, 32, .4);
+			}
+		}
+		.form-vertical {
+			position: relative;
+			label {
+				font-size: 14px;
+				color: #202020;
+				width: 100% !important;
+			}
+			.el-form-item__content {
+				margin-left: 0 !important;
+				p {
+					height: 18px;
+					line-height: 18px;
+					font-size: 14px;
+					width: 550px;
+					overflow: hidden;
+					text-overflow: ellipsis;
+					color: rgba(32, 32, 32, .4);
+				}
+				.light-blue {
+					color: #409EF7;
+				}
+			}
+		}
+
 		h1 {
 			font-size: 24px;
-			color: #ccc;
-			margin-bottom: 40px;
+			// color: #ccc;
+			color: #202020;
+			margin-top: 20px;
+			margin-bottom: 30px;
 		}
 		.path-input {
 			width: 400px;
@@ -472,18 +581,68 @@ export default {
 		}
 		.encryptpassword-input {
 			display: inline-block;
+			border-bottom: 0;
 		}
 		.whitelist-wrap {
 			.el-tag {
 				margin-right: 10px;
 			}
 			.save-tag-input {
-				width: 90px;
+				width: 320px;
 			}
 		}
+		.whitelist-form-item {
+			.whitelist {
+				padding: 10px 15px;
+				background: #F1F3F7;
+				border: 1px solid #DEE2EA;
+				width: 100%;
+				height: 110px;
+				margin-bottom: 15px;
+				overflow: auto;
+				.el-tag {
+					margin-right: 20px;
+				}
+			}
+			.el-form-item__content {
+				margin-left: 0!important;
+			}
+		}
+		.no-bottom-border {
+			border-bottom: 0;
+			padding-bottom: 0;
+		}
 		.price-div {
-			p {
-				margin: 0 15px 15px;
+			width: calc(100% - 30px);
+			height: 54px;
+			margin: 0 auto 20px;
+			background:linear-gradient(90deg,rgba(19,176,250,1) 0%,rgba(62,126,235,1) 100%);
+			box-shadow:0px 2px 20px 0px rgba(196,196,196,0.24);
+			border-radius:6px;
+			color: #fff;
+			line-height: 54px;
+			padding: 0 15px;
+			position: relative;
+			.price-div-bg {
+				position: absolute;
+				top: 0px;
+				right: -10px;
+				font-size: 108px;
+				font-weight: bold;
+				color: #fff;
+				opacity: .1;
+			}
+			.price-gas-fee {
+				float: left;
+				margin-right: 30px;
+				font-size: 18px;
+				font-weight: 500;
+			}
+			.price-balance {
+				float: left;
+				font-size: 14px;
+				font-weight: 500;
+				opacity: .7;
 			}
 		}
 	}

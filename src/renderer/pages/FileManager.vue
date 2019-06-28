@@ -326,7 +326,7 @@ $grey: #ccc;
 					border-radius: 50%;
 					color: #fff;
 					position: absolute;
-					right: 0px;
+					right: 30px;
 					top: 0px;
 					// transform: translateX(50%) translateY(-50%)
 				}

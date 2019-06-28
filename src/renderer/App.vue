@@ -18,6 +18,7 @@ $light-grey: #F9F9FB;
 $tabs-height: 70px;
 #app {
 	height: 100vh;
+	background: #F9F9FB;
 }
 
 .common-main {

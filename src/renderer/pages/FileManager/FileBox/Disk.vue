@@ -63,7 +63,8 @@
 							<div class="flex between rowName">
 								<span>{{ scope.row.Name }}</span>
 								<!-- @click="executedFile = scope.row" -->
-								<div class="opera"><i
+								<div class="opera">
+									<i
 									 @click.stop="shareFile(scope.row)"
 									 title="Share"
 									 class="el-icon-share"
@@ -109,7 +110,7 @@
 					>
 						<template slot-scope="scope">
 							<div class="light-blue">
-								{{parseFloat(scope.row.Profit / 1000000000).toFixed(9)}}
+								{{parseFloat(scope.row.Profit / 1000000000).toFixed(9)}} Save
 							</div>
 						</template>
 					</el-table-column>
@@ -625,7 +626,7 @@ export default {
 </script>
 <style lang="scss">
 $light-blue: #65a6ff;
-$light-grey: #F9F9FB;
+$light-grey: #f9f9fb;
 $theme-color: #1b1e2f;
 $theme-font-blue: #040f39;
 #disk {
@@ -636,7 +637,7 @@ $theme-font-blue: #040f39;
 		padding: 0 30px 0 14px;
 		height: 80px;
 		background: $light-grey;
-		border-bottom: 1px solid rgba(32, 32, 32, .1);
+		border-bottom: 1px solid rgba(32, 32, 32, 0.1);
 		.bt {
 			width: 100px;
 			height: 33px;
@@ -644,13 +645,13 @@ $theme-font-blue: #040f39;
 			border-color: $theme-color;
 			border-radius: 2px;
 			background: none;
-			box-shadow:0px 0px 4px 0px rgba(0,122,255,0.3);
-			border-radius:16px;
-			border:1px solid rgba(47,143,240,1);
-			color: #2F8FF0;
+			box-shadow: 0px 0px 4px 0px rgba(0, 122, 255, 0.3);
+			border-radius: 16px;
+			border: 1px solid rgba(47, 143, 240, 1);
+			color: #2f8ff0;
 
 			&:hover {
-				opacity: .7;
+				opacity: 0.7;
 			}
 
 			&:active {
@@ -661,22 +662,26 @@ $theme-font-blue: #040f39;
 				color: #fff;
 				background: $light-blue;
 				border: none;
-				background:linear-gradient(90deg,rgba(19,175,250,1) 0%,rgba(62,126,235,1) 100%);
-				box-shadow:0px 4px 6px 0px rgba(111,139,173,0.21);
+				background: linear-gradient(
+					90deg,
+					rgba(19, 175, 250, 1) 0%,
+					rgba(62, 126, 235, 1) 100%
+				);
+				box-shadow: 0px 4px 6px 0px rgba(111, 139, 173, 0.21);
 				border-radius: 16px;
 			}
 		}
 		.fun-search {
 			width: 240px;
-			
+
 			.el-input__inner {
 				height: 33px;
 				line-height: 33px;
 				border-radius: 17px;
 				font-weight: normal;
-				background: #EDEFF4;
+				background: #edeff4;
 				border: 0;
-				color: rgba(32, 32, 32, .7);
+				color: rgba(32, 32, 32, 0.7);
 				padding-left: 40px;
 			}
 			.el-input__prefix {
@@ -684,7 +689,7 @@ $theme-font-blue: #040f39;
 				.el-input__icon {
 					line-height: 34px;
 					font-size: 16px;
-					color: rgba(32, 32, 32, .4);
+					color: rgba(32, 32, 32, 0.4);
 				}
 			}
 		}
@@ -695,7 +700,7 @@ $theme-font-blue: #040f39;
 		bottom: 0px;
 		width: 100%;
 		padding-top: 20px;
-		background: #F9F9FB;
+		background: #f9f9fb;
 
 		.table-element {
 			// font-weight: bold;
@@ -704,7 +709,7 @@ $theme-font-blue: #040f39;
 			.rowName {
 				.opera {
 					display: none;
-					color: rgba(32, 32, 32, .4);
+					color: rgba(32, 32, 32, 0.4);
 					font-weight: bold;
 					[class^="el-icon-"] {
 						margin: 0px 4px;
@@ -714,7 +719,7 @@ $theme-font-blue: #040f39;
 							color: $light-blue;
 						}
 						&:active {
-							opacity: .7;
+							opacity: 0.7;
 						}
 					}
 				}
@@ -726,7 +731,7 @@ $theme-font-blue: #040f39;
 			}
 		}
 		.td-grey {
-			color: rgba(32, 32, 32, .4);
+			color: rgba(32, 32, 32, 0.4);
 		}
 	}
 	.el-input-group__append {

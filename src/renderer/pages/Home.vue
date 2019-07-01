@@ -43,14 +43,14 @@
 					<div class="user-revenue">
 						<p class="grey-xs bold ft14">Your revenue:</p>
 						<div class="flex between ai-center">
-							<span class="theme-bold ft36">{{revenue.toLocaleString('en-US')}}</span>
+							<span class="theme-bold ft36">{{revenueFormat.toLocaleString('en-US')}}</span>
 							<span class="bold ft16 unit">SAVE</span>
 						</div>
 					</div>
 				</div>
 				<div class="user-meta-center">
 					<p class="grey-xs bold ft14 user-meta-title">Total Balance:</p>
-					<p class="total-num">{{currentChannelTotal}}<span> SAVE</span></p>
+					<p class="total-num"> {{balanceLists.length>0?filterFloat(balanceLists[0].BalanceFormat).toLocaleString('en-US'):'0'}}<span> SAVE</span></p>
 					<div id="balance-view" class="balanceView"></div>
 				</div>
 				<div class="user-meta-right">
@@ -424,6 +424,9 @@ export default {
 		},
 		revenue: function() {
 			return this.$store.state.Home.revenue;
+		},
+		revenueFormat: function() {
+			return this.$store.state.Home.revenueFormat;
 		},
 		channels: function() {
 			return this.$store.state.Home.channels;

@@ -74,7 +74,7 @@
 								 class="number"
 								 v-model="adjustSize"
 								 :precision='0'
-								 :min='1'
+								 :min='minSize'
 								 @blur="userSpaceCost"
 								></el-input-number>
 								<!-- @change="setSizeValue" -->
@@ -156,6 +156,7 @@ const _NOW = new Date();
 // nextDay.setSeconds(59);
 export default {
 	mounted() {
+		this.hasUploadedFile();
 		this.getUserSpaceRecords();
 		// getUserSpaceRecords
 		let element = this.$refs.recordTable.bodyWrapper;
@@ -177,11 +178,16 @@ export default {
 			switchToggle: { loadSwitch: true, loading: "" },
 			submitToggle: true, // commit toggle
 			expired: "",
+			isUploadedFile: true, // has user uploaded file in save
 			pickerOptions: {
 				disabledDate: date => {
 					// (this.space.ExpiredAt * 1000)
-					// const now = new Date().getTime();
-					return date.getTime() - (this.space.ExpiredAt * 1000) < 0;
+					const now = new Date().getTime();
+					if (this.isUploadedFile) {
+						return date.getTime() - this.space.ExpiredAt * 1000 <= 0;
+					} else {
+						return date.getTime() - now <= 0;
+					}
 				}
 			},
 			addInfo: {
@@ -296,20 +302,32 @@ export default {
 	watch: {
 		expandDialogVisible: function() {
 			// update adjustSize when open dialog
-			this.adjustSize = (
-				(this.space.Remain + this.space.Used) /
-				this.sizeUnit
-			).toFixed(2);
+			this.adjustSize = Math.ceil(
+				(this.space.Remain + this.space.Used) / this.sizeUnit
+			);
+		},
+		sizeUnit: function() {
+			this.adjustSize = Math.max(
+				this.minSize,
+				Math.ceil((this.space.Remain + this.space.Used) / this.sizeUnit)
+			);
 		}
 	},
 	computed: {
+		minSize() {
+			if (this.isUploadedFile) {
+				return Math.ceil((this.space.Remain + this.space.Used) / this.sizeUnit);
+			} else {
+				return 1;
+			}
+		},
 		expired_old() {
 			if (this.$store.state.Filemanager.space.ExpiredAt) {
 				this.expired = new Date(
 					this.$store.state.Filemanager.space.ExpiredAt * 1000
 				);
 			} else {
-				this.expired = _NOW.getTime();
+				this.expired = new Date(_NOW.getTime());
 			}
 			return (
 				this.$dateFormat.formatTimeByTimestamp(
@@ -327,6 +345,16 @@ export default {
 		}
 	},
 	methods: {
+		async hasUploadedFile() {
+			let addr = this.$api.getFileList + "0/0/0";
+			let result = await this.$axios.get(addr);
+			let data = result.data;
+			if (data.Error === 0 && data.Result.length) {
+				this.isUploadedFile = true;
+			} else {
+				this.isUploadedFile = false;
+			}
+		},
 		addListenScroll(element, distance, callback) {
 			element.addEventListener("scroll", function() {
 				/* 				console.log(`element.scrollTop is: ${element.scrollTop},
@@ -514,7 +542,7 @@ $grey: #ccc;
 		padding: 0 50px 10px;
 		display: flex;
 		flex-direction: column;
-		background: #F9F9FB;
+		background: #f9f9fb;
 		.space-header {
 			padding-top: 30px;
 			display: flex;
@@ -541,7 +569,7 @@ $grey: #ccc;
 				color: $theme-font-blue;
 				font-weight: bold;
 				thead th {
-					background: #F9F9FB;
+					background: #f9f9fb;
 					color: #1b1e2f;
 					// font-weight: bold;
 				}

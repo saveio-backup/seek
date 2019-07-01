@@ -87,14 +87,15 @@
 							>Upload Completed</span>
 						</div>
 						<div v-else-if="scope.row.Status === 4">
-							<span
+							<span class="light-error">{{scope.row.ErrMsg}}</span>
+							<!-- <span
 							 class="light-error"
 							 v-if="!scope.row.IsUploadAction"
 							>Download Failed</span>
 							<span
 							 v-else
 							 class="light-error"
-							>Upload Failed</span>
+							>Upload Failed</span> -->
 						</div>
 						<div v-else-if='scope.row.Progress > 0'>
 							<span v-if="scope.row.Type === 1">Uploading</span>
@@ -431,7 +432,7 @@ $theme-font-blue: #040f39;
 $brand-blue: #409eff;
 $sucess: #67c23a;
 $danger: #f56c6c;
-$light-grey: #F9F9FB;
+$light-grey: #f9f9fb;
 .file-component {
 	height: 100%;
 	display: flex;
@@ -456,7 +457,7 @@ $light-grey: #F9F9FB;
 			font-weight: bold;
 			padding-top: 20px;
 			thead th {
-				background: #F9F9FB;
+				background: #f9f9fb;
 				color: #1b1e2f;
 				// font-weight: bold;
 			}

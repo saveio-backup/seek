@@ -65,9 +65,14 @@ export default {
 			return this.$store.state.Filemanager.space;
 		},
 		takeSpace: function() {
-			return (
-				(this.space.Used / (this.space.Remain + this.space.Used)) * 100 || 0
-			);
+			if (this.space.Used > 0) {
+				return Math.max(
+					1.5,
+					(this.space.Used / (this.space.Remain + this.space.Used)) * 100
+				);
+			} else {
+				return 0;
+			}
 		},
 		fileType: function() {
 			return this.$route.query.type;
@@ -101,7 +106,7 @@ $theme-font-blue: #040f39;
 $brand-blue: #409eff;
 $sucess: #67c23a;
 $danger: #f56c6c;
-$light-grey: #F9F9FB;
+$light-grey: #f9f9fb;
 #file-box {
 	display: flex;
 	.aside {
@@ -144,22 +149,22 @@ $light-grey: #F9F9FB;
 				display: flex;
 				padding: 10px 0 10px 60px;
 				border-radius: 0 50px 50px 0;
-				color: rgba(32, 32, 32, .7);
+				color: rgba(32, 32, 32, 0.7);
 				font-weight: 500;
 				font-size: 14px;
-				transition: all .3s ease;
+				transition: all 0.3s ease;
 				user-select: none;
 				&:hover {
-					background: #EDEFF4;
-					color: #2F8FF0;
+					background: #edeff4;
+					color: #2f8ff0;
 					// background: rgba(231, 231, 235, 1);
 				}
 				&:active {
-					opacity: .7;
+					opacity: 0.7;
 				}
 				&.link-hover {
-					background: #EDEFF4;
-					color: #2F8FF0;
+					background: #edeff4;
+					color: #2f8ff0;
 					// background: rgba(231, 231, 235, 1);
 				}
 			}
@@ -175,12 +180,12 @@ $light-grey: #F9F9FB;
 					text-decoration: underline;
 				}
 				&:active {
-					opacity: .7;
+					opacity: 0.7;
 				}
 			}
 			.aside-progress-num {
 				font-size: 12px;
-				color: rgba(32, 32, 32, .7);
+				color: rgba(32, 32, 32, 0.7);
 				position: relative;
 				i {
 					position: absolute;

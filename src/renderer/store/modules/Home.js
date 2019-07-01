@@ -7,6 +7,7 @@ const state = {
   channels: [],
   channelBind: {},
   revenue: 0,
+  revenueFormat:0,
   loginStatus: -1,
   initChannelProgress: 0
 }
@@ -46,7 +47,8 @@ const mutations = {
     state.totalHeight = progress;
   },
   'SET_REVENUE'(state, result) {
-    state.revenue = result;
+    state.revenue = result.Revenue;
+    state.revenueFormat = result.RevenueFormat
   },
   'SET_CURRENT_ACCOUNT'(state, result) {
     state.loginStatus = result;
@@ -174,7 +176,7 @@ function requestChannelBalanceTotal(commit) {
 function requestRevenue(commit) {
   axios.get(api.revenue).then(res => {
     if (res.data.Error === 0) {
-      commit('SET_REVENUE', res.data.Result.Revenue);
+      commit('SET_REVENUE', res.data.Result);
     }
   })
 }

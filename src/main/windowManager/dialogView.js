@@ -45,7 +45,9 @@ class dialogView {
     this.updateEvent();
     this.resize();
     this.loadDialog();
-    this.browserView.webContents.openDevTools();
+    if (process.env.NODE_ENV === 'development') {
+      this.browserView.webContents.openDevTools();
+    }
   }
   async loadDialog() {
     const dialogUrl = DEFAULT_URL + '#' + 'dialog';

@@ -16,7 +16,7 @@
 				<el-progress
 				 v-if="fileList.length>0"
 				 class="progress"
-				 :percentage="parseFloat(totalProgress * 100).toFixed(0)"
+				 :percentage="Math.ceil(totalProgress * 100)"
 				></el-progress>
 			</div>
 			<el-button
@@ -33,6 +33,7 @@
 		<div class="file-list">
 			<el-table
 			 :data="fileList"
+			 border
 			 empty-text='No Data'
 			 height="100%"
 			>
@@ -102,7 +103,8 @@
 							<span v-if="scope.row.Type === 2">Downloading</span>
 						</div>
 						<div v-else>
-							<span>Sharding</span>
+							<span v-if="scope.row.Type === 1">Sharding</span>
+							<span v-if="scope.row.Type === 2">Searching</span>
 						</div>
 					</template>
 				</el-table-column>
@@ -119,11 +121,11 @@
 								 class="ofont ofont-file"
 								 @click="showInFolder(scope.row.Path)"
 								></i></span>
-							<!-- <span
+							<span
 							 title="Decrypt"
 							 @click="setFileSelected(scope.row)"
-							 v-if="!scope.row.IsUploadAction"
-							><i class="el-icon-lock"></i> </span> -->
+							 v-if="!scope.row.IsUploadAction && scope.row.Path"
+							><i class="el-icon-lock"></i> </span>
 							<!-- <span
 							 title="Delete File"
 							 v-if="scope.row.FileHash"
@@ -146,7 +148,7 @@
 				<h2>New Download</h2>
 				<div class="dialog-title-border"></div>
 			</div>
-			<download-dialog v-on:closedialog='hideTaskDialog'></download-dialog>
+			<download-dialog v-if="switchToggle.newTaskDialog" v-on:closedialog='hideTaskDialog'></download-dialog>
 		</el-dialog>
 		<el-dialog
 		 width="600px"
@@ -455,7 +457,6 @@ $light-grey: #f9f9fb;
 		.el-table {
 			color: $theme-font-blue;
 			font-weight: bold;
-			padding-top: 20px;
 			thead th {
 				background: #f9f9fb;
 				color: #1b1e2f;

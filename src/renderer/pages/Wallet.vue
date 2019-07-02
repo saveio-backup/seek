@@ -8,52 +8,53 @@
 				<div class="person-info">
 					<p class="person-info-name ft24">{{user.name || ''}}</p>
 					<p class="person-info-address ft14">
-						<span class="address" :title="user.address || ''">
+						<span
+						 class="address"
+						 :title="user.address || ''"
+						>
 							{{user.address || ''}}
 						</span>
 						<i
-						class="ofont ofont-fuzhi"
-						@click="clipSaveAddress"
+						 class="ofont ofont-fuzhi"
+						 @click="clipSaveAddress"
 						></i>
 					</p>
 				</div>
 				<div class="balance-content-wrapper">
 					<div class="wallet-select user-no-select">
 						<el-select
-						v-model='balanceSelected'
-						@change="changeSelectedAsset"
+						 v-model='balanceSelected'
+						 @change="changeSelectedAsset"
 						>
 							<div
-							slot="prefix"
-							class="prefix-icon"
+							 slot="prefix"
+							 class="prefix-icon"
 							>
 								<img
-								v-if="balanceLists.length>0"
-								class="asset-icon"
-								:src="'static/images/logo/'+balanceLists[balanceSelected].Symbol+'.png'"
-								alt=""
+								 v-if="balanceLists.length>0"
+								 class="asset-icon"
+								 :src="'static/images/logo/'+balanceLists[balanceSelected].Symbol+'.png'"
+								 alt=""
 								>
 							</div>
 							<el-option
-							v-for="(item,index) in balanceLists"
-							:key='index'
-							:label='item.Symbol'
-							:value='index'
-							class="asset-item"
+							 v-for="(item,index) in balanceLists"
+							 :key='index'
+							 :label='item.Symbol'
+							 :value='index'
+							 class="asset-item"
 							>
 								<img
-								class="asset-icon mr10"
-								:src="'static/images/logo/'+ item.Symbol+ '.png'"
-								:alt="item.Symbol"
+								 class="asset-icon mr10"
+								 :src="'static/images/logo/'+ item.Symbol+ '.png'"
+								 :alt="item.Symbol"
 								> <span class="">{{item.Symbol}}</span>
 							</el-option>
 						</el-select>
 					</div>
 					<div class="wallet-asset">
 						<p class="ft14 user-no-select">Total Balance:</p>
-						<div class="total"> <span class="symbol"></span> <span
-						 v-if="balanceLists && balanceLists.length>0"
-						>{{parseFloat(balanceLists[balanceSelected].BalanceFormat).toFixed(3)}}</span></div>
+						<div class="total"> <span class="symbol"></span> <span v-if="balanceLists && balanceLists.length>0">{{parseFloat(balanceLists[balanceSelected].BalanceFormat).toFixed(3)}}</span></div>
 					</div>
 					<div
 					 class="balance-content"
@@ -69,29 +70,31 @@
 								<div class="balance theme-bold">{{parseFloat(balanceLists[balanceSelected].BalanceFormat).toFixed(3)}}</div>
 							</li>
 						</ul> -->
-						<div
-						 class="asset-display-li asset-display">
+						<div class="asset-display-li asset-display">
 							<div class="asset-display-logo">
 								<img
-								v-if="balanceLists.length>0"
-								class="asset-icon"
-								:src="'static/images/logo/'+balanceLists[balanceSelected].Symbol+'.png'"
-								alt=""
+								 v-if="balanceLists.length>0"
+								 class="asset-icon"
+								 :src="'static/images/logo/'+balanceLists[balanceSelected].Symbol+'.png'"
+								 alt=""
 								>
 								<span class="asset-display-logo-name">{{balanceLists[balanceSelected].Symbol}}</span>
 							</div>
 							<div class="asset-display-num">
 								<p :title="parseFloat(balanceLists[balanceSelected].BalanceFormat).toFixed(3) || 0">{{parseFloat(balanceLists[balanceSelected].BalanceFormat).toFixed(3) || 0}}</p>
 								<p class="asset-display-grey">$ 0</p>
-							</div> 
+							</div>
 						</div>
-						<div @click="switchToggle.assetDialog = true"
-						 class="asset-display-li set-asset-display"><i	 
-							 class="el-icon-plus"
-						></i></div>
+						<div
+						 @click="switchToggle.assetDialog = true"
+						 class="asset-display-li set-asset-display"
+						><i class="el-icon-plus"></i></div>
 					</div>
 					<div class="wallet-deal">
-						<el-button class="primary" @click="getQRCode"><i class="ofont ofont-transfer_in"></i> <span>Receive</span></el-button>
+						<el-button
+						 class="primary"
+						 @click="getQRCode"
+						><i class="ofont ofont-transfer_in"></i> <span>Receive</span></el-button>
 						<el-button @click="switchToggle.sendDialog = true"><i class="ofont ofont-transfer_out"></i> <span>Send</span></el-button>
 						<!-- <div @click="getQRCode"><i class="ofont ofont-transfer_in"></i> <span class="theme-bold">Receive</span></div> -->
 						<!-- <div @click="switchToggle.sendDialog =true"><i class="ofont ofont-transfer_out"></i> <span class="theme-bold">Send</span></div> -->
@@ -119,14 +122,14 @@
 				<ul class="tx-ul">
 					<!-- this[txType] -->
 					<!-- v-for="(item,index) in this[txType]" -->
-						<!-- v-for="(item,index) in mockTxRecords" -->
+					<!-- v-for="(item,index) in mockTxRecords" -->
 					<li
 					 class="tx-li"
 					 v-for="(item,index) in this[txType]"
 					 :key="index"
-					 @click="txDetailIndex = index"
 					>
 						<div
+						 @click="txDetailIndex === index?txDetailIndex = -1: txDetailIndex = index "
 						 class="tx-li-item"
 						 v-if="balanceLists.length>0"
 						>
@@ -141,7 +144,10 @@
 								</div>
 							</div>
 							<div class="item-amount">{{item.Type ==1 ? '-':'+'}} {{item.AmountFormat}} {{item.Asset}}</div>
-							<div class="item-more" v-if="item.BlockHeight>0">
+							<div
+							 class="item-more"
+							 v-if="item.BlockHeight>0"
+							>
 								<i class="el-icon-success"></i>
 								<i class="el-icon-more"></i>
 							</div>
@@ -171,7 +177,7 @@
 		 class="send-dialog"
 		>
 			<el-dialog
-			:close-on-click-modal='false'
+			 :close-on-click-modal='false'
 			 :visible.sync='switchToggle.receiveDialog'
 			 width="600px"
 			 center
@@ -190,7 +196,7 @@
 						 class="ofont ofont-fuzhi addr_btn"
 						 @click="clipText('.addr_btn')"
 						></i>
-						 <!-- :aria-label='balanceLists[balanceSelected].Address' -->
+						<!-- :aria-label='balanceLists[balanceSelected].Address' -->
 					</div>
 					<div id="qrcode-content"></div>
 					<div
@@ -576,7 +582,7 @@ export default {
 			txType: "txRecords",
 			user: {
 				name: localStorage.getItem("Label") || "",
-				address: localStorage.getItem("Address") || "",
+				address: localStorage.getItem("Address") || ""
 			}
 		};
 	},
@@ -720,6 +726,10 @@ export default {
 							}
 						}
 						this.$store.commit("SET_TX_RECORDS", this.txRecords.concat(result));
+						console.log("transferIn:");
+						console.log(transferIn);
+						conosle.log("transferOut");
+						console.log(transferOut);
 						this.$store.commit(
 							"SET_TRANSFER_IN",
 							this.transferIn.concat(transferIn)
@@ -777,7 +787,7 @@ $light-grey: #f7f7f7;
 	flex: 1;
 	height: 100%;
 	flex-direction: column;
-	background: #F9F9FB;
+	background: #f9f9fb;
 	& > .content {
 		width: 100%;
 		// height: calc(100% - 60px);
@@ -792,8 +802,8 @@ $light-grey: #f7f7f7;
 			.person-info {
 				width: 100%;
 				height: 119px;
-				box-shadow:0px 2px 20px 0px rgba(196,196,196,0.24);
-				border-radius:6px;
+				box-shadow: 0px 2px 20px 0px rgba(196, 196, 196, 0.24);
+				border-radius: 6px;
 				background: #fff;
 				color: #202020;
 				display: flex;
@@ -804,22 +814,22 @@ $light-grey: #f7f7f7;
 					font-weight: 400;
 				}
 				.person-info-address {
-					color: rgba(32,32, 32, .4);
+					color: rgba(32, 32, 32, 0.4);
 					.address {
 						display: inline-block;
 						width: 230px;
-						overflow:hidden;
+						overflow: hidden;
 						text-overflow: ellipsis;
 					}
 					& > i {
 						position: relative;
 						top: -2px;
 						cursor: pointer;
-						&:hover{
-							color: rgba(32,32, 32, .7);
+						&:hover {
+							color: rgba(32, 32, 32, 0.7);
 						}
 						&:active {
-							color: rgba(32,32, 32, .4);
+							color: rgba(32, 32, 32, 0.4);
 						}
 					}
 				}
@@ -827,13 +837,13 @@ $light-grey: #f7f7f7;
 			.balance-content-wrapper {
 				background: #fff;
 				height: calc(100% - 135px);
-				box-shadow:0px 2px 20px 0px rgba(196,196,196,0.24);
-				border-radius:6px;
+				box-shadow: 0px 2px 20px 0px rgba(196, 196, 196, 0.24);
+				border-radius: 6px;
 				padding: 0 15px;
 				overflow: auto;
 				.wallet-select {
 					text-align: right;
-					border-bottom: 1px solid rgba(0, 0, 0, .1);
+					border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 					.el-input__inner {
 						font-size: 14px;
 						color: $theme-font-blue;
@@ -863,7 +873,7 @@ $light-grey: #f7f7f7;
 					padding: 15px 0px;
 					border-radius: 2px;
 					& > p {
-						color: rgba(32, 32, 32, .4);
+						color: rgba(32, 32, 32, 0.4);
 					}
 					.total {
 						padding: 10px 0px;
@@ -873,7 +883,7 @@ $light-grey: #f7f7f7;
 							vertical-align: text-top;
 						}
 					}
-				}		
+				}
 				.balance-content {
 					flex: 1;
 					display: flex;
@@ -900,7 +910,7 @@ $light-grey: #f7f7f7;
 					.asset-display-li {
 						cursor: pointer;
 						user-select: none;
-						background: #F8F9FA;
+						background: #f8f9fa;
 						text-align: center;
 						color: #202020;
 						height: 60px;
@@ -934,18 +944,18 @@ $light-grey: #f7f7f7;
 									height: 20px;
 									line-height: 20px;
 									overflow: hidden;
-									text-overflow:ellipsis;
+									text-overflow: ellipsis;
 									white-space: nowrap;
 									&.asset-display-grey {
-										color: rgba(32, 32, 32, .4);
+										color: rgba(32, 32, 32, 0.4);
 									}
 								}
 							}
 						}
 						&.set-asset-display {
-							color: rgba(32, 32, 32, .4);
+							color: rgba(32, 32, 32, 0.4);
 							&:hover {
-								opacity: .7;
+								opacity: 0.7;
 							}
 							&.set-asset-display:active {
 								opacity: 1;
@@ -971,8 +981,8 @@ $light-grey: #f7f7f7;
 			background: #fff;
 			margin-left: 30px;
 			overflow: auto;
-			box-shadow:0px 2px 20px 0px rgba(196,196,196,0.24);
-			border-radius:6px;
+			box-shadow: 0px 2px 20px 0px rgba(196, 196, 196, 0.24);
+			border-radius: 6px;
 			padding: 0 30px;
 			.tx-select {
 				.select-button {
@@ -982,21 +992,21 @@ $light-grey: #f7f7f7;
 				align-items: center;
 				font-size: 14px;
 				height: 68px;
-				border-bottom: 1px solid rgba(0, 0, 0, .1);
+				border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 				.select-button {
 					margin-right: 35px;
 					cursor: pointer;
 					user-select: none;
-					color: rgba(32, 32, 32, .7);
+					color: rgba(32, 32, 32, 0.7);
 					&:hover {
-						color: #2F8FF0;
+						color: #2f8ff0;
 					}
 					&:active {
-						opacity: .7;
-						color: #2F8FF0;
+						opacity: 0.7;
+						color: #2f8ff0;
 					}
 					&.current-select {
-						color: #2F8FF0;
+						color: #2f8ff0;
 					}
 				}
 			}
@@ -1021,10 +1031,10 @@ $light-grey: #f7f7f7;
 								font-size: 20px;
 								margin-right: 15px;
 								&.ofont-transfer_out {
-									color: #FF4F78;
+									color: #ff4f78;
 								}
 								&.ofont-transfer_in {
-									color: #52A1FF
+									color: #52a1ff;
 								}
 							}
 							width: 160px;
@@ -1056,8 +1066,8 @@ $light-grey: #f7f7f7;
 								color: #49c269;
 							}
 							.el-icon-more {
-								color: #040F39;
-								opacity: .4;
+								color: #040f39;
+								opacity: 0.4;
 							}
 						}
 					}
@@ -1117,9 +1127,9 @@ $light-grey: #f7f7f7;
 	.ofont-fuzhi {
 		cursor: pointer;
 		&:hover {
-			opacity: .7;
+			opacity: 0.7;
 		}
-		
+
 		&:active {
 			opacity: 1;
 		}

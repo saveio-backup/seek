@@ -16,6 +16,7 @@
 
 		<el-table
 		 class="flex1 incomeTable"
+		 border
 		 ref="incomeTable"
 		 :data="result.Incomes"
 		 empty-text="No Data"

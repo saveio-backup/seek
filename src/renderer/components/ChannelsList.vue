@@ -5,6 +5,7 @@
 		 v-if="channels"
 		>
 			<el-table
+			border
 			 :data="channels"
 			 ref="singleTable"
 			 empty-text='No Data'

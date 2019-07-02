@@ -30,11 +30,14 @@
 					>
 						<p class="path-input">{{uploadFormData.Path}}</p>
 						<el-button
-							class="form-right"
-							@click="selectUpload"
+						 class="form-right"
+						 @click="selectUpload"
 						>Browser</el-button>
 					</el-form-item>
-					<el-form-item class="form-vertical" label="File Size:">
+					<el-form-item
+					 class="form-vertical"
+					 label="File Size:"
+					>
 						<p class="light-blue">{{fileSize || '0.00 GB'}}</p>
 					</el-form-item>
 					<el-form-item label="Encryption:">
@@ -77,13 +80,13 @@
 					<el-form-item label="Storage Cycle:">
 						<!-- <el-input-number
 						> </el-input-number> -->
-						<el-input 
+						<el-input
 						 v-model="storageCycleNumber"
 						 :min="1"
 						 @change="setDuration"
 						 :disabled="advancedData.Duration === 0"
-							type="number"
-							class="form-right-second-inside"
+						 type="number"
+						 class="form-right-second-inside"
 						></el-input>
 						<el-select
 						 class="form-right"
@@ -105,12 +108,12 @@
 						<!-- <el-input-number
 						>
 						</el-input-number> -->
-						<el-input 
-							v-model="verificationCycleNumber"
-							:min='1'
-							@change="setDataInterval"
-							class="form-right-second-inside"
-							type="number"
+						<el-input
+						 v-model="verificationCycleNumber"
+						 :min='1'
+						 @change="setDataInterval"
+						 class="form-right-second-inside"
+						 type="number"
 						></el-input>
 						<el-select
 						 class="form-right"
@@ -136,12 +139,12 @@
 						 v-model="advancedData.CopyNum"
 						 @change='toGetPrice'
 						></el-input-number> -->
-						<el-input 
-							type="number"
-							:min="0"
-							class="form-right"
-							v-model="advancedData.CopyNum"
-							@change='toGetPrice'						
+						<el-input
+						 type="number"
+						 :min="0"
+						 class="form-right"
+						 v-model="advancedData.CopyNum"
+						 @change='toGetPrice'
 						></el-input>
 					</el-form-item>
 					<el-form-item
@@ -191,16 +194,17 @@
 							> + Add WhiteList</el-button>
 						</div>
 					</el-form-item>
-					<el-form-item class="whitelist-form-item"
-						v-show="advancedData.Privilege === 2"
+					<el-form-item
+					 class="whitelist-form-item"
+					 v-show="advancedData.Privilege === 2"
 					>
 						<div class="whitelist">
 							<el-tag
-							:key="tag"
-							:disable-transitions="false"
-							v-for="tag in advancedData.WhiteList"
-							closable
-							@close='handleClose(tag)'
+							 :key="tag"
+							 :disable-transitions="false"
+							 v-for="tag in advancedData.WhiteList"
+							 closable
+							 @close='handleClose(tag)'
 							>{{tag}}</el-tag>
 						</div>
 					</el-form-item>
@@ -301,7 +305,7 @@ export default {
 				Privilege: 1,
 				CopyNum: 3,
 				WhiteList: []
-			}
+			};
 			this.verificationCycleSelected = this.baseKeys[1];
 			this.verificationCycleNumber = 1;
 		},
@@ -389,6 +393,8 @@ export default {
 							});
 						} else if (res.data.Error === 54002) {
 							this.$message.error("You don't have enough storage space to use");
+						} else if (res.data.Error === 55011) {
+							this.$message.error("Your storage has expired.");
 						} else {
 							this.$message.error(res.data.Desc);
 						}
@@ -427,7 +433,9 @@ export default {
 					if (res.data.Error === 0) {
 						this.uploadPrice = res.data.Result.FeeFormat;
 					} else if (res.data.Error === 54002) {
-						this.$message.error("You don't have enough storage space to use");
+						this.$message.error("You don't have enough storage space to use.");
+					} else if (res.data.Error === 55011) {
+						this.$message.error("Your storage has expired.");
 					} else {
 						this.$message.error(res.data.Desc);
 					}
@@ -452,7 +460,7 @@ export default {
 <style lang="scss">
 #upload {
 	height: 100%;
-	background: #F9F9FB;
+	background: #f9f9fb;
 	& > .content {
 		height: 100%;
 		width: 670px;
@@ -478,8 +486,8 @@ export default {
 			color: #fff;
 		}
 		.el-form-item {
-			border-bottom: 1px solid rgba(0, 0, 0, .1);
-			padding-bottom: 15px
+			border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+			padding-bottom: 15px;
 		}
 		.el-form-item__label {
 			font-weight: bold;
@@ -489,9 +497,9 @@ export default {
 			input {
 				width: 150px;
 				height: 32px;
-				border: 1px solid rgba(4,15,57,0.2);
+				border: 1px solid rgba(4, 15, 57, 0.2);
 				border-radius: 2px;
-				color: rgba(32, 32, 32, .4);
+				color: rgba(32, 32, 32, 0.4);
 			}
 		}
 		.form-right {
@@ -504,10 +512,10 @@ export default {
 				width: 150px;
 				height: 32px;
 				input {
-					border: 1px solid #DEE2EA;
+					border: 1px solid #dee2ea;
 					border-radius: 2px;
-					background: #F1F3F7;
-					color: rgba(32, 32, 32, .4);
+					background: #f1f3f7;
+					color: rgba(32, 32, 32, 0.4);
 				}
 			}
 		}
@@ -520,10 +528,10 @@ export default {
 			input {
 				width: 150px;
 				height: 32px;
-				border: 1px solid #DEE2EA;
+				border: 1px solid #dee2ea;
 				border-radius: 2px;
-				background: #F1F3F7;
-				color: rgba(32, 32, 32, .4);
+				background: #f1f3f7;
+				color: rgba(32, 32, 32, 0.4);
 			}
 		}
 		.form-right-second-inside {
@@ -536,10 +544,10 @@ export default {
 			input {
 				width: 150px;
 				height: 32px;
-				border: 1px solid #DEE2EA;
+				border: 1px solid #dee2ea;
 				border-radius: 2px;
-				background: #F1F3F7;
-				color: rgba(32, 32, 32, .4);
+				background: #f1f3f7;
+				color: rgba(32, 32, 32, 0.4);
 			}
 		}
 		.form-vertical {
@@ -558,10 +566,10 @@ export default {
 					width: 550px;
 					overflow: hidden;
 					text-overflow: ellipsis;
-					color: rgba(32, 32, 32, .4);
+					color: rgba(32, 32, 32, 0.4);
 				}
 				.light-blue {
-					color: #409EF7;
+					color: #409ef7;
 				}
 			}
 		}
@@ -594,8 +602,8 @@ export default {
 		.whitelist-form-item {
 			.whitelist {
 				padding: 10px 15px;
-				background: #F1F3F7;
-				border: 1px solid #DEE2EA;
+				background: #f1f3f7;
+				border: 1px solid #dee2ea;
 				width: 100%;
 				height: 110px;
 				margin-bottom: 15px;
@@ -605,7 +613,7 @@ export default {
 				}
 			}
 			.el-form-item__content {
-				margin-left: 0!important;
+				margin-left: 0 !important;
 			}
 		}
 		.no-bottom-border {
@@ -616,9 +624,13 @@ export default {
 			width: calc(100% - 30px);
 			height: 54px;
 			margin: 0 auto 20px;
-			background:linear-gradient(90deg,rgba(19,176,250,1) 0%,rgba(62,126,235,1) 100%);
-			box-shadow:0px 2px 20px 0px rgba(196,196,196,0.24);
-			border-radius:6px;
+			background: linear-gradient(
+				90deg,
+				rgba(19, 176, 250, 1) 0%,
+				rgba(62, 126, 235, 1) 100%
+			);
+			box-shadow: 0px 2px 20px 0px rgba(196, 196, 196, 0.24);
+			border-radius: 6px;
 			color: #fff;
 			line-height: 54px;
 			padding: 0 15px;
@@ -630,7 +642,7 @@ export default {
 				font-size: 108px;
 				font-weight: bold;
 				color: #fff;
-				opacity: .1;
+				opacity: 0.1;
 			}
 			.price-gas-fee {
 				float: left;
@@ -642,7 +654,7 @@ export default {
 				float: left;
 				font-size: 14px;
 				font-weight: 500;
-				opacity: .7;
+				opacity: 0.7;
 			}
 		}
 	}

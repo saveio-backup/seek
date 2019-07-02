@@ -4,7 +4,6 @@
 		<el-input
 		 v-model="downloadUrl"
 		 @input='toGetFileInfo'
-		 
 		></el-input>
 		<div class="text-center mt20">
 			<div class="flex between">
@@ -19,7 +18,11 @@
 				<p class="theme-font-blue bold">Cost:</p>
 				<p>{{downloadInfo.FeeFormat || ''}}</p>
 			</div>
-			<el-button class="mt40 primary" type="primary" @click="toDownload">Download</el-button>
+			<el-button
+			 class="mt40 primary"
+			 type="primary"
+			 @click="toDownload"
+			>Download</el-button>
 		</div>
 	</div>
 </template>
@@ -29,16 +32,15 @@ import { ipcRenderer } from "electron";
 export default {
 	data() {
 		return {
+			formatUrl: "save://share/",
 			downloadUrl: "",
 			downloadInfo: {}
 		};
 	},
 	methods: {
 		toGetFileInfo() {
-			const path = ipcRenderer.sendSync(
-				"string-to-hex",
-				this.downloadUrl
-			);
+			if (this.downloadUrl.indexOf(this.formatUrl) != 0) return;
+			const path = ipcRenderer.sendSync("string-to-hex", this.downloadUrl);
 			clearTimeout(timer);
 			timer = setTimeout(() => {
 				this.$axios.get(this.$api.downloadInfo + path).then(res => {
@@ -49,14 +51,15 @@ export default {
 			}, 1500);
 		},
 		toDownload() {
+			if (this.downloadUrl.indexOf(this.formatUrl) != 0) return;
 			this.$axios
 				.post(this.$api.download, {
 					Url: this.downloadUrl,
-					MaxPeerNum: 1
+					MaxPeerNum: 10
 				})
 				.then(res => {
 					if (res.data.Error === 0) {
-						this.$emit('closedialog');
+						this.$emit("closedialog");
 						this.$store.dispatch("setDownload");
 						this.$router.push({
 							name: "transfer",
@@ -71,15 +74,15 @@ export default {
 };
 </script>
 <style lang="scss">
-#download-dialog{
+#download-dialog {
 	padding: 0 30px;
-	.el-input__inner{
-		height:35px;
+	.el-input__inner {
+		height: 35px;
 		line-height: 35px;
 		font-weight: normal !important;
-    background: #ebecef;
-    border-radius: 2px;
-    border: none;
+		background: #ebecef;
+		border-radius: 2px;
+		border: none;
 	}
 }
 </style>

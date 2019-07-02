@@ -24,7 +24,7 @@ const API = {
   version: VERSION,
   account: HOST + VERSION + 'account',
   balance: HOST + VERSION + 'balance',
-  decrypt: HOST+ VERSION +'dsp/file/encrypt',
+  decrypt: HOST+ VERSION +'dsp/file/decrypt',
   userspace: HOST + VERSION + 'dsp/client/userspace/',
   userspacerecords: HOST + VERSION + 'dsp/client/userspacerecords/',
   getFileList: HOST + VERSION + 'dsp/file/uploadlist/',

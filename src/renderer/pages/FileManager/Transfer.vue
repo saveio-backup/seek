@@ -148,7 +148,7 @@ $light-grey: #F9F9FB;
 		}
 	}
 	.top-progress {
-		border-bottom: 1px solid rgba(32, 32, 32, .1);
+		// border-bottom: 1px solid rgba(32, 32, 32, .1);
 	}
 }
 </style>

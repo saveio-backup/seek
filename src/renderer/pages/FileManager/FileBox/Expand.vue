@@ -18,6 +18,7 @@
 			<div class="space-record">
 				<el-table
 				 :data='Records'
+				 border
 				 ref='recordTable'
 				 empty-text='No Data'
 				 height='100%'
@@ -184,7 +185,10 @@ export default {
 					// (this.space.ExpiredAt * 1000)
 					const now = new Date().getTime();
 					if (this.isUploadedFile) {
-						return date.getTime() - this.space.ExpiredAt * 1000 <= 0;
+						return (
+							date.getTime() - this.space.ExpiredAt * 1000 <= 0 ||
+							date.getTime() - now <= 0
+						);
 					} else {
 						return date.getTime() - now <= 0;
 					}
@@ -339,9 +343,14 @@ export default {
 			return this.$store.state.Filemanager.space;
 		},
 		takeSpace: function() {
-			return (
-				(this.space.Used / (this.space.Used + this.space.Remain)) * 100 || 0
-			);
+			if (this.space.Used > 0) {
+				return Math.max(
+					0.5,
+					(this.space.Used / (this.space.Remain + this.space.Used)) * 100
+				);
+			} else {
+				return 0;
+			}
 		}
 	},
 	methods: {

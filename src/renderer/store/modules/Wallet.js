@@ -99,7 +99,7 @@ function requestTransActions(commit, config) {
           } else if (result[i].Type === 2) {
             transferIn.push(result[i]);
           }
-          if (i = result.length - 1) {
+          if (i === result.length - 1) {
             commit('SET_BLOCK_HEIGHT', result[i].BlockHeight)
           }
         }

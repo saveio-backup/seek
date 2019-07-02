@@ -68,8 +68,9 @@ class View {
         defaultEncoding: 'utf-8'
       }
     });
-
-    this.browserView.webContents.openDevTools();
+    if (process.env.NODE_ENV === 'development') {
+      this.browserView.webContents.openDevTools();
+    }
   }
   forceUpdate() {
     if (this && this.browserView) {
@@ -279,7 +280,7 @@ export function createWindow(url) {
 
   let mainWindow = new BrowserWindow({
     height: 800,
-    frame:false,
+    frame: false,
     useContentSize: true,
     minWidth: 1200,
     minHeight: 563,
@@ -291,8 +292,8 @@ export function createWindow(url) {
     frame: false,
     webPreferences: {
       webSecurity: true,
-      sandbox:false,
-      nodeIntegration:true,
+      sandbox: false,
+      nodeIntegration: true,
       enableRemoteModule: true,
       allowRunningInsecureContent: true
     }
@@ -317,7 +318,9 @@ export function createWindow(url) {
     }
   }
 
-  mainWindow.webContents.openDevTools();
+  if (process.env.NODE_ENV === 'development') {
+    mainWindow.webContents.openDevTools();
+  }
 
   mainWindow.views = new Proxy([], handlerViews) // Proxy Array<View> 
   mainWindow.on('closed', () => {

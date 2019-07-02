@@ -41,6 +41,7 @@
 		<div class="content">
 			<div class="table-element">
 				<el-table
+				border
 				 ref='table'
 				 @row-click="clickRow"
 				 :data="filterListData"
@@ -113,6 +114,9 @@
 								{{parseFloat(scope.row.Profit / 1000000000).toFixed(9)}} Save
 							</div>
 						</template>
+					</el-table-column>
+					<el-table-column v-if="page ==='miner'" label="Contributions" prop="DownloadCount">
+
 					</el-table-column>
 					<el-table-column label="Date">
 						<template slot-scope="scope">
@@ -552,7 +556,7 @@ export default {
 					this.$axios
 						.post(this.$api.download, {
 							Url: downloadFiles[i].Url,
-							MaxPeerNum: 1
+							MaxPeerNum: 10
 						})
 						.then(res => {
 							console.log("downloading");

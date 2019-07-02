@@ -49,7 +49,7 @@ export default {
 	name: "ExportPrivateKey",
 	data() {
 		return {
-			exportPrivateKeyToggle: true,
+			exportPrivateKeyToggle: false,
 			dialogForm: {
 				password: ""
 			},
@@ -103,7 +103,7 @@ export default {
 		}
 	},
 	mounted() {
-		// this.exportPrivateKeyToggle = true;
+		this.exportPrivateKeyToggle = true;
 	}
 };
 </script>

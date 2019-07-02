@@ -35,7 +35,7 @@ export default {
 	name: "Logout",
 	data() {
 		return {
-			logoutToggle: true,
+			logoutToggle: false,
 			logoutLoding: null,
 			win: remote.getCurrentWindow()
 		};
@@ -90,6 +90,7 @@ export default {
 		}
 	},
 	mounted() {
+		this.logoutToggle = true
 	}
 };
 </script>

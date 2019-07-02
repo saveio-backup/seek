@@ -38,15 +38,6 @@
 				<p class="theme-font-blue bold ft20 mt10">{{filterFloat(mainCount).toLocaleString('en-US')}}</p>
 			</div>
 		</div>
-		<!-- <el-input
-					 type="number"
-					 min='0'
-					 class="transfer-input"
-					 v-model="transferAmount"
-					 placeholder="input number"
-					>
-						<template slot="append">SAVE</template>
-					</el-input> -->
 		<el-form
 		 ref="transferForm"
 		 class="transferForm"

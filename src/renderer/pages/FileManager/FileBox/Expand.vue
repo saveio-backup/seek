@@ -3,7 +3,7 @@
 		<div class="content">
 			<div class="space-header">
 				<div class="space-progress">
-					<div class="theme-font-blue bold mb10 ft14">Used: {{util.bytesToSize(space.Used * 1024)}} / {{util.bytesToSize((space.Used + space.Remain) *1024)}}</div>
+					<div class="theme-font-blue bold mb10 ft14 user-no-select">Used: {{util.bytesToSize(space.Used * 1024)}} / {{util.bytesToSize((space.Used + space.Remain) *1024)}}</div>
 					<el-progress
 					 :stroke-width="30"
 					 :percentage="takeSpace"
@@ -14,7 +14,7 @@
 				 @click="expandDialogVisible = true"
 				>Storage</el-button>
 			</div>
-			<p class="theme-font-blue bold mt40 mb10 ft14">Space adjust record</p>
+			<p class="theme-font-blue bold mt40 mb10 ft14 user-no-select">Space adjust record</p>
 			<div class="space-record">
 				<el-table
 				 :data='Records'

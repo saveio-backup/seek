@@ -1,7 +1,7 @@
 <template>
 	<div id="income">
 		<div class="header">
-			<p class="light-theme-title mb10">Income Detail</p>
+			<p class="light-theme-title mb10 user-no-select">Income Detail</p>
 			<el-date-picker
 			 class="common-el-input"
 			 v-model="dateRange"

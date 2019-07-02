@@ -4,33 +4,49 @@
 	 class="account-wrap"
 	>
 		<div class="account-box">
-			<h2 class="account-title">Import Account</h2>
+			<h2 class="account-title">Restore key repeat</h2>
+			<ul class="account-type ft14">
+				<li>
+					<a  :class="{'account-select':importWay == 0}" @click="importWay = 0">Recovery Key</a>
+				</li>
+				<li>
+					<a :class="{'account-select':importWay == 1}" @click="importWay = 1">Secret Key</a>
+				</li>
+			</ul>
 			<div class="el-form loading textarea">
 				<div v-if="importWay == 0">
-					<el-input
-					 type="textarea"
-					 v-model="data.Wallet"
-					 cols="30"
-					 rows="10"
-					 placeholder="key"
-					>
-					</el-input>
-					<div class="tr mb20"><a
-						 @click='importWallet'
-						 class="light-blue ft14 cursor-pointer"
-						>Import Wallet</a></div>
-					<el-input
-					 v-model="data.Password"
-					 placeholder="Password"
-					 type="password"
-					 :rows="2"
-					 show-password
-					 @keyup.enter.native='importAccont'
-					></el-input>
-					<p
+					<el-form>
+						<el-form-item
+						 label="Wallet File:"
+						>
+							<el-input
+							type="textarea"
+							v-model="data.Wallet"
+							cols="30"
+							rows="10"
+							placeholder="key"
+							>
+							</el-input>
+							<div class="tr mb20 input-opeation"><a
+								@click='importWallet'
+								class="light-blue ft14 cursor-pointer cursor-click user-no-select"
+								>Import Wallet</a></div>
+						</el-form-item>
+						<el-form-item label="Password:">
+							<el-input
+							v-model="data.Password"
+							placeholder="Password"
+							type="password"
+							:rows="2"
+							show-password
+							@keyup.enter.native='importAccont'
+							></el-input>
+						</el-form-item>
+					</el-form>
+					<!-- <p
 					 class="light-blue ft14 cursor-pointer text-right mt10 mb50"
 					 @click="importWay = 1"
-					>Import the account with the private key</p>
+					>Import the account with the private key</p> -->
 				</div>
 				<div v-if="importWay ==1">
 					<el-form
@@ -45,7 +61,7 @@
 							<el-input v-model="privateKeyForm.PrivateKey"></el-input>
 							<div class="tr"><a
 								 @click='importPrivateKey'
-								 class="light-blue ft14 cursor-pointer"
+								 class="light-blue ft14 cursor-pointer user-no-select cursor-click input-opeation"
 								>Import PrivateKey</a></div>
 						</el-form-item>
 						<el-form-item
@@ -239,5 +255,70 @@ export default {
 <style lang="scss">
 #import-account {
 	margin: 0px auto;
+	.account-type {
+		width: 500px;
+		margin: 0 auto 40px;
+		display: flex;
+		justify-content: space-around;
+		li {
+			width: 120px;
+			height: 18px;
+			a {
+				color: rgba(32, 32, 32, .4);
+				position: relative;
+				cursor: pointer;
+				user-select: none;
+				&:hover {
+					opacity: 1;
+					color: #2F8FF0;
+				}
+				&:active {
+					opacity: .7;
+				}
+				&::before {
+					content: "";
+					display: block;
+					width: 40px;
+					height: 2px;
+					background: #2F8FF0;
+					position: absolute;
+					bottom: -10px;
+					left: 50%;
+					transform: translateX(-50%) scaleX(0);
+					transition: all .3s ease; 
+				}
+				&.account-select {
+					color: #2F8FF0;
+					&::before {
+						transform: translateX(-50%) scaleX(1);
+					}
+				}
+			}
+		}
+	}
+	.import-button {
+		margin-top: 80px;
+	}
+	.el-form .el-input__inner {
+		background: #EDEFF4;
+		border: 0;
+		border-radius: 2px;
+	}
+	.el-form textarea {
+		padding: 15px;
+		font-size: 14px;
+		text-align: left;
+		height: 130px;
+		background: #EDEFF4;
+		border-radius: 2px;
+		color: rgba(32, 32, 32, .7);
+		word-break: break-all;
+		border: 0;
+	}
+	.input-opeation {
+		position: absolute;
+		top: -10px;
+		right: 0;
+	}
 }
 </style>

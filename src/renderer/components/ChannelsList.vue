@@ -14,7 +14,7 @@
 			 @current-change="handleCurrentChange"
 			>
 				<el-table-column
-				 label='Channel'
+				 label='Channel(SAVE)'
 				>
 					<template slot-scope="scope">
 						<div class="bold">{{scope.row.ChannelId}}</div>
@@ -61,14 +61,21 @@
 					</template>
 				</el-table-column> -->
 				<el-table-column
-				width="80"
+				width="160"
 				 v-if="showTransfer"
 				>
 					<template slot-scope="scope">
 						<span
+						v-show="scope.row.Participant1State !== 0"
 						 class="light-blue cursor-pointer cursor-click user-no-select"
 						 @click="openTransfer(scope.row)"
 						>Transfer</span>
+						<span
+							v-show="scope.row.Participant1State !== 0"
+						 class="light-blue ml20 cursor-pointer cursor-click user-no-select"
+						 @click="openClose(scope.row)"
+						>Close</span>
+						<span class="closingWrapper" v-show="scope.row.Participant1State === 0">settle...</span>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -99,6 +106,60 @@
 				</div>
 			</div>
 		</el-dialog>
+		<el-dialog
+		 class="channel-opeation-dialog"
+		 width='550px'
+		 :close-on-click-modal='false'
+		 :visible.sync="channelToggle.channelCloseDialog"
+		 center
+		>
+			<div slot="title">
+				<h2>{{channelToggle.type === 'del' ? 'Close' : 'Open'}} Channel</h2>
+				<div class="dialog-title-border"></div>
+			</div>
+			<div class="loading-content">
+				<el-form
+				ref="channelForm"
+				:model="channelForm"
+				:rules="dialogRules"
+				>
+					<el-form-item
+					 class="theme-font-blue-bold"
+					 label="Password"
+					 prop="password"
+					>
+						<el-input
+						v-model="channelForm.password"
+						placeholder="Input password"
+						@keyup.enter.native="toPeationChannel"
+						class="channel-opeation-input"
+						type="password">
+						</el-input>
+					</el-form-item>
+					<el-form-item
+					 class="theme-font-blue-bold"
+					 label="Partner"
+					 prop="partner"
+					v-show="channelToggle.type==='add'"
+					>
+						<el-input
+						v-model="channelForm.partner"
+						class="channel-opeation-input"
+						placeholder="Input partner wallet address"
+						@keyup.enter.native="toPeationChannel">
+						</el-input>
+					</el-form-item>
+				</el-form>
+				<div slot="footer">
+					<el-button
+					 type="primary"
+					 class="primary"
+					 @click="toPeationChannel"
+					>Confirm</el-button>
+					<el-button @click="channelToggle.channelCloseDialog = false">Cancel</el-button>
+				</div>
+			</div>
+		</el-dialog>
 	</div>
 </template>
 <script>
@@ -122,6 +183,30 @@ export default {
 		return {
 			switchToggle: {
 				assetTransferDialog: false
+			},
+			channelToggle: {
+				channelDialog: false,
+				type: 'del' // add or del
+			},
+			channelForm: {
+				password: '',
+				partner: ''
+			},
+			dialogRules: {
+				password: [
+					{
+						required: true,
+						message: "Please fill password",
+						trigger: "blur"
+					}
+				],
+				partner: [
+					{
+						required: true,
+						message: "Please fill partner wallet address",
+						trigger: "blur"
+					}
+				]
 			},
 			currentRow: {},
 			filterFloat,
@@ -317,6 +402,68 @@ export default {
 		},
 		toConfirm() {
 			this.$refs["channelwallettransfer"].toTransfer();
+		},
+		openOpen() {
+			this.channelToggle = {
+				type: 'add',
+				channelCloseDialog: true
+			}
+			this.$nextTick(() => {
+				this.$refs['channelForm'].resetFields();
+			})
+		},
+		openClose(channelSelected) {
+			this.channelToggle = {
+				type: 'del',
+				channelCloseDialog: true
+			}
+			this.$nextTick(() => {
+				this.$refs['channelForm'].resetFields();
+				this.channelForm.partner = channelSelected.Address;
+			})
+		},
+		toPeationChannel() {
+			this.$refs['channelForm'].validate(valid => {
+				if(!valid) return;
+				let params = {
+					Password: this.channelForm.password,
+					Partner: this.channelForm.partner
+				}	
+				if(this.channelToggle.type === 'add') {
+					this.toChannelOpen(params);
+				} else {
+					this.toChannelClose(params);
+				}
+			})
+		},
+		toChannelOpen(params) {
+			this.$axios.post(this.$api.channelOPen, params).then(res => {
+				if(res.data.Error === 0) {
+					this.$message({
+						message: "Opeation successed",
+						type: "success"
+					});
+					this.channelToggle.channelCloseDialog = false;
+				} else {
+					this.$message.error(res.data.Desc || "Opeation Failed");
+				}
+				this.$store.dispatch('setChannelBalanceTotal');
+			});
+		},
+		toChannelClose(params) {
+			this.$axios.post(this.$api.channelClose, params).then(res => {
+				if(res.data.Error === 0) {
+					this.channelToggle.channelDialog = false;
+					this.$message({
+						message: "Opeation successed",
+						type: "success"
+					});
+					this.channelToggle.channelCloseDialog = false;
+				} else {
+					this.$message.error(res.data.Desc || "Opeation Failed");
+				}
+				this.$store.dispatch('setChannelBalanceTotal');
+			});
 		}
 	},
 	computed: {
@@ -380,6 +527,57 @@ $theme-color: #202020;
 		border-radius: 100%;
 		width: 14px;
 		height: 14px;
+	}
+}
+.channel-opeation-input {
+	&.el-input {
+		.el-input__inner {
+			background: #ebecef;
+			height: 35px;
+			line-height: 35px;
+			border-radius: 2px;
+			border: none;
+			&:focus {
+				border: none;
+			}
+		}
+	}
+}
+.closingWrapper {
+	width: 40px;
+	color: #49C269;
+	overflow: hidden;
+	white-space: nowrap;
+	display: block;
+	animation: closingAnmiation 1.5s linear infinite;
+}
+@keyframes  closingAnmiation {
+	0% {
+		width: 40px;
+	}
+	24% {
+		width: 40px;
+	}
+	25% {
+		width: 43px;
+	}
+	49% {
+		width: 43px;
+	}
+	50% {
+		width: 46px;
+	}
+	74% {
+		width: 46px;
+	}
+	75% {
+		width: 49px;
+	}
+	99% {
+		width: 49px;
+	}
+	100% {
+		width: 40px;
 	}
 }
 </style>

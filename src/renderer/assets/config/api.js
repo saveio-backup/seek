@@ -43,5 +43,7 @@ const API = {
   depositChannel: HOST + VERSION + 'channel/deposit',
   channelInitProgress: HOST+ VERSION + 'channel/init/progress',
   exportPrivateKey: HOST+ VERSION + 'account/export/privatekey',
+  channelOPen:  HOST+ VERSION + 'channel/open',
+  channelClose:  HOST+ VERSION + 'channel/close',
 }
 module.exports = API;

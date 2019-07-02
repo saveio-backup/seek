@@ -4,14 +4,15 @@
 			<div class="top-nav">
 				<!-- <div class="logo">SAVE</div> -->
 				<div class="ft14 mr10 flex column between channel-info">
-					<p class="channel-info-first">Channel {{channelBind.ChannelId || 'Not Selected'}}</p>
-					<p class="channel-info-last" v-if="channelBind.TokenAddr">{{channelBind.TokenAddr.replace(channelBind.TokenAddr.slice(5,-5),'...')}}</p>
+					<p class="channel-info-first user-no-select">Channel {{channelBind.ChannelId || 'Not Selected'}}</p>
+					<p class="channel-info-last user-no-select" :title="channelBind.TokenAddr" v-if="channelBind.TokenAddr">{{channelBind.TokenAddr.replace(channelBind.TokenAddr.slice(5,-5),'...')}}</p>
 				</div>
 				<!-- {{location.href}}  -->
 				<div class="router">
 					<router-link
 					 :to="{name:'filebox'}"
 					 active-class="active-blue"
+					 class="user-no-select"
 					 :replace="true"
 					>Filebox</router-link>
 					<!-- <router-link
@@ -20,6 +21,7 @@
 					>Discovery</router-link> -->
 					<router-link
 					 :to="{name:'transfer'}"
+					 class="user-no-select"
 					 active-class="active-blue"
 					>Transfer <span
 						 class="badge"
@@ -29,7 +31,7 @@
 				<div class="coin">
 					<div class="flex jc-end">
 					</div>
-					<span class="mr10 ft22">{{filterFloat(channelBind.BalanceFormat || 0).toLocaleString('en-US')}} SAVE</span>
+					<span class="mr10 ft22">{{filterFloat(channelBind.BalanceFormat || 0).toLocaleString('en-US')}}<span class="user-no-select"> SAVE</span></span>
 					<div class="coin-more">
 						<span
 						ref="menuButton"

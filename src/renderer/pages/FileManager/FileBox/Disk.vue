@@ -27,7 +27,7 @@
 		 class="func-nav"
 		 v-else
 		>
-			<p class='light-theme-title'>
+			<p class='light-theme-title user-no-select'>
 				Miner Control
 			</p>
 			<div class="fun-search">
@@ -441,7 +441,7 @@ export default {
 		clipText(el) {
 			clipboard.writeText(this.executedFile.Hash);
 			this.$message({
-				message: "Link Copied",
+				message: "Copied",
 				duration: 1200,
 				type: "success"
 			});
@@ -466,7 +466,7 @@ export default {
 		toClipboard(text) {
 			clipboard.writeText(text);
 			this.$message({
-				message: "Link Copied",
+				message: "Copied",
 				duration: 1200,
 				type: "success"
 			});

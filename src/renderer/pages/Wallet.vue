@@ -590,7 +590,7 @@ export default {
 		clipSaveAddress() {
 			clipboard.writeText(this.user.address);
 			this.$message({
-				message: "Link Copied",
+				message: "Copied",
 				duration: 1200,
 				type: "success"
 			});
@@ -599,7 +599,7 @@ export default {
 			const that = this;
 			clipboard.writeText(that.balanceLists[that.balanceSelected].Address);
 			that.$message({
-				message: "Link Copied",
+				message: "Copied",
 				duration: 1200,
 				type: "success"
 			});

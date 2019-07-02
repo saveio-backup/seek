@@ -39,18 +39,19 @@
 			>
 				<!-- :data="fileList" -->
 				<el-table-column
-				 width="300"
+					min-width="200"
 				 label="FileName"
 				 prop="FileName"
 				></el-table-column>
 				<el-table-column
 				 label="FileHash"
 				 prop="FileHash"
+				min-width="200"
 				></el-table-column>
 				<el-table-column
 				 label="FileSize"
 				 prop="FileSize"
-				 width='100px'
+				 width="100px"
 				>
 					<template slot-scope="scope">
 						<!-- api return 'KB' unit -->
@@ -75,6 +76,7 @@
 				<el-table-column
 				 label="Status"
 				 prop="Status"
+				 width="180px"
 				>
 					<template slot-scope="scope">
 						<div v-if="scope.row.Status === 3">
@@ -108,7 +110,7 @@
 						</div>
 					</template>
 				</el-table-column>
-				<el-table-column align="right">
+				<el-table-column align="center" width="100px">
 					<template slot-scope="scope">
 						<div class="action">
 							<!-- <span v-if="scope.row.status === 0">continue</span>

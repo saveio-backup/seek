@@ -1,17 +1,17 @@
 <template>
 	<div
-	 id="create-account "
+	 id="create-account"
 	 class="account-wrap"
 	>
 		<div class="account-box">
 			<h2
-			 class="theme-font-blue account-title"
+			 class="theme-font-blue account-title user-no-select"
 			 v-if="accountStatus === 1"
 			>Block synchronization</h2>
 			<h2
 			 class="theme-font-blue account-title"
 			 v-if="accountStatus === 0"
-			>Create Account</h2>
+			>{{step === 1?'Backup your Wallet file':step === 2?'Backup your Scrit key':step===3?'Scrit key repeat':'Create Account'}}</h2>
 			<div v-if="accountStatus === 0">
 				<el-form
 				 class="form"
@@ -47,23 +47,25 @@
 						 type="password"
 						></el-input>
 					</el-form-item>
-					<p class="grey-xs bold">Please remember this password， if you lose this password， the backup file cannot be decrypted any more</p>
+					<p class="grey-xs ft14">Please remember this password， if you lose this password， the backup file cannot be decrypted any more</p>
 					<el-button
 					 class="account-button"
 					 type='primary'
 					 @click="submitForm('form')"
-					>Next</el-button>
+					>Submit</el-button>
 				</el-form>
 				<div
 				 class="step"
 				 v-if="step===1"
 				>
-					<div class="flex between ai-center">
-						<p> Backup your Wallet file</p>
-						<el-button @click="$exportFile(validation.Wallet,'Wallet')">Save as File</el-button>
+					<div class="flex between">
+						<!-- <p> Backup your Wallet file</p> -->
+						<el-button class="primary margin-center mt20 mb20" @click="$exportFile(validation.Wallet,'Wallet')">Save as File</el-button>
 					</div>
-					<p class="mt20 mb20">This wallet file is an account file encrypted based on the private key. After re-importing, you need to enter a password to log in to the account. Although losing this file will not pose a direct threat to the account, please keep it safe.</p>
-					<el-button @click="setStep(0)">Return</el-button>
+					<p class="stop-desc ft14 mt20 mb20">This wallet file is an account file encrypted based on the private key. After re-importing, you need to enter a password to log in to the account. Although losing this file will not pose a direct threat to the account, please keep it safe.</p>
+					<p class="back-class ft14">
+						<a @click="setStep(0)">Back</a>
+					</p>
 					<el-button
 					 type="primary"
 					 @click="setStep()"
@@ -73,15 +75,18 @@
 				 class="step"
 				 v-if="step===2"
 				>
-					<p>Backup your Scrit key</p>
-					<p class="privatekey">{{validation.PrivateKey}}</p>
-					<el-button @click="clipboard.writeText(validation.PrivateKey)">Copy</el-button>
-					<el-button @click="$exportFile(validation.PrivateKey,'PrivateKey')">Save as File</el-button>
+					<!-- <p>Backup your Scrit key</p> -->
+					<p class="back-border-class">{{validation.PrivateKey}}</p>
+					<el-button class="primary" @click="clipboard.writeText(validation.PrivateKey)">Copy</el-button>
+					<el-button  class="primary" @click="$exportFile(validation.PrivateKey,'PrivateKey')">Save as File</el-button>
 					<p
-					 clsas="mt20 mb20 ft14"
+					 class="mt20 mb20 ft14"
 					 style="color:#e95464"
 					>Keep this Scrit key safe.You can always use this key to get your wallet back without any password if something happens to your browser or computer. But make sure to protect it — anyone who gets this key could steal your wallet. It’s probably safest to write it down on a piece of paper, or wherever else you keep important info.</p>
-					<el-button @click="setStep(1)">Return</el-button>
+					<!-- <el-button @click="setStep(1)">Return</el-button> -->
+					<p class="back-class ft14">
+						<a @click="setStep(1)">Back</a>
+					</p>
 					<el-button
 					 type="primary"
 					 @click="setStep()"
@@ -92,19 +97,22 @@
 				 v-if="step ===3"
 				>
 					<div class="flex between ai-center">
-						<p>Scrit key repeat</p>
-						<el-button @click="importFile">Import scrit key file</el-button>
+						<!-- <p></p> -->
+						<el-button @click="importFile" class="primary margin-center mt20 mb20">Import scrit key file</el-button>
 					</div>
 					<el-input
-					 class="mt20 mb20"
-					 type="text"
+					 class="mt20 mb20 ft14 back-border-input-class"
+					 type="textarea"
+					 :row="4"
 					 v-model="validation.confirmPrivateKey"
 					 placeholder="Please input your Scrit key"
 					></el-input>
-					<el-button @click="setStep(2)">Return</el-button>
+					<!-- <el-button @click="setStep(2)">Return</el-button> -->
+					<p class="back-class ft14">
+						<a @click="setStep(2)">Back</a>
+					</p>
 					<el-button
 					 type="primary"
-					 class="primary"
 					 @click="importAccountWithPrivatekey"
 					>Done</el-button>
 				</div>
@@ -132,7 +140,7 @@
 				 class="ft12 mt20 dark-grey bold "
 				 style="text-align:center"
 				>{{(initChannelProgress*100).toFixed(2) +'%'}} (#{{currentHeihgt}} / #{{totalHeight}})</p>
-				<p class="ft12 dark-grey bold text-center mt20">
+				<p class="ft12 dark-grey bold text-center mt20 user-no-select">
 					<span :class="{'ft30 ml10 mr10':loopFontIndex === 0}">Synchronizing</span>
 					<span :class="{'ft30 ml10 mr10':loopFontIndex === 1}">blocks</span>
 					<span :class="{'ft30 ml10 mr10':loopFontIndex === 2}">at</span>
@@ -354,14 +362,51 @@ $theme-font-blue: #040f39;
 		font-size: 16px;
 		p {
 			text-align: left;
-			&.privatekey {
+			&.back-border-class {
 				margin: 20px 0;
-				padding: 4px 8px;
+				padding: 15px;
 				font-size: 14px;
-				text-align: center;
+				text-align: left;
+				height: 130px;
+				background: #EDEFF4;
+				border-radius: 2px;
+				color: rgba(32, 32, 32, .7);
+				word-break: break-all;
 			}
 			&.el-loading-text {
 				text-align: center;
+			}
+			&.stop-desc {
+				color: rgba(32, 32, 32, .4);
+			}
+		}
+		.back-class {
+			text-align: center;
+			margin-bottom: 20px;
+			& > a {
+				color:#2F8FF0;
+				user-select: none;
+				cursor: pointer;
+				&:hover {
+					opacity: .7;
+				}
+				&:active {
+					opacity: 1;
+				}
+			}
+		}
+		.back-border-input-class {
+			textarea {
+				margin: 20px 0;
+				padding: 15px;
+				font-size: 14px;
+				text-align: left;
+				height: 130px;
+				background: #EDEFF4;
+				border-radius: 2px;
+				color: rgba(32, 32, 32, .7);
+				word-break: break-all;
+				border: 0;
 			}
 		}
 	}
@@ -408,6 +453,11 @@ $theme-font-blue: #040f39;
 				}
 			}
 		}
+	}
+	.el-form .el-input__inner {
+		background: #EDEFF4;
+		border: 0;
+		border-radius: 2px;
 	}
 }
 </style>

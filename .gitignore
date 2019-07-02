@@ -6,6 +6,7 @@ build/*
 resources/*/
 !resources/win/config.json
 coverage
+package-lock.json
 node_modules/
 npm-debug.log
 npm-debug.log.*

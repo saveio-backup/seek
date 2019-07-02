@@ -3,6 +3,7 @@
         "BaseDir": ".",
         "LogPath": "./Log",
         "NetworkId": 0,
+        "PublicIP":"",
         "PortBase": 10000,
         "LogLevel": 0,
         "LocalRpcPortOffset": 338,

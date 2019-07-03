@@ -7,6 +7,7 @@ import {
   X_POSITION,
   DEFAULT_URL
 } from './defaultOption'
+import { platform } from 'os';
 
 class dialogView {
   constructor(win) {
@@ -45,7 +46,7 @@ class dialogView {
     this.updateEvent();
     this.resize();
     this.loadDialog();
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === 'development' || process.platform === 'darwin') {
       this.browserView.webContents.openDevTools();
     }
   }

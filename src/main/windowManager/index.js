@@ -68,7 +68,7 @@ class View {
         defaultEncoding: 'utf-8'
       }
     });
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === 'development' || process.platform === 'darwin') {
       this.browserView.webContents.openDevTools();
     }
   }
@@ -318,7 +318,7 @@ export function createWindow(url) {
     }
   }
 
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === 'development' || process.platform === 'darwin') {
     mainWindow.webContents.openDevTools();
   }
 

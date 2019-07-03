@@ -288,7 +288,7 @@ export default {
 				Interval: 0, // Integrity verification cycle
 				// Times: 1, // Integrity Times
 				Privilege: 1, // Authority
-				CopyNum: 3, // Backups default 3
+				CopyNum: 2, // Backups default 2
 				// "Url": "oni://share/12nsdhu",
 				WhiteList: []
 			}

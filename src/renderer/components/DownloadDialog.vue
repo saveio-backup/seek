@@ -1,6 +1,6 @@
 <template>
 	<div id="download-dialog">
-		<h2 class="theme-font-blue ft18 bold mb10 mt10">Donload URL:</h2>
+		<h2 class="theme-font-blue ft18 bold mb10 mt10">Download URL:</h2>
 		<el-input
 		 v-model="downloadUrl"
 		 @input='toGetFileInfo'

@@ -256,6 +256,7 @@ export default {
 			verificationCycleNumber: 1, // Integrity verification cycle (default 2 month)
 			storageCycleSelected: baseKeys[3], // default Permanent
 			storageCycleNumber: 1,
+			DefaultCopyNum: '', // axios.get
 			switchToggle: {
 				loading: null,
 				whiteListInput: false,
@@ -288,7 +289,7 @@ export default {
 				Interval: 0, // Integrity verification cycle
 				// Times: 1, // Integrity Times
 				Privilege: 1, // Authority
-				CopyNum: 2, // Backups default 2
+				CopyNum: 1, // axios.get
 				// "Url": "oni://share/12nsdhu",
 				WhiteList: []
 			}
@@ -296,6 +297,7 @@ export default {
 	},
 	mounted() {
 		this.setDataInterval();
+		this.getfscontractsetting();
 	},
 	methods: {
 		advancedDataInit() {
@@ -303,7 +305,7 @@ export default {
 				Duration: 0,
 				Interval: 0,
 				Privilege: 1,
-				CopyNum: 3,
+				CopyNum: this.DefaultCopyNum,
 				WhiteList: []
 			};
 			this.verificationCycleSelected = this.baseKeys[1];
@@ -313,6 +315,14 @@ export default {
 			if (!this.encryptionToggle) {
 				this.uploadFormData.EncryptPassword = "";
 			}
+		},
+		getfscontractsetting() {
+			this.$axios.get(this.$api.getfscontractsetting).then(res => {
+				if (res.data.Error === 0) {
+					this.DefaultCopyNum = res.data.Result.DefaultCopyNum;
+					this.advancedData.CopyNum = this.DefaultCopyNum;
+				}
+			});
 		},
 		selectUpload() {
 			ipcRenderer.send("upload-file-dialog");

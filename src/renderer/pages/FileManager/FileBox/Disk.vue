@@ -94,6 +94,11 @@
 							</div>
 						</template>
 					</el-table-column>
+					<el-table-column label="Owner">
+						<template slot-scope="scope">
+							<span>{{scope.row.OwnerAddress || 'Nameless'}}</span>
+						</template>
+					</el-table-column>
 					<el-table-column label="Size">
 						<template slot-scope="scope">
 							<!-- api return 'KB' unit -->

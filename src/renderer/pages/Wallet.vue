@@ -660,6 +660,7 @@ export default {
 						.then(res => {
 							if (res.data.Error === 0) {
 								this.sendInfo.Password = "";
+								this.$refs.transferForm.resetFields();
 								this.switchToggle.sendDialog = false;
 								this.$message({
 									message: "Successful transfer",
@@ -694,6 +695,18 @@ export default {
 			const asset = this.balanceLists[this.balanceSelected].Symbol || "";
 			const limit = 10;
 			const height = this.$store.state.Wallet.BlockHeight;
+			let skipTxCountFromblock = 0;
+			if (height) {
+				let txRecords = this.txRecords;
+				for (let i = txRecords.length - 1; i >= 0; i--) {
+					const element = txRecords[i];
+					if (element.BlockHeight == height) {
+						skipTxCountFromblock += 1;
+					} else {
+						break;
+					}
+				}
+			}
 			this.$axios
 				.get(
 					this.$api.transactions +
@@ -703,7 +716,9 @@ export default {
 						"&limit=" +
 						limit +
 						"&height=" +
-						height,
+						height +
+						"&skipTxCountFromblock=" +
+						skipTxCountFromblock,
 					{
 						cancelToken: new this.$axios.CancelToken(c => {
 							this.cancelReachBottomTxRequest = c;
@@ -726,10 +741,6 @@ export default {
 							}
 						}
 						this.$store.commit("SET_TX_RECORDS", this.txRecords.concat(result));
-						console.log("transferIn:");
-						console.log(transferIn);
-						conosle.log("transferOut");
-						console.log(transferOut);
 						this.$store.commit(
 							"SET_TRANSFER_IN",
 							this.transferIn.concat(transferIn)

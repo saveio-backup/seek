@@ -39,7 +39,8 @@ const mutations = {
 const timer = {
   COUNT_INTERVAL: 5000,
   txRecordsTimer: null,
-  balanceListsTimer: null
+  balanceListsTimer: null,
+  heart: null
 }
 const actions = {
   setTxRecords({
@@ -58,6 +59,7 @@ const actions = {
     }, timer.COUNT_INTERVAL);
   },
   cancelTxRequest() {
+    clearTimeout(timer.heart);
     txTransSourceCancel('request cancel!');
   }
 }
@@ -79,12 +81,13 @@ function requestBalanceLists(commit) {
 }
 
 function requestTransActions(commit, config) {
+  let skipTxCountFromblock = 0;
   let {
     asset = '',
       limit = state.txRecords.length >= 30 ? state.txRecords.length : 30,
       height = ''
   } = config || {};
-  axios.get(api.transactions + window.localStorage.Address + '/0?asset=' + asset + '&limit=' + limit + '&height=' + height, {
+  axios.get(api.transactions + window.localStorage.Address + '/0?asset=' + asset + '&limit=' + limit + '&height=' + height + '&skipTxCountFromblock=' + skipTxCountFromblock || '', {
       cancelToken: new CancelToken(c => {
         txTransSourceCancel = c;
       })
@@ -106,7 +109,7 @@ function requestTransActions(commit, config) {
         commit('SET_TX_RECORDS', result);
         commit('SET_TRANSFER_IN', transferIn);
         commit('SET_TRANSFER_OUT', transferOut);
-        setTimeout(() => {
+        timer.heart = setTimeout(() => {
           this.dispatch('setTxRecords', {
             asset
           }); // heart loading

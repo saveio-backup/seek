@@ -2,17 +2,17 @@
 	<div id="upload">
 		<div class="content">
 			<div class="upload-header">
-				<h1>Upload File</h1>
-				<span
-				 class="active-blue ft14 user-no-select cursor-pointer cursor-click"
-				 @click="switchToggle.advanced = true"
-				 v-show="!switchToggle.advanced"
-				>Advanced</span>
-				<span
-				 class="active-blue ft14 user-no-select cursor-pointer cursor-click"
-				 @click="hiddenAdvanced"
+				<h1 class="user-no-select">Upload File</h1>
+				<el-button
+					class="primary small"
+					@click="switchToggle.advanced = true"
+					v-show="!switchToggle.advanced"
+				><i class="ofont ofont-gaoji"></i> Advanced</el-button>
+				<el-button
+					class="primary small"
+					@click="hiddenAdvanced"
 				 v-show="switchToggle.advanced"
-				>Simple</span>
+				><i class="ofont ofont-jiandan"></i> Simple</el-button>
 			</div>
 			<div class="upload-params">
 				<el-form
@@ -215,12 +215,12 @@
 					<p class="price-balance">balance: {{mainCount}} SAVE</p>
 				</div>
 				<div class="flex jc-center submit-foot">
+					<el-button @click="toEmptyUpload">Cancel</el-button>
 					<el-button
 					 type="primary"
 					 class="primary"
 					 @click="toUploadFile"
 					>Upload</el-button>
-					<el-button @click="toEmptyUpload">Cancel</el-button>
 				</div>
 			</div>
 		</div>

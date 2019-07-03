@@ -464,11 +464,11 @@ $tabs-height: 62px;
 			color: #202020;
 			
 			.nav-button {
-				width: 16px;
-				height: 16px;
+				width: 20px;
+				height: 20px;
 				background: #A1A1A1;
-				line-height: 16px;
-				font-size: 12px;
+				line-height: 20px;
+				font-size: 14px;
 				text-align: center;
 				color: white;
 				user-select: none;

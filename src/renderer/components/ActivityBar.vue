@@ -142,17 +142,17 @@ export default {
 					}
 				},
 				{
+					label: "Export Private Key(WIF)",
+					// visible: new Boolean(user.name),
+					click() {
+						that.exportPrivateKey();				
+					}
+				},
+				{
 					label: "Log Out",
 					// visible: new Boolean(user.name),
 					click() {
 						that.logout();						
-					}
-				},
-				{
-					label: "Export Private Key",
-					// visible: new Boolean(user.name),
-					click() {
-						that.exportPrivateKey();				
 					}
 				}
 			];

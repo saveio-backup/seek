@@ -1,17 +1,19 @@
 <template>
 	<div id="income">
 		<div class="header">
-			<p class="light-theme-title mb10 user-no-select">Income Detail</p>
+			<p class="light-theme-title mb10 user-no-select">Profit Detail</p>
 			<el-date-picker
 			 class="common-el-input"
 			 v-model="dateRange"
 			 type="daterange"
+			 @change="dateChanageGetIncom"
 			 unlink-panels
 			 range-separator="to"
 			 start-placeholder="start"
 			 end-placeholder="end"
 			>
 			</el-date-picker>
+			<div class="total-income ft14">Total Profit: <span>{{filterFloat(result.TotalIncomeFormat).toLocaleString('en-US') || 0}} SAVE</span></div>
 		</div>
 
 		<el-table
@@ -27,9 +29,14 @@
 			 prop="Name"
 			></el-table-column>
 			<el-table-column
-			 label="Income"
-			 prop="ProfitFormat"
-			></el-table-column>
+			 label="Profit(SAVE)"
+			>
+				<template slot-scope="scope">
+					<div>
+						{{scope.row.ProfitFormat}}
+					</div>
+				</template>
+			</el-table-column>
 			<el-table-column label="Time">
 				<template slot-scope="scope">
 					<div>
@@ -42,11 +49,13 @@
 	</div>
 </template>
 <script>
+import { filterFloat } from "../../assets/config/util";
 export default {
 	data() {
 		const now = Math.floor(new Date().getTime());
 		const start = now - 2592000000;
 		return {
+			filterFloat,
 			dateRange: [start, now],
 			mockData: [
 				{
@@ -141,6 +150,11 @@ export default {
 				}
 			});
 		},
+		dateChanageGetIncom() {
+			this.loadSwitch = true;
+			this.result.Incomes = [];
+			this.getIncom();
+		},
 		getIncom() {
 			if (!this.loadSwitch) return;
 			this.loadSwitch = false;
@@ -161,6 +175,8 @@ export default {
 						const result = res.data.Result;
 						this.result.TotalIncome = result.TotalIncome;
 						this.result.TotalIncomeFormat = result.TotalIncomeFormat;
+						// this.result.TotalIncomeFormat = 20124.123;
+						// this.result.Incomes = this.mockData;
 						if (result.Incomes.length > 0) {
 							this.result.Incomes = this.result.Incomes.concat(result.Incomes);
 						} else {
@@ -186,13 +202,26 @@ export default {
 	& > .header {
 		background: #F9F9FB;
 		padding: 20px 20px;
-		border-bottom: 1px solid rgba(32, 32, 32, .1);		
+		border-bottom: 1px solid rgba(32, 32, 32, .1);
+		position: relative;		
 	}
 	.incomeTable {
 		height: 100%;
 	}
 	.el-table {
 		padding-top: 20px;
+	}
+	.total-income {
+		color: rgba(32, 32, 32, .4);
+		font-size: 14px;
+		position: absolute;
+		bottom: 15px;
+		right: 70px;
+		span {
+			color: rgba(32,32,32,1);
+			font-size: 18px;
+			margin-left: 10px;
+		}
 	}
 }
 </style>

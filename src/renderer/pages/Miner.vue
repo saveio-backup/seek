@@ -10,7 +10,7 @@
 					<router-link
 					 :class="{'link-hover': fileType == 1}"
 					 :to="{name:'income', query:{type:1}}"
-					><span>Income</span></router-link>
+					><span>Profit</span></router-link>
 					<!-- <i class="el-icon-tickets"></i>  -->
 				</div>
 			</div>

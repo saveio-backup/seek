@@ -56,12 +56,13 @@
 					></el-table-column>
 
 					<el-table-column
-					 label="Filename"
+					 label="File Name"
 					 width="500"
 					 prop="Name"
+					 class-name="rowName"
 					>
 						<template slot-scope="scope">
-							<div class="flex between rowName">
+							<div class="flex between">
 								<span>{{ scope.row.Name }}</span>
 								<!-- @click="executedFile = scope.row" -->
 								<div class="opera">
@@ -111,7 +112,7 @@
 					>
 						<template slot-scope="scope">
 							<div class="light-blue">
-								{{parseFloat(scope.row.Profit / 1000000000).toFixed(9)}} Save
+								{{parseFloat(scope.row.Profit / 1000000000).toFixed(9)}} SAVE
 							</div>
 						</template>
 					</el-table-column>
@@ -642,6 +643,11 @@ $theme-font-blue: #040f39;
 		height: 80px;
 		background: $light-grey;
 		border-bottom: 1px solid rgba(32, 32, 32, 0.1);
+		.fun-button {
+			button {
+				width: 125px;
+			}
+		}
 		.bt {
 			width: 100px;
 			height: 33px;
@@ -729,7 +735,9 @@ $theme-font-blue: #040f39;
 				}
 				&:hover {
 					.opera {
-						display: block;
+						display: flex;
+						justify-content: center;
+						align-items: center;
 					}
 				}
 			}

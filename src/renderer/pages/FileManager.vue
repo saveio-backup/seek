@@ -3,8 +3,8 @@
 		<div class="content">
 			<div class="top-nav">
 				<!-- <div class="logo">SAVE</div> -->
-				<div class="ft14 mr10 flex column between channel-info">
-					<p class="channel-info-first user-no-select">Channel {{channelBind.ChannelId || 'Not Selected'}}</p>
+				<div class="ft14 mr10 flex column between channel-info" :class="{'channel-not-have': !channelBind.ChannelId}">
+					<p class="channel-info-first user-no-select">{{channelBind.ChannelId || 'Not Selected'}}</p>
 					<p class="channel-info-last user-no-select" :title="channelBind.TokenAddr" v-if="channelBind.TokenAddr">{{channelBind.TokenAddr.replace(channelBind.TokenAddr.slice(5,-5),'...')}}</p>
 				</div>
 				<!-- {{location.href}}  -->
@@ -94,12 +94,12 @@
 					></channel-list>
 				</div>
 				<div slot="footer">
+					<el-button @click="toCancelChange">Cancel</el-button>
 					<el-button
 					 type="primary"
 					 class="primary"
 					 @click="toApplyChange"
 					>Apply</el-button>
-					<el-button @click="toCancelChange">Cancel</el-button>
 				</div>
 			</el-dialog>
 			<keep-alive>
@@ -285,7 +285,7 @@ $grey: #ccc;
 			position: relative;
 			z-index: 9;
 			box-shadow: 0px 2px 4px 0px rgba(231, 231, 235, 0.7);
-			padding: 10px 30px 10px 20px;
+			padding: 10px 30px 10px 30px;
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
@@ -293,6 +293,28 @@ $grey: #ccc;
 				font-weight: 400;
 				color: #202020;
 				width: 190px;
+				position:relative;
+				&::before {
+					width: 3px;
+					height: 36px;
+					display: block;
+					background:linear-gradient(180deg,rgba(23,171,249,1) 0%,rgba(53,137,238,1) 100%);
+					border-radius:2px;
+					position: absolute;
+					content: '';
+					left: -10px;
+				}
+				.channel-info-first {
+					color: #2F8FF0;
+				}
+				&.channel-not-have {
+					.channel-info-first {
+						color: rgba(32, 32, 32, .7);
+					}
+					&::before {
+						display: none;
+					}
+				}
 				.channel-info-last{
 					opacity: .4;
 					margin-top: 2px;

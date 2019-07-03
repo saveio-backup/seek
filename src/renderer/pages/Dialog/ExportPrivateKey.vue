@@ -8,7 +8,7 @@
 		 center
 		>
 			<div slot="title">
-				<h2>Export Private Key</h2>
+				<h2>Export Private Key(WIF)</h2>
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content">
@@ -32,12 +32,12 @@
 				</el-form>
 			</div>
 			<div slot="footer">
+				<el-button @click="closeDialog">Cancel</el-button>
 				<el-button
 				 type="primary"
          class="primary"
 				 @click="exportPrivateKey"
 				>Export</el-button>
-				<el-button @click="closeDialog">Cancel</el-button>
 			</div>
 		</el-dialog>
 	</div>

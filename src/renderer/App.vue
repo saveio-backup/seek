@@ -1,13 +1,20 @@
 <template>
-	<div id="app">
+	<div id="app" class="{'haveBg':routerName === 'Dialog'}">
 		<router-view></router-view>
 	</div>
 </template>
 
 <script>
 export default {
-	mounted() {
-		// this.$store.dispatch("getChannelInitProgress");
+	data() {
+		return {
+
+		}
+	},
+	computed: {
+		routerName() {
+			return this.$route.name;
+		}
 	},
 	name: "browser"
 };
@@ -18,7 +25,9 @@ $light-grey: #F9F9FB;
 $tabs-height: 70px;
 #app {
 	height: 100vh;
-	background: #F9F9FB;
+	&.haveBg {
+		background: #F9F9FB;
+	}
 }
 
 .common-main {

@@ -11,7 +11,7 @@
 			<h2
 			 class="theme-font-blue account-title"
 			 v-if="accountStatus === 0"
-			>{{step === 1?'Backup your Wallet file':step === 2?'Backup your Scrit key':step===3?'Scrit key repeat':'Create Account'}}</h2>
+			>{{step === 1?'Backup your Keystore File':step === 2?'Backup your private key(WIF)':step===3?'Private key(WIF) repeat':'Create Account'}}</h2>
 			<div v-if="accountStatus === 0">
 				<el-form
 				 class="form"
@@ -59,10 +59,10 @@
 				 v-if="step===1"
 				>
 					<div class="flex between">
-						<!-- <p> Backup your Wallet file</p> -->
+						<!-- <p> Backup your </p> -->
 						<el-button class="primary margin-center mt20 mb20" @click="$exportFile(validation.Wallet,'Wallet')">Save as File</el-button>
 					</div>
-					<p class="stop-desc ft14 mt20 mb20">This wallet file is an account file encrypted based on the private key. After re-importing, you need to enter a password to log in to the account. Although losing this file will not pose a direct threat to the account, please keep it safe.</p>
+					<p class="stop-desc ft14 mt20 mb20">This Keystore File is an account file encrypted based on the private key(WIF). After re-importing, you need to enter a password to log in to the account. Although losing this file will not pose a direct threat to the account, please keep it safe.</p>
 					<p class="back-class ft14">
 						<a @click="setStep(0)">Back</a>
 					</p>
@@ -75,14 +75,14 @@
 				 class="step"
 				 v-if="step===2"
 				>
-					<!-- <p>Backup your Scrit key</p> -->
+					<!-- <p>Backup your Private Key(WIF)</p> -->
 					<p class="back-border-class">{{validation.PrivateKey}}</p>
 					<el-button class="primary" @click="clipboard.writeText(validation.PrivateKey)">Copy</el-button>
 					<el-button  class="primary" @click="$exportFile(validation.PrivateKey,'PrivateKey')">Save as File</el-button>
 					<p
 					 class="mt20 mb20 ft14"
 					 style="color:#e95464"
-					>Keep this Scrit key safe.You can always use this key to get your wallet back without any password if something happens to your browser or computer. But make sure to protect it — anyone who gets this key could steal your wallet. It’s probably safest to write it down on a piece of paper, or wherever else you keep important info.</p>
+					>Keep this Private Key(WIF) safe.You can always use this key to get your wallet back without any password if something happens to your browser or computer. But make sure to protect it — anyone who gets this key could steal your wallet. It’s probably safest to write it down on a piece of paper, or wherever else you keep important info.</p>
 					<!-- <el-button @click="setStep(1)">Return</el-button> -->
 					<p class="back-class ft14">
 						<a @click="setStep(1)">Back</a>
@@ -98,14 +98,14 @@
 				>
 					<div class="flex between ai-center">
 						<!-- <p></p> -->
-						<el-button @click="importFile" class="primary margin-center mt20 mb20">Import scrit key file</el-button>
+						<el-button @click="importFile" class="primary margin-center mt20 mb20">Import private key(WIF) file</el-button>
 					</div>
 					<el-input
 					 class="mt20 mb20 ft14 back-border-input-class"
 					 type="textarea"
 					 :row="4"
 					 v-model="validation.confirmPrivateKey"
-					 placeholder="Please input your Scrit key"
+					 placeholder="Please input your private key(WIF)"
 					></el-input>
 					<!-- <el-button @click="setStep(2)">Return</el-button> -->
 					<p class="back-class ft14">
@@ -268,7 +268,7 @@ export default {
 			}, 700);
 		},
 		setStep(num) {
-			if (!num) {
+			if (!num && num != 0) {
 				this.step += 1;
 			} else {
 				this.step = num;
@@ -330,7 +330,7 @@ export default {
 						}
 					} else if (data.Error === 40002) {
 						this.$message.error(
-							"Create Failed. Private key verification failed."
+							"Create Failed. Private key(WIF) verification failed."
 						);
 						this.switchToggle.loading.close();
 					} else {

@@ -30,18 +30,18 @@
 									<el-button
 									class="seek-btn"
 									@click="exportPrivateKey"
-									><i class="user-name-btn-icon ofont ofont-20daochu"></i> <span class="user-name-btn-content">Private key</span></el-button>
+									><i class="user-name-btn-icon ofont ofont-20daochu"></i> <span class="user-name-btn-content">Private Key(WIF)</span></el-button>
 									<el-button
 									class="seek-btn"
 									@click="$exportWallet"
-									><i class="user-name-btn-icon ofont ofont-20daochu"></i> <span class="user-name-btn-content">Wallet file</span></el-button>
+									><i class="user-name-btn-icon ofont ofont-20daochu"></i> <span class="user-name-btn-content">Keystore File</span></el-button>
 								</div>
 							</div>
 						</div>
 					</div>
 					<!-- pause !!! -->
 					<div class="user-revenue">
-						<p class="grey-xs bold ft14">Your revenue:</p>
+						<p class="grey-xs bold ft14">Your profit:</p>
 						<div class="flex between ai-center">
 							<span class="theme-bold ft36">{{revenueFormat.toLocaleString('en-US')}}</span>
 							<span class="bold ft16 unit">SAVE</span>
@@ -170,8 +170,8 @@ export default {
 			const that = this;
 			const channelDom = document.getElementById('channel-view');
 			this.chartsChannelDom = echarts.init(channelDom);
-			const currentChannelData = this.currentChannelData.length === 0 ? [{value: 0,name: 'No Data'}] : this.currentChannelData;
-			const color = this.currentChannelData.length === 0 ? ['#D4DDEB']:['#E15C91', '#D3E84E','#FF607B','#3B81EB','#7DA1CB'];
+			const currentChannelData = this.currentChannelData.length === 0 ? [{value: 0,name: 'No Channel'}] : this.currentChannelData;
+			const color = this.currentChannelData.length === 0 ? ['#D4DDEB']:['#3E6695', '#3B81EB','#FF607B','#D3E84E','#E15C91'];
 			this.chartsChannelDom.setOption({
 				series: [
 					{
@@ -371,7 +371,7 @@ export default {
 		currentChannelData(newVal,oldVal) {
 			let obj = {};
 			if(newVal.length != oldVal.length) {
-				const color = newVal.length === 0 ? ['#D4DDEB']:['#E15C91', '#D3E84E','#FF607B','#3B81EB','#7DA1CB']
+				const color = newVal.length === 0 ? ['#D4DDEB']:['#3E6695', '#3B81EB','#FF607B','#D3E84E','#E15C91'];
 				this.chartsChannelDom.setOption({
 					series : {
 						data: newVal,
@@ -464,11 +464,11 @@ export default {
 				});
 			}
 			arr.map((channel) => {
-				channel['value'] = channel['BalanceFormat'];
+				channel['value'] = filterFloat(channel['BalanceFormat']).toLocaleString('en-US');
 				channel['name'] = channel['ChannelId'];
 				return channel;
 			})
-			return arr;
+			return arr;	
 		}
 	}
 };

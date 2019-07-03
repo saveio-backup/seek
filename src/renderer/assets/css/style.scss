@@ -169,7 +169,7 @@ select {
   border-radius: 16px;
   border: 1px solid rgba(47, 143, 240, 1);
   color: #2F8FF0;
-  padding: 0 15px;
+  padding: 0 25px;
   min-width: 80px;
 
   &.primary {
@@ -193,6 +193,11 @@ select {
     }
   }
 
+  &.small {
+    padding: 0 10px;
+    height: 22px;
+  }
+
   &.seek-btn {
     // width:120px;
     height: 32px;
@@ -201,7 +206,8 @@ select {
     line-height: 32px;
     color: #2F8FF0;
     font-size: 12px;
-    padding: 0 15px;
+    padding: 0 12px;
+    margin: 0;
 
     &:focus,
     &:hover {

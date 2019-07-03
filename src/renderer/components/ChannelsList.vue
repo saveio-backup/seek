@@ -32,7 +32,7 @@
 				>
 				<template slot-scope="scope">
 					<div class="grey-xs ft14">
-						{{scope.row.TokenAddr}}
+						{{scope.row.Address}}
 					</div>
 				</template>
 				</el-table-column>
@@ -66,15 +66,23 @@
 				>
 					<template slot-scope="scope">
 						<span
-						v-show="scope.row.Participant1State !== 0"
-						 class="light-blue cursor-pointer cursor-click user-no-select"
-						 @click="openTransfer(scope.row)"
-						>Transfer</span>
+							v-show="scope.row.Participant1State !== 0"
+							class="light-blue cursor-pointer cursor-click user-no-select"
+							@click="openTransfer(scope.row)"
+							title="transfer"
+						>
+						<!-- Transfer -->
+						<i class="ofont ofont-huazhuan"></i>
+						</span>
 						<span
 							v-show="scope.row.Participant1State !== 0"
-						 class="light-blue ml20 cursor-pointer cursor-click user-no-select"
-						 @click="openClose(scope.row)"
-						>Close</span>
+							class="light-blue ml20 cursor-pointer cursor-click user-no-select"
+							@click="openClose(scope.row)"
+							title="close channel"
+						>
+						<i class="ofont ofont-close"></i>
+						<!-- Close -->
+						</span>
 						<span class="closingWrapper" v-show="scope.row.Participant1State === 0">settle...</span>
 					</template>
 				</el-table-column>
@@ -125,38 +133,38 @@
 				>
 					<el-form-item
 					 class="theme-font-blue-bold"
-					 label="Password"
-					 prop="password"
-					>
-						<el-input
-						v-model="channelForm.password"
-						placeholder="Input password"
-						@keyup.enter.native="toPeationChannel"
-						class="channel-opeation-input"
-						type="password">
-						</el-input>
-					</el-form-item>
-					<el-form-item
-					 class="theme-font-blue-bold"
-					 label="Partner"
+					 label="DNS Wallet Address"
 					 prop="partner"
 					v-show="channelToggle.type==='add'"
 					>
 						<el-input
 						v-model="channelForm.partner"
 						class="channel-opeation-input"
-						placeholder="Input partner wallet address"
+						placeholder="Please input partner dns wallet address"
 						@keyup.enter.native="toPeationChannel">
+						</el-input>
+					</el-form-item>
+					<el-form-item
+					 class="theme-font-blue-bold"
+					 label="Password"
+					 prop="password"
+					>
+						<el-input
+						v-model="channelForm.password"
+						placeholder="Please input password"
+						@keyup.enter.native="toPeationChannel"
+						class="channel-opeation-input"
+						type="password">
 						</el-input>
 					</el-form-item>
 				</el-form>
 				<div slot="footer">
+					<el-button @click="channelToggle.channelCloseDialog = false">Cancel</el-button>
 					<el-button
 					 type="primary"
 					 class="primary"
 					 @click="toPeationChannel"
 					>Confirm</el-button>
-					<el-button @click="channelToggle.channelCloseDialog = false">Cancel</el-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -186,6 +194,7 @@ export default {
 			},
 			channelToggle: {
 				channelDialog: false,
+				loading: null,
 				type: 'del' // add or del
 			},
 			channelForm: {
@@ -406,7 +415,8 @@ export default {
 		openOpen() {
 			this.channelToggle = {
 				type: 'add',
-				channelCloseDialog: true
+				channelCloseDialog: true,
+				loading: null
 			}
 			this.$nextTick(() => {
 				this.$refs['channelForm'].resetFields();
@@ -415,7 +425,8 @@ export default {
 		openClose(channelSelected) {
 			this.channelToggle = {
 				type: 'del',
-				channelCloseDialog: true
+				channelCloseDialog: true,
+				loading: null
 			}
 			this.$nextTick(() => {
 				this.$refs['channelForm'].resetFields();
@@ -425,14 +436,19 @@ export default {
 		toPeationChannel() {
 			this.$refs['channelForm'].validate(valid => {
 				if(!valid) return;
+				this.channelToggle.loading = this.$loading({
+					lock: true,
+					text: "Processing..",
+					target: ".loading-content"
+				});
 				let params = {
 					Password: this.channelForm.password,
 					Partner: this.channelForm.partner
 				}	
 				if(this.channelToggle.type === 'add') {
-					this.toChannelOpen(params);
+					this.toChannelOpen(params)
 				} else {
-					this.toChannelClose(params);
+					this.toChannelClose(params)
 				}
 			})
 		},
@@ -448,6 +464,9 @@ export default {
 					this.$message.error(res.data.Desc || "Opeation Failed");
 				}
 				this.$store.dispatch('setChannelBalanceTotal');
+			}).finally(() => {
+				this.channelToggle.loading.close();
+				this.channelToggle.loading = null;
 			});
 		},
 		toChannelClose(params) {
@@ -463,6 +482,9 @@ export default {
 					this.$message.error(res.data.Desc || "Opeation Failed");
 				}
 				this.$store.dispatch('setChannelBalanceTotal');
+			}).finally(() => {
+				this.channelToggle.loading.close();
+				this.channelToggle.loading = null;
 			});
 		}
 	},

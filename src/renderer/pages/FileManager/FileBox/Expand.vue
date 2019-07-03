@@ -62,14 +62,14 @@
 					<div class="adjust">
 						<h3 class="theme-font-blue transparent bold ft12">Space Size</h3>
 						<div class="adjust-item">
-							<p class="adjust-title theme-font-blue bold">Current:</p>
+							<p class="adjust-title theme-font-blue bold ft14">Current:</p>
 							<div class="adjust-info">
 								<p class="theme-font-blue ft14 mr20">{{util.bytesToSize( (space.Used + space.Remain)*1024)}}</p>
 								<p class="grey-xs bold ml20">{{util.bytesToSize(space.Used *1024)}} / {{util.bytesToSize( (space.Used + space.Remain)*1024)}}</p>
 							</div>
 						</div>
 						<div class="adjust-item">
-							<div class="adjust-title theme-font-blue bold">Adjust to:</div>
+							<div class="adjust-title theme-font-blue bold ft14">Adjust to:</div>
 							<div class="adjust-info">
 								<el-input-number
 								 class="number"
@@ -101,13 +101,13 @@
 					<div class="adjust">
 						<h3 class="theme-font-blue transparent bold ft12">Expiry Date</h3>
 						<div class="adjust-item">
-							<p class="adjust-title theme-font-blue bold">Current:</p>
+							<p class="adjust-title theme-font-blue bold ft14">Current:</p>
 							<div class="adjust-info">
 								<p class="theme-font-blue bold">{{expired_old}}</p>
 							</div>
 						</div>
 						<div class="adjust-item">
-							<div class="adjust-title theme-font-blue bold">Adjust to:</div>
+							<div class="adjust-title theme-font-blue bold ft14">Adjust to:</div>
 							<div class="adjust-info">
 								<el-date-picker
 								 v-model="expired"
@@ -120,17 +120,30 @@
 							</div>
 						</div>
 					</div>
-					<div
-					 v-show='cost.TransferType'
+					 <!-- v-show='cost.TransferType' -->
+					<!-- <div
 					 class="mb20"
-					>
-						<div v-if="cost.TransferType == 1">
-							Payment about {{parseFloat(cost.FeeFormat).toFixed(3)}} Save
+					> -->
+					<div class="adjust">
+						<div class="adjust-item">
+							<p class="adjust-title theme-font-blue bold ft14">{{cost.TransferType === 2?'Pledge Refund':'Pledge Payment'}}:</p>
+							<div class="adjust-info">
+								<div v-if="cost.TransferType !== 2">
+									{{cost.FeeFormat?parseFloat(cost.FeeFormat).toFixed(3):0}} SAVE
+								</div>
+								<div v-if="cost.TransferType === 2">
+									{{parseFloat(cost.FeeFormat).toFixed(3)}} SAVE
+								</div>
+							</div>
 						</div>
-						<div v-if="cost.TransferType ==2">
-							Refund about {{parseFloat(cost.FeeFormat).toFixed(3)}} Save
+						<div class="adjust-item">
+							<div class="adjust-title theme-font-blue bold ft14"></div>
+							<div class="adjust-info">
+								<span class="grey mr10">Available</span> {{mainCount?parseFloat(mainCount).toFixed(3):0}} SAVE
+							</div>
 						</div>
 					</div>
+					<!-- </div> -->
 					<span
 					 slot="footer"
 					 class="dialog-footer"
@@ -351,6 +364,9 @@ export default {
 			} else {
 				return 0;
 			}
+		},
+		mainCount: function() {
+			return this.$store.state.Wallet.mainCount;
 		}
 	},
 	methods: {
@@ -615,8 +631,10 @@ $grey: #ccc;
 		justify-content: space-between;
 		margin: 15px 0;
 		.adjust-title {
-			font-size: 16px;
-			width: 150px;
+			font-size: 14px;
+			width: 140px;
+			padding-right:10px;
+			text-align:right;
 			font-weight: bold;
 		}
 		.adjust-info {

@@ -139,7 +139,7 @@
 								 :class="item.Type ==1 ? 'ofont-transfer_out':'ofont-transfer_in'"
 								></i>
 								<div class="addr-info">
-									<p class='from-or-to'>{{item.Type ==1 ? item.To.replace(item.To.slice(5,-5),'...'): item.From.replace(item.From.slice(5,-5),'...')}}</p>
+									<p class='from-or-to' :title="item.Type ==1?item.To:item.From">{{item.Type ==1 ? item.To.replace(item.To.slice(5,-5),'...'): item.From.replace(item.From.slice(5,-5),'...')}}</p>
 									<p class="tx-date grey-xs">{{date.formatTimeByTimestamp(item.Timestamp * 1000)}}</p>
 								</div>
 							</div>
@@ -156,16 +156,16 @@
 						 class="tx-li-item-detail"
 						 v-show="index === txDetailIndex"
 						>
-							<div class="txid grey-xs">ID: {{item.Txid || ''}}</div>
+							<div class="txid grey-xs user-no-select">ID: {{item.Txid || ''}} <i class="ofont ofont-fuzhi tx-copy" @click="clipText(item.Txid || '')" title="click to copy"></i></div>
 							<div class="towards theme-bold">
-								<p class='from'>{{item.From}}</p>
+								<p class='from user-no-select'>{{item.From}} <i class="ofont ofont-fuzhi tx-copy" title="click to copy" @click="clipText(item.From)"></i></p>
 								<i class="ofont ofont-transfer_right arrow"></i>
-								<p class="to">{{item.To}}</p>
+								<p class="to user-no-select">{{item.To}} <i class="ofont ofont-fuzhi tx-copy" title="click to copy"  @click="clipText(item.To)"></i></p>
 							</div>
 							<div class="flex between bottom-info">
-								<div class="minerfee"><span class="theme-font-color">Miner fee</span> <span class="theme-font-blue bold">{{item.FeeFormat}}</span></div>
+								<div class="minerfee"><span class="theme-font-color user-no-select">Miner fee</span> <span class="theme-font-blue bold">{{item.FeeFormat}}</span></div>
 								<div class="flex1"></div>
-								<div class="blockheight"><span class="theme-bold">Block</span> {{item.BlockHeight}}</div>
+								<div class="blockheight"><span class="theme-bold user-no-select">Block</span> {{item.BlockHeight}}</div>
 							</div>
 						</div>
 					</li>
@@ -194,7 +194,7 @@
 						<p class="mr10  theme-font-blue-transparent ft14">{{balanceLists.length>0?balanceLists[balanceSelected].Address : 'Text Addr'}}</p>
 						<i
 						 class="ofont ofont-fuzhi addr_btn"
-						 @click="clipText('.addr_btn')"
+						 @click="clipText(balanceLists[balanceSelected].Address)"
 						></i>
 						<!-- :aria-label='balanceLists[balanceSelected].Address' -->
 					</div>
@@ -306,8 +306,9 @@
 							<p class="theme-font-color ft12">{{balanceLists[balanceSelected].Address}}</p>
 						</div>
 						<el-switch
-						 disabled
-						 :value='true'
+							disabled
+							:value='true'
+							active-color="#2F8FF0"
 						></el-switch>
 					</li>
 				</ul>
@@ -595,10 +596,9 @@ export default {
 				type: "success"
 			});
 		},
-		clipText(el) {
-			const that = this;
-			clipboard.writeText(that.balanceLists[that.balanceSelected].Address);
-			that.$message({
+		clipText(content) {
+			clipboard.writeText(content);
+			this.$message({
 				message: "Copied",
 				duration: 1200,
 				type: "success"
@@ -967,7 +967,7 @@ $light-grey: #f7f7f7;
 					display: flex;
 					justify-content: space-between;
 					font-size: 16px;
-					padding: 15px 20px;
+					padding: 15px 0px;
 					& > div {
 						cursor: pointer;
 					}
@@ -1056,7 +1056,10 @@ $light-grey: #f7f7f7;
 							flex: 1;
 							font-size: 24px;
 							color: #202020;
-							text-align: center;
+							width: 100%;
+							max-width: 400px;
+							margin: 0 auto;
+							// text-align: center;
 						}
 						.item-more {
 							display: flex;
@@ -1094,6 +1097,16 @@ $light-grey: #f7f7f7;
 								width: 400px;
 							}
 						}
+						.tx-copy {
+							position: relative;
+							top: 2px;
+							&:hover {
+								opacity: .7; 	
+							}
+							&:active {
+								opacity: 1;
+							}
+						}
 					}
 				}
 			}
@@ -1106,9 +1119,9 @@ $light-grey: #f7f7f7;
 	.asset-list {
 		padding-top: 20px;
 		display: flex;
-		.el-switch.is-checked .el-switch__core {
-			background-color: $theme-font-blue;
-		}
+		// .el-switch.is-checked .el-switch__core {
+		// 	background-color: $theme-font-blue;
+		// }
 	}
 }
 .done {

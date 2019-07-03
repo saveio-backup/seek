@@ -4,20 +4,20 @@
 	 class="account-wrap"
 	>
 		<div class="account-box">
-			<h2 class="account-title">Restore key repeat</h2>
+			<h2 class="account-title">Import Account</h2>
 			<ul class="account-type ft14">
 				<li>
-					<a  :class="{'account-select':importWay == 0}" @click="importWay = 0">Recovery Key</a>
+					<a  :class="{'account-select':importWay == 0}" @click="importWay = 0">Wallet File</a>
 				</li>
 				<li>
-					<a :class="{'account-select':importWay == 1}" @click="importWay = 1">Secret Key</a>
+					<a :class="{'account-select':importWay == 1}" @click="importWay = 1">Private Key</a>
 				</li>
 			</ul>
 			<div class="el-form loading textarea">
 				<div v-if="importWay == 0">
 					<el-form>
 						<el-form-item
-						 label="Wallet File:"
+						 label="Keystore File:"
 						>
 							<el-input
 							type="textarea"
@@ -46,7 +46,7 @@
 					<!-- <p
 					 class="light-blue ft14 cursor-pointer text-right mt10 mb50"
 					 @click="importWay = 1"
-					>Import the account with the private key</p> -->
+					>Import the account with the private key(WIF)</p> -->
 				</div>
 				<div v-if="importWay ==1">
 					<el-form

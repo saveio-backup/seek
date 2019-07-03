@@ -13,15 +13,15 @@
 			</div>
 			<div class="loading-content">
 				<div class="mb20">
-					<p class="mt20 text-center">Please ensure that the private key file is properly stored before exiting.</p>
+					<p class="mt20 text-center">Please ensure that the private key(WIF) file is properly stored before exiting.</p>
 				</div>
 				<div slot="footer">
+					<el-button @click="closeDialog">Cancel</el-button>
 					<el-button
 					 type="primary"
            class="primary"
 					 @click="logout"
 					>Logout</el-button>
-					<el-button @click="closeDialog">Cancel</el-button>
 				</div>
 			</div>
 		</el-dialog>

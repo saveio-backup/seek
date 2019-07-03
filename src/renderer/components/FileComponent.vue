@@ -8,7 +8,7 @@
 				<p
 				 class="grey-xs bold"
 				 v-if="fileList.length>0"
-				>{{transferTypeConfig[transferType]}} progress</p>
+				>{{transferTypeConfig[transferType]}} Progress</p>
 				<p
 				 class="grey-xs bold user-no-select"
 				 v-else
@@ -40,8 +40,8 @@
 				<!-- :data="fileList" -->
 				<el-table-column
 					min-width="200"
-				 label="FileName"
-				 prop="FileName"
+				 label="File Name"
+				 prop="File Name"
 				></el-table-column>
 				<el-table-column
 				 label="FileHash"

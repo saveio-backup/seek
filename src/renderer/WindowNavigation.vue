@@ -51,7 +51,7 @@
 					<div class="flex flex1">
 						<div class="window-navbar-buttons">
 							<div
-							class="nav-button"
+							class="nav-button flex ai-center jc-center"
 							@click="remoteOpenComponent('Home')"
 							>
 								<i v-if="!user.name" class="ofont ofont-user user user-first"></i>

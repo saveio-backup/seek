@@ -94,9 +94,9 @@
 							</div>
 						</template>
 					</el-table-column>
-					<el-table-column label="Owner">
+					<el-table-column label="Owner" v-if="page ==='miner'">
 						<template slot-scope="scope">
-							<span>{{scope.row.OwnerAddress || 'Nameless'}}</span>
+							<span class="td-grey">{{scope.row.OwnerAddress || 'Nameless'}}</span>
 						</template>
 					</el-table-column>
 					<el-table-column label="Size">

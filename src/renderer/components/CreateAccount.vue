@@ -237,6 +237,16 @@ export default {
 			}
 		}
 	},
+	watch:{
+		accountStatus: function(value){
+			console.log('acountStatus changed!!!')
+			console.log(value);
+			if(value === 1){
+				console.log('set Title');
+				document.title = 'Block synchronization';
+			}
+		}
+	},
 	methods: {
 		getAccountStatus() {
 			this.$axios

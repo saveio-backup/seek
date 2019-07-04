@@ -41,7 +41,7 @@
 				<el-table-column
 					min-width="200"
 				 label="File Name"
-				 prop="File Name"
+				 prop="FileName"
 				></el-table-column>
 				<el-table-column
 				 label="FileHash"

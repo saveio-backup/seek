@@ -143,7 +143,7 @@
 									<p class="tx-date grey-xs">{{date.formatTimeByTimestamp(item.Timestamp * 1000)}}</p>
 								</div>
 							</div>
-							<div class="item-amount">{{item.Type ==1 ? '-':'+'}} {{item.AmountFormat}} {{item.Asset}}</div>
+							<div class="item-amount">{{item.Type ==1 ? '-':'+'}} {{parseFloat(parseFloat(item.AmountFormat).toFixed(9))}} {{item.Asset.toUpperCase()}}</div>
 							<div
 							 class="item-more"
 							 v-if="item.BlockHeight>0"

@@ -139,7 +139,7 @@
 						<div class="adjust-item">
 							<div class="adjust-title theme-font-blue bold ft14"></div>
 							<div class="adjust-info">
-								<span class="grey mr10">Available</span> {{mainCount?parseFloat(mainCount).toFixed(3):0}} SAVE
+								<span class="grey-xs bold mr10">Available {{mainCount?parseFloat(mainCount).toFixed(3):0}} SAVE</span> 
 							</div>
 						</div>
 					</div>

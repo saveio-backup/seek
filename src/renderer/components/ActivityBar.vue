@@ -135,7 +135,7 @@ export default {
 			const that = this;
 			const customControlMenuItems = [
 				{
-					label: "Export Wallet",
+					label: "Export Keystore File",
 					// visible: new Boolean(user.name),
 					click() {
 						that.$exportWallet();		

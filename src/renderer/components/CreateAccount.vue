@@ -158,7 +158,9 @@
 import { clipboard, ipcRenderer } from "electron";
 export default {
 	mounted() {
-		document.title = "CreateAccount";
+		document.title = localStorage.Address
+      ? "CreateAccount"
+      : "Block synchronization";
 		this.loopFont();
 		this.$store.dispatch("getChannelInitProgress");
 		this.getAccountStatus();
@@ -240,14 +242,14 @@ export default {
 		}
 	},
 	watch:{
-		accountStatus: function(value){
-			console.log('acountStatus changed!!!')
-			console.log(value);
-			if(value === 1){
-				console.log('set Title');
-				document.title = 'Block synchronization';
-			}
-		}
+		accountStatus: function(value) {
+      console.log("acountStatus changed!!!");
+      console.log(value);
+      if (value === 1) {
+        console.log("set Title");
+        document.title = "Block synchronization";
+      }
+    }
 	},
 	methods: {
 		clip(content) {

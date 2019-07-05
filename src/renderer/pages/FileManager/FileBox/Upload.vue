@@ -212,7 +212,7 @@
 				<div class="flex price-div">
 					<div class="price-div-bg">SA</div>
 					<p class="price-gas-fee">Gas fee: {{uploadPrice}} SAVE</p>
-					<p class="price-balance">balance: {{mainCount}} SAVE</p>
+					<p class="price-balance">Available: {{mainCount}} SAVE</p>
 				</div>
 				<div class="flex jc-center submit-foot">
 					<el-button @click="toEmptyUpload">Cancel</el-button>

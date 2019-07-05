@@ -56,83 +56,88 @@
 					 width="30"
 					></el-table-column>
 
-					<el-table-column
-					 label="File Name"
-					 width="500"
-					 prop="Name"
-					 class-name="rowName"
-					>
-						<template slot-scope="scope">
-							<div class="flex between">
-								<span>{{ scope.row.Name }}</span>
-								<!-- @click="executedFile = scope.row" -->
-								<div class="opera">
-									<i
-									 @click.stop="shareFile(scope.row)"
-									 title="Share"
-									 class="el-icon-share"
-									></i>
-									<i
-									 v-if="page === 'filebox'"
-									 class="el-icon-download"
-									 title="Download"
-									 @click.stop="downloadFile(scope.row)"
-									></i>
-									<i
-									 v-if="page === 'filebox'"
-									 title="Delete"
-									 @click.stop="deleteFile(scope.row)"
-									 class="el-icon-delete"
-									></i>
-									<i
-									 v-if="page === 'miner' && scope.row.Path"
-									 @click="showInFolder(scope.row.Path)"
-									 class="ofont ofont-file"
-									 title="Open Folder"
-									></i>
-									<!-- @click.stop="switchToggle.deleteDialog = true" -->
-								</div>
-							</div>
-						</template>
-					</el-table-column>
-					<el-table-column label="Owner" v-if="page ==='miner'">
-						<template slot-scope="scope">
-							<span class="td-grey">{{scope.row.OwnerAddress || 'Nameless'}}</span>
-						</template>
-					</el-table-column>
-					<el-table-column label="Size">
-						<template slot-scope="scope">
-							<!-- api return 'KB' unit -->
-							<span class="td-grey">
-								{{util.bytesToSize(scope.row.Size * 1024)}}
-							</span>
-						</template>
-					</el-table-column>
-					<!-- <el-table-column
+          <el-table-column
+            label="File Name"
+            width="500"
+            prop="Name"
+            class-name="rowName"
+          >
+            <template slot-scope="scope">
+              <div class="flex between">
+                <span>{{ scope.row.Name }}</span>
+                <!-- @click="executedFile = scope.row" -->
+                <div class="opera">
+                  <i
+                    v-if="scope.row.Privilege != 0"
+                    @click.stop="shareFile(scope.row)"
+                    title="Share"
+                    class="el-icon-share"
+                  ></i>
+                  <i
+                    v-if="page === 'filebox'"
+                    class="el-icon-download"
+                    title="Download"
+                    @click.stop="downloadFile(scope.row)"
+                  ></i>
+                  <i
+                    v-if="page === 'filebox'"
+                    title="Delete"
+                    @click.stop="deleteFile(scope.row)"
+                    class="el-icon-delete"
+                  ></i>
+                  <i
+                    v-if="page === 'miner' && scope.row.Path"
+                    @click="showInFolder(scope.row.Path)"
+                    class="ofont ofont-file"
+                    title="Open Folder"
+                  ></i>
+                  <!-- @click.stop="switchToggle.deleteDialog = true" -->
+                </div>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column label ="Owner" v-if="page ==='miner'">
+            <template slot-scope="scope">
+              <span class="td-grey">{{scope.row.OwnerAddress || 'Nameless'}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="Size">
+            <template slot-scope="scope">
+              <!-- api return 'KB' unit -->
+              <span class="td-grey">
+                {{util.bytesToSize(scope.row.Size * 1024)}}
+              </span>
+            </template>
+          </el-table-column>
+          <!-- <el-table-column
 					 label="Download statistics"
 					 prop="DownloadCount"
 					></el-table-column>-->
-					<el-table-column
-					 v-if="page ==='miner'"
-					 label="Profit"
-					>
-						<template slot-scope="scope">
-							<div class="light-blue">
-								{{parseFloat(scope.row.Profit / 1000000000).toFixed(9)}} SAVE
-							</div>
-						</template>
-					</el-table-column>
-					<el-table-column v-if="page ==='miner'" label="Contributions" prop="DownloadCount">
+          <el-table-column
+            v-if="page ==='miner'"
+            label="Profit"
+          >
+            <template slot-scope="scope">
+              <div class="light-blue">
+                {{parseFloat(scope.row.Profit / 1000000000).toFixed(9)}} SAVE
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            v-if="page ==='miner'"
+            label="Contributions"
+            prop="DownloadCount"
+          >
 
-					</el-table-column>
-					<el-table-column label="Date">
-						<template slot-scope="scope">
-							<div class="td-grey">
-								{{date.formatTime(new Date( (scope.row.DownloadAt||scope.row.UpdatedAt) * 1000))}}
-							</div>
-						</template>
-					</el-table-column>
-					<!-- <el-table-column
+          </el-table-column>
+          <el-table-column label="Date">
+            <template slot-scope="scope">
+              <div class="td-grey">
+                {{date.formatTime(new Date( (scope.row.DownloadAt||scope.row.UpdatedAt) * 1000))}}
+              </div>
+            </template>
+          </el-table-column>
+          <!-- <el-table-column
 					 label="Last Share"
 					 v-if="page ==='miner'"
 					>
@@ -666,54 +671,54 @@ $light-grey: #f9f9fb;
 $theme-color: #1b1e2f;
 $theme-font-blue: #040f39;
 #disk {
-	.func-nav {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		padding: 0 30px 0 14px;
-		height: 80px;
-		background: $light-grey;
-		border-bottom: 1px solid rgba(32, 32, 32, 0.1);
-		.fun-button {
-			button {
-				width: 125px;
-			}
-		}
-		.bt {
-			width: 100px;
-			height: 33px;
-			padding: 0px;
-			border-color: $theme-color;
-			border-radius: 2px;
-			background: none;
-			box-shadow: 0px 0px 4px 0px rgba(0, 122, 255, 0.3);
-			border-radius: 16px;
-			border: 1px solid rgba(47, 143, 240, 1);
-			color: #2f8ff0;
+  .func-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px 0 14px;
+    height: 80px;
+    background: $light-grey;
+    border-bottom: 1px solid rgba(32, 32, 32, 0.1);
+    .fun-button {
+      button {
+        width: 125px;
+      }
+    }
+    .bt {
+      width: 100px;
+      height: 33px;
+      padding: 0px;
+      border-color: $theme-color;
+      border-radius: 2px;
+      background: none;
+      box-shadow: 0px 0px 4px 0px rgba(0, 122, 255, 0.3);
+      border-radius: 16px;
+      border: 1px solid rgba(47, 143, 240, 1);
+      color: #2f8ff0;
 
-			&:hover {
-				opacity: 0.7;
-			}
+      &:hover {
+        opacity: 0.7;
+      }
 
-			&:active {
-				opacity: 1;
-			}
+      &:active {
+        opacity: 1;
+      }
 
-			&.bt-upload {
-				color: #fff;
-				background: $light-blue;
-				border: none;
-				background: linear-gradient(
-					90deg,
-					rgba(19, 175, 250, 1) 0%,
-					rgba(62, 126, 235, 1) 100%
-				);
-				box-shadow: 0px 4px 6px 0px rgba(111, 139, 173, 0.21);
-				border-radius: 16px;
-			}
-		}
-		.fun-search {
-			width: 240px;
+      &.bt-upload {
+        color: #fff;
+        background: $light-blue;
+        border: none;
+        background: linear-gradient(
+          90deg,
+          rgba(19, 175, 250, 1) 0%,
+          rgba(62, 126, 235, 1) 100%
+        );
+        box-shadow: 0px 4px 6px 0px rgba(111, 139, 173, 0.21);
+        border-radius: 16px;
+      }
+    }
+    .fun-search {
+      width: 240px;
 
 			.el-input__inner {
 				height: 33px;

@@ -31,8 +31,9 @@ class dialogView {
     this.browserWindow.addBrowserView(this.browserView);
   }
   addBrowserView() {
-    this.resize();
     this.browserWindow.addBrowserView(this.browserView);
+    this.resize();
+    this.browserWindow.addBrowserView(this.browserView); // mac bug
   }
   removeBrowserView() {
     console.log('ready delete')

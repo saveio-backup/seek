@@ -46,5 +46,8 @@ const API = {
   exportPrivateKey: HOST + VERSION + 'account/export/privatekey',
   channelOPen: HOST + VERSION + 'channel/open',
   channelClose: HOST + VERSION + 'channel/close',
+  uploadAgain: HOST + VERSION + 'channel/close',
+  uploadcontinue: HOST + VERSION + 'channel/close',
+  uploadPause: HOST + VERSION + 'channel/close',
 }
 module.exports = API;

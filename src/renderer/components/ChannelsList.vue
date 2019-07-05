@@ -14,14 +14,14 @@
 			 @current-change="handleCurrentChange"
 			>
 				<el-table-column
-				 label='Channel(SAVE)'
+				 label='Channel'
 				 :min-with="120"
 				>
 					<template slot-scope="scope">
 						<div class="bold">{{scope.row.ChannelId}}</div>
 					</template>
 				</el-table-column>
-				<el-table-column label='Balance'>
+				<el-table-column label='Balance(SAVE)'>
 					<template slot-scope="scope">
 						<div class="grey-xs ft14">
 							{{filterFloat(scope.row.BalanceFormat).toLocaleString('en-US')}}
@@ -29,7 +29,7 @@
 					</template>
 				</el-table-column>
 				<el-table-column
-				 label='Addr'
+				 label='Address'
 				>
 				<template slot-scope="scope">
 					<div class="grey-xs ft14">

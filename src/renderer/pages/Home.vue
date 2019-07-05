@@ -76,7 +76,8 @@
 						 class="save-logo-image  user-no-select"
 						> -->
 						<div class="save-log-desc user-no-select">
-							Seeker
+							<!-- Seeker -->
+							<img src="./../assets/images/home-seeker.png" alt="" srcset="">
 						</div>
 					</div>
 					<div class="tologin">
@@ -532,13 +533,16 @@ $input-color: rgba(203, 203, 203, 1);
 
 			.account-box-sub {
 				width: 60%;
-				height: 70%;
-				max-width: 700px;
-				margin-left: auto;
-				margin-right: auto;
+				// height: 70%;
+				height: 350px;
+				max-width: 750px;
+				margin: 0 auto;
+				// margin-left: auto;
+				// margin-right: auto;
 				.save-logo-wrap {
 					position: relative;
-					top: 20%;
+					// top: 20%;
+					top: 0;
 					& > .save-logo-image {
 						width: 111px;
 						height: 122px;

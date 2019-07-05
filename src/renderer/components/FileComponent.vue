@@ -41,8 +41,19 @@
         <el-table-column
           min-width="200"
           label="File Name"
-          prop="FileName"
-        ></el-table-column>
+          class-name="rowName"
+        >
+          <template slot-scope="scope">
+						<div class="flex between">
+							<span>{{scope.row.FileName}}</span>
+							<div class="opera">
+								<i class="ofont ofont-zhongxinshangchuan" title="upload again" v-show="scope.row.Status === 4"  @click="uploadAgain(scope.row)"></i>
+								<i class="ofont ofont-jixu" title="continue to upload" v-show="scope.row.Status === 0" @click="uploadcontinue(scope.row)"></i>
+								<i class="ofont ofont-zanting" title="pause to upload" v-show="scope.row.Status === 1 || scope.row.Status === 2" @click="uploadPause(scope.row)"></i>
+							</div>
+						</div>
+					</template>
+        </el-table-column>
         <el-table-column
           label="File Hash"
           prop="FileHash"
@@ -208,308 +219,384 @@ import util from "../assets/config/util";
 import downloadDialog from "./DownloadDialog.vue";
 import { shell } from "electron";
 export default {
-  props: {
-    transferType: {
-      required: true,
-      type: Number // 0 upload 1 download
-    }
-  },
-  components: {
-    downloadDialog
-  },
-  data() {
-    return {
-      util,
-      switchToggle: {
-        loading: null,
-        newTaskDialog: false,
-        transferItemDialog: false,
-        deleteDialog: false,
-        decryptDialog: false
-      },
-      TransferConfig: [
-        "completeTransferList",
-        "uploadTransferList",
-        "downloadTransferList"
-      ],
-      transferItem: {},
-      transferTypeConfig: ["Completed", "Upload", "Download"],
-      fileSelected: {
-        Path: "",
-        Password: ""
-      },
-      executedFile: {}, // a file be opera
-      mockFileList: [
-        {
-          FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
-          FileName: "hahat.txt",
-          Status: 2,
-          IsUploadAction: false,
-          Type: 2,
-          Current: 500,
-          FileSize: 1536,
-          DownloadCount: 0,
-          ExpiredAt: 1555051356,
-          UpdatedAt: 1555051356,
-          Profit: 0,
-          Privilege: 1
-        },
-        {
-          FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
-          FileName: "hahat.txt",
-          Current: 500,
-          FileSize: 1536,
-          DownloadCount: 0,
-          ExpiredAt: 1555051356,
-          UpdatedAt: 0,
-          Profit: 0,
-          Privilege: 1
-        },
-        {
-          FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
-          FileName: "hahat.txt",
-          Current: 500,
-          FileSize: 1536,
-          DownloadCount: 0,
-          ExpiredAt: 1555051356,
-          UpdatedAt: 0,
-          Profit: 0,
-          Privilege: 1
-        },
-        {
-          FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
-          FileName: "hahat.txt",
-          Current: 500,
-          FileSize: 1536,
-          DownloadCount: 0,
-          ExpiredAt: 1555051356,
-          UpdatedAt: 0,
-          Profit: 0,
-          Privilege: 1
-        },
-        {
-          FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
-          FileName: "hahat.txt",
-          Current: 500,
-          FileSize: 1536,
-          DownloadCount: 0,
-          ExpiredAt: 1555051356,
-          UpdatedAt: 0,
-          Profit: 0,
-          Privilege: 1
-        },
-        {
-          FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
-          FileName: "hahat.txt",
-          Current: 500,
-          FileSize: 1536,
-          DownloadCount: 0,
-          ExpiredAt: 1555051356,
-          UpdatedAt: 0,
-          Profit: 0,
-          Privilege: 1
-        },
-        {
-          FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
-          FileName: "hahat.txt",
-          Current: 500,
-          FileSize: 1536,
-          DownloadCount: 0,
-          ExpiredAt: 1555051356,
-          UpdatedAt: 0,
-          Profit: 0,
-          Privilege: 1
-        },
-        {
-          FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
-          FileName: "hahat.txt",
-          Current: 500,
-          FileSize: 1536,
-          DownloadCount: 0,
-          ExpiredAt: 1555051356,
-          UpdatedAt: 0,
-          Profit: 0,
-          Privilege: 1
-        },
-        {
-          FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
-          FileName: "hahat.txt",
-          Current: 500,
-          FileSize: 1536,
-          DownloadCount: 0,
-          ExpiredAt: 1555051356,
-          UpdatedAt: 0,
-          Profit: 0,
-          Privilege: 1
-        },
-        {
-          FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
-          FileName: "hahat.txt",
-          Current: 500,
-          FileSize: 1536,
-          DownloadCount: 0,
-          ExpiredAt: 1555051356,
-          UpdatedAt: 0,
-          Profit: 0,
-          Privilege: 1
-        },
-        {
-          FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
-          FileName: "hahat.txt",
-          Current: 500,
-          FileSize: 1536,
-          DownloadCount: 0,
-          ExpiredAt: 1555051356,
-          UpdatedAt: 0,
-          Profit: 0,
-          Privilege: 1
-        }
-      ]
-    };
-  },
-  computed: {
-    totalProgress: function() {
-      let progress = 0;
-      this.fileList.map(file => {
-        progress += file.Progress;
-      });
-      return parseFloat((progress / this.fileList.length).toFixed(2)) || 0;
-    },
-    fileList: function() {
-      return this.$store.state.Transfer[this.TransferConfig[this.transferType]];
-    }
-  },
-  methods: {
-    hideTaskDialog() {
-      this.switchToggle.newTaskDialog = false;
-    },
-    showInFolder(path) {
-      shell.showItemInFolder(path);
-    },
-    setFileSelected(file) {
-      this.fileSelected.Path = file.Path;
-      this.switchToggle.decryptDialog = true;
-    },
-    deleteFile(file) {
-      this.executedFile = file;
-      this.switchToggle.deleteDialog = true;
-    },
-    toDeleteFile(hash) {
-      this.switchToggle.deleteDialog = false;
-      this.$axios.post(this.$api.delete, { Hash: hash }).then(res => {
-        if (res.data.Error === 0) {
-          this.$message({
-            message: "Delete Completed",
-            type: "Success"
-          });
-        }
-      });
-    },
-    toDecrypt() {
-      if (this.switchToggle.loading) return;
-      this.switchToggle.loading = this.$loading({
-        lock: true,
-        text: "Processing..",
-        target: ".loading-content"
-      });
-      this.$axios
-        .post(this.$api.decrypt, this.fileSelected)
-        .then(res => {
-          if (res.data.Error === 0) {
-            this.$message({
-              message: "Decryption successed",
-              type: "success"
-            });
-            this.fileList.Password = "";
-            this.fileList.Path = "";
-            this.switchToggle.decryptDialog = false;
-          } else if (res.data.Erro === 50015) {
-            this.$message({
-              message: "Wrong Password",
-              type: "error"
-            });
-          } else {
-            this.$message.error("Decription failed.");
-          }
-        })
-        .catch(err => {
-          console.log(err);
-          this.$message.error("Wrong");
-        })
-        .finally(() => {
-          this.switchToggle.loading.close();
-          this.switchToggle.loading = null;
-        });
-    }
-  }
+	props: {
+		transferType: {
+			required: true,
+			type: Number // 0 upload 1 download
+		}
+	},
+	components: {
+		downloadDialog
+	},
+	data() {
+		return {
+			util,
+			switchToggle: {
+				loading: null,
+				newTaskDialog: false,
+				transferItemDialog: false,
+				deleteDialog: false,
+				decryptDialog: false
+			},
+			TransferConfig: [
+				"completeTransferList",
+				"uploadTransferList",
+				"downloadTransferList"
+			],
+			transferItem: {},
+			transferTypeConfig: ["Completed", "Upload", "Download"],
+			fileSelected: {
+				Path: "",
+				Password: ""
+			},
+			executedFile: {}, // a file be opera
+			mockFileList: [
+				{
+					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
+					FileName: "hahat.txt",
+					Status: 2,
+					IsUploadAction: false,
+					Type: 2,
+					Current: 500,
+					FileSize: 1536,
+					DownloadCount: 0,
+					ExpiredAt: 1555051356,
+					UpdatedAt: 0,
+					Profit: 0,
+					Privilege: 1
+				},
+				{
+					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
+					FileName: "hahat.txt",
+					Current: 500,
+					FileSize: 1536,
+					Status: 1,
+					DownloadCount: 0,
+					ExpiredAt: 1555051356,
+					UpdatedAt: 0,
+					Profit: 0,
+					Privilege: 1
+				},
+				{
+					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
+					FileName: "hahat.txt",
+					Current: 500,
+					Status: 3,
+					FileSize: 1536,
+					DownloadCount: 0,
+					ExpiredAt: 1555051356,
+					UpdatedAt: 0,
+					Profit: 0,
+					Privilege: 1
+				},
+				{
+					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
+					FileName: "hahat.txt",
+					Current: 500,
+					FileSize: 1536,
+					Status: 4,
+					DownloadCount: 0,
+					ErrMsg: "this file error",
+					ExpiredAt: 1555051356,
+					UpdatedAt: 0,
+					Profit: 0,
+					Privilege: 1
+				},
+				{
+					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
+					FileName: "hahat.txt",
+					Current: 500,
+					FileSize: 1536,
+					DownloadCount: 0,
+					Status: 0,
+					ExpiredAt: 1555051356,
+					UpdatedAt: 0,
+					Profit: 0,
+					Privilege: 1
+				},
+				{
+					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
+					FileName: "hahat.txt",
+					Current: 500,
+					FileSize: 1536,
+					DownloadCount: 0,
+					ExpiredAt: 1555051356,
+					UpdatedAt: 0,
+					Profit: 0,
+					Privilege: 1
+				},
+				{
+					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
+					FileName: "hahat.txt",
+					Current: 500,
+					FileSize: 1536,
+					DownloadCount: 0,
+					ExpiredAt: 1555051356,
+					UpdatedAt: 0,
+					Profit: 0,
+					Privilege: 1
+				},
+				{
+					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
+					FileName: "hahat.txt",
+					Current: 500,
+					FileSize: 1536,
+					DownloadCount: 0,
+					ExpiredAt: 1555051356,
+					UpdatedAt: 0,
+					Profit: 0,
+					Privilege: 1
+				},
+				{
+					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
+					FileName: "hahat.txt",
+					Current: 500,
+					FileSize: 1536,
+					DownloadCount: 0,
+					ExpiredAt: 1555051356,
+					UpdatedAt: 0,
+					Profit: 0,
+					Privilege: 1
+				},
+				{
+					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
+					FileName: "hahat.txt",
+					Current: 500,
+					FileSize: 1536,
+					DownloadCount: 0,
+					ExpiredAt: 1555051356,
+					UpdatedAt: 0,
+					Profit: 0,
+					Privilege: 1
+				},
+				{
+					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
+					FileName: "hahat.txt",
+					Current: 500,
+					FileSize: 1536,
+					DownloadCount: 0,
+					ExpiredAt: 1555051356,
+					UpdatedAt: 0,
+					Profit: 0,
+					Privilege: 1
+				}
+			]
+		};
+	},
+	computed: {
+		totalProgress: function() {
+			let progress = 0;
+			this.fileList.map(file => {
+				progress += file.Progress;
+			});
+			return parseFloat((progress / this.fileList.length).toFixed(2)) || 0;
+		},
+		fileList: function() {
+			return this.$store.state.Transfer[this.TransferConfig[this.transferType]];
+		}
+	},
+	methods: {
+		uploadAgain(row) {
+			this.$axios.post(this.$api.uploadAgain).then(res => {
+				if (res.data.Error === 0) {
+					this.$message({
+						message: "Opeation Success",
+						type: "Success"
+					});
+				} else {
+					this.$message.error(res.data.Desc || "Opeation failed.");
+				}
+			});
+		},
+		uploadcontinue(row) {
+			this.$axios.post(this.$api.uploadcontinue).then(res => {
+				if (res.data.Error === 0) {
+					this.$message({
+						message: "Opeation Success",
+						type: "Success"
+					});
+				} else {
+					this.$message.error(res.data.Desc || "Opeation failed.");
+				}
+			});
+		},
+		uploadPause(row) {
+			this.$axios.post(this.$api.uploadPause).then(res => {
+				if (res.data.Error === 0) {
+					this.$message({
+						message: "Opeation Success",
+						type: "Success"
+					});
+				} else {
+					this.$message.error(res.data.Desc || "Opeation failed.");
+				}
+			});
+		},
+		hideTaskDialog() {
+			this.switchToggle.newTaskDialog = false;
+		},
+		showInFolder(path) {
+			shell.showItemInFolder(path);
+		},
+		setFileSelected(file) {
+			this.fileSelected.Path = file.Path;
+			this.switchToggle.decryptDialog = true;
+		},
+		deleteFile(file) {
+			this.executedFile = file;
+			this.switchToggle.deleteDialog = true;
+		},
+		toDeleteFile(hash) {
+			this.switchToggle.deleteDialog = false;
+			this.$axios.post(this.$api.delete, { Hash: hash }).then(res => {
+				if (res.data.Error === 0) {
+					this.$message({
+						message: "Delete Completed",
+						type: "Success"
+					});
+				}
+			});
+		},
+		toDecrypt() {
+			if (this.switchToggle.loading) return;
+			this.switchToggle.loading = this.$loading({
+				lock: true,
+				text: "Processing..",
+				target: ".loading-content"
+			});
+			this.$axios
+				.post(this.$api.decrypt, this.fileSelected)
+				.then(res => {
+					if (res.data.Error === 0) {
+						this.$message({
+							message: "Decryption successed",
+							type: "success"
+						});
+						this.fileList.Password = "";
+						this.fileList.Path = "";
+						this.switchToggle.decryptDialog = false;
+					} else if (res.data.Erro === 50015) {
+						this.$message({
+							message: "Wrong Password",
+							type: "error"
+						});
+					} else {
+						this.$message.error("Decription failed.");
+					}
+				})
+				.catch(err => {
+					console.log(err);
+					this.$message.error("Wrong");
+				})
+				.finally(() => {
+					this.switchToggle.loading.close();
+					this.switchToggle.loading = null;
+				});
+		}
+	}
 };
 </script>
 <style lang="scss">
 $theme-font-blue: #040f39;
 $brand-blue: #409eff;
+$light-blue: #65a6ff;
 $sucess: #67c23a;
 $danger: #f56c6c;
 $light-grey: #f9f9fb;
 .file-component {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  .el-progress__text {
-    display: inline-block !important;
-  }
-  .top-progress {
-    display: flex;
-    height: 80px;
-    padding: 0 20px;
-    background: $light-grey;
-    align-items: center;
-    .progress {
-      flex: 1;
-    }
-  }
-  .file-list {
-    height: calc(100% - 80px);
-    .el-table {
-      color: $theme-font-blue;
-      font-weight: bold;
-      thead th {
-        background: #f9f9fb;
-        color: #1b1e2f;
-        // font-weight: bold;
-      }
-    }
-    .file-progress {
-      &.progressAnimate {
-        .el-progress-bar__outer {
-          height: 16px;
-          background-size: 12px 12px;
-          background-image: linear-gradient(
-            45deg,
-            rgba(255, 255, 255, 0.4) 25%,
-            transparent 25%,
-            transparent 50%,
-            rgba(255, 255, 255, 0.4) 50%,
-            rgba(255, 255, 255, 0.4) 75%,
-            transparent 75%,
-            transparent
-          );
-          animation: progress-bar-stripes 1s linear infinite;
-        }
-      }
-      @keyframes progress-bar-stripes {
-        from {
-          background-position: -1rem 0;
-        }
-        to {
-          background-position: 0 0;
-        }
-      }
-    }
-  }
-  .action > span {
-    margin-right: 5px;
-    font-size: 18px;
-    cursor: pointer;
-  }
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	.el-progress__text {
+		display: inline-block !important;
+	}
+	.top-progress {
+		display: flex;
+		height: 80px;
+		padding: 0 20px;
+		background: $light-grey;
+		align-items: center;
+		.progress {
+			flex: 1;
+		}
+	}
+	.file-list {
+		height: calc(100% - 80px);
+		.el-table {
+			color: $theme-font-blue;
+			font-weight: bold;
+			thead th {
+				background: #f9f9fb;
+				color: #1b1e2f;
+				// font-weight: bold;
+			}
+			.rowName {
+				.opera {
+					display: none;
+					color: rgba(32, 32, 32, 0.4);
+					font-weight: bold;
+					.ofont {
+						margin: 0px 4px;
+						font-size: 18px;
+						cursor: pointer;
+						&.ofont-zhongxinshangchuan {
+							font-size: 14px;
+						}
+						&.ofont-jixu {
+							font-size: 15px;
+						}
+						&.ofont-zanting {
+							font-size: 13px;
+						}
+						&:hover {
+							color: $light-blue;
+						}
+						&:active {
+							opacity: 0.7;
+						}
+					}
+				}
+				&:hover {
+					.opera {
+						display: flex;
+						justify-content: center;
+						align-items: center;
+					}
+				}
+			}
+		}
+		.file-progress {
+			&.progressAnimate {
+				.el-progress-bar__outer {
+					height: 16px;
+					background-size: 12px 12px;
+					background-image: linear-gradient(
+						45deg,
+						rgba(255, 255, 255, 0.4) 25%,
+						transparent 25%,
+						transparent 50%,
+						rgba(255, 255, 255, 0.4) 50%,
+						rgba(255, 255, 255, 0.4) 75%,
+						transparent 75%,
+						transparent
+					);
+					animation: progress-bar-stripes 1s linear infinite;
+				}
+			}
+			@keyframes progress-bar-stripes {
+				from {
+					background-position: -1rem 0;
+				}
+				to {
+					background-position: 0 0;
+				}
+			}
+		}
+	}
+	.action > span {
+		margin-right: 5px;
+		font-size: 18px;
+		cursor: pointer;
+	}
 }
 </style>

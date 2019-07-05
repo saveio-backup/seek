@@ -76,51 +76,60 @@ select {
 .asset-icon-lg {
   width: 40px;
   height: 40px;
-
 }
 
 .el-dialog {
-  border-radius: 1px;
-
-  .el-dialog__header h2 {
-    font-size: 24px;
-    // font-weight: bold;
-    color: $theme-font-blue;
-    opacity: 0.7;
-  }
+  border-radius: 5px;
 
   .el-dialog__header {
+    padding-top: 18px;
+    user-select: none;
+
     &.dialog-header {
       padding: 0px 0px 10px 0;
     }
-  }
 
-  .el-dialog__header {
-    padding-top: 15px;
+    h2 {
+      font-size: 24px;
+      color: #202020;
+    }
 
     .el-dialog__title {
       color: #9B9FB0;
       font-weight: bold;
     }
+
+    .dialog-title-border {
+      height: 1px;
+      width: 100%;
+      background: #040F39;
+      opacity: 0.1;
+      margin-top: 18px;
+    }
+
+    .el-dialog__close {
+      color: rgba(4, 15, 57, .4);
+      font-size: 24px;
+
+      &:hover {
+        color: #409EFF;
+      }
+
+      &:active {
+        opacity: .7;
+      }
+    }
+  }
+  .el-dialog__body {
+    padding-top : 0px;
+  }
+  &.el-dialog--center {
+    padding-top : 0px;
+  }
+  .el-dialog__footer {
+    margin-top: 25px;
   }
 }
-
-
-.dialog-title-border {
-  height: 1px;
-  width: 100%;
-  background: #ccc;
-  opacity: 0.3;
-  margin-top: 10px;
-}
-
-.el-dialog__body,
-.el-dialog--center .el-dialog__body {
-  padding-top: 0px;
-}
-
-// bottom
-
 
 .el-table {
   background: #F9F9FB;
@@ -231,5 +240,40 @@ select {
 
   &:active {
     opacity: 1;
+  }
+}
+
+.el-input__inner::placeholder {
+  font-weight:400;
+  color:rgba(32, 32, 32, .4);
+}
+
+.grey-theme {
+  .el-input__inner {
+    background: #F1F3F7;
+    border-radius: 2px;
+    height: 40px;
+    color: #202020 !important;
+    border-radius: 2px;
+    border-color: #202020;
+    font-weight: 500;
+    border: none;
+    transition: all .3s ease;
+  
+    &:focus {
+      border-color: #202020 !important;
+      background: #E0E2E6;
+    }
+  }
+}
+
+.el-form {
+  .el-form-item__label {
+    color: #202020;
+    font-size: 14px;
+    font-weight:500;
+    height: 32px;
+    line-height: 32px;
+    user-select: none;
   }
 }

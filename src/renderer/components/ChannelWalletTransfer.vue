@@ -5,37 +5,37 @@
 			 v-if="withDraw"
 			 class="flex1 text-left"
 			>
-				<p class="theme-font-blue transparent ft12 bold">Channel</p>
-				<p class="theme-font-blue bold ft20 mt10">{{filterFloat(channelSelected.BalanceFormat || 0).toLocaleString('en-US')}}</p>
+				<p class="theme-font-blue-40 transparent ft14 user-no-select">Channel</p>
+				<p class="theme-font-blue ft24 mt10">{{filterFloat(channelSelected.BalanceFormat || 0).toLocaleString('en-US')}}</p>
 				<!-- <p class="theme-font-blue transparent ft12 bold">{{channelSelected.Address}}</p> -->
 			</div>
 			<div
 			 v-else
 			 class="flex1 text-left"
 			>
-				<p class="theme-font-blue transparent ft12 bold">Wallet</p>
-				<p class="theme-font-blue bold ft20 mt10">{{filterFloat(mainCount).toLocaleString('en-US')}}</p>
+				<p class="theme-font-blue-40 transparent ft14 user-no-select">Wallet</p>
+				<p class="theme-font-blue ft24 mt10">{{filterFloat(mainCount).toLocaleString('en-US')}}</p>
 			</div>
 			<div class="flex column between">
 				<i class="ofont ofont-fasong"></i>
 				<i
-				 class="ofont ofont-exchange ft20"
+				 class="ofont ofont-exchange ft20 user-no-select"
 				 @click="withDraw = !withDraw"
 				></i></div>
 			<div
 			 v-if="!withDraw"
 			 class="flex1 text-right"
 			>
-				<p class="theme-font-blue transparent ft12 bold">Channel</p>
-				<p class="theme-font-blue bold ft20 mt10">{{filterFloat(channelSelected.BalanceFormat || 0).toLocaleString('en-US')}}</p>
+				<p class="theme-font-blue-40 transparent ft14 user-no-select">Channel</p>
+				<p class="theme-font-blue ft24 mt10">{{filterFloat(channelSelected.BalanceFormat || 0).toLocaleString('en-US')}}</p>
 				<!-- <p class="theme-font-blue transparent ft12 bold">{{channelSelected.Address}}</p> -->
 			</div>
 			<div
 			 v-else
 			 class="flex1 text-right"
 			>
-				<p class="theme-font-blue transparent ft12 bold">Wallet</p>
-				<p class="theme-font-blue bold ft20 mt10">{{filterFloat(mainCount).toLocaleString('en-US')}}</p>
+				<p class="theme-font-blue-40 transparent ft14 user-no-select">Wallet</p>
+				<p class="theme-font-blue ft24 mt10">{{filterFloat(mainCount).toLocaleString('en-US')}}</p>
 			</div>
 		</div>
 		<el-form
@@ -45,13 +45,13 @@
 		 :rules="transferRules"
 		>
 			<el-form-item
-			 label="Amount"
+			 label="Amount(SAVE)"
 			 prop="Amount"
 			>
 				<el-input
 				 type="number"
 				 min='0'
-				 class="transfer-input"
+				 class="transfer-input grey-theme"
 				 v-model="transferInfo.Amount"
 				 placeholder="input number"
 				>
@@ -62,7 +62,7 @@
 			 prop="Password"
 			>
 				<el-input
-				 class="transfer-input"
+				 class="transfer-input grey-theme"
 				 v-model="transferInfo.Password"
 				 show-password
 				 @keyup.enter.native='toTransfer'
@@ -172,7 +172,7 @@ export default {
 };
 </script>
 <style lang="scss">
-$theme-font-blue: #040f39;
+$theme-font-blue: #202020;
 .channel-wallet-transfer {
 	.transferForm {
 		padding: 0 30px;
@@ -181,20 +181,33 @@ $theme-font-blue: #040f39;
 		color: #cdcfd8;
 	}
 	.ofont-exchange {
-		color: $theme-font-blue;
+		color: #2F8FF0;
+		width: 30px;
+		height: 30px;
+		background: #F1F3F7;
+		text-align: center;
+		line-height: 30px;
+		border-radius: 50%;
+		cursor: pointer;
+		&:hover {
+			opacity: .7;
+		}
+		&:active {
+			opacity: 1;
+		}
 	}
 	.transfer-input {
 		&.el-input {
-			.el-input__inner {
-				background: #ebecef;
-				height: 35px;
-				line-height: 35px;
-				border-radius: 2px;
-				border: none;
-				&:focus {
-					border: none;
-				}
-			}
+			// .el-input__inner {
+				// background: #ebecef;
+				// height: 35px;
+				// line-height: 35px;
+				// border-radius: 2px;
+				// border: none;
+				// &:focus {
+				// 	border: none;
+				// }
+			// }
 			.el-input-group__append {
 				background: none;
 				border: none;

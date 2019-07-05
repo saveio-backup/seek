@@ -191,16 +191,16 @@
 				</div>
 				<div class="flex ai-center column">
 					<div class="flex ai-center mb10">
-						<p class="mr10  theme-font-blue-transparent ft14">{{balanceLists.length>0?balanceLists[balanceSelected].Address : 'Text Addr'}}</p>
+						<p class="mr10 theme-font-blue-transparent ft14">{{balanceLists.length>0?balanceLists[balanceSelected].Address : 'Text Addr'}}</p>
 						<i
 						 class="ofont ofont-fuzhi addr_btn"
 						 @click="clipText(balanceLists[balanceSelected].Address)"
 						></i>
 						<!-- :aria-label='balanceLists[balanceSelected].Address' -->
 					</div>
-					<div id="qrcode-content"></div>
+					<div id="qrcode-content" class="mb20"></div>
+					 <!-- class="mt20" -->
 					<div
-					 class="mt20"
 					 slot="footer"
 					>
 						<el-button
@@ -228,9 +228,9 @@
 						 :model="sendInfo"
 						 :rules="sendRules"
 						>
-							<div class="flex between mb10">
-								<p class="theme-font-blue-bold">{{balanceLists[balanceSelected].Symbol}}</p>
-								<p v-if="balanceLists && balanceLists.length>0">{{parseFloat(balanceLists[balanceSelected].BalanceFormat).toFixed(2)}} {{balanceLists[balanceSelected].Symbol}}</p>
+							<div class="flex between mb10 mt10">
+								<p class="theme-font-blue-bold ft14">{{balanceLists[balanceSelected].Symbol}}</p>
+								<p v-if="balanceLists && balanceLists.length>0" class="ft14 tl theme-font-blue-70">{{parseFloat(balanceLists[balanceSelected].BalanceFormat).toFixed(2)}} {{balanceLists[balanceSelected].Symbol}}</p>
 							</div>
 							<el-form-item
 							 class="theme-font-blue-bold"
@@ -241,6 +241,7 @@
 								 v-model="sendInfo.Amount"
 								 placeholder="Input amount"
 								 type="number"
+								 class="grey-theme"
 								 @blur="setFixed"
 								></el-input>
 							</el-form-item>
@@ -251,6 +252,7 @@
 							>
 								<el-input
 								 v-model="sendInfo.To"
+								 class="grey-theme"
 								 :placeholder="'Input ' +balanceLists[balanceSelected].Symbol+' address'"
 								></el-input>
 							</el-form-item>
@@ -264,6 +266,7 @@
 								 @keyup.enter.native='sendTransfer'
 								 show-password
 								 type="password"
+								 class="grey-theme"
 								></el-input>
 							</el-form-item>
 						</el-form>
@@ -294,31 +297,33 @@
 					<h2>My Assets</h2>
 					<div class="dialog-title-border mt10"></div>
 				</div>
-				<ul class="asset-ul">
-					<li class="asset-list">
-						<img
-						 class="asset-icon-lg"
-						 :src="'static/images/logo/' +balanceLists[balanceSelected].Symbol+'.png'"
-						 alt=""
-						>
-						<div class="flex1 ml10">
-							<p class="theme-bold">{{balanceLists[balanceSelected].Symbol}} <span class="grey-xs"> {{balanceLists[balanceSelected].Name}}</span></p>
-							<p class="theme-font-color ft12">{{balanceLists[balanceSelected].Address}}</p>
-						</div>
-						<el-switch
-							disabled
-							:value='true'
-							active-color="#2F8FF0"
-						></el-switch>
-					</li>
-				</ul>
-				<span slot="footer">
-					<el-button
-					 type="primary"
-					 class="primary"
-					 @click="switchToggle.assetDialog = false"
-					>Comfirm</el-button>
-				</span>
+				<div class="loading-content">
+					<ul class="asset-ul mb20">
+						<li class="asset-list">
+							<img
+							class="asset-icon-lg"
+							:src="'static/images/logo/' +balanceLists[balanceSelected].Symbol+'.png'"
+							alt=""
+							>
+							<div class="flex1 ml10">
+								<p class="theme-font-blue ft18"><span class="bold">{{balanceLists[balanceSelected].Symbol}}</span> <span class="theme-font-blue-40 ft14 ml10 balance-select-name"> {{balanceLists[balanceSelected].Name}}</span></p>
+								<p class="theme-font-blue-40 ft14">{{balanceLists[balanceSelected].Address}}</p>
+							</div>
+							<el-switch
+								disabled
+								:value='true'
+								active-color="#2F8FF0"
+							></el-switch>
+						</li>
+					</ul>
+					<div slot="footer">
+						<el-button
+						type="primary"
+						class="primary"
+						@click="switchToggle.assetDialog = false"
+						>Comfirm</el-button>
+					</div>
+				</div>
 			</el-dialog>
 		</div>
 	</div>
@@ -1151,11 +1156,11 @@ $light-grey: #f7f7f7;
 	.ofont-fuzhi {
 		cursor: pointer;
 		&:hover {
-			opacity: 0.7;
+			color: #2F8FF0;
 		}
 
 		&:active {
-			opacity: 1;
+			color: rgba(47, 143, 240, .7);
 		}
 	}
 	.send-form-wrap {

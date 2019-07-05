@@ -24,7 +24,7 @@
 					 label="Username"
 					 prop='Label'
 					>
-						<el-input v-model="form.Label"></el-input>
+						<el-input v-model="form.Label" class="grey-theme"></el-input>
 					</el-form-item>
 					<el-form-item
 					 label="Password"
@@ -34,6 +34,7 @@
 						 v-model="form.Password"
 						 type="password"
 						 show-password
+						 class="grey-theme"
 						></el-input>
 					</el-form-item>
 					<el-form-item
@@ -45,6 +46,7 @@
 						 @keyup.enter.native="submitForm('form')"
 						 show-password
 						 type="password"
+						 class="grey-theme"
 						></el-input>
 					</el-form-item>
 					<p class="grey-xs ft14">Please remember this password， if you lose this password， the backup file cannot be decrypted any more</p>
@@ -77,7 +79,7 @@
 				>
 					<!-- <p>Backup your Private Key(WIF)</p> -->
 					<p class="back-border-class">{{validation.PrivateKey}}</p>
-					<el-button class="primary" @click="clipboard.writeText(validation.PrivateKey)">Copy</el-button>
+					<el-button class="primary" @click="clip(validation.PrivateKey)">Copy</el-button>
 					<el-button  class="primary" @click="$exportFile(validation.PrivateKey,'PrivateKey')">Save as File</el-button>
 					<p
 					 class="mt20 mb20 ft14"
@@ -101,7 +103,7 @@
 						<el-button @click="importFile" class="primary margin-center mt20 mb20">Import private key(WIF) file</el-button>
 					</div>
 					<el-input
-					 class="mt20 mb20 ft14 back-border-input-class"
+					 class="mt20 mb20 ft14 back-border-input-class grey-theme"
 					 type="textarea"
 					 :row="4"
 					 v-model="validation.confirmPrivateKey"
@@ -248,6 +250,14 @@ export default {
 		}
 	},
 	methods: {
+		clip(content) {
+			clipboard.writeText(content);
+			this.$message({
+				message: "Copied",
+				duration: 1200,
+				type: "success"
+			});
+		},
 		getAccountStatus() {
 			this.$axios
 				.get(this.$api.account)
@@ -417,6 +427,10 @@ $theme-font-blue: #040f39;
 				color: rgba(32, 32, 32, .7);
 				word-break: break-all;
 				border: 0;
+				transition: all .3s ease;
+				&:focus {
+					background: #E0E2E6;
+				}
 			}
 		}
 	}

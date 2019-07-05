@@ -87,19 +87,21 @@
 					<h2>Channel Select</h2>
 					<div class="dialog-title-border"></div>
 				</div>
-				<div style="height:400px; overflow:hidden; display:flex;">
-					<channel-list
-					 ref="channellist"
-					 :showRadio='true'
-					></channel-list>
-				</div>
-				<div slot="footer">
-					<el-button @click="toCancelChange">Cancel</el-button>
-					<el-button
-					 type="primary"
-					 class="primary"
-					 @click="toApplyChange"
-					>Apply</el-button>
+				<div class="loading-content">
+					<div style="height:400px; overflow:hidden; display:flex;">
+						<channel-list
+						ref="channellist"
+						:showRadio='true'
+						></channel-list>
+					</div>
+					<div slot="footer">
+						<el-button @click="toCancelChange">Cancel</el-button>
+						<el-button
+						type="primary"
+						class="primary"
+						@click="toApplyChange"
+						>Apply</el-button>
+					</div>
 				</div>
 			</el-dialog>
 			<keep-alive>

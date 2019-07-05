@@ -1,22 +1,35 @@
 <template>
 	<div id="download-dialog">
-		<h2 class="theme-font-blue ft18 bold mb10 mt10">Download URL:</h2>
+		<!-- <h2 class="mb10 mt10">Donload URL:</h2>
 		<el-input
 		 v-model="downloadUrl"
 		 @input='toGetFileInfo'
-		></el-input>
+		></el-input> -->
+		<el-form
+		>
+			<el-form-item
+				class="theme-font-blue-bold"
+				label="Donload URL:"
+			>
+				<el-input
+					v-model="downloadUrl"
+					@input='toGetFileInfo'
+					class="grey-theme"
+				></el-input>
+			</el-form-item>
+		</el-form>
 		<div class="text-center mt20">
 			<div class="flex between">
-				<p class="theme-font-blue bold">Name:</p>
-				<p>{{downloadInfo.Name || ''}}</p>
+				<p class="theme-font-blue">Name:</p>
+				<p class="theme-font-blue-70">{{downloadInfo.Name || ''}}</p>
 			</div>
-			<div class="flex between mt10 mb10">
-				<p class="theme-font-blue bold">Size:</p>
-				<p>{{downloadInfo.Size || ''}}</p>
+			<div class="flex between mt20 mb20">
+				<p class="theme-font-blue">Size:</p>
+				<p class="theme-font-blue-70">{{downloadInfo.Size || ''}}</p>
 			</div>
 			<div class="flex between">
-				<p class="theme-font-blue bold">Cost:</p>
-				<p>{{downloadInfo.FeeFormat || ''}}</p>
+				<p class="theme-font-blue">Cost:</p>
+				<p class="theme-font-blue-70">{{downloadInfo.FeeFormat || ''}}</p>
 			</div>
 			<el-button
 			 class="mt40 primary"
@@ -73,16 +86,16 @@ export default {
 	}
 };
 </script>
-<style lang="scss">
-#download-dialog {
-	padding: 0 30px;
-	.el-input__inner {
-		height: 35px;
-		line-height: 35px;
-		font-weight: normal !important;
-		background: #ebecef;
-		border-radius: 2px;
-		border: none;
-	}
-}
+ <style lang="scss">
+// #download-dialog {
+	// padding: 0 30px;
+	// .el-input__inner {
+	// 	height: 35px;
+	// 	line-height: 35px;
+	// 	font-weight: normal !important;
+	// 	background: #ebecef;
+	// 	border-radius: 2px;
+	// 	border: none;
+	// }
+// }
 </style>

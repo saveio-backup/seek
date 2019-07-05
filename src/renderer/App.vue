@@ -1,18 +1,14 @@
 <template>
-	<div id="app" class="{'haveBg':routerName === 'Dialog'}">
+	<div id="app" :class="{'haveBg':routerName !== 'Dialog'}">
 		<router-view></router-view>
 	</div>
 </template>
 
 <script>
 export default {
-	data() {
-		return {
-
-		}
-	},
 	computed: {
 		routerName() {
+			console.log('123',this.$route);
 			return this.$route.name;
 		}
 	},

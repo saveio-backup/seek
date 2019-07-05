@@ -156,12 +156,15 @@
 		 width="600px"
 		 :close-on-click-modal='false'
 		 :visible.sync="switchToggle.decryptDialog"
-		 title="Input Password"
 		>
+			<div slot="title">
+				<h2>Input Password</h2>
+				<div class="dialog-title-border"></div>
+			</div>
 			<div class="loading-content">
 				<el-input
 				 v-model="fileSelected.Password"
-				 class="mt20"
+				 class="grey-theme mt20"
 				></el-input>
 				<div slot="footer">
 					<el-button
@@ -178,14 +181,16 @@
 		 :visible.sync="switchToggle.deleteDialog"
 		 center
 		>
-			<p>Are your Sure to Delete this File?</p>
-			<p>{{executedFile.FileName}}</p>
-			<div slot="footer">
-				<el-button @click="switchToggle.deleteDialog = false">Cancel</el-button>
-				<el-button
-				 type="danger"
-				 @click="toDeleteFile(executedFile.FileHash)"
-				>Delete</el-button>
+			<div class="loading-content">
+				<p>Are your Sure to Delete this File?</p>
+				<p>{{executedFile.FileName}}</p>
+				<div slot="footer">
+					<el-button @click="switchToggle.deleteDialog = false">Cancel</el-button>
+					<el-button
+					type="danger"
+					@click="toDeleteFile(executedFile.FileHash)"
+					>Delete</el-button>
+				</div>
 			</div>
 		</el-dialog>
 	</div>

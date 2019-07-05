@@ -425,17 +425,20 @@ $tabs-height: 62px;
 		.input-url {
 			height: 22px;
 			.el-input__inner {
-				&:focus {
-					border: none;
-				}
 				outline: none;
 				border-radius: 15px;
 				// color: #fff;
-				color: #202020;
+				// color: #202020;
 				font-size: 12px;
-				opacity: .7;
-				border: none;
-				background-color: $theme-input-color;
+				// opacity: .7;
+				color: rgba(32,32,32,.7);
+				background-color: rgba(223, 226, 233, .5);
+				border: 1px solid rgba(223, 226, 233, 0);
+				&:focus {
+					box-shadow:0px 0px 2px 0px rgba(62,133,205,1);
+					border:1px solid rgba(47,143,240,1);
+					background: #FFFFFF;
+				}
 			}
 		}
 		.el-input__inner {

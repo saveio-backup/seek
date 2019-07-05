@@ -60,19 +60,22 @@
 				</div>
 				<div class="loading-content">
 					<div class="adjust">
-						<h3 class="theme-font-blue transparent bold ft12">Space Size</h3>
 						<div class="adjust-item">
-							<p class="adjust-title theme-font-blue bold ft14">Current:</p>
+							<div class="adjust-title bold ft14 tl theme-font-blue-40">Space Size:</div>
+						</div>
+						<!-- <h3 class="theme-font-blue transparent bold ft12">Space Size:</h3> -->
+						<div class="adjust-item">
+							<p class="adjust-title theme-font-blue ft14">Current:</p>
 							<div class="adjust-info">
 								<p class="theme-font-blue ft14 mr20">{{util.bytesToSize( (space.Used + space.Remain)*1024)}}</p>
-								<p class="grey-xs bold ml20">{{util.bytesToSize(space.Used *1024)}} / {{util.bytesToSize( (space.Used + space.Remain)*1024)}}</p>
+								<p class="theme-font-blue-40 ft14 ml20">{{util.bytesToSize(space.Used *1024)}} / {{util.bytesToSize( (space.Used + space.Remain)*1024)}}</p>
 							</div>
 						</div>
 						<div class="adjust-item">
-							<div class="adjust-title theme-font-blue bold ft14">Adjust to:</div>
+							<div class="adjust-title theme-font-blue ft14">Adjust to:</div>
 							<div class="adjust-info">
 								<el-input-number
-								 class="number"
+								 class="number grey-theme"
 								 v-model="adjustSize"
 								 :precision='0'
 								 :min='minSize'
@@ -99,15 +102,17 @@
 						</div>
 					</div>
 					<div class="adjust">
-						<h3 class="theme-font-blue transparent bold ft12">Expiry Date</h3>
 						<div class="adjust-item">
-							<p class="adjust-title theme-font-blue bold ft14">Current:</p>
+							<div class="adjust-title  theme-font-blue-40 bold ft14 tl">Expiry Date:</div>
+						</div>
+						<div class="adjust-item">
+							<p class="adjust-title theme-font-blue ft14">Current:</p>
 							<div class="adjust-info">
-								<p class="theme-font-blue bold">{{expired_old}}</p>
+								<p class="theme-font-blue">{{expired_old}}</p>
 							</div>
 						</div>
 						<div class="adjust-item">
-							<div class="adjust-title theme-font-blue bold ft14">Adjust to:</div>
+							<div class="adjust-title theme-font-blue ft14">Adjust to:</div>
 							<div class="adjust-info">
 								<el-date-picker
 								 v-model="expired"
@@ -120,14 +125,10 @@
 							</div>
 						</div>
 					</div>
-					 <!-- v-show='cost.TransferType' -->
-					<!-- <div
-					 class="mb20"
-					> -->
 					<div class="adjust">
 						<div class="adjust-item">
-							<p class="adjust-title theme-font-blue bold ft14">{{cost.TransferType === 2?'Pledge Refund':'Pledge Payment'}}:</p>
-							<div class="adjust-info">
+							<p class="adjust-title theme-font-blue ft14">{{cost.TransferType === 2?'Pledge Refund':'Pledge Payment'}}:</p>
+							<div class="adjust-info theme-font-blue ft14">
 								<div v-if="cost.TransferType !== 2">
 									{{cost.FeeFormat?parseFloat(cost.FeeFormat).toFixed(3):0}} SAVE
 								</div>
@@ -137,16 +138,14 @@
 							</div>
 						</div>
 						<div class="adjust-item">
-							<div class="adjust-title theme-font-blue bold ft14"></div>
-							<div class="adjust-info">
-								<span class="grey-xs bold mr10">Available {{mainCount?parseFloat(mainCount).toFixed(3):0}} SAVE</span> 
+							<div class="adjust-title theme-font-blue ft14"></div>
+							<div class="adjust-info theme-font-blue-40 ft14">
+								<span class="mr10">Available</span> {{mainCount?parseFloat(mainCount).toFixed(3):0}} SAVE
 							</div>
 						</div>
 					</div>
-					<!-- </div> -->
-					<span
+					<div
 					 slot="footer"
-					 class="dialog-footer"
 					>
 						<el-button @click="expandDialogVisible = false">Cancel</el-button>
 						<el-button
@@ -154,9 +153,8 @@
 						 class="primary"
 						 @click="setUserSpace"
 						>Update</el-button>
-					</span>
+					</div>
 				</div>
-
 			</el-dialog>
 		</div>
 	</div>
@@ -612,18 +610,18 @@ $grey: #ccc;
 		.el-input-number__decrease {
 			display: none;
 		}
-		.number {
-			.el-input__inner {
-				height: 35px;
-				line-height: 35px;
-				background: #ebecef;
-				border: none;
-				border-radius: 2px;
-				&:focus {
-					border: none;
-				}
-			}
-		}
+		// .number {
+			// .el-input__inner {
+			// 	height: 35px;
+			// 	line-height: 35px;
+			// 	background: #ebecef;
+			// 	border: none;
+			// 	border-radius: 2px;
+			// 	&:focus {
+			// 		border: none;
+			// 	}
+			// }
+		// }
 	}
 	.adjust-item {
 		display: flex;
@@ -632,10 +630,9 @@ $grey: #ccc;
 		margin: 15px 0;
 		.adjust-title {
 			font-size: 14px;
-			width: 140px;
-			padding-right:10px;
-			text-align:right;
-			font-weight: bold;
+			width: 160px;
+			padding-right: 30px;
+			text-align: right;
 		}
 		.adjust-info {
 			flex: 1;
@@ -647,11 +644,6 @@ $grey: #ccc;
 				margin: 0 20px;
 			}
 		}
-	}
-	.el-dialog__header {
-		padding-top: 10px;
-		text-align: center;
-		// background: $grey;
 	}
 }
 </style>

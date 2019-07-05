@@ -468,6 +468,8 @@ export default {
 };
 </script>
 <style lang="scss">
+$inputBg:#f1f3f7;
+$inputFocusBg: #e0e2e6;
 #upload {
 	height: 100%;
 	background: #f9f9fb;
@@ -524,8 +526,11 @@ export default {
 				input {
 					border: 1px solid #dee2ea;
 					border-radius: 2px;
-					background: #f1f3f7;
+					background: $inputBg;
 					color: rgba(32, 32, 32, 0.4);
+					&:focus {
+						background: $inputFocusBg;
+					}
 				}
 			}
 		}
@@ -540,8 +545,11 @@ export default {
 				height: 32px;
 				border: 1px solid #dee2ea;
 				border-radius: 2px;
-				background: #f1f3f7;
+				background: $inputBg;
 				color: rgba(32, 32, 32, 0.4);
+				&:focus {
+					background: $inputFocusBg;
+				}
 			}
 		}
 		.form-right-second-inside {
@@ -556,8 +564,11 @@ export default {
 				height: 32px;
 				border: 1px solid #dee2ea;
 				border-radius: 2px;
-				background: #f1f3f7;
+				background: $inputBg;
 				color: rgba(32, 32, 32, 0.4);
+				&:focus {
+					background: $inputFocusBg;
+				}
 			}
 		}
 		.form-vertical {

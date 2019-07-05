@@ -15,6 +15,7 @@
 			>
 				<el-table-column
 				 label='Channel(SAVE)'
+				 :min-with="120"
 				>
 					<template slot-scope="scope">
 						<div class="bold">{{scope.row.ChannelId}}</div>
@@ -107,9 +108,9 @@
 				></channel-wallet-transfer>
 				<div slot="footer">
 					<el-button
-					 type="primary"
-					 class="primary"
-					 @click="toConfirm"
+						type="primary"
+						class="primary"
+						@click="toConfirm"
 					>Confirm</el-button>
 				</div>
 			</div>
@@ -139,7 +140,7 @@
 					>
 						<el-input
 						v-model="channelForm.partner"
-						class="channel-opeation-input"
+						class="channel-opeation-input grey-theme"
 						placeholder="Please input partner dns wallet address"
 						@keyup.enter.native="toPeationChannel">
 						</el-input>
@@ -153,7 +154,7 @@
 						v-model="channelForm.password"
 						placeholder="Please input password"
 						@keyup.enter.native="toPeationChannel"
-						class="channel-opeation-input"
+						class="channel-opeation-input grey-theme"
 						type="password">
 						</el-input>
 					</el-form-item>
@@ -508,7 +509,7 @@ $theme-color: #202020;
 	overflow-y: auto;
 	border-bottom-left-radius: 2px;
 	border-bottom-right-radius: 2px;
-	padding: 0 30px;
+	padding: 0 25px;
 	background: #fff;
 	.el-table {
 		color: $theme-color;
@@ -549,20 +550,6 @@ $theme-color: #202020;
 		border-radius: 100%;
 		width: 14px;
 		height: 14px;
-	}
-}
-.channel-opeation-input {
-	&.el-input {
-		.el-input__inner {
-			background: #ebecef;
-			height: 35px;
-			line-height: 35px;
-			border-radius: 2px;
-			border: none;
-			&:focus {
-				border: none;
-			}
-		}
 	}
 }
 .closingWrapper {

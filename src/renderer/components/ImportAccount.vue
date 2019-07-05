@@ -20,11 +20,12 @@
 						 label="Keystore File:"
 						>
 							<el-input
-							type="textarea"
-							v-model="data.Wallet"
-							cols="30"
-							rows="10"
-							placeholder="key"
+								type="textarea"
+								v-model="data.Wallet"
+								cols="30"
+								rows="10"
+								placeholder="key"
+								class="grey-theme"
 							>
 							</el-input>
 							<div class="tr mb20 input-opeation"><a
@@ -38,6 +39,7 @@
 							placeholder="Password"
 							type="password"
 							:rows="2"
+							class="grey-theme"
 							show-password
 							@keyup.enter.native='importAccont'
 							></el-input>
@@ -58,7 +60,7 @@
 						 label="PrivateKey"
 						 prop='PrivateKey'
 						>
-							<el-input v-model="privateKeyForm.PrivateKey"></el-input>
+							<el-input v-model="privateKeyForm.PrivateKey" class="grey-theme"></el-input>
 							<div class="tr"><a
 								 @click='importPrivateKey'
 								 class="light-blue ft14 cursor-pointer user-no-select cursor-click input-opeation"
@@ -68,7 +70,7 @@
 						 label="Username"
 						 prop='Label'
 						>
-							<el-input v-model="privateKeyForm.Label"></el-input>
+							<el-input v-model="privateKeyForm.Label" class="grey-theme"></el-input>
 						</el-form-item>
 						<el-form-item
 						 label="Password"
@@ -78,6 +80,7 @@
 							 v-model="privateKeyForm.Password"
 					 		 show-password
 							 type="password"
+							class="grey-theme"
 							></el-input>
 						</el-form-item>
 						<el-form-item
@@ -89,6 +92,7 @@
 							 @keyup.enter.native='importAccont'
 					 		 show-password
 							 type="password"
+							  class="grey-theme"
 							></el-input>
 						</el-form-item>
 					</el-form>
@@ -299,11 +303,11 @@ export default {
 	.import-button {
 		margin-top: 80px;
 	}
-	.el-form .el-input__inner {
-		background: #EDEFF4;
-		border: 0;
-		border-radius: 2px;
-	}
+	// .el-form .el-input__inner {
+	// 	background: #EDEFF4;
+	// 	border: 0;
+	// 	border-radius: 2px;
+	// }
 	.el-form textarea {
 		padding: 15px;
 		font-size: 14px;
@@ -314,6 +318,11 @@ export default {
 		color: rgba(32, 32, 32, .7);
 		word-break: break-all;
 		border: 0;
+		word-break: break-all;
+		transition: all .3s ease;
+		&:focus {
+			background: #E0E2E6;
+		}
 	}
 	.input-opeation {
 		position: absolute;

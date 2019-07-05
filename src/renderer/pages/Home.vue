@@ -510,12 +510,7 @@ $input-color: rgba(203, 203, 203, 1);
 			}
 		}
 	}
-	.el-select .el-input__inner:focus {
-		border-color: $input-color !important;
-	}
-	.el-input__inner {
-		border-radius: 2px;
-		font-weight: bold;
+	.el-select  {
 		border-color: $input-color !important;
 	}
 	.content {

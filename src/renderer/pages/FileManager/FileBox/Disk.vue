@@ -20,6 +20,7 @@
 				 v-model="filterInput"
 				 prefix-icon="el-icon-search"
 				 placeholder="search by name"
+				  class="grey-theme"
 				></el-input>
 			</div>
 		</div>
@@ -153,45 +154,58 @@
 			</div>
 		</div>
 		<el-dialog
-		 title='Share'
 		 :close-on-click-modal='false'
 		 :visible.sync="switchToggle.shareDialog"
 		 center
 		>
-			Share
-			<p>{{executedFile.Name}}</p>
-			<el-input
-			 readonly
-			 :value="executedFile.Url || executedFile.Hash"
-			>
-				<template slot="append">
-					<i
-					 class="el-icon-document addr_btn"
-					 @click="toClipboard(executedFile.Url || executedFile.Hash)"
-					 :aria-label='executedFile.Hash'
-					></i>
-				</template>
-			</el-input>
-			<el-button
-			 slot="footer"
-			 type="primer"
-			 @click="switchToggle.shareDialog = false"
-			>Close</el-button>
+			<div slot="title">
+				<h2>Share</h2>
+				<div class="dialog-title-border"></div>
+			</div>
+			<div class="loading-content">
+				<p class="mt10 mb20 tl">{{executedFile.Name}}</p>
+				<el-input
+				readonly
+				:value="executedFile.Url || executedFile.Hash"
+				class="mb20 grey-theme icon-no-bg"
+				>
+					<template slot="append">
+						<i
+						class="el-icon-document addr_btn"
+						@click="toClipboard(executedFile.Url || executedFile.Hash)"
+						:aria-label='executedFile.Hash'
+						></i>
+					</template>
+				</el-input>
+				<div slot="footer">
+					<!-- slot="footer" -->
+					<el-button
+					type="primer"
+					@click="switchToggle.shareDialog = false"
+					>Close</el-button>
+				</div>
+			</div>
 		</el-dialog>
 		<el-dialog
-		 title="Notice"
 		 :close-on-click-modal='false'
 		 :visible.sync="switchToggle.deleteDialog"
 		 center
 		>
-			<p>Are your Sure to Delete this File?</p>
-			<p>{{executedFile.Name}}</p>
-			<div slot="footer">
-				<el-button @click="switchToggle.deleteDialog = false">Cancel</el-button>
-				<el-button
-				 type="danger"
-				 @click="toDeleteFile(fileListData, executedFile.Hash)"
-				>Delete</el-button>
+			<div slot="title">
+				<h2>Notice</h2>
+				<div class="dialog-title-border"></div>
+			</div>
+			<div class="loading-content">
+				<p class="mt10 mb10">Are your Sure to Delete this File?</p>
+				<p class="mb20">{{executedFile.Name}}</p>
+				<div slot="footer">
+					<el-button @click="switchToggle.deleteDialog = false">Cancel</el-button>
+					<el-button
+					type="danger"
+					class="primary"
+					@click="toDeleteFile(fileListData, executedFile.Hash)"
+					>Delete</el-button>
+				</div>
 			</div>
 		</el-dialog>
 	</div>
@@ -422,7 +436,6 @@ export default {
 			type: "",
 			switchToggle: {
 				shareDialog: false,
-				deleteDialog: false,
 				deleteDialog: false,
 				load: true
 			},
@@ -693,11 +706,13 @@ $theme-font-blue: #040f39;
 				height: 33px;
 				line-height: 33px;
 				border-radius: 17px;
-				font-weight: normal;
+			// 	font-weight: normal;
 				background: #edeff4;
-				border: 0;
-				color: rgba(32, 32, 32, 0.7);
+			// 	color: rgba(32, 32, 32, 0.7);
 				padding-left: 40px;
+				&:focus {
+					background: #dcdee3;
+				}
 			}
 			.el-input__prefix {
 				left: 10px;
@@ -749,6 +764,21 @@ $theme-font-blue: #040f39;
 		}
 		.td-grey {
 			color: rgba(32, 32, 32, 0.4);
+		}
+
+	}
+	.icon-no-bg {
+		.el-input-group__append {
+			background: #F1F3F7;
+			border: 0;
+			i {
+				&:hover {
+					color: #2F8FF0;
+				}
+				&:active {
+					color: rgba(47, 143, 240, .7);
+				}
+			}
 		}
 	}
 	.el-input-group__append {

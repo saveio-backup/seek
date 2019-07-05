@@ -25,19 +25,20 @@
 						<el-input
 						 v-model="dialogForm.password"
 						 placeholder="Input password"
+						 class="grey-theme"
 						 @keyup.enter.native='exportPrivateKey'
 						 type="password"
 						></el-input>
 					</el-form-item>
 				</el-form>
-			</div>
-			<div slot="footer">
-				<el-button @click="closeDialog">Cancel</el-button>
-				<el-button
-				 type="primary"
-         class="primary"
-				 @click="exportPrivateKey"
-				>Export</el-button>
+				<div slot="footer">
+					<el-button @click="closeDialog">Cancel</el-button>
+					<el-button
+					type="primary"
+					class="primary"
+					@click="exportPrivateKey"
+					>Export</el-button>
+				</div>
 			</div>
 		</el-dialog>
 	</div>

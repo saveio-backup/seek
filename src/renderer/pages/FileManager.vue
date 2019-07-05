@@ -2,9 +2,11 @@
 	<div id="fileManager">
 		<div class="content">
 			<div class="top-nav">
-				<!-- <div class="logo">SAVE</div> -->
+				<div class="change-channel mr10"  @click="switchToggle.channelListDialog = true" title="Change Channel">
+					<i class="ofont ofont-qiehuan"></i>
+				</div>
 				<div class="ft14 mr10 flex column between channel-info" :class="{'channel-not-have': !channelBind.ChannelId}">
-					<p class="channel-info-first user-no-select">{{channelBind.ChannelId || 'Not Selected'}}</p>
+					<p class="channel-info-first user-no-select" :title="channelBind.ChannelId || 'Not Selected'">{{channelBind.ChannelId || 'Not Selected'}}</p>
 					<p class="channel-info-last user-no-select" :title="channelBind.TokenAddr" v-if="channelBind.TokenAddr">{{channelBind.TokenAddr.replace(channelBind.TokenAddr.slice(5,-5),'...')}}</p>
 				</div>
 				<!-- {{location.href}}  -->
@@ -31,26 +33,26 @@
 				<div class="coin">
 					<div class="flex jc-end">
 					</div>
-					<span class="mr10 ft22">{{filterFloat(channelBind.BalanceFormat || 0).toLocaleString('en-US')}}<span class="user-no-select"> SAVE</span></span>
-					<div class="coin-more">
-						<span
+					<span class="mr20 ft24">{{filterFloat(channelBind.BalanceFormat || 0).toLocaleString('en-US')}}<span class="user-no-select"> SAVE</span></span>
+					<!-- <div class="coin-more"> -->
+						<!-- <span
 						ref="menuButton"
 						class="ofont ofont-menu-point cursor-pointer"
 						@click="switchToggle.assetSettingDialog = !switchToggle.assetSettingDialog"
 						>
-						</span>
-					</div>
-					<ul
+						</span> -->
+					<!-- </div> -->
+					<el-button @click="switchToggle.assetTransferDialog = true">Transfer</el-button>
+					<!-- <ul
 					 class="asset-opera"
 					 v-show="switchToggle.assetSettingDialog"
 					 v-seekclickoutside="{handler:'hideAssetSettingDialog', exclude:['menuButton']}"
 					>
 						<li @click="switchToggle.assetTransferDialog = true">
-							<!-- class="asset-transfer" -->
 							Transfer
 						</li>
 						<li @click="switchToggle.channelListDialog = true">Change Channel</li>
-					</ul>
+					</ul> -->
 				</div>
 			</div>
 			<el-dialog
@@ -287,34 +289,40 @@ $grey: #ccc;
 			position: relative;
 			z-index: 9;
 			box-shadow: 0px 2px 4px 0px rgba(231, 231, 235, 0.7);
-			padding: 10px 30px 10px 30px;
+			padding: 10px 30px 10px 15px;
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
+			.change-channel {
+				width: 40px;
+				height: 40px;
+				border-radius: 50%;
+				background: linear-gradient(180deg,rgba(23,171,249,1) 0%,rgba(53,137,238,1) 100%);
+				cursor: pointer;
+				color: #FFFFFF;
+				text-align: center;
+				line-height: 40px;
+				&:hover {
+					opacity: .7;
+				}
+				&:active {
+					opacity: 1;
+				}
+			}
 			.channel-info {
 				font-weight: 400;
 				color: #202020;
-				width: 190px;
+				width: 140px;
 				position:relative;
-				&::before {
-					width: 3px;
-					height: 36px;
-					display: block;
-					background:linear-gradient(180deg,rgba(23,171,249,1) 0%,rgba(53,137,238,1) 100%);
-					border-radius:2px;
-					position: absolute;
-					content: '';
-					left: -10px;
-				}
 				.channel-info-first {
 					color: #2F8FF0;
+					text-overflow: ellipsis;
+					white-space: nowrap;
+					overflow: hidden;
 				}
 				&.channel-not-have {
 					.channel-info-first {
 						color: rgba(32, 32, 32, .7);
-					}
-					&::before {
-						display: none;
 					}
 				}
 				.channel-info-last{
@@ -361,51 +369,51 @@ $grey: #ccc;
 				display: flex;
 				align-items: center;
 				position: relative;
-				.coin-more {
-					width: 40px;
-					height: 40px;
-					border-radius: 50%;
-					background: #F1F3F7;
-					text-align: center;
-					line-height: 40px;
-					border: 1px solid #F0F2F6;
-					span {
-						font-size: 24px;
-						color: rgba(90, 33, 33, 0.5);
-					}
-					&:hover {
-						opacity: .7;
-					}
-					&:active {
-						opacity: 1;
-					}
-				}
-				.asset-opera {
-					width: 200px;
-					text-align: center;
-					position: absolute;
-					right: 0px;
-					top: 40px;
-					padding: 10px 0;
-					background: #fff;
-					box-shadow:0px 2px 4px 0px rgba(231,231,235,0.8);
-					z-index: 1;
-					transition: all .3 ease;
-					li {
-						padding: 5px 10px;
-						cursor: pointer;
-						font-size: 14px;
-						user-select: none;
-						color: rgba(32, 32, 32, .7);
-						&:hover {
-							color: rgba(32, 32, 32, 1);
-							background: #F1F3F7;
-						}
-						&:active {
-							opacity: .7;
-						}
-					}
-				}
+				// .coin-more {
+				// 	width: 40px;
+				// 	height: 40px;
+				// 	border-radius: 50%;
+				// 	background: #F1F3F7;
+				// 	text-align: center;
+				// 	line-height: 40px;
+				// 	border: 1px solid #F0F2F6;
+				// 	span {
+				// 		font-size: 24px;
+				// 		color: rgba(90, 33, 33, 0.5);
+				// 	}
+				// 	&:hover {
+				// 		opacity: .7;
+				// 	}
+				// 	&:active {
+				// 		opacity: 1;
+				// 	}
+				// }
+				// .asset-opera {
+				// 	width: 200px;
+				// 	text-align: center;
+				// 	position: absolute;
+				// 	right: 0px;
+				// 	top: 40px;
+				// 	padding: 10px 0;
+				// 	background: #fff;
+				// 	box-shadow:0px 2px 4px 0px rgba(231,231,235,0.8);
+				// 	z-index: 1;
+				// 	transition: all .3 ease;
+				// 	li {
+				// 		padding: 5px 10px;
+				// 		cursor: pointer;
+				// 		font-size: 14px;
+				// 		user-select: none;
+				// 		color: rgba(32, 32, 32, .7);
+				// 		&:hover {
+				// 			color: rgba(32, 32, 32, 1);
+				// 			background: #F1F3F7;
+				// 		}
+				// 		&:active {
+				// 			opacity: .7;
+				// 		}
+				// 	}
+				// }
 			}
 			.asset-transfer {
 				height: 30px;

@@ -580,9 +580,9 @@ $grey: #ccc;
 					width: 100%;
 				}
 			}
-			.el-button {
+			// .el-button {
 				// height: 40px;
-			}
+			// }
 		}
 		.space-record {
 			display: flex;
@@ -610,18 +610,6 @@ $grey: #ccc;
 		.el-input-number__decrease {
 			display: none;
 		}
-		// .number {
-			// .el-input__inner {
-			// 	height: 35px;
-			// 	line-height: 35px;
-			// 	background: #ebecef;
-			// 	border: none;
-			// 	border-radius: 2px;
-			// 	&:focus {
-			// 		border: none;
-			// 	}
-			// }
-		// }
 	}
 	.adjust-item {
 		display: flex;

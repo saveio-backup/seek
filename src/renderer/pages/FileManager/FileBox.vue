@@ -23,10 +23,6 @@
 				 :class="{'theme-font-blue-bold link-hover': fileType == 4}"
 				 :to="{name:'disk', query:{type:4}}"
 				>Music</router-link>
-				<!-- <router-link
-				 active-class="theme-font-blue-bold link-hover"
-				 :to="{name:'domain',query:{type:9}}"
-				>Domain</router-link> -->
 			</div>
 			<div
 			 class="aside-progress"

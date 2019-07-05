@@ -49,7 +49,7 @@
 						 class="grey-theme"
 						></el-input>
 					</el-form-item>
-					<p class="grey-xs ft14">Please remember this password， if you lose this password， the backup file cannot be decrypted any more</p>
+					<p class="grey-xs ft14">This password is used to recover the account from the keystore file, and all related payment needs to be used.</p>
 					<el-button
 					 class="account-button"
 					 type='primary'

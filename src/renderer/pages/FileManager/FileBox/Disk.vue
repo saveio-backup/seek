@@ -5,9 +5,9 @@
 		 v-if="controlBar !== 'close'"
 		>
 			<div class="fun-button">
-				<router-link :to="{name:'upload'}">
-					<el-button class="primary theme-font-blue">Upload</el-button>
-				</router-link>
+				<!-- <router-link :to="{name:'upload'}"> -->
+					<el-button class="primary theme-font-blue" @click="goUpload">Upload</el-button>
+				<!-- </router-link> -->
 				<el-button
 				 class="ml10 bt-download theme-font-blue"
 				 @click="batchDownload"
@@ -186,6 +186,24 @@
 				</div>
 			</div>
 		</el-dialog>
+		<!-- noStorageDialog -->
+		<el-dialog
+			:close-on-click-modal="false"
+			:visible.sync="switchToggle.noStorageDialog"
+			center
+		>
+			<div slot="title">
+				<h2>Notice</h2>
+				<div class="dialog-title-border"></div>
+			</div>
+			<div class="loading-content">
+				<p class="mt10 mb20 ft14">Sorry, you don't have any storage available yet. Please get the storage space before uploading.</p>
+				<div slot="footer">
+					<el-button class="primary" @click="goStorage">Get Storage</el-button>
+					<el-button @click="switchToggle.noStorageDialog = false">Canncel</el-button>
+				</div>
+			</div>
+		</el-dialog>
 		<el-dialog
 		 :close-on-click-modal='false'
 		 :visible.sync="switchToggle.deleteDialog"
@@ -214,6 +232,7 @@
 import date from "../../../assets/tool/date";
 import util from "../../../assets/config/util";
 import { clipboard, shell } from "electron";
+import { constants } from 'fs';
 
 let tableElement;
 export default {
@@ -437,6 +456,7 @@ export default {
 			switchToggle: {
 				shareDialog: false,
 				deleteDialog: false,
+				noStorageDialog: false,
 				load: true
 			},
 			page: "",
@@ -457,6 +477,13 @@ export default {
 		this.addListenScroll();
 	},
 	methods: {
+		goStorage() {
+			this.$router.push({name:'expand'});
+		},
+		goUpload() {
+			if(!this.space || (this.space.Used === 0 && this.space.Remain === 0)) return this.switchToggle.noStorageDialog = true;
+			this.$router.push({name:'upload'});
+		},
 		clipText(el) {
 			clipboard.writeText(this.executedFile.Hash);
 			this.$message({
@@ -464,23 +491,6 @@ export default {
 				duration: 1200,
 				type: "success"
 			});
-
-			// console.log("clip");
-			// const clip = new ClipboardJS(el, {
-			// 	text: function(trigger) {
-			// 		return trigger.getAttribute("aria-label");
-			// 	}
-			// });
-			// clip.on("success", e => {
-			// 	this.$message({
-			// 		message: "Link Copied",
-			// 		duration: 1200,
-			// 		type: "success"
-			// 	});
-			// 	console.log("success");
-			// 	console.log(e);
-			// 	clip.destroy();
-			// });
 		},
 		toClipboard(text) {
 			clipboard.writeText(text);
@@ -616,7 +626,10 @@ export default {
 		}
 	},
 	computed: {
-		filterListData: function() {
+		space() {
+			return this.$store.state.Filemanager.space;
+		},
+		filterListData() {
 			const fileListData = this.fileListData;
 			return fileListData.filter(item => {
 				return item.Name.indexOf(this.filterInput) >= 0 && item.Url;

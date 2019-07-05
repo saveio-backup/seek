@@ -305,7 +305,7 @@
 							:src="'static/images/logo/' +balanceLists[balanceSelected].Symbol+'.png'"
 							alt=""
 							>
-							<div class="flex1 ml10">
+							<div class="flex1 ml10 tl">
 								<p class="theme-font-blue ft18"><span class="bold">{{balanceLists[balanceSelected].Symbol}}</span> <span class="theme-font-blue-40 ft14 ml10 balance-select-name"> {{balanceLists[balanceSelected].Name}}</span></p>
 								<p class="theme-font-blue-40 ft14">{{balanceLists[balanceSelected].Address}}</p>
 							</div>

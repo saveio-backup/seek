@@ -7,7 +7,7 @@
 			<h2 class="account-title">Import Account</h2>
 			<ul class="account-type ft14">
 				<li>
-					<a  :class="{'account-select':importWay == 0}" @click="importWay = 0">Wallet File</a>
+					<a  :class="{'account-select':importWay == 0}" @click="importWay = 0">Keystore File</a>
 				</li>
 				<li>
 					<a :class="{'account-select':importWay == 1}" @click="importWay = 1">Private Key</a>
@@ -31,7 +31,7 @@
 							<div class="tr mb20 input-opeation"><a
 								@click='importWallet'
 								class="light-blue ft14 cursor-pointer cursor-click user-no-select"
-								>Import Wallet</a></div>
+								>Select Keystore File</a></div>
 						</el-form-item>
 						<el-form-item label="Password:">
 							<el-input
@@ -64,7 +64,7 @@
 							<div class="tr"><a
 								 @click='importPrivateKey'
 								 class="light-blue ft14 cursor-pointer user-no-select cursor-click input-opeation"
-								>Import PrivateKey</a></div>
+								>Select Private Key File</a></div>
 						</el-form-item>
 						<el-form-item
 						 label="Username"

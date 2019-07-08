@@ -14,6 +14,10 @@ import {
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
  */
+const gotTheLock = app.requestSingleInstanceLock()
+if(!gotTheLock){
+  app.quit();
+}
 if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
 }

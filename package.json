@@ -23,8 +23,8 @@
     "postinstall": "npm run lint:fix"
   },
   "build": {
-    "productName": "browser",
-    "appId": "com.application.browser",
+    "productName": "Seeker",
+    "appId": "com.application.seeker",
     "directories": {
       "output": "build"
     },

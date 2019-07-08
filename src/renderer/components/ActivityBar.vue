@@ -91,10 +91,10 @@
 			</div>
 			<div
 			 class="setting-bar"
-			 @click="toPopCustomControlMenu"
 			>
 				<div style="position:relative; z-index:2">
-					<i class="ofont ofont-menu-more"></i>
+					<i class="ofont ofont-caidan user-no-select cursor-pointer cursor-click"
+					@click="toPopCustomControlMenu"></i>
 				</div>
 			</div>
 		</div>
@@ -211,6 +211,21 @@ $slidebar-active-color: linear-gradient(
 				margin: 5px 0;
 				.ofont {
 					font-size: 24px;
+					&.ofont-qianbao {
+						position: relative;
+						left: -1px;
+					}
+					&.ofont-wakuang {
+						font-size: 28px;
+						position: relative;
+						left: -1px;
+					}
+					&.ofont-dapp1 {
+						font-size: 26px;
+					}
+					&.ofont-tianjia {
+						font-size: 20px;
+					}
 				}
 				&.item-user {
 					position: relative;
@@ -299,6 +314,10 @@ $slidebar-active-color: linear-gradient(
 						color: #fff;
 					}
 				}
+			}
+
+			.ofont-caidan {
+				color: rgba(32, 32, 32, .5);
 			}
 		}
 	}

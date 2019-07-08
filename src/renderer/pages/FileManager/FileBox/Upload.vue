@@ -24,7 +24,7 @@
 				 label-width="200px"
 				>
 					<el-form-item
-					 label="Choose File:"
+					 label="Select File:"
 					 class="form-vertical"
 					 prop="Path"
 					>
@@ -219,11 +219,43 @@
 					<el-button
 					 type="primary"
 					 class="primary"
-					 @click="toUploadFile"
+					 @click="OpenPasswordDialog"
 					>Upload</el-button>
 				</div>
 			</div>
 		</div>
+		<el-dialog
+		 width='550px'
+		 :close-on-click-modal='false'
+		 :visible.sync="passwordForm.show"
+		 center
+		>
+			<div slot="title">
+				<h2>Input Password</h2>
+				<div class="dialog-title-border"></div>
+			</div>
+			<div>
+				<el-form
+					ref="passwordForm"
+					:model="passwordForm"
+					:rules="uploadRules"	
+				>
+					<el-form-item
+					label="Password:"
+					prop="Password">
+						<el-input type="password" placeholder="Please input password" v-model="passwordForm.Password"></el-input>
+					</el-form-item>
+				</el-form>
+			</div>
+			<div slot="footer">
+				<el-button @click="passwordForm.show = false">Cancel</el-button>
+				<el-button
+					type="primary"
+					class="primary"
+					@click="toUploadFile"
+				>Confirm</el-button>
+			</div>
+		</el-dialog>
 	</div>
 </template>
 <script>
@@ -257,6 +289,15 @@ export default {
 			storageCycleSelected: baseKeys[3], // default Permanent
 			storageCycleNumber: 1,
 			DefaultCopyNum: '', // axios.get
+			passwordForm: {
+				Password: "",
+				show: false
+			},
+			uploadRules: {
+				Password: [
+					{ required: true, message: 'Please input password', trigger: 'blur' },
+				]
+			},
 			switchToggle: {
 				loading: null,
 				whiteListInput: false,
@@ -274,7 +315,7 @@ export default {
 			},
 			rules: {
 				Path: [
-					{ required: true, message: "Please chosse file", trigger: "blur" }
+					{ required: true, message: "Please select a file", trigger: "blur" }
 				],
 				EncryptPassword: [
 					{
@@ -377,10 +418,19 @@ export default {
 				name: "filebox"
 			});
 		},
-		toUploadFile() {
+		OpenPasswordDialog() {
 			if (!this.switchToggle.upload) return;
 			this.$refs.uploadForm.validate(valid => {
 				if (!valid) return;
+				this.passwordForm.show = true;
+				this.$nextTick(() => {
+					this.$refs['passwordForm'].resetFields();
+				})
+			});
+		},
+		toUploadFile() {
+			this.$refs['passwordForm'].validate((valid) => {
+				if(!valid) return;
 				this.switchToggle.upload = false; // set toggle
 				this.switchToggle.loading = this.$loading({
 					lock: true,
@@ -391,11 +441,13 @@ export default {
 				data = this.switchToggle.advanced
 					? Object.assign(this.uploadFormData, this.advancedData)
 					: this.uploadFormData;
+				data.Password = this.passwordForm.Password;
 				this.$axios
 					.post(this.$api.upload, data)
 					.then(res => {
 						this.switchToggle.upload = true;
 						if (res.data.Error === 0) {
+							this.passwordForm.show = false;
 							this.$store.dispatch("setUpload");
 							this.$router.push({
 								name: "transfer",
@@ -415,7 +467,7 @@ export default {
 						this.switchToggle.upload = true;
 						this.switchToggle.loading.close();
 					});
-			});
+			})
 		},
 		toGetPrice() {
 			if (!this.switchToggle.advanced) {
@@ -584,7 +636,7 @@ $inputFocusBg: #e0e2e6;
 					height: 18px;
 					line-height: 18px;
 					font-size: 14px;
-					width: 550px;
+					width: 480px;
 					overflow: hidden;
 					text-overflow: ellipsis;
 					color: rgba(32, 32, 32, 0.4);
@@ -678,6 +730,9 @@ $inputFocusBg: #e0e2e6;
 				opacity: 0.7;
 			}
 		}
+	}
+	.el-dialog__body {
+		padding-bottom: 0;
 	}
 }
 </style>

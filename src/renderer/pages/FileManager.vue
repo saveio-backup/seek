@@ -7,7 +7,7 @@
 				</div>
 				<div class="ft14 mr10 flex column between channel-info" :class="{'channel-not-have': !channelBind.ChannelId}">
 					<p class="channel-info-first user-no-select" :title="channelBind.ChannelId || 'Not Selected'">{{channelBind.ChannelId || 'Not Selected'}}</p>
-					<p class="channel-info-last user-no-select" :title="channelBind.TokenAddr" v-if="channelBind.TokenAddr">{{channelBind.TokenAddr.replace(channelBind.TokenAddr.slice(5,-5),'...')}}</p>
+					<p class="channel-info-last user-no-select" :title="channelBind.Address" v-if="channelBind.Address">{{channelBind.Address.replace(channelBind.Address.slice(5,-5),'...')}}</p>
 				</div>
 				<!-- {{location.href}}  -->
 				<div class="router">
@@ -34,25 +34,8 @@
 					<div class="flex jc-end">
 					</div>
 					<span class="mr20 ft24">{{filterFloat(channelBind.BalanceFormat || 0).toLocaleString('en-US')}}<span class="user-no-select"> SAVE</span></span>
-					<!-- <div class="coin-more"> -->
-						<!-- <span
-						ref="menuButton"
-						class="ofont ofont-menu-point cursor-pointer"
-						@click="switchToggle.assetSettingDialog = !switchToggle.assetSettingDialog"
-						>
-						</span> -->
-					<!-- </div> -->
-					<el-button @click="switchToggle.assetTransferDialog = true">Transfer</el-button>
-					<!-- <ul
-					 class="asset-opera"
-					 v-show="switchToggle.assetSettingDialog"
-					 v-seekclickoutside="{handler:'hideAssetSettingDialog', exclude:['menuButton']}"
-					>
-						<li @click="switchToggle.assetTransferDialog = true">
-							Transfer
-						</li>
-						<li @click="switchToggle.channelListDialog = true">Change Channel</li>
-					</ul> -->
+					<i class="ofont ofont-zhuanrang ft24 cursor-click cursor-pointer user-no-select light-blue"
+					@click="switchToggle.assetTransferDialog = true"></i>
 				</div>
 			</div>
 			<el-dialog

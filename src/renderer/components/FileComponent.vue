@@ -53,56 +53,56 @@
 							</div>
 						</div>
 					</template>
-        </el-table-column>
-        <el-table-column
-          label="File Hash"
-          prop="FileHash"
-          min-width="200"
-        ></el-table-column>
-        <el-table-column
-          label="File Size"
-          prop="FileSize"
-          width="100px"
-        >
-          <template slot-scope="scope">
-            <!-- api return 'KB' unit -->
-            <span>
-              {{util.bytesToSize(scope.row.FileSize * 1024)}}
-            </span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="Progress"
-          v-if="transferType !== 0"
-        >
-          <template slot-scope="scope">
-            <el-progress
-              class="file-progress"
-              :class="{'progressAnimate': scope.row.Status != 4}"
-              v-if="(scope.row.Type === 2) || (scope.row.Type === 1)"
-              :percentage="parseInt((scope.row.Progress||0)*100)"
-            ></el-progress>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="Status"
-          prop="Status"
-          width="180px"
-        >
-          <template slot-scope="scope">
-            <div v-if="scope.row.Status === 3">
-              <span
-                class="light-blue"
-                v-if="!scope.row.IsUploadAction"
-              >Download Completed</span>
-              <span
-                v-else
-                class="light-blue"
-              >Upload Completed</span>
-            </div>
-            <div v-else-if="scope.row.Status === 4">
-              <span class="light-error">{{scope.row.ErrMsg}}</span>
-              <!-- <span
+				</el-table-column>
+				<el-table-column
+				 label="File Hash"
+				 prop="FileHash"
+				min-width="200"
+				></el-table-column>
+				<el-table-column
+				 label="File Size"
+				 prop="FileSize"
+				 width="100px"
+				>
+					<template slot-scope="scope">
+						<!-- api return 'KB' unit -->
+						<span>
+							{{util.bytesToSize(scope.row.FileSize * 1024)}}
+						</span>
+					</template>
+				</el-table-column>
+				<el-table-column
+				 label="Progress"
+				 v-if="transferType !== 0"
+				>
+					<template slot-scope="scope">
+						<el-progress
+						 class="file-progress"
+						 :class="{'progressAnimate': scope.row.Status != 4}"
+						 v-if="(scope.row.Type === 2) || (scope.row.Type === 1)"
+						 :percentage="parseInt((scope.row.Progress||0)*100)"
+						></el-progress>
+					</template>
+				</el-table-column>
+				<el-table-column
+				 label="Status"
+				 prop="Status"
+				 width="180px"
+				>
+					<template slot-scope="scope">
+						<div v-if="scope.row.Status === 3">
+							<span
+							 class="light-blue"
+							 v-if="!scope.row.IsUploadAction"
+							>Download Completed</span>
+							<span
+							 v-else
+							 class="light-blue"
+							>Upload Completed</span>
+						</div>
+						<div v-else-if="scope.row.Status === 4">
+							<span class="light-error">{{scope.row.ErrMsg}}</span>
+							<!-- <span
 							 class="light-error"
 							 v-if="!scope.row.IsUploadAction"
 							>Download Failed</span>
@@ -263,8 +263,18 @@ export default {
 					ExpiredAt: 1555051356,
 					UpdatedAt: 0,
 					Profit: 0,
-					Privilege: 1
-				},
+					Privilege: 1,
+					Nodes: [
+							{
+								"HostAddr": "tcp://127.0.0.1:14001",
+								"UploadSize": 188
+							},
+							{
+								"HostAddr": "tcp://127.0.0.1:14002",
+								"UploadSize": 1406
+							}
+						]
+					},
 				{
 					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
 					FileName: "hahat.txt",
@@ -392,12 +402,18 @@ export default {
 			return parseFloat((progress / this.fileList.length).toFixed(2)) || 0;
 		},
 		fileList: function() {
+			// return this.mockFileList;
 			return this.$store.state.Transfer[this.TransferConfig[this.transferType]];
 		}
 	},
 	methods: {
 		uploadAgain(row) {
-			this.$axios.post(this.$api.uploadAgain).then(res => {
+			let url = this.$api.uploadRetry;
+			if(!row.IsUploadAction) url = this.$api.downloadRetry;
+			let params = {
+				Hash: row.FileHash
+			}
+			this.$axios.post(url, params).then(res => {
 				if (res.data.Error === 0) {
 					this.$message({
 						message: "Opeation Success",
@@ -409,7 +425,12 @@ export default {
 			});
 		},
 		uploadcontinue(row) {
-			this.$axios.post(this.$api.uploadcontinue).then(res => {
+			let url = this.$api.uploadResume;
+			if(!row.IsUploadAction) url = this.$api.downloadResume;
+			let params = {
+				Hash: row.FileHash
+			}
+			this.$axios.post(url, params).then(res => {
 				if (res.data.Error === 0) {
 					this.$message({
 						message: "Opeation Success",
@@ -421,7 +442,12 @@ export default {
 			});
 		},
 		uploadPause(row) {
-			this.$axios.post(this.$api.uploadPause).then(res => {
+			let url = this.$api.uploadPause;
+			if(!row.IsUploadAction) url = this.$api.downloadPause;
+			let params = {
+				Hash: row.FileHash
+			}
+			this.$axios.post(url, params).then(res => {
 				if (res.data.Error === 0) {
 					this.$message({
 						message: "Opeation Success",

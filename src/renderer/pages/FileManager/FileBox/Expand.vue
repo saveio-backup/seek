@@ -11,7 +11,7 @@
 				</div>
 				<el-button
 				 ref='getspace'
-				 @click="expandDialogVisible = true"
+				 @click="openExpandDialog"
 				>Storage</el-button>
 			</div>
 			<p class="theme-font-blue bold mt40 mb10 ft14 user-no-select">Space Adjust Record</p>
@@ -137,10 +137,12 @@
 								</div>
 							</div>
 						</div>
+					</div>
+					<div class="adjust">
 						<div class="adjust-item">
-							<div class="adjust-title theme-font-blue ft14"></div>
-							<div class="adjust-info theme-font-blue-40 ft14">
-								<span class="mr10">Available</span> {{mainCount?parseFloat(mainCount).toFixed(3):0}} SAVE
+							<div class="adjust-title theme-font-blue ft14">Password</div>
+							<div class="adjust-info theme-font-blue-40 ft14 mr20">
+								<el-input v-model="Password" placeholder="Please input password" class="grey-theme" type="password"></el-input>
 							</div>
 						</div>
 					</div>
@@ -167,404 +169,415 @@ const _NOW = new Date();
 // nextDay.setMinutes(59);
 // nextDay.setSeconds(59);
 export default {
-  mounted() {
-    this.hasUploadedFile();
-    this.getUserSpaceRecords();
-    // getUserSpaceRecords
-    let element = this.$refs.recordTable.bodyWrapper;
-    this.addListenScroll(element, 100, this.getUserSpaceRecords);
-  },
-  data() {
-    // const expired =
-    // 	this.$dateFormat.formatTimeByTimestamp(
-    // 		this.$store.state.Filemanager.space.ExpiredAt * 1000
-    // 	) || this.$dateFormat.formatTimeByTimestamp(now.getTime());
-    return {
-      util,
-      sizeUnit: 1048576,
-      sizeRange: {
-        MB: 1024,
-        GB: 1048576
-      },
-      adjustSize: 1,
-      switchToggle: { loadSwitch: true, loading: "" },
-      submitToggle: true, // commit toggle
-      expired: "",
-      isUploadedFile: true, // has user uploaded file in save
-      pickerOptions: {
-        disabledDate: date => {
-          // (this.space.ExpiredAt * 1000)
-          const now = new Date().getTime();
-          if (this.isUploadedFile) {
-            return (
-              date.getTime() - this.space.ExpiredAt * 1000 <= 0 ||
-              date.getTime() - now <= 0
-            );
-          } else {
-            return date.getTime() - now <= 0;
-          }
-        }
-      },
-      addInfo: {
-        Addr: window.localStorage.getItem("Address"),
-        Size: {
-          Type: 0,
-          Value: "1"
-        },
-        Second: {
-          Type: 0,
-          Value: "0"
-        }
-      },
-      cost: {},
-      expandDialogVisible: false,
-      Records: [],
-      limit: 20,
-      mockRecords: [
-        {
-          Size: 20480,
-          ExpiredAt: 1558600673,
-          Cost: 276480027
-        },
-        {
-          Size: 10240,
-          ExpiredAt: 1558597073,
-          Cost: 110592036
-        },
-        {
-          Size: 20480,
-          ExpiredAt: 1558600673,
-          Cost: 276480027
-        },
-        {
-          Size: 10240,
-          ExpiredAt: 1558597073,
-          Cost: 110592036
-        },
-        {
-          Size: 20480,
-          ExpiredAt: 1558600673,
-          Cost: 276480027
-        },
-        {
-          Size: 10240,
-          ExpiredAt: 1558597073,
-          Cost: 110592036
-        },
-        {
-          Size: 20480,
-          ExpiredAt: 1558600673,
-          Cost: 276480027
-        },
-        {
-          Size: 10240,
-          ExpiredAt: 1558597073,
-          Cost: 110592036
-        },
-        {
-          Size: 20480,
-          ExpiredAt: 1558600673,
-          Cost: 276480027
-        },
-        {
-          Size: 10240,
-          ExpiredAt: 1558597073,
-          Cost: 110592036
-        },
-        {
-          Size: 20480,
-          ExpiredAt: 1558600673,
-          Cost: 276480027
-        },
-        {
-          Size: 10240,
-          ExpiredAt: 1558597073,
-          Cost: 110592036
-        },
-        {
-          Size: 20480,
-          ExpiredAt: 1558600673,
-          Cost: 276480027
-        },
-        {
-          Size: 10240,
-          ExpiredAt: 1558597073,
-          Cost: 110592036
-        },
-        {
-          Size: 20480,
-          ExpiredAt: 1558600673,
-          Cost: 276480027
-        },
-        {
-          Size: 10240,
-          ExpiredAt: 1558597073,
-          Cost: 110592036
-        },
-        {
-          Size: 20480,
-          ExpiredAt: 1558600673,
-          Cost: 276480027
-        },
-        {
-          Size: 10240,
-          ExpiredAt: 1558597073,
-          Cost: 110592036
-        }
-      ]
-    };
-  },
-  watch: {
-    expandDialogVisible: function() {
-      // update adjustSize when open dialog
-      this.adjustSize = Math.ceil(
-        (this.space.Remain + this.space.Used) / this.sizeUnit
-      );
-    },
-    sizeUnit: function() {
-      console.log("Watch sizeUnit!!!");
+	mounted() {
+		this.hasUploadedFile();
+		this.getUserSpaceRecords();
+		// getUserSpaceRecords
+		let element = this.$refs.recordTable.bodyWrapper;
+		this.addListenScroll(element, 100, this.getUserSpaceRecords);
+	},
+	data() {
+		// const expired =
+		// 	this.$dateFormat.formatTimeByTimestamp(
+		// 		this.$store.state.Filemanager.space.ExpiredAt * 1000
+		// 	) || this.$dateFormat.formatTimeByTimestamp(now.getTime());
+		return {
+			util,
+			sizeUnit: 1048576,
+			sizeRange: {
+				MB: 1024,
+				GB: 1048576
+			},
+			Password: '',
+			adjustSize: 1,
+			switchToggle: { loadSwitch: true, loading: "" },
+			submitToggle: true, // commit toggle
+			expired: "",
+			isUploadedFile: true, // has user uploaded file in save
+			pickerOptions: {
+				disabledDate: date => {
+					// (this.space.ExpiredAt * 1000)
+					const now = new Date().getTime();
+					if (this.isUploadedFile) {
+						return (
+							date.getTime() - this.space.ExpiredAt * 1000 <= 0 ||
+							date.getTime() - now <= 0
+						);
+					} else {
+						return date.getTime() - now <= 0;
+					}
+				}
+			},
+			addInfo: {
+				Addr: window.localStorage.getItem("Address"),
+				Size: {
+					Type: 0,
+					Value: "1"
+				},
+				Second: {
+					Type: 0,
+					Value: "0"
+				}
+			},
+			cost: {},
+			expandDialogVisible: false,
+			Records: [],
+			limit: 20,
+			mockRecords: [
+				{
+					Size: 20480,
+					ExpiredAt: 1558600673,
+					Cost: 276480027
+				},
+				{
+					Size: 10240,
+					ExpiredAt: 1558597073,
+					Cost: 110592036
+				},
+				{
+					Size: 20480,
+					ExpiredAt: 1558600673,
+					Cost: 276480027
+				},
+				{
+					Size: 10240,
+					ExpiredAt: 1558597073,
+					Cost: 110592036
+				},
+				{
+					Size: 20480,
+					ExpiredAt: 1558600673,
+					Cost: 276480027
+				},
+				{
+					Size: 10240,
+					ExpiredAt: 1558597073,
+					Cost: 110592036
+				},
+				{
+					Size: 20480,
+					ExpiredAt: 1558600673,
+					Cost: 276480027
+				},
+				{
+					Size: 10240,
+					ExpiredAt: 1558597073,
+					Cost: 110592036
+				},
+				{
+					Size: 20480,
+					ExpiredAt: 1558600673,
+					Cost: 276480027
+				},
+				{
+					Size: 10240,
+					ExpiredAt: 1558597073,
+					Cost: 110592036
+				},
+				{
+					Size: 20480,
+					ExpiredAt: 1558600673,
+					Cost: 276480027
+				},
+				{
+					Size: 10240,
+					ExpiredAt: 1558597073,
+					Cost: 110592036
+				},
+				{
+					Size: 20480,
+					ExpiredAt: 1558600673,
+					Cost: 276480027
+				},
+				{
+					Size: 10240,
+					ExpiredAt: 1558597073,
+					Cost: 110592036
+				},
+				{
+					Size: 20480,
+					ExpiredAt: 1558600673,
+					Cost: 276480027
+				},
+				{
+					Size: 10240,
+					ExpiredAt: 1558597073,
+					Cost: 110592036
+				},
+				{
+					Size: 20480,
+					ExpiredAt: 1558600673,
+					Cost: 276480027
+				},
+				{
+					Size: 10240,
+					ExpiredAt: 1558597073,
+					Cost: 110592036
+				}
+			]
+		};
+	},
+	watch: {
+		expandDialogVisible: function() {
+			// update adjustSize when open dialog
+			this.adjustSize = Math.ceil(
+				(this.space.Remain + this.space.Used) / this.sizeUnit
+			);
+		},
+		sizeUnit: function() {
+			console.log("Watch sizeUnit!!!");
       if (this.isUploadedFile) {
         this.adjustSize = Math.max(
-          this.minSize,
-          Math.ceil((this.space.Remain + this.space.Used) / this.sizeUnit)
-		);
-		this.userSpaceCost();
+					this.minSize,
+					Math.ceil((this.space.Remain + this.space.Used) / this.sizeUnit)
+				);
+				this.userSpaceCost();
       }
-    }
-  },
-  computed: {
-    minSize() {
-      console.log("computed minSize!!!!");
-      if (this.isUploadedFile) {
-        return Math.ceil((this.space.Remain + this.space.Used) / this.sizeUnit);
-      } else {
-        return 1;
-      }
-    },
-    expired_old() {
-      if (this.$store.state.Filemanager.space.ExpiredAt) {
-        this.expired = new Date(
-          this.$store.state.Filemanager.space.ExpiredAt * 1000
-        );
-      } else {
-        this.expired = new Date(_NOW.getTime());
-      }
-      return (
-        this.$dateFormat.formatTimeByTimestamp(
-          this.$store.state.Filemanager.space.ExpiredAt * 1000
-        ) || this.$dateFormat.formatTimeByTimestamp(_NOW)
-      );
-    },
-    space() {
-      return this.$store.state.Filemanager.space;
-    },
-    takeSpace: function() {
-      if (this.space.Used > 0) {
-        return Math.max(
-          0.5,
-          (this.space.Used / (this.space.Remain + this.space.Used)) * 100
-        );
-      } else {
-        return 0;
-      }
-    },
-    mainCount: function() {
-      return this.$store.state.Wallet.mainCount;
-    }
-  },
-  methods: {
-    async hasUploadedFile() {
-      let addr = this.$api.getFileList + "0/0/0";
-      let result = await this.$axios.get(addr);
-      let data = result.data;
-      if (data.Error === 0 && data.Result.length) {
-        this.isUploadedFile = true;
-      } else {
-        this.isUploadedFile = false;
-      }
-    },
-    addListenScroll(element, distance, callback) {
-      element.addEventListener("scroll", function() {
-        /* 				console.log(`element.scrollTop is: ${element.scrollTop},
+		}
+	},
+	computed: {
+		minSize() {
+			if (this.isUploadedFile) {
+				return Math.ceil((this.space.Remain + this.space.Used) / this.sizeUnit);
+			} else {
+				return 1;
+			}
+		},
+		expired_old() {
+			if (this.$store.state.Filemanager.space.ExpiredAt) {
+				this.expired = new Date(
+					this.$store.state.Filemanager.space.ExpiredAt * 1000
+				);
+			} else {
+				this.expired = new Date(_NOW.getTime());
+			}
+			return (
+				this.$dateFormat.formatTimeByTimestamp(
+					this.$store.state.Filemanager.space.ExpiredAt * 1000
+				) || this.$dateFormat.formatTimeByTimestamp(_NOW)
+			);
+		},
+		space() {
+			return this.$store.state.Filemanager.space;
+		},
+		takeSpace: function() {
+			if (this.space.Used > 0) {
+				return Math.max(
+					0.5,
+					(this.space.Used / (this.space.Remain + this.space.Used)) * 100
+				);
+			} else {
+				return 0;
+			}
+		},
+		mainCount: function() {
+			return this.$store.state.Wallet.mainCount;
+		}
+	},
+	methods: {
+		async hasUploadedFile() {
+			let addr = this.$api.getFileList + "0/0/0";
+			let result = await this.$axios.get(addr);
+			let data = result.data;
+			if (data.Error === 0 && data.Result.length) {
+				this.isUploadedFile = true;
+			} else {
+				this.isUploadedFile = false;
+			}
+		},
+		addListenScroll(element, distance, callback) {
+			element.addEventListener("scroll", function() {
+				/* 				console.log(`element.scrollTop is: ${element.scrollTop},
 				element.clientHeight is ${element.clientHeight},
 				distance is ${distance},
 				element.scrollHeight is ${element.scrollHeight}
 				`); */
-        if (
-          element.scrollTop + element.clientHeight + distance >=
-          element.scrollHeight
-        ) {
-          console.log("scroll Toggle");
-          callback();
-        }
-      });
-    },
-    getUserSpaceRecords(amount) {
-      if (!this.switchToggle.loadSwitch && !amount) return;
-      this.switchToggle.loadSwitch = false;
-      let addr = null;
-      if (amount) {
-        addr =
-          this.$api.userspacerecords +
-          localStorage.getItem("Address") +
-          "/0/" +
-          amount;
-      } else {
-        addr =
-          this.$api.userspacerecords +
-          localStorage.getItem("Address") +
-          "/" +
-          this.Records.length +
-          "/" +
-          this.limit;
-      }
-      this.$axios(addr)
-        .then(res => {
-          if (res.data.Error === 0) {
-            if (res.data.Result.Records.length > 0) {
-              if (amount) {
-                this.Records = res.data.Result.Records;
-                this.switchToggle.loadSwitch = true;
-              } else {
-                this.Records = this.Records.concat(res.data.Result.Records);
-                this.switchToggle.loadSwitch = true;
-              }
-              return;
-            } else {
-              this.switchToggle.loadSwitch = false;
-              return;
-            }
-          } else {
-            this.switchToggle.loadSwitch = true;
-            return;
-          }
-        })
-        .catch(err => {
-          console.error(err);
-          this.switchToggle.loadSwitch = true;
-        });
-    },
-    setUserSpace() {
-      if (!this.submitToggle) return;
-      this.submitToggle = false;
-      this.switchToggle.loading = this.$loading({
-        lock: true,
-        text: "Upgrading",
-        target: ".loading-content"
-      });
-      this.setDateValue(this.expired);
-      this.setSizeValue();
-      // const addr = this.addInfo.Second.Value >= 0 ? "add" : "revoke";
-      this.$axios
-        .post(this.$api.userspace + "set", {
-          Addr: this.addInfo.Addr,
-          Second: {
-            Value: Math.abs(this.addInfo.Second.Value),
-            Type: this.addInfo.Second.Type
-          },
-          Size: {
-            Value: Math.abs(this.addInfo.Size.Value),
-            Type: this.addInfo.Size.Type
-          }
-        })
-        .then(res => {
-          if (res.data.Error === 0) {
-            this.expandDialogVisible = false;
-            this.$message({
-              message: "Adjust Successed!",
-              type: "success"
-            });
-            this.$store.dispatch("setSpace");
-            this.getUserSpaceRecords(this.Records.length + 1);
-            this.setDateValue(); // no param  rest date.Type = 0
-            this.cost = {};
-          } else {
-            this.$message({
-              message: "Adjust Error, please check your expiry date or wallet.",
-              type: "error"
-            });
-          }
-          this.submitToggle = true;
-          this.switchToggle.loading.close();
-        })
-        .catch(err => {
-          console.error(err);
-          this.submitToggle = true;
-          this.switchToggle.loading.close();
-        });
-    },
-    userSpaceCost() {
-      console.log("cost");
-      this.setSizeValue();
-      this.$axios
-        .post(this.$api.userspace + "cost", {
-          Addr: this.addInfo.Addr,
-          Second: {
-            Value: Math.abs(this.addInfo.Second.Value),
-            Type: this.addInfo.Second.Type
-          },
-          Size: {
-            Value: Math.abs(this.addInfo.Size.Value),
-            Type: this.addInfo.Size.Type
-          }
-        })
-        .then(res => {
-          if (res.data.Error === 0) {
-            this.cost = res.data.Result;
-          }else{
-			  this.cost.Fee =0;
-			  this.cost.FeeFormat = 0;
-			  this.cost.TransferType = 1;
-		  }
-        });
-    },
-    setSizeValue() {
-      // this.addInfo.Size.Value = this.adjustSize;
-      console.log(
-        `adjustSize is: ${this.adjustSize},\n sizeUnit is ${this.sizeUnit},\n Remain is ${this.space.Remain} \n Used is ${this.space.Used}`
-      );
-      if (
-        this.adjustSize * this.sizeUnit -
-          (this.space.Remain + this.space.Used) ===
-        0
-      ) {
-        this.addInfo.Size.Value = this.adjustSize * this.sizeUnit;
-        this.addInfo.Size.Type = 0;
-      } else if (
-        this.adjustSize * this.sizeUnit -
-          (this.space.Remain + this.space.Used) >
-        0
-      ) {
-        this.addInfo.Size.Value =
-          this.adjustSize * this.sizeUnit -
-          (this.space.Remain + this.space.Used);
-        this.addInfo.Size.Type = 1;
-      } else {
-        this.addInfo.Size.Value =
-          this.space.Remain + this.space.Used - this.adjustSize * this.sizeUnit;
-        this.addInfo.Size.Type = 2;
-      }
-    },
-    setDateValue(e) {
-      if (!e) {
-        this.addInfo.Second.Type = 0;
-        return;
-      }
-      console.log("expired: ", this.expired);
-      console.log("e is:", e);
-      this.addInfo.Second.Value = Math.floor(
-        (e.getTime() - new Date(this.expired_old).getTime()) / 1000
-      );
-      if (this.addInfo.Second.Value === 0) {
-        this.addInfo.Second.Type = 0;
-      } else if (this.addInfo.Second.Value > 0) {
-        this.addInfo.Second.Type = 1;
-      } else {
-        this.addInfo.Second.Type = 2;
-      }
-      this.userSpaceCost();
-    }
-  }
+				if (
+					element.scrollTop + element.clientHeight + distance >=
+					element.scrollHeight
+				) {
+					console.log("scroll Toggle");
+					callback();
+				}
+			});
+		},
+		getUserSpaceRecords(amount) {
+			if (!this.switchToggle.loadSwitch && !amount) return;
+			this.switchToggle.loadSwitch = false;
+			let addr = null;
+			if (amount) {
+				addr =
+					this.$api.userspacerecords +
+					localStorage.getItem("Address") +
+					"/0/" +
+					amount;
+			} else {
+				addr =
+					this.$api.userspacerecords +
+					localStorage.getItem("Address") +
+					"/" +
+					this.Records.length +
+					"/" +
+					this.limit;
+			}
+			this.$axios(addr)
+				.then(res => {
+					if (res.data.Error === 0) {
+						if (res.data.Result.Records.length > 0) {
+							if (amount) {
+								this.Records = res.data.Result.Records;
+								this.switchToggle.loadSwitch = true;
+							} else {
+								this.Records = this.Records.concat(res.data.Result.Records);
+								this.switchToggle.loadSwitch = true;
+							}
+							return;
+						} else {
+							this.switchToggle.loadSwitch = false;
+							return;
+						}
+					} else {
+						this.switchToggle.loadSwitch = true;
+						return;
+					}
+				})
+				.catch(err => {
+					console.error(err);
+					this.switchToggle.loadSwitch = true;
+				});
+		},
+		openExpandDialog() {
+			this.Password = "";
+			this.expandDialogVisible = true;
+		},
+		setUserSpaceCheckRes() {
+			if(this.Password.length === 0) {
+				this.$message('Please input password');
+				return false;
+			}
+			return true;
+		},
+		setUserSpace() {
+			if (!this.submitToggle) return;
+			const checkRes = this.setUserSpaceCheckRes();
+			if(!checkRes) return;
+			this.submitToggle = false;
+			this.switchToggle.loading = this.$loading({
+				lock: true,
+				text: "Upgrading",
+				target: ".loading-content"
+			});
+			this.setDateValue(this.expired);
+			this.setSizeValue();
+			// const addr = this.addInfo.Second.Value >= 0 ? "add" : "revoke";
+			this.$axios
+				.post(this.$api.userspace + "set", {
+					Addr: this.addInfo.Addr,
+					Second: {
+						Value: Math.abs(this.addInfo.Second.Value),
+						Type: this.addInfo.Second.Type
+					},
+					Size: {
+						Value: Math.abs(this.addInfo.Size.Value),
+						Type: this.addInfo.Size.Type
+					},
+					Password: Password
+				})
+				.then(res => {
+					if (res.data.Error === 0) {
+						this.expandDialogVisible = false;
+						this.$message({
+							message: "Adjust Successed!",
+							type: "success"
+						});
+						this.$store.dispatch("setSpace");
+						this.getUserSpaceRecords(this.Records.length + 1);
+						this.setDateValue(); // no param  rest date.Type = 0
+						this.cost = {};
+					} else {
+						this.$message({
+							message: "Adjust Error, please check your expiry date or wallet.",
+							type: "error"
+						});
+					}
+					this.submitToggle = true;
+					this.switchToggle.loading.close();
+				})
+				.catch(err => {
+					console.error(err);
+					this.submitToggle = true;
+					this.switchToggle.loading.close();
+				});
+		},
+		userSpaceCost() {
+			console.log("cost");
+			this.setSizeValue();
+			this.$axios
+				.post(this.$api.userspace + "cost", {
+					Addr: this.addInfo.Addr,
+					Second: {
+						Value: Math.abs(this.addInfo.Second.Value),
+						Type: this.addInfo.Second.Type
+					},
+					Size: {
+						Value: Math.abs(this.addInfo.Size.Value),
+						Type: this.addInfo.Size.Type
+					}
+				})
+				.then(res => {
+					if (res.data.Error === 0) {
+						this.cost = res.data.Result;
+					}else{
+						this.cost.Fee =0;
+						this.cost.FeeFormat = 0;
+						this.cost.TransferType = 1;
+					}
+				});
+		},
+		setSizeValue() {
+			// this.addInfo.Size.Value = this.adjustSize;
+			if (
+				this.adjustSize * this.sizeUnit -
+					(this.space.Remain + this.space.Used) ===
+				0
+			) {
+				this.addInfo.Size.Value = this.adjustSize * this.sizeUnit;
+				this.addInfo.Size.Type = 0;
+			} else if (
+				this.adjustSize * this.sizeUnit -
+					(this.space.Remain + this.space.Used) >
+				0
+			) {
+				this.addInfo.Size.Value =
+					this.adjustSize * this.sizeUnit -
+					(this.space.Remain + this.space.Used);
+				this.addInfo.Size.Type = 1;
+			} else {
+				this.addInfo.Size.Value =
+					this.space.Remain + this.space.Used - this.adjustSize * this.sizeUnit;
+				this.addInfo.Size.Type = 2;
+			}
+		},
+		setDateValue(e) {
+			if (!e) {
+				this.addInfo.Second.Type = 0;
+				return;
+			}
+			console.log("expired: ", this.expired);
+			console.log("e is:", e);
+			this.addInfo.Second.Value = Math.floor(
+				(e.getTime() - new Date(this.expired_old).getTime()) / 1000
+			);
+			if (this.addInfo.Second.Value === 0) {
+				this.addInfo.Second.Type = 0;
+			} else if (this.addInfo.Second.Value > 0) {
+				this.addInfo.Second.Type = 1;
+			} else {
+				this.addInfo.Second.Type = 2;
+			}
+			this.userSpaceCost();
+		}
+	}
 };
 </script>
 <style lang="scss">

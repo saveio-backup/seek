@@ -43,6 +43,7 @@
 							 :label='item.Symbol'
 							 :value='index'
 							 class="asset-item"
+							 :disabled="item.Symbol !== 'SAVE'"
 							>
 								<img
 								 class="asset-icon mr10"
@@ -70,7 +71,7 @@
 								<div class="balance theme-bold">{{parseFloat(balanceLists[balanceSelected].BalanceFormat).toFixed(3)}}</div>
 							</li>
 						</ul> -->
-						<div class="asset-display-li asset-display">
+						<div class="asset-display-li asset-display" :class="{'asset-display-li-select': childrenChain === 0}">
 							<div class="asset-display-logo">
 								<img
 								 v-if="balanceLists.length>0"
@@ -163,7 +164,7 @@
 								<p class="to user-no-select">{{item.To}} <i class="ofont ofont-fuzhi tx-copy" title="click to copy"  @click="clipText(item.To)"></i></p>
 							</div>
 							<div class="flex between bottom-info">
-								<div class="minerfee"><span class="theme-font-color user-no-select">Miner fee</span> <span class="theme-font-blue bold">{{item.FeeFormat}}</span></div>
+								<div class="minerfee"><span class="theme-font-color user-no-select">Miner fee</span> <span class="theme-font-blue bold">{{item.FeeFormat}}</span> {{balanceLists[balanceSelected].Symbol}}</div>
 								<div class="flex1"></div>
 								<div class="blockheight"><span class="theme-bold user-no-select">Block</span> {{item.BlockHeight}}</div>
 							</div>
@@ -272,7 +273,8 @@
 						</el-form>
 						<div class="flex between">
 							<span></span>
-							<div>Miner Fee: 0.01 {{balanceLists[balanceSelected].Symbol}}</div>
+							<div>Miner Fee: 0.01 {{balanceLists[balanceSelected].Symbol}}
+							</div>
 						</div>
 					</div>
 					<span slot="footer">
@@ -387,6 +389,7 @@ export default {
 				]
 			},
 			cancelReachBottomTxRequest: null,
+			childrenChain: 0,//children chain select index
 			mockTxRecords: [
 				{
 					Txid:
@@ -935,6 +938,7 @@ $light-grey: #f7f7f7;
 						font-size: 16px;
 						font-weight: bold;
 						margin-top: 10px;
+						border-radius: 2px;
 						&.asset-display {
 							padding: 0 15px;
 							.asset-display-logo {
@@ -976,6 +980,9 @@ $light-grey: #f7f7f7;
 							&.set-asset-display:active {
 								opacity: 1;
 							}
+						}
+						&.asset-display-li-select {
+							background: #E7E9EF;
 						}
 					}
 				}

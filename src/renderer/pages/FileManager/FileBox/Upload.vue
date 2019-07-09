@@ -94,7 +94,8 @@
 						 @change="setDuration"
 						>
 							<el-option
-							 v-for="item in baseKeys"
+							 v-for="(item,index) in baseKeys"
+							 v-show="index !== 0"
 							 :key="item"
 							 :label="item"
 							 :value="item"
@@ -234,7 +235,7 @@
 				<h2>Input Password</h2>
 				<div class="dialog-title-border"></div>
 			</div>
-			<div>
+			<div class="loading-content">
 				<el-form
 					ref="passwordForm"
 					:model="passwordForm"
@@ -246,14 +247,14 @@
 						<el-input type="password" placeholder="Please input password" v-model="passwordForm.Password"></el-input>
 					</el-form-item>
 				</el-form>
-			</div>
-			<div slot="footer">
-				<el-button @click="passwordForm.show = false">Cancel</el-button>
-				<el-button
-					type="primary"
-					class="primary"
-					@click="toUploadFile"
-				>Confirm</el-button>
+				<div slot="footer">
+					<el-button @click="passwordForm.show = false">Cancel</el-button>
+					<el-button
+						type="primary"
+						class="primary"
+						@click="toUploadFile"
+					>Confirm</el-button>
+				</div>
 			</div>
 		</el-dialog>
 	</div>
@@ -275,6 +276,7 @@ export default {
 			}
 		};
 		const BASE = {
+			Second: 1,
 			Day: 86400,
 			Month: 2592000,
 			Year: 31536000,
@@ -284,9 +286,9 @@ export default {
 		return {
 			baseKeys,
 			BASE,
-			verificationCycleSelected: baseKeys[1], // default Month
-			verificationCycleNumber: 1, // Integrity verification cycle (default 2 month)
-			storageCycleSelected: baseKeys[3], // default Permanent
+			verificationCycleSelected: baseKeys[0], // default Month
+			verificationCycleNumber: 300, // Integrity verification cycle (default 2 month)
+			storageCycleSelected: baseKeys[4], // default Permanent
 			storageCycleNumber: 1,
 			DefaultCopyNum: '', // axios.get
 			passwordForm: {
@@ -349,8 +351,8 @@ export default {
 				CopyNum: this.DefaultCopyNum,
 				WhiteList: []
 			};
-			this.verificationCycleSelected = this.baseKeys[1];
-			this.verificationCycleNumber = 1;
+			this.verificationCycleSelected = this.baseKeys[0];
+			this.verificationCycleNumber = 300;
 		},
 		setEncryptPassword() {
 			if (!this.encryptionToggle) {
@@ -435,11 +437,11 @@ export default {
 				this.switchToggle.loading = this.$loading({
 					lock: true,
 					text: "Uploading..",
-					target: "#upload"
+					target: ".loading-content"
 				});
 				let data = null;
 				data = this.switchToggle.advanced
-					? Object.assign(this.uploadFormData, this.advancedData)
+					? Object.assign({},this.uploadFormData, this.advancedData)
 					: this.uploadFormData;
 				data.Password = this.passwordForm.Password;
 				this.$axios
@@ -520,8 +522,8 @@ export default {
 };
 </script>
 <style lang="scss">
-$inputBg:#f1f3f7;
-$inputFocusBg: #e0e2e6;
+$inputBg: #EDEFF4;
+$inputFocusBg: #DEE2EA;
 #upload {
 	height: 100%;
 	background: #f9f9fb;
@@ -563,7 +565,8 @@ $inputFocusBg: #e0e2e6;
 				height: 32px;
 				border: 1px solid rgba(4, 15, 57, 0.2);
 				border-radius: 2px;
-				color: rgba(32, 32, 32, 0.4);
+				// color: rgba(32, 32, 32, 0.4);
+				color: rgba(32, 32, 32, 0.7);
 			}
 		}
 		.form-right {
@@ -579,7 +582,8 @@ $inputFocusBg: #e0e2e6;
 					border: 1px solid #dee2ea;
 					border-radius: 2px;
 					background: $inputBg;
-					color: rgba(32, 32, 32, 0.4);
+					// color: rgba(32, 32, 32, 0.4);
+					color: rgba(32, 32, 32, 0.7);
 					&:focus {
 						background: $inputFocusBg;
 					}
@@ -598,7 +602,8 @@ $inputFocusBg: #e0e2e6;
 				border: 1px solid #dee2ea;
 				border-radius: 2px;
 				background: $inputBg;
-				color: rgba(32, 32, 32, 0.4);
+				// color: rgba(32, 32, 32, 0.4);
+				color: rgba(32, 32, 32, 0.7);
 				&:focus {
 					background: $inputFocusBg;
 				}
@@ -617,7 +622,7 @@ $inputFocusBg: #e0e2e6;
 				border: 1px solid #dee2ea;
 				border-radius: 2px;
 				background: $inputBg;
-				color: rgba(32, 32, 32, 0.4);
+				color: rgba(32, 32, 32, 0.7);
 				&:focus {
 					background: $inputFocusBg;
 				}
@@ -639,7 +644,8 @@ $inputFocusBg: #e0e2e6;
 					width: 480px;
 					overflow: hidden;
 					text-overflow: ellipsis;
-					color: rgba(32, 32, 32, 0.4);
+					// color: rgba(32, 32, 32, 0.4);
+					color: rgba(32, 32, 32, 0.7);
 				}
 				.light-blue {
 					color: #409ef7;
@@ -676,6 +682,7 @@ $inputFocusBg: #e0e2e6;
 			.whitelist {
 				padding: 10px 15px;
 				background: #f1f3f7;
+				background: $inputBg;
 				border: 1px solid #dee2ea;
 				width: 100%;
 				height: 110px;

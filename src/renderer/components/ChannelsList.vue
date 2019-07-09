@@ -126,7 +126,7 @@
 				<h2>{{channelToggle.type === 'del' ? 'Close' : 'Open'}} Channel</h2>
 				<div class="dialog-title-border"></div>
 			</div>
-			<div class="loading-content">
+			<div class="loading-content loading-content-2">
 				<el-form
 				ref="channelForm"
 				:model="channelForm"
@@ -439,8 +439,8 @@ export default {
 				if(!valid) return;
 				this.channelToggle.loading = this.$loading({
 					lock: true,
-					text: "Processing..",
-					target: ".loading-content"
+					text: "Processing...",
+					target: ".loading-content-2"
 				});
 				let params = {
 					Password: this.channelForm.password,
@@ -465,9 +465,14 @@ export default {
 					this.$message.error(res.data.Desc || "Opeation Failed");
 				}
 				this.$store.dispatch('setChannelBalanceTotal');
-			}).finally(() => {
 				this.channelToggle.loading.close();
 				this.channelToggle.loading = null;
+			}).catch(() => {
+				this.channelToggle.loading.close();
+				this.channelToggle.loading = null;
+				this.$message.error(
+					"Opeation failed."
+				);
 			});
 		},
 		toChannelClose(params) {
@@ -483,9 +488,14 @@ export default {
 					this.$message.error(res.data.Desc || "Opeation Failed");
 				}
 				this.$store.dispatch('setChannelBalanceTotal');
-			}).finally(() => {
 				this.channelToggle.loading.close();
 				this.channelToggle.loading = null;
+			}).catch(() => {
+				this.channelToggle.loading.close();
+				this.channelToggle.loading = null;
+				this.$message.error(
+					"Opeation failed."
+				);
 			});
 		}
 	},

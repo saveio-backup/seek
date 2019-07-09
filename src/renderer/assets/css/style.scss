@@ -266,7 +266,34 @@ select {
     }
   }
 }
+.el-input.is-disabled {
+  .el-input__inner {
+    background-color: #F5F7FA !important;
+    border-color: #E4E7ED !important;
+    color: #C0C4CC !important;
+  }
+}
+.grey-theme-at-grey {
+  .el-input__inner {
+    background: #F1F3F7;
+    border-radius: 2px;
+    height: 40px;
+    color: #202020 !important;
+    border-radius: 2px;
+    border-color: #202020;
+    font-weight: 500;
+    border: none;
+    transition: all .3s ease;
+    background: #edeff4;
+    border: 1px solid #dee2ea;
+    position: relative;
 
+    &:focus {
+      background: #DEE2EA;
+      border: 1px solid #dee2ea !important;
+    }
+  }
+}
 .el-form {
   .el-form-item__label {
     color: #202020;

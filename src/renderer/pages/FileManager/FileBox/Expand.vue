@@ -481,7 +481,7 @@ export default {
 						Value: Math.abs(this.addInfo.Size.Value),
 						Type: this.addInfo.Size.Type
 					},
-					Password: Password
+					Password: this.Password
 				})
 				.then(res => {
 					if (res.data.Error === 0) {

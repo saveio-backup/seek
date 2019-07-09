@@ -91,7 +91,7 @@ const actions = {
             try {
               const progress = await axios.get(api.channelInitProgress)
               if (progress.data.Error === 0 && (progress.data.Result.Progress < 1)) { // but no Channel
-                rebackTqoCreateAccount(commit, progress.data.Result.Progress); // back to create account
+                rebackToCreateAccount(commit, progress.data.Result.Progress); // back to create account
                 this.dispatch('getChannelInitProgress'); // Loop loading progress
               } else if (progress.data.Error === 0) { // both Wallet and Channel exist
                 const result = data.Result;

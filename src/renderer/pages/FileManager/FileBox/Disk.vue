@@ -20,7 +20,7 @@
 				 v-model="filterInput"
 				 prefix-icon="el-icon-search"
 				 placeholder="search by name"
-				  class="grey-theme"
+				  class="grey-theme-at-grey"
 				></el-input>
 			</div>
 		</div>
@@ -36,6 +36,7 @@
 				 v-model="filterInput"
 				 prefix-icon="el-icon-search"
 				 placeholder="search by name"
+				 class="grey-theme-at-grey"
 				></el-input>
 			</div>
 		</div>
@@ -724,13 +725,14 @@ $theme-font-blue: #040f39;
 				height: 33px;
 				line-height: 33px;
 				border-radius: 17px;
-			// 	font-weight: normal;
-				background: #edeff4;
-			// 	color: rgba(32, 32, 32, 0.7);
+				// color: rgba(32, 32, 32, 0.7);
 				padding-left: 40px;
-				&:focus {
-					background: #dcdee3;
-				}
+				// border: 1px solid #dee2ea;
+				// background: #EDEFF4;
+				// &:focus {
+				// 	background: #DEE2EA;
+				// 	border: 1px solid #dee2ea !important;
+				// }
 			}
 			.el-input__prefix {
 				left: 10px;

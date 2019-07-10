@@ -50,6 +50,7 @@
 								<i class="ofont ofont-zhongxinshangchuan" title="upload again" v-show="scope.row.Status === 4"  @click="uploadAgain(scope.row)"></i>
 								<i class="ofont ofont-jixu" title="continue to upload" v-show="scope.row.Status === 0" @click="uploadcontinue(scope.row)"></i>
 								<i class="ofont ofont-zanting" title="pause to upload" v-show="scope.row.Status === 1 || scope.row.Status === 2" @click="uploadPause(scope.row)"></i>
+								<i v-show="scope.row.Nodes && scope.row.Nodes.length > 0" class="ofont ofont-xiangqingchakan" title="look process detail" @click="openDetailDialog(scope.row)"></i>
 							</div>
 						</div>
 					</template>
@@ -154,7 +155,6 @@
                 v-if="scope.row.FileHash"
               ><i
                   class="el-icon-delete-solid"
-                  @click="deleteFile(scope.row)"
                 ></i> </span> -->
             </div>
           </template>
@@ -197,11 +197,14 @@
       </div>
     </el-dialog>
     <el-dialog
-      title="Notice"
       :close-on-click-modal='false'
       :visible.sync="switchToggle.deleteDialog"
       center
     >
+			<div slot="title">
+        <h2>Notice</h2>
+        <div class="dialog-title-border"></div>
+      </div>
       <p>Are your Sure to Delete this File?</p>
       <p>{{executedFile.FileName}}</p>
       <div slot="footer">
@@ -211,6 +214,38 @@
           @click="toDeleteFile(executedFile.FileHash)"
         >Delete</el-button>
       </div>
+    </el-dialog>
+		<el-dialog
+      width="600px"
+      :close-on-click-modal='false'
+      :visible.sync="switchToggle.detailDialog"
+      center
+    >
+			<div slot="title">
+        <h2>Upload detail</h2>
+        <div class="dialog-title-border"></div>
+      </div>
+			<div class="loading-content node-wrapper">
+				<div class="node-count mt10"><span>Node:</span> {{fileDetailNodes.length}}</div>
+				<ul class="mb20">
+					<li class="flex between" v-for="(item,index) in fileDetailNodes" :key="item.HostAddr">
+						<div class="node-name">Node {{index+1}}</div>
+						<!-- more-than-5 class: gt text color is white lt text color is #202020-->
+						<div class="node-process">
+							<el-progress
+							:text-inside="true"
+							:stroke-width="14"
+							class="file-progress"
+							:percentage="parseInt((item.UploadSize/fileObjByHash[detailHash].FileSize)*100)"
+							:class="{'more-than-5': ((item.UploadSize/fileObjByHash[detailHash].FileSize) < 0.05),'progressAnimate': fileObjByHash[detailHash].Status != 4}"
+						></el-progress>
+						</div>
+					</li>
+				</ul>
+				<div slot="footer">
+					<el-button @click="switchToggle.detailDialog = false">OK</el-button>
+				</div>
+			</div>
     </el-dialog>
   </div>
 </template>
@@ -236,13 +271,15 @@ export default {
 				newTaskDialog: false,
 				transferItemDialog: false,
 				deleteDialog: false,
-				decryptDialog: false
+				decryptDialog: false,
+				detailDialog: false
 			},
 			TransferConfig: [
 				"completeTransferList",
 				"uploadTransferList",
 				"downloadTransferList"
 			],
+			detailHash: "",
 			transferItem: {},
 			transferTypeConfig: ["Completed", "Upload", "Download"],
 			fileSelected: {
@@ -272,11 +309,27 @@ export default {
 							{
 								"HostAddr": "tcp://127.0.0.1:14002",
 								"UploadSize": 1406
+							},
+							{
+								"HostAddr": "tcp://127.0.0.1:14002",
+								"UploadSize": 16
+							},
+							{
+								"HostAddr": "tcp://127.0.0.1:14002",
+								"UploadSize": 140
+							},
+							{
+								"HostAddr": "tcp://127.0.0.1:14002",
+								"UploadSize": 1406
+							},
+							{
+								"HostAddr": "tcp://127.0.0.1:14002",
+								"UploadSize": 1406
 							}
 						]
 					},
 				{
-					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
+					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsY11",
 					FileName: "hahat.txt",
 					Current: 500,
 					FileSize: 1536,
@@ -288,7 +341,7 @@ export default {
 					Privilege: 1
 				},
 				{
-					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
+					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYw10",
 					FileName: "hahat.txt",
 					Current: 500,
 					Status: 3,
@@ -300,7 +353,7 @@ export default {
 					Privilege: 1
 				},
 				{
-					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
+					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYw9",
 					FileName: "hahat.txt",
 					Current: 500,
 					FileSize: 1536,
@@ -313,7 +366,7 @@ export default {
 					Privilege: 1
 				},
 				{
-					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
+					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYw8",
 					FileName: "hahat.txt",
 					Current: 500,
 					FileSize: 1536,
@@ -325,7 +378,7 @@ export default {
 					Privilege: 1
 				},
 				{
-					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
+					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYw7",
 					FileName: "hahat.txt",
 					Current: 500,
 					FileSize: 1536,
@@ -336,7 +389,7 @@ export default {
 					Privilege: 1
 				},
 				{
-					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
+					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYw6",
 					FileName: "hahat.txt",
 					Current: 500,
 					FileSize: 1536,
@@ -347,7 +400,7 @@ export default {
 					Privilege: 1
 				},
 				{
-					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
+					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYw5",
 					FileName: "hahat.txt",
 					Current: 500,
 					FileSize: 1536,
@@ -358,7 +411,7 @@ export default {
 					Privilege: 1
 				},
 				{
-					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
+					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYw4",
 					FileName: "hahat.txt",
 					Current: 500,
 					FileSize: 1536,
@@ -369,7 +422,7 @@ export default {
 					Privilege: 1
 				},
 				{
-					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
+					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYw3",
 					FileName: "hahat.txt",
 					Current: 500,
 					FileSize: 1536,
@@ -380,7 +433,7 @@ export default {
 					Privilege: 1
 				},
 				{
-					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
+					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYw2",
 					FileName: "hahat.txt",
 					Current: 500,
 					FileSize: 1536,
@@ -402,11 +455,30 @@ export default {
 			return parseFloat((progress / this.fileList.length).toFixed(2)) || 0;
 		},
 		fileList: function() {
-			// return this.mockFileList;
-			return this.$store.state.Transfer[this.TransferConfig[this.transferType]];
+			// return this.mockFileList || [];
+			return this.$store.state.Transfer[this.TransferConfig[this.transferType]] || [];
+		},
+		fileObjByHash() {
+			let obj = {};
+			for(let value of this.fileList) {
+				obj[value.FileHash] = value;
+			}
+			return obj;
+		},
+		fileDetailNodes() {
+			if(!this.detailHash) return [];
+			let arr = this.fileObjByHash[this.detailHash] && this.fileObjByHash[this.detailHash]['Nodes'] || [];
+			arr.sort((a,b) => {
+				return a.HostAddr.localeCompare(b.HostAddr);
+			})
+			return arr;
 		}
 	},
 	methods: {
+		openDetailDialog(row) {
+			this.detailHash = row.FileHash;
+			this.switchToggle.detailDialog = true;
+		},
 		uploadAgain(row) {
 			let url = this.$api.uploadRetry;
 			if(!row.IsUploadAction) url = this.$api.downloadRetry;
@@ -591,38 +663,73 @@ $light-grey: #f9f9fb;
 				}
 			}
 		}
-		.file-progress {
-			&.progressAnimate {
-				.el-progress-bar__outer {
-					height: 16px;
-					background-size: 12px 12px;
-					background-image: linear-gradient(
-						45deg,
-						rgba(255, 255, 255, 0.4) 25%,
-						transparent 25%,
-						transparent 50%,
-						rgba(255, 255, 255, 0.4) 50%,
-						rgba(255, 255, 255, 0.4) 75%,
-						transparent 75%,
-						transparent
-					);
-					animation: progress-bar-stripes 1s linear infinite;
-				}
-			}
-			@keyframes progress-bar-stripes {
-				from {
-					background-position: -1rem 0;
-				}
-				to {
-					background-position: 0 0;
-				}
-			}
-		}
+
 	}
 	.action > span {
 		margin-right: 5px;
 		font-size: 18px;
 		cursor: pointer;
+	}
+	.file-progress {
+		&.progressAnimate {
+			.el-progress-bar__outer {
+				height: 16px;
+				background-size: 12px 12px;
+				background-image: linear-gradient(
+					45deg,
+					rgba(255, 255, 255, 0.4) 25%,
+					transparent 25%,
+					transparent 50%,
+					rgba(255, 255, 255, 0.4) 50%,
+					rgba(255, 255, 255, 0.4) 75%,
+					transparent 75%,
+					transparent
+				);
+				animation: progress-bar-stripes 1s linear infinite;
+			}
+		}
+		@keyframes progress-bar-stripes {
+			from {
+				background-position: -1rem 0;
+			}
+			to {
+				background-position: 0 0;
+			}
+		}
+	}
+	.node-wrapper {
+		ul {
+			max-height: 300px;
+			min-height: 100px;
+			overflow: auto;
+			li {
+				// margin: 15px 0;
+				padding: 15px 0;
+				border-bottom: 1px solid rgba(0, 0, 0, .1);
+				.node-name {
+					width:10%;
+					color: #202020;
+					text-overflow: ellipsis;
+					overflow: hidden;
+					white-space: nowrap;
+				}	
+				.node-process {
+					width: 88%;
+					.more-than-5 {
+						.el-progress-bar__innerText {
+							color: #202020;
+						}
+					}
+				}
+			}
+		}
+		.node-count {
+			text-align: right;
+			color: #2F8FF0;
+			span {
+				margin-right: 5px;
+			}
+		}	
 	}
 }
 </style>

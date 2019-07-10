@@ -738,8 +738,8 @@ $inputFocusBg: #DEE2EA;
 			}
 		}
 	}
-	.el-dialog__body {
-		padding-bottom: 0;
-	}
+	// .el-dialog__body {
+	// 	padding-bottom: 0;
+	// }
 }
 </style>

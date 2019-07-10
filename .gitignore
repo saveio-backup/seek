@@ -3,10 +3,8 @@ dist/electron/*
 dist/web/*
 build/*
 !build/icons
-resources/*/
-!resources/win/config.json
-!resources/win/front-config.json
-!resources/mac/front-config.json
+resources/win/edge.exe
+resources/mac/edge.exe
 coverage
 package-lock.json
 node_modules/

@@ -6,6 +6,7 @@ import {
 } from 'electron'
 import './ipcManager'
 import './protocols/protocols' // custom protocol
+
 import {
   windows,
   createWindow
@@ -28,6 +29,7 @@ const winURL = process.env.NODE_ENV === 'development' ?
 
 import * as node from "./node"
 node.setupConfig(app.getPath("appData"), app.getName())
+node.setFrontConfig(app.getPath("appData"), app.getName())
 app.on('ready', function () {
   node.run(app.getPath("appData"), app.getName())
   createWindow(winURL)

@@ -61,15 +61,70 @@ const baseDirPath = (appDataPath, appName) => {
     return baseDir
 }
 
+const frontcfgFilePath = (appDataPath, appName) => {
+    let cfgPath
+    if (getPlatform() == "win") {
+        cfgPath = `${appDataPath}\\${appName}\\front-config.json`
+    } else {
+        cfgPath = `${appDataPath}/${appName}/front-config.json`
+    }
+    return cfgPath
+}
+
+const setFrontConfig = async (appDataPath, appName) => {
+    
+    let cfgPath = frontcfgFilePath(appDataPath, appName)
+    console.log('!!!!!front-CfgPath: ', cfgPath);
+    console.log('!!!!appDataPath: ', appDataPath);
+    log.debug("[setFrontConfig] setup frontCfg")
+    log.debug("[setFrontConfig] appDataPath", appDataPath)
+    log.debug("[setFrontConfig] appname", cfgPath)
+    log.debug("[setFrontConfig] cfgPath", cfgPath)
+    const hasConfig = fs.existsSync(cfgPath)
+    const resourcesPath = (process.env.NODE_ENV === 'production') ?
+        path.join(path.dirname(appRoot), 'bin') :
+        path.join(appRoot, 'resources', getPlatform());
+    if (hasConfig) {
+        log.debug("already has front-config")
+        return
+    }
+    const srcCfgPath = `${resourcesPath}/front-config.json`
+    if (!fs.existsSync(srcCfgPath)) {
+        log.debug("front-config.json not exist")
+        return
+    }
+    let cfg = fs.readFileSync(srcCfgPath)
+    let cfgObj = JSON.parse(cfg.toString())
+    if (!cfgObj) {
+        log.error("front-cfg is no object ")
+        log.debug(cfg.toString())
+        return
+    }
+    const baseDir = baseDirPath(appDataPath, appName)
+    // cfgObj.Base.BaseDir = baseDir
+    // log.debug(JSON.stringify(cfgObj))
+    if (!fs.existsSync(baseDir)) {
+        log.debug("folder not exist")
+        fs.mkdirSync(baseDir)
+    }
+    try {
+        await fs.writeFileSync(cfgPath, JSON.stringify(cfgObj))
+    } catch (err) {
+        log.error("set up front-config error", err)
+        log.debug("exist", fs.existsSync(baseDir))
+    }
+    log.debug("setup front-config success")
+}
+
 const setupConfig = async (appDataPath, appName) => {
 
     let cfgPath = cfgFilePath(appDataPath, appName)
     console.log('!!!!!cfgPath: ', cfgPath);
     console.log('!!!!appDataPath: ', appDataPath);
-    log.debug("[setupConfig] setup cfg")
-    log.debug("[setupConfig] appDataPath", appDataPath)
-    log.debug("[setupConfig] appname", cfgPath)
-    log.debug("[setupConfig] cfgPath", cfgPath)
+    log.debug("[setupconfig] setup cfg")
+    log.debug("[setupconfig] appDataPath", appDataPath)
+    log.debug("[setupconfig] appname", cfgPath)
+    log.debug("[setupconfig] cfgPath", cfgPath)
     const hasConfig = fs.existsSync(cfgPath)
     const resourcesPath = (process.env.NODE_ENV === 'production') ?
         path.join(path.dirname(appRoot), 'bin') :
@@ -150,7 +205,9 @@ const run = (appDataPath, appName) => {
     })
 }
 
+// setFrontConfig,
 export {
     setupConfig,
-    run
+    run,
+    setFrontConfig
 }

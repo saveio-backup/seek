@@ -5,6 +5,8 @@ build/*
 !build/icons
 resources/*/
 !resources/win/config.json
+!resources/win/front-config.json
+!resources/mac/front-config.json
 coverage
 package-lock.json
 node_modules/

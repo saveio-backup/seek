@@ -1,6 +1,7 @@
 import {
   BrowserWindow,
-  BrowserView
+  BrowserView,
+  app
 } from 'electron'
 import dialogView from './dialogView'
 import {
@@ -12,6 +13,20 @@ import {
 import {
   URL
 } from 'url';
+
+let frontCfgObj = {}
+const fs = require("fs")
+const userDataPath = app.getPath('userData')
+const exist = fs.existsSync(`${userDataPath}/front-config.json`)
+console.log(exist);
+if (exist) {
+  const cfg = fs.readFileSync(`${userDataPath}/front-config.json`)
+  if (cfg) {
+    frontCfgObj = JSON.parse(cfg)
+    console.log('cfgObj', frontCfgObj.console);
+  }
+}
+
 export const windows = {}; // map of {[parentWindow.id] => BrowserWindow}
 export let dialogViewObj = null;
 // global.windows = windows;
@@ -68,7 +83,7 @@ class View {
         defaultEncoding: 'utf-8'
       }
     });
-    if (process.env.NODE_ENV === 'development' || process.platform === 'darwin') {
+    if (process.env.NODE_ENV === 'development' || process.platform === 'darwin' || frontCfgObj.console) {
       this.browserView.webContents.openDevTools();
     }
   }
@@ -318,7 +333,7 @@ export function createWindow(url) {
     }
   }
 
-  if (process.env.NODE_ENV === 'development' || process.platform === 'darwin') {
+  if (process.env.NODE_ENV === 'development' || process.platform === 'darwin' || frontCfgObj.console) {
     mainWindow.webContents.openDevTools();
   }
 

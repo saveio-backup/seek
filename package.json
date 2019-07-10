@@ -59,10 +59,15 @@
       "icon": "build/icons/icon.icns"
     },
     "win": {
-      "icon": "build/icons/icon.ico"
+      "icon": "build/icons/seeker.png"
     },
     "linux": {
       "icon": "build/icons"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine":true,
+      "allowToChangeInstallationDirectory": true
     }
   },
   "dependencies": {

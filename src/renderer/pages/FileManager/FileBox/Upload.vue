@@ -385,6 +385,12 @@ export default {
 		setWhiteList() {
 			// let array = this.wihteListString.replace(/[\s\r\n]/g, "").split(";");
 			// this.advancedData.WhiteList = array;
+			const whiteListRex = /^A[1-9A-HJ-NP-Za-km-z]{33}$/;
+			if(this.wihteListString.length != 0 && !whiteListRex.test(this.wihteListString)) {
+				this.$refs.saveTagInput.$refs.input.focus();
+				this.$message('whiteList format error');
+				return;
+			}
 			let inputValue = this.wihteListString.trim();
 			if (inputValue) {
 				this.advancedData.WhiteList.push(inputValue);
@@ -394,6 +400,7 @@ export default {
 			this.toGetPrice();
 		},
 		showWhitelistInput() {
+			
 			this.switchToggle.whiteListInput = true;
 			this.$nextTick(() => {
 				this.$refs.saveTagInput.$refs.input.focus();

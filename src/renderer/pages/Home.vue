@@ -41,7 +41,7 @@
 					</div>
 					<!-- pause !!! -->
 					<div class="user-revenue">
-						<p class="grey-xs bold ft14">Your profit:</p>
+						<p class="grey-xs bold ft14">Your Profit:</p>
 						<div class="flex between ai-center">
 							<span class="theme-bold ft36">{{revenueFormat.toLocaleString('en-US')}}</span>
 							<span class="bold ft16 unit">SAVE</span>

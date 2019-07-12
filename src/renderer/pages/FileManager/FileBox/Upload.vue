@@ -5,7 +5,7 @@
 				<h1 class="user-no-select">Upload File</h1>
 				<el-button
 					class="primary small"
-					@click="switchToggle.advanced = true"
+					@click="toAdvanced"
 					v-show="!switchToggle.advanced"
 				><i class="ofont ofont-gaoji"></i> Advanced</el-button>
 				<el-button
@@ -215,13 +215,13 @@
 					<p class="price-gas-fee">Gas fee: {{uploadPrice}} SAVE</p>
 					<p class="price-balance">Available: {{mainCount}} SAVE</p>
 				</div>
-				<div class="flex jc-center submit-foot">
+				<div class="flex jc-center submit-foot mb10">
 					<el-button @click="toEmptyUpload">Cancel</el-button>
 					<el-button
 					 type="primary"
 					 class="primary"
 					 @click="OpenPasswordDialog"
-					>Upload</el-button>
+					>Pay & Upload</el-button>
 				</div>
 			</div>
 		</div>
@@ -232,7 +232,7 @@
 		 center
 		>
 			<div slot="title">
-				<h2>Input Password</h2>
+				<h2>Confirm</h2>
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content">
@@ -246,6 +246,7 @@
 					prop="Password">
 						<el-input type="password" placeholder="Please input password" v-model="passwordForm.Password"></el-input>
 					</el-form-item>
+					<p class="mb20 tr">Confirm Payment: {{uploadPrice}} SAVE</p>
 				</el-form>
 				<div slot="footer">
 					<el-button @click="passwordForm.show = false">Cancel</el-button>
@@ -254,6 +255,24 @@
 						class="primary"
 						@click="toUploadFile"
 					>Confirm</el-button>
+				</div>
+			</div>
+		</el-dialog>
+		<el-dialog
+		:close-on-click-modal='false'
+		 :visible.sync="remindToggle.show"
+		 center>
+			<div slot="title">
+				<h2>Remind</h2>
+				<div class="dialog-title-border"></div>
+			</div>
+			<div class="loading-content">
+				<p class="tl mt10">The files uploaded by the advance mode will not occupy the space you have purchased, but you will need to pay separately according to the uploaded file conditions and parameter configuration.</p>
+				<p class="tr mt10 mb10">
+					<el-checkbox @change="updateAllowRemind" v-model="remindToggle.noAllowRemind">No longer remind</el-checkbox>
+				</p>
+				<div slot="footer">
+					<el-button class="primary" @click="remindToggle.show = false">Close</el-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -335,6 +354,11 @@ export default {
 				CopyNum: 1, // axios.get
 				// "Url": "oni://share/12nsdhu",
 				WhiteList: []
+			},
+			remindToggle: {
+				show: false,
+				// is not allow change upload model to advanced have remind dialog
+				noAllowRemind: localStorage.getItem("uploadToNoAllowRemind") || false
 			}
 		};
 	},
@@ -343,6 +367,16 @@ export default {
 		this.getfscontractsetting();
 	},
 	methods: {
+		// notAllowRemind change to set localstorage
+		updateAllowRemind() {
+			localStorage.setItem("uploadToNoAllowRemind", this.remindToggle.noAllowRemind);
+		},
+		//change upload model to advanced
+		toAdvanced() {
+			this.switchToggle.advanced = true;
+			this.setDataInterval();
+			if(!this.remindToggle.noAllowRemind) this.remindToggle.show = true;
+		},
 		advancedDataInit() {
 			this.advancedData = {
 				Duration: 0,
@@ -451,6 +485,7 @@ export default {
 					? Object.assign({},this.uploadFormData, this.advancedData)
 					: this.uploadFormData;
 				data.Password = this.passwordForm.Password;
+				data.StoreType = this.switchToggle.advanced ? 1 : 0;
 				this.$axios
 					.post(this.$api.upload, data)
 					.then(res => {
@@ -495,9 +530,10 @@ export default {
 				this.advancedData.Privilege === 2
 					? this.advancedData.WhiteList.length
 					: 0;
+			const StoreType = this.switchToggle.advanced ? 1 : 0;
 			this.$axios
 				.get(this.$api.uploadfee + path, {
-					params: { duration, interval, copynum, whitelistcount }
+					params: { duration, interval, copynum, whitelistcount, StoreType }
 				})
 				.then(res => {
 					console.log(res);
@@ -514,8 +550,8 @@ export default {
 		},
 		hiddenAdvanced() {
 			this.advancedDataInit();
-			this.setDataInterval();
 			this.switchToggle.advanced = false;
+			this.setDataInterval();
 		}
 	},
 	computed: {

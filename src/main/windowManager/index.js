@@ -1,7 +1,6 @@
 import {
   BrowserWindow,
-  BrowserView,
-  app
+  BrowserView
 } from 'electron'
 import dialogView from './dialogView'
 import {
@@ -14,18 +13,20 @@ import {
   URL
 } from 'url';
 
-let frontCfgObj = {}
-const fs = require("fs")
-const userDataPath = app.getPath('userData')
-const exist = fs.existsSync(`${userDataPath}/front-config.json`)
-console.log(exist);
-if (exist) {
-  const cfg = fs.readFileSync(`${userDataPath}/front-config.json`)
-  if (cfg) {
-    frontCfgObj = JSON.parse(cfg)
-    console.log('cfgObj', frontCfgObj.console);
-  }
-}
+import  frontCfgObj from './frontCfgObj'
+
+// let frontCfgObj = {}
+// const fs = require("fs")
+// const userDataPath = app.getPath('userData')
+// const exist = fs.existsSync(`${userDataPath}/front-config.json`)
+// console.log(exist);
+// if (exist) {
+//   const cfg = fs.readFileSync(`${userDataPath}/front-config.json`)
+//   if (cfg) {
+//     frontCfgObj = JSON.parse(cfg)
+//     console.log('cfgObj', frontCfgObj.console);
+//   }
+// }
 
 export const windows = {}; // map of {[parentWindow.id] => BrowserWindow}
 export let dialogViewObj = null;
@@ -200,6 +201,9 @@ class View {
   openComponent(path) {
     const views = this.browserWindow.views;
     const view = views.find(item => {
+      if(process.env.NODE_ENV !== 'development') {
+        return item.url.replace(/(\\|\/)/g, '').indexOf('index.html#'+path) >= 0;
+      }
       return item.url.replace(/(\\|\/)/g, '').indexOf(DEFAULT_URL.replace(/(\\|\/)/g, '') + '#' + path) >= 0
     })
     this.browserWindow.findView = view;

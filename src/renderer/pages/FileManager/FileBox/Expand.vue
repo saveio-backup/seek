@@ -140,7 +140,7 @@
 					</div>
 					<div class="adjust">
 						<div class="adjust-item">
-							<div class="adjust-title theme-font-blue ft14">Password</div>
+							<div class="adjust-title theme-font-blue ft14">Password:</div>
 							<div class="adjust-info theme-font-blue-40 ft14 mr20">
 								<el-input v-model="Password" placeholder="Please input password" class="grey-theme" type="password"></el-input>
 							</div>

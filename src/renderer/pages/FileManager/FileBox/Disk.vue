@@ -97,6 +97,16 @@
               </div>
             </template>
           </el-table-column>
+					<el-table-column
+						label="Model"
+						min-width="100"
+					>
+						<template slot-scope="scope">
+							<div>
+								{{scope.row.StoreType === 1 ? 'Advance' : scope.row.StoreType === 0 ? 'Normal' : ''}}
+							</div>
+						</template>
+					</el-table-column>
           <el-table-column label ="Owner" v-if="page ==='miner'">
             <template slot-scope="scope">
               <span class="td-grey">{{scope.row.OwnerAddress || 'Nameless'}}</span>
@@ -161,6 +171,7 @@
 		</div>
 		<el-dialog
 		 :close-on-click-modal='false'
+		 width='550px'
 		 :visible.sync="switchToggle.shareDialog"
 		 center
 		>
@@ -169,24 +180,29 @@
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content">
-				<p class="mt10 mb20 tl">{{executedFile.Name}}</p>
-				<el-input
-				readonly
-				:value="executedFile.Url || executedFile.Hash"
-				class="mb20 grey-theme icon-no-bg"
-				>
-					<template slot="append">
-						<i
-						class="el-icon-document addr_btn"
-						@click="toClipboard(executedFile.Url || executedFile.Hash)"
-						:aria-label='executedFile.Hash'
-						></i>
-					</template>
-				</el-input>
+				<p class="mt10 mb10 tl">File name:{{executedFile.Name}}</p>
+				<el-form>
+					<el-form-item label="Link:">
+						<el-input
+						readonly
+						:value="executedFile.Url || executedFile.Hash"
+						class="mb20 grey-theme icon-no-bg"
+						>
+							<template slot="append">
+								<i
+								class="el-icon-document addr_btn"
+								@click="toClipboard(executedFile.Url || executedFile.Hash)"
+								:aria-label='executedFile.Hash'
+								></i>
+							</template>
+						</el-input>
+					</el-form-item>
+				</el-form>
 				<div slot="footer">
 					<!-- slot="footer" -->
 					<el-button
 					type="primer"
+					class="primary"
 					@click="switchToggle.shareDialog = false"
 					>Close</el-button>
 				</div>
@@ -194,6 +210,7 @@
 		</el-dialog>
 		<!-- noStorageDialog -->
 		<el-dialog
+      width='600px'
 			:close-on-click-modal="false"
 			:visible.sync="switchToggle.noStorageDialog"
 			center
@@ -212,6 +229,7 @@
 		</el-dialog>
 		<el-dialog
 		 :close-on-click-modal='false'
+      width='600px'
 		 :visible.sync="switchToggle.deleteDialog"
 		 center
 		>

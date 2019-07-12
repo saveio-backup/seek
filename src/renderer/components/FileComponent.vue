@@ -46,24 +46,34 @@
           <template slot-scope="scope">
 						<div class="flex between">
 							<span>{{scope.row.FileName}}</span>
-							<div class="opera">
-								<i class="ofont ofont-zhongxinshangchuan" title="upload again" v-show="scope.row.Status === 4"  @click="uploadAgain(scope.row)"></i>
-								<i class="ofont ofont-jixu" title="continue to upload" v-show="scope.row.Status === 0" @click="uploadcontinue(scope.row)"></i>
-								<i class="ofont ofont-zanting" title="pause to upload" v-show="scope.row.Status === 1 || scope.row.Status === 2" @click="uploadPause(scope.row)"></i>
-								<i v-show="scope.row.Nodes && scope.row.Nodes.length > 0" class="ofont ofont-xiangqingchakan" title="look process detail" @click="openDetailDialog(scope.row)"></i>
-							</div>
+							<!-- <div class="opera"> -->
+								<!-- <i class="ofont ofont-zhongxinshangchuan" title="upload again" v-show="scope.row.Status === 4"  @click="uploadAgain(scope.row)"></i> -->
+								<!-- <i class="ofont ofont-jixu" title="continue to upload" v-show="scope.row.Status === 0" @click="uploadcontinue(scope.row)"></i> -->
+								<!-- <i class="ofont ofont-zanting" title="pause to upload" v-show="scope.row.Status === 1 || scope.row.Status === 2" @click="uploadPause(scope.row)"></i> -->
+								<!-- <i v-show="scope.row.Nodes && scope.row.Nodes.length > 0" class="ofont ofont-xiangqingchakan" title="look process detail" @click="openDetailDialog(scope.row)"></i> -->
+							<!-- </div> -->
+						</div>
+					</template>
+				</el-table-column>
+				<el-table-column
+					label="Model"
+					min-width="100"
+					v-if="transferType !== 2"
+				>
+					<template slot-scope="scope">
+						<div>
+							{{scope.row.StoreType === 1 ? 'Advance' : scope.row.StoreType === 0 ? 'Normal' : ''}}
 						</div>
 					</template>
 				</el-table-column>
 				<el-table-column
 				 label="File Hash"
 				 prop="FileHash"
-				min-width="200"
+					min-width="150"
 				></el-table-column>
 				<el-table-column
 				 label="File Size"
 				 prop="FileSize"
-				 width="100px"
 				>
 					<template slot-scope="scope">
 						<!-- api return 'KB' unit -->
@@ -75,6 +85,7 @@
 				<el-table-column
 				 label="Progress"
 				 v-if="transferType !== 0"
+				 min-width="100"
 				>
 					<template slot-scope="scope">
 						<el-progress
@@ -88,7 +99,7 @@
 				<el-table-column
 				 label="Status"
 				 prop="Status"
-				 width="180px"
+				 min-width="120px"
 				>
 					<template slot-scope="scope">
 						<div v-if="scope.row.Status === 3">
@@ -122,7 +133,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="Date" min-width="200">
+        <el-table-column label="Date" v-if="transferType === 0" min-width="100">
           <template slot-scope="scope">
             <span class="light-blue">
               {{$dateFormat.formatTimeByTimestamp(scope.row.UpdatedAt*1000)}}
@@ -131,31 +142,41 @@
         </el-table-column>
         <el-table-column
           align="center"
-          width="100px"
+          min-width="100px"
         >
           <template slot-scope="scope">
-            <div class="action">
+            <div class="action ">
               <!-- <span v-if="scope.row.status === 0">continue</span>
 							<span v-if="scope.row.status === 2">pause</span> -->
               <!-- <span v-if="!scope.row.IsUploadAction"><i class="el-icon-tickets"></i></span> -->
               <span
                 title="Open folder"
                 v-if="scope.row.Path"
-              ><i
-                  class="ofont ofont-file"
-                  @click="showInFolder(scope.row.Path)"
-                ></i></span>
+								@click="showInFolder(scope.row.Path)"
+							><i class="ofont ofont-file"></i></span>
               <span
                 title="Decrypt"
                 @click="setFileSelected(scope.row)"
                 v-if="!scope.row.IsUploadAction && scope.row.Path"
-              ><i class="el-icon-lock"></i> </span>
-              <!-- <span
-                title="Delete File"
-                v-if="scope.row.FileHash"
-              ><i
-                  class="el-icon-delete-solid"
-                ></i> </span> -->
+              ><i class="el-icon-lock"></i></span>
+							<span :title="scope.row.IsUploadAction ? 'upload again':'download again'"
+								v-show="scope.row.Status === 4"
+								@click="uploadOrDownloadAgain(scope.row)"
+							><i class="ofont ofont-zhongxinshangchuan"></i></span>
+							<span
+								:title="scope.row.IsUploadAction ? 'continue to upload':'continue to download'"
+								v-show="scope.row.Status === 0" 
+								@click="uploadOrDownloadContinue(scope.row)"
+							><i class="ofont ofont-jixu"></i></span>
+							<span
+								:title="scope.row.IsUploadAction ? 'pause to upload':'pause to download'"
+								v-show="scope.row.Status === 1 || scope.row.Status === 2" 
+								@click="uploadOrDownloadPause(scope.row)"
+							><i class="ofont ofont-zanting"></i></span>
+							<span
+								title="look process detail" @click="openDetailDialog(scope.row)"
+								v-show="scope.row.Nodes && scope.row.Nodes.length > 0 && scope.row.Status !== 3 && scope.row.IsUploadAction"
+							><i class="ofont ofont-xiangqingchakan"></i></span>
             </div>
           </template>
         </el-table-column>
@@ -180,16 +201,26 @@
       width="600px"
       :close-on-click-modal='false'
       :visible.sync="switchToggle.decryptDialog"
-      title="Input Password"
+			center
     >
+			<div slot="title">
+        <h2>Confirm</h2>
+        <div class="dialog-title-border"></div>
+      </div>
       <div class="loading-content">
-        <el-input
-          v-model="fileSelected.Password"
-          class="mt20"
-        ></el-input>
+				<el-form>
+					<el-form-item
+						label="Password:"
+					>
+						<el-input
+							v-model="fileSelected.Password"
+							class="grey-theme mb10"
+						></el-input>
+					</el-form-item>
+				</el-form>
         <div slot="footer">
           <el-button
-            class="done mt20"
+            class="primary"
             type="primary"
             @click="toDecrypt"
           >Confirm</el-button>
@@ -197,6 +228,7 @@
       </div>
     </el-dialog>
     <el-dialog
+      width='600px'
       :close-on-click-modal='false'
       :visible.sync="switchToggle.deleteDialog"
       center
@@ -236,14 +268,14 @@
 							:text-inside="true"
 							:stroke-width="14"
 							class="file-progress"
-							:percentage="parseInt((item.UploadSize/fileObjByHash[detailHash].FileSize)*100)"
-							:class="{'more-than-5': ((item.UploadSize/fileObjByHash[detailHash].FileSize) < 0.05),'progressAnimate': fileObjByHash[detailHash].Status != 4}"
+							:percentage="parseInt(((item.UploadSize?item.UploadSize:item.DownloadSize)/fileObjByHash[detailHash].FileSize)*100)"
+							:class="{'more-than-5': (((item.UploadSize?item.UploadSize:item.DownloadSize)/fileObjByHash[detailHash].FileSize) < 0.5),'progressAnimate': fileObjByHash[detailHash].Status != 4}"
 						></el-progress>
 						</div>
 					</li>
 				</ul>
 				<div slot="footer">
-					<el-button @click="switchToggle.detailDialog = false">OK</el-button>
+					<el-button class="primary" @click="switchToggle.detailDialog = false">OK</el-button>
 				</div>
 			</div>
     </el-dialog>
@@ -304,27 +336,33 @@ export default {
 					Nodes: [
 							{
 								"HostAddr": "tcp://127.0.0.1:14001",
-								"UploadSize": 188
+								"UploadSize": 188,
+								"DownloadSize": 188,
 							},
 							{
 								"HostAddr": "tcp://127.0.0.1:14002",
-								"UploadSize": 1406
+								"UploadSize": 188,
+								"DownloadSize": 1406
 							},
 							{
 								"HostAddr": "tcp://127.0.0.1:14002",
-								"UploadSize": 16
+								"UploadSize": 188,
+								"DownloadSize": 16
 							},
 							{
 								"HostAddr": "tcp://127.0.0.1:14002",
-								"UploadSize": 140
+								"UploadSize": 188,
+								"DownloadSize": 140
 							},
 							{
 								"HostAddr": "tcp://127.0.0.1:14002",
-								"UploadSize": 1406
+								"UploadSize": 188,
+								"DownloadSize": 1406
 							},
 							{
 								"HostAddr": "tcp://127.0.0.1:14002",
-								"UploadSize": 1406
+								"UploadSize": 1406,
+								"DownloadSize": 1406
 							}
 						]
 					},
@@ -479,7 +517,7 @@ export default {
 			this.detailHash = row.FileHash;
 			this.switchToggle.detailDialog = true;
 		},
-		uploadAgain(row) {
+		uploadOrDownloadAgain(row) {
 			let url = this.$api.uploadRetry;
 			if(!row.IsUploadAction) url = this.$api.downloadRetry;
 			let params = {
@@ -496,7 +534,7 @@ export default {
 				}
 			});
 		},
-		uploadcontinue(row) {
+		uploadOrDownloadContinue(row) {
 			let url = this.$api.uploadResume;
 			if(!row.IsUploadAction) url = this.$api.downloadResume;
 			let params = {
@@ -513,7 +551,7 @@ export default {
 				}
 			});
 		},
-		uploadPause(row) {
+		uploadOrDownloadPause(row) {
 			let url = this.$api.uploadPause;
 			if(!row.IsUploadAction) url = this.$api.downloadPause;
 			let params = {
@@ -628,47 +666,55 @@ $light-grey: #f9f9fb;
 				color: #1b1e2f;
 				// font-weight: bold;
 			}
-			.rowName {
-				.opera {
-					display: none;
-					color: rgba(32, 32, 32, 0.4);
-					font-weight: bold;
-					.ofont {
-						margin: 0px 4px;
-						font-size: 18px;
-						cursor: pointer;
-						&.ofont-zhongxinshangchuan {
-							font-size: 14px;
-						}
-						&.ofont-jixu {
-							font-size: 15px;
-						}
-						&.ofont-zanting {
-							font-size: 13px;
-						}
-						&:hover {
-							color: $light-blue;
-						}
-						&:active {
-							opacity: 0.7;
-						}
-					}
-				}
-				&:hover {
-					.opera {
-						display: flex;
-						justify-content: center;
-						align-items: center;
-					}
-				}
-			}
+			// .rowName {
+			// 	.opera {
+			// 		display: none;
+			// 		color: rgba(32, 32, 32, 0.4);
+			// 		font-weight: bold;
+			// 		.ofont {
+			// 			margin: 0px 4px;
+			// 			font-size: 18px;
+			// 			cursor: pointer;
+			// 			&.ofont-zhongxinshangchuan {
+			// 				font-size: 14px;
+			// 			}
+			// 			&.ofont-jixu {
+			// 				font-size: 15px;
+			// 			}
+			// 			&.ofont-zanting {
+			// 				font-size: 13px;
+			// 			}
+			// 			&:hover {
+			// 				color: $light-blue;
+			// 			}
+			// 			&:active {
+			// 				opacity: 0.7;
+			// 			}
+			// 		}
+			// 	}
+			// 	&:hover {
+			// 		.opera {
+			// 			display: flex;
+			// 			justify-content: center;
+			// 			align-items: center;
+			// 		}
+			// 	}
+			// }
 		}
-
 	}
 	.action > span {
 		margin-right: 5px;
 		font-size: 18px;
 		cursor: pointer;
+		.ofont-xiangqingchakan {
+			font-size: 18px;
+		}
+		&:hover {
+			color: $light-blue;
+		}
+		&:active {
+			opacity: 0.7;
+		}
 	}
 	.file-progress {
 		&.progressAnimate {

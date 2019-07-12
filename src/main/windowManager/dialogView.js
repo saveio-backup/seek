@@ -47,7 +47,7 @@ class dialogView {
     this.updateEvent();
     this.resize();
     this.loadDialog();
-    if (process.env.NODE_ENV === 'development' || process.platform === 'darwin') {
+    if (process.env.NODE_ENV === 'development') {
       this.browserView.webContents.openDevTools();
     }
   }

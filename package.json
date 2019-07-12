@@ -56,7 +56,7 @@
       ]
     },
     "mac": {
-      "icon": "build/icons/icon.icns"
+      "icon": "build/icons/seeker_logo_origin.png"
     },
     "win": {
       "icon": "build/icons/seeker.png"

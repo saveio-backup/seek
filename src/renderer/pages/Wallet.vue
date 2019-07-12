@@ -703,13 +703,13 @@ export default {
 			const asset = this.balanceLists[this.balanceSelected].Symbol || "";
 			const limit = 10;
 			const height = this.$store.state.Wallet.BlockHeight;
-			let skipTxCountFromblock = 0;
+			let skipTxCountFromBlock = 0;
 			if (height) {
 				let txRecords = this.txRecords;
 				for (let i = txRecords.length - 1; i >= 0; i--) {
 					const element = txRecords[i];
 					if (element.BlockHeight == height) {
-						skipTxCountFromblock += 1;
+						skipTxCountFromBlock += 1;
 					} else {
 						break;
 					}
@@ -725,8 +725,8 @@ export default {
 						limit +
 						"&height=" +
 						height +
-						"&skipTxCountFromblock=" +
-						skipTxCountFromblock,
+						"&skipTxCountFromBlock=" +
+						skipTxCountFromBlock,
 					{
 						cancelToken: new this.$axios.CancelToken(c => {
 							this.cancelReachBottomTxRequest = c;

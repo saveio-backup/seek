@@ -1,6 +1,9 @@
 import {
     platform
 } from 'os';
+import {
+    app
+} from 'electron'
 // const logP = console.log;
 // const keyWords = ['ProductRegistryImpl.Registry', 'stdout'];
 // console.log = function (data, ...args) {
@@ -72,7 +75,7 @@ const frontcfgFilePath = (appDataPath, appName) => {
 }
 
 const setFrontConfig = async (appDataPath, appName) => {
-    
+
     let cfgPath = frontcfgFilePath(appDataPath, appName)
     console.log('!!!!!front-CfgPath: ', cfgPath);
     console.log('!!!!appDataPath: ', appDataPath);
@@ -184,11 +187,15 @@ const run = (appDataPath, appName) => {
     log.debug("[run] run node++++++")
     let workerProcess = cp.spawn(cmdStr, ["--config", cfgDir], {
         cwd: resourcesPath,
+        detached: true
     })
     // let workerProcess = cp.exec(cmdStr, {
     //     cwd: resourcesPath,
     //     maxBuffer: 5000 * 1024,
-    // })
+    // })    
+    app.on('will-quit', () => {
+        process.kill(-workerProcess.pid)
+    })
     workerProcess.stdout.on('data', function (data) {
         // console.log('stdout: ' + data);
     });

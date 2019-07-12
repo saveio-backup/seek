@@ -77,7 +77,7 @@
 						> -->
 						<div class="save-log-desc user-no-select">
 							<!-- Seeker -->
-							<img src="./../assets/images/home-seeker.png" alt="" srcset="">
+							<img src="./../assets/images/home_seeker.svg" alt="" srcset="">
 						</div>
 					</div>
 					<div class="tologin">

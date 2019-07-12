@@ -4,7 +4,7 @@ dist/web/*
 build/*
 !build/icons
 resources/win/edge.exe
-resources/mac/edge.exe
+resources/mac/edge
 coverage
 package-lock.json
 node_modules/

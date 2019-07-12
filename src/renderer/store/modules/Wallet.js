@@ -81,13 +81,13 @@ function requestBalanceLists(commit) {
 }
 
 function requestTransActions(commit, config) {
-  let skipTxCountFromblock = 0;
+  let skipTxCountFromBlock = 0;
   let {
     asset = '',
       limit = state.txRecords.length >= 30 ? state.txRecords.length : 30,
       height = ''
   } = config || {};
-  axios.get(api.transactions + window.localStorage.Address + '/0?asset=' + asset + '&limit=' + limit + '&height=' + height + '&skipTxCountFromblock=' + skipTxCountFromblock || '', {
+  axios.get(api.transactions + window.localStorage.Address + '/0?asset=' + asset + '&limit=' + limit + '&height=' + height + '&skipTxCountFromBlock=' + skipTxCountFromBlock || '', {
       cancelToken: new CancelToken(c => {
         txTransSourceCancel = c;
       })

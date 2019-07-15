@@ -241,6 +241,7 @@
 								<el-input
 								 v-model="sendInfo.Amount"
 								 placeholder="Input amount"
+								 min='0'
 								 type="number"
 								 class="grey-theme"
 								 @blur="setFixed"
@@ -348,6 +349,14 @@ export default {
 		);
 	},
 	data() {
+		const validateMount = (rule, value ,callback) => {
+			const reg = /^[1-9](\d{0,8})\.(\d{1,9})$|^0\.(\d{0,8})[1-9]$|^[1-9](\d{0,8})$/
+			if(!reg.test(value)) {
+				callback(new Error('Please enter the correct format'));
+				return;
+			}
+			callback();
+		}
 		return {
 			QRCode,
 			date,
@@ -371,6 +380,10 @@ export default {
 						required: true,
 						message: "Please fill amount",
 						trigger: "blur"
+					},
+					{
+						validator: validateMount, 
+						trigger: 'blur'
 					}
 				],
 				To: [

@@ -27,6 +27,7 @@
 						 placeholder="Input password"
 						 class="grey-theme"
 						 @keyup.enter.native='exportPrivateKey'
+						 show-password
 						 type="password"
 						></el-input>
 					</el-form-item>

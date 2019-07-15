@@ -1,24 +1,28 @@
 <template>
 	<div
-	 id="import-account"
-	 class="account-wrap"
+		id="import-account"
+		class="account-wrap"
 	>
 		<div class="account-box">
 			<h2 class="account-title">Import Account</h2>
 			<ul class="account-type ft14">
 				<li>
-					<a  :class="{'account-select':importWay == 0}" @click="importWay = 0">Keystore File</a>
+					<a
+						:class="{'account-select':importWay == 0}"
+						@click="importWay = 0"
+					>Keystore File</a>
 				</li>
 				<li>
-					<a :class="{'account-select':importWay == 1}" @click="importWay = 1">Private Key</a>
+					<a
+						:class="{'account-select':importWay == 1}"
+						@click="importWay = 1"
+					>Private Key</a>
 				</li>
 			</ul>
 			<div class="el-form loading textarea">
 				<div v-if="importWay == 0">
 					<el-form>
-						<el-form-item
-						 label="Keystore File:"
-						>
+						<el-form-item label="Keystore File:">
 							<el-input
 								type="textarea"
 								v-model="data.Wallet"
@@ -29,19 +33,19 @@
 							>
 							</el-input>
 							<div class="tr mb20 input-opeation"><a
-								@click='importWallet'
-								class="light-blue ft14 cursor-pointer cursor-click user-no-select"
+									@click='importWallet'
+									class="light-blue ft14 cursor-pointer cursor-click user-no-select"
 								>Select Keystore File</a></div>
 						</el-form-item>
 						<el-form-item label="Password:">
 							<el-input
-							v-model="data.Password"
-							placeholder="Password"
-							type="password"
-							:rows="2"
-							class="grey-theme"
-							show-password
-							@keyup.enter.native='importAccont'
+								v-model="data.Password"
+								placeholder="Password"
+								type="password"
+								:rows="2"
+								class="grey-theme"
+								show-password
+								@keyup.enter.native='importAccont'
 							></el-input>
 						</el-form-item>
 					</el-form>
@@ -52,56 +56,62 @@
 				</div>
 				<div v-if="importWay ==1">
 					<el-form
-					 ref='privatekeyform'
-					 :model='privateKeyForm'
-					 :rules='privateKeyRules'
+						ref='privatekeyform'
+						:model='privateKeyForm'
+						:rules='privateKeyRules'
 					>
 						<el-form-item
-						 label="PrivateKey"
-						 prop='PrivateKey'
+							label="PrivateKey"
+							prop='PrivateKey'
 						>
-							<el-input v-model="privateKeyForm.PrivateKey" class="grey-theme"></el-input>
+							<el-input
+								v-model="privateKeyForm.PrivateKey"
+								class="grey-theme"
+							></el-input>
 							<div class="tr"><a
-								 @click='importPrivateKey'
-								 class="light-blue ft14 cursor-pointer user-no-select cursor-click input-opeation"
+									@click='importPrivateKey'
+									class="light-blue ft14 cursor-pointer user-no-select cursor-click input-opeation"
 								>Select Private Key File</a></div>
 						</el-form-item>
 						<el-form-item
-						 label="Username"
-						 prop='Label'
-						>
-							<el-input v-model="privateKeyForm.Label" class="grey-theme"></el-input>
-						</el-form-item>
-						<el-form-item
-						 label="Password"
-						 prop='Password'
+							label="User Name"
+							prop='Label'
 						>
 							<el-input
-							 v-model="privateKeyForm.Password"
-					 		 show-password
-							 type="password"
-							class="grey-theme"
+								v-model="privateKeyForm.Label"
+								class="grey-theme"
 							></el-input>
 						</el-form-item>
 						<el-form-item
-						 label="Confirm password"
-						 prop='Confirm'
+							label="Password"
+							prop='Password'
 						>
 							<el-input
-							 v-model="privateKeyForm.Confirm"
-							 @keyup.enter.native='importAccont'
-					 		 show-password
-							 type="password"
-							  class="grey-theme"
+								v-model="privateKeyForm.Password"
+								show-password
+								type="password"
+								class="grey-theme"
+							></el-input>
+						</el-form-item>
+						<el-form-item
+							label="Confirm password"
+							prop='Confirm'
+						>
+							<el-input
+								v-model="privateKeyForm.Confirm"
+								@keyup.enter.native='importAccont'
+								show-password
+								type="password"
+								class="grey-theme"
 							></el-input>
 						</el-form-item>
 					</el-form>
 				</div>
 				<div>
 					<el-button
-					 @click="importAccont"
-					 class="import-button account-button"
-					 type="primary"
+						@click="importAccont"
+						class="import-button account-button"
+						type="primary"
 					>Import</el-button>
 				</div>
 			</div>
@@ -134,7 +144,7 @@ export default {
 				PrivateKey: [
 					{
 						required: true,
-						message: "please fill your PrivateKey",
+						message: "please fill your Private Key",
 						trigger: "blur"
 					}
 				],
@@ -268,31 +278,31 @@ export default {
 			width: 120px;
 			height: 18px;
 			a {
-				color: rgba(32, 32, 32, .4);
+				color: rgba(32, 32, 32, 0.4);
 				position: relative;
 				cursor: pointer;
 				user-select: none;
 				&:hover {
 					opacity: 1;
-					color: #2F8FF0;
+					color: #2f8ff0;
 				}
 				&:active {
-					opacity: .7;
+					opacity: 0.7;
 				}
 				&::before {
 					content: "";
 					display: block;
 					width: 40px;
 					height: 2px;
-					background: #2F8FF0;
+					background: #2f8ff0;
 					position: absolute;
 					bottom: -10px;
 					left: 50%;
 					transform: translateX(-50%) scaleX(0);
-					transition: all .3s ease; 
+					transition: all 0.3s ease;
 				}
 				&.account-select {
-					color: #2F8FF0;
+					color: #2f8ff0;
 					&::before {
 						transform: translateX(-50%) scaleX(1);
 					}
@@ -313,15 +323,15 @@ export default {
 		font-size: 14px;
 		text-align: left;
 		height: 130px;
-		background: #EDEFF4;
+		background: #edeff4;
 		border-radius: 2px;
-		color: rgba(32, 32, 32, .7);
+		color: rgba(32, 32, 32, 0.7);
 		word-break: break-all;
 		border: 0;
 		word-break: break-all;
-		transition: all .3s ease;
+		transition: all 0.3s ease;
 		&:focus {
-			background: #E0E2E6;
+			background: #e0e2e6;
 		}
 	}
 	.input-opeation {

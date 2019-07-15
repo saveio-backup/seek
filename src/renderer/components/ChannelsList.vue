@@ -155,6 +155,7 @@
 						placeholder="Please input password"
 						@keyup.enter.native="toPeationChannel"
 						class="channel-opeation-input grey-theme"
+						show-password
 						type="password">
 						</el-input>
 					</el-form-item>

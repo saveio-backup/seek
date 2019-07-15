@@ -137,12 +137,24 @@
 								</div>
 							</div>
 						</div>
+						<div class="adjust-item">
+							<p class="adjust-title theme-font-blue ft14"></p>
+							<div class="adjust-info theme-font-blue-40 ft14">
+								<span class="mr10">Available</span> {{mainCount?parseFloat(mainCount).toFixed(3):0}} SAVE
+							</div>
+						</div>
 					</div>
 					<div class="adjust">
 						<div class="adjust-item">
 							<div class="adjust-title theme-font-blue ft14">Password:</div>
 							<div class="adjust-info theme-font-blue-40 ft14 mr20">
-								<el-input v-model="Password" placeholder="Please input password" class="grey-theme" type="password"></el-input>
+								<el-input 
+									v-model="Password"
+									placeholder="Please input password"
+									class="grey-theme"
+									show-password 
+									type="password"
+								></el-input>
 							</div>
 						</div>
 					</div>

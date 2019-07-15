@@ -269,7 +269,7 @@
 							:stroke-width="14"
 							class="file-progress"
 							:percentage="parseInt(((item.UploadSize?item.UploadSize:item.DownloadSize)/fileObjByHash[detailHash].FileSize)*100)"
-							:class="{'more-than-5': (((item.UploadSize?item.UploadSize:item.DownloadSize)/fileObjByHash[detailHash].FileSize) < 0.5),'progressAnimate': fileObjByHash[detailHash].Status != 4}"
+							:class="{'more-than-5': (((item.UploadSize?item.UploadSize:item.DownloadSize)/fileObjByHash[detailHash].FileSize) < 0.05),'progressAnimate': fileObjByHash[detailHash].Status != 4}"
 						></el-progress>
 						</div>
 					</li>

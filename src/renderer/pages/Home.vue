@@ -56,6 +56,7 @@
 				<div class="user-meta-right">
 					<p class="grey-xs bold ft14 user-meta-title">Channel Asset:</p>
 					<div id="channel-view" class="channelView"></div>
+					<div class="circle-assist"></div>
 				</div>
 			</div>
 			<el-button class="openAddChannel primary" @click="openAddChannel"><i class="el-icon-plus"></i> New Channel</el-button>
@@ -130,7 +131,7 @@ export default {
 					} else {
 						this.$refs.canvasBgObg.init();
 					}
-				}, 200)
+				}, 50)
 			})
 		};
 	},
@@ -163,8 +164,6 @@ export default {
 	},
 	methods: {
 		openAddChannel() {
-			console.log('this-->',this);
-			// return;
 			this.$refs.channelListObj.openOpen();
 		},
 		drawChannelView() {
@@ -178,8 +177,9 @@ export default {
 					{
 						name:'channel info:',
 						type:'pie',
-						radius: ['65%', '85%'],
+						radius: ['77%', '88%'],
 						avoidLabelOverlap: false,
+						backgroundColor: '#000111',
 						label: {
 							normal: {
 								show: false,
@@ -187,7 +187,7 @@ export default {
 								formatter: [
 									'{a|{b}}',
 									'{b|{d}%}',
-									'{c|{c}SAVE}'
+									'{c|{c} SAVE}'
 								].join('\n'),
 								rich: {
 									a: {
@@ -271,7 +271,13 @@ export default {
 							color: '#AFACAC'
 						}
 					},
-					color: ['#fff']
+					color: ['#fff'],
+					splitArea: {
+						show: true,
+						areaStyle: {
+							color: ["rgba(250,250,250,0.0)", "#F8F9FA"]
+						}
+					}
 				},
 				grid: {
 					left: '10%',
@@ -280,13 +286,13 @@ export default {
 					top: '10%'
 				},
 				series: [{
-					data: [20, 40, 70, 100, 120, 100, 50],
+					data: [20, 40, 70, 200, 120, 100, 50],
 					type: 'line',
 					areaStyle: {
 						normal: {
 							color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
 								offset: 0,
-								color: 'rgba(55, 142, 239, .39)'
+								color: 'rgba(55, 142, 239, .69)'
 							}, {
 								offset: 1,
 								color: 'rgba(54, 143, 239, .08)'
@@ -465,7 +471,7 @@ export default {
 				});
 			}
 			arr.map((channel) => {
-				channel['value'] = filterFloat(channel['BalanceFormat']).toLocaleString('en-US');
+				channel['value'] = parseFloat(channel['BalanceFormat']).toFixed(3);
 				channel['name'] = channel['ChannelId'];
 				return channel;
 			})
@@ -782,6 +788,7 @@ $input-color: rgba(203, 203, 203, 1);
 				border-radius: 6px;
 				padding: 5px 16px;
 				box-shadow: 0px 2px 20px 0px rgba(196,196,196,0.24);
+				position: relative;
 
 				.user-meta-title {
 					margin-top: 12px;
@@ -792,6 +799,17 @@ $input-color: rgba(203, 203, 203, 1);
 					width: 100%;
 					height: 180px;
 					margin-top: 30px;
+				}
+
+				.circle-assist {
+					width:128px;
+					height: 128px;
+					border-radius: 50%;
+					border: 3px solid #EAEFFD;
+					position: absolute;
+					top: 91px;
+					left: 50%;
+					transform: translateX(-66px);
 				}
 			}
 		}

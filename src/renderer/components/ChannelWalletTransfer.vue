@@ -49,11 +49,12 @@
 			 prop="Amount"
 			>
 				<el-input
+				 class="transfer-input grey-theme"
 				 type="number"
 				 min='0'
-				 class="transfer-input grey-theme"
 				 v-model="transferInfo.Amount"
-				 placeholder="input number"
+				 placeholder="input amount"
+				 @blur="setFixed"
 				>
 				</el-input>
 			</el-form-item>
@@ -82,6 +83,14 @@ export default {
 		}
 	},
 	data() {
+		const validateMount = (rule, value ,callback) => {
+			const reg = /^[1-9](\d{0,8})\.(\d{1,9})$|^0\.(\d{0,8})[1-9]$|^[1-9](\d{0,8})$/
+			if(!reg.test(value)) {
+				callback(new Error('Please enter the correct format'));
+				return;
+			}
+			callback();
+		}
 		return {
 			switchToggle: { loading: null },
 			filterFloat,
@@ -96,6 +105,10 @@ export default {
 						required: true,
 						message: "Please fill amount",
 						trigger: "blur"
+					},
+					{
+						validator: validateMount, 
+						trigger: 'blur'
 					}
 				],
 				Password: [
@@ -109,6 +122,11 @@ export default {
 		};
 	},
 	methods: {
+		setFixed() {
+			this.transferInfo.Amount = this.transferInfo.Amount
+				? parseFloat(this.transferInfo.Amount).toFixed(9)
+				: "";
+		},
 		toTransfer() {			
 			if (this.switchToggle.loading) return;
 			if (!this.channelSelected) {

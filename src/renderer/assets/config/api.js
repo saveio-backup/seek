@@ -45,7 +45,7 @@ const API = {
   uploadResume: HOST + VERSION + 'dsp/file/upload/resume',
   downloadResume: HOST + VERSION + 'dsp/file/download/resume',
   uploadPause: HOST + VERSION + 'dsp/file/upload/pause',
-  downloadPause: HOST + VERSION + 'dsp/file/download/download',
+  downloadPause: HOST + VERSION + 'dsp/file/download/pause',
   withdrawChannel: HOST + VERSION + 'channel/withdraw',
   depositChannel: HOST + VERSION + 'channel/deposit',
   channelInitProgress: HOST + VERSION + 'channel/init/progress',

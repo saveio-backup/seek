@@ -19,6 +19,9 @@ ipcMain.on('open-file-dialog', (event) => {
 })
 ipcMain.on('open-wallet-dialog', (event) => {
   dialog.showOpenDialog({
+    filters: [
+      {name: 'Text Type', extensions:['dat', 'text']}
+    ],
     properties: ['openFile']
   }, (files) => {
     if (files) {

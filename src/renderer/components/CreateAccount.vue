@@ -11,7 +11,7 @@
 			<h2
 			 class="theme-font-blue account-title"
 			 v-if="accountStatus === 0"
-			>{{step === 1?'Backup your Keystore File':step === 2?'Backup your private key(WIF)':step===3?'Private key(WIF) repeat':'Create Account'}}</h2>
+			>{{step === 1?'Backup Your Keystore File':step === 2?'Backup Your Private Key(WIF)':step===3?'Private Key(WIF) Repeat':'Create Account'}}</h2>
 			<div v-if="accountStatus === 0">
 				<el-form
 				 class="form"
@@ -21,7 +21,7 @@
 				 :rules='rules'
 				>
 					<el-form-item
-					 label="Username"
+					 label="User Name"
 					 prop='Label'
 					>
 						<el-input v-model="form.Label" class="grey-theme"></el-input>
@@ -100,7 +100,7 @@
 				>
 					<div class="flex between ai-center">
 						<!-- <p></p> -->
-						<el-button @click="importFile" class="primary margin-center mt20 mb20">Import private key(WIF) file</el-button>
+						<el-button @click="importFile" class="primary margin-center mt20 mb20">Import Private Key(WIF) File</el-button>
 					</div>
 					<el-input
 					 class="mt20 mb20 ft14 back-border-input-class grey-theme"

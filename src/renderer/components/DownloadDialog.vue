@@ -9,7 +9,7 @@
 		>
 			<el-form-item
 				class="theme-font-blue-bold"
-				label="Donload URL:"
+				label="Download URL:"
 			>
 				<el-input
 					v-model="downloadUrl"
@@ -18,18 +18,18 @@
 				></el-input>
 			</el-form-item>
 		</el-form>
-		<div class="text-center mt20">
-			<div class="flex between">
-				<p class="theme-font-blue">Name:</p>
-				<p class="theme-font-blue-70">{{downloadInfo.Name || ''}}</p>
+		<div class="mt20 text-center new-download-wrapper">
+			<div class="tl">
+				<p class="theme-font-blue new-download-left">Name:</p>
+				<p class="theme-font-blue-70 new-download-right">{{downloadInfo.Name || ''}}</p>
 			</div>
-			<div class="flex between mt20 mb20">
-				<p class="theme-font-blue">Size:</p>
-				<p class="theme-font-blue-70">{{downloadInfo.Size || ''}}</p>
+			<div class="tl">
+				<p class="theme-font-blue new-download-left">Size:</p>
+				<p class="theme-font-blue-70 new-download-right">{{downloadInfo.Size || '0'}} SAVE</p>
 			</div>
-			<div class="flex between">
-				<p class="theme-font-blue">Cost:</p>
-				<p class="theme-font-blue-70">{{downloadInfo.FeeFormat || ''}}</p>
+			<div class="tl">
+				<p class="theme-font-blue new-download-left">Cost:</p>
+				<p class="theme-font-blue-70 new-download-right">{{downloadInfo.FeeFormat || '0'}} SAVE</p>
 			</div>
 			<el-button
 			 class="mt40 primary"
@@ -80,6 +80,8 @@ export default {
 								transferType: 2
 							}
 						});
+					} else {
+						this.$message.error(res.data.Desc || "To Download Failed");
 					}
 				});
 		}
@@ -98,4 +100,20 @@ export default {
 	// 	border: none;
 	// }
 // }
+.new-download-wrapper {
+	div {
+		margin-bottom: 10px;
+		width: 100%;
+		overflow: hidden;
+		.new-download-left {
+			float: left;
+			width: 55px;
+			text-align: right;
+		}
+		.new-download-right {
+			float: right;
+			width: calc(100% - 60px);
+		}
+	}
+}
 </style>

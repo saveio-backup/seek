@@ -244,7 +244,13 @@
 					<el-form-item
 					label="Password:"
 					prop="Password">
-						<el-input type="password" placeholder="Please input password" v-model="passwordForm.Password"></el-input>
+						<el-input 
+							type="password"
+							class="grey-theme"
+						  placeholder="Please input password"
+							show-password
+							v-model="passwordForm.Password"
+						></el-input>
 					</el-form-item>
 					<p class="mb20 tr">Confirm Payment: {{uploadPrice}} SAVE</p>
 				</el-form>

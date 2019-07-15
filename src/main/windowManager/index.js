@@ -15,19 +15,6 @@ import {
 
 import  frontCfgObj from './frontCfgObj'
 
-// let frontCfgObj = {}
-// const fs = require("fs")
-// const userDataPath = app.getPath('userData')
-// const exist = fs.existsSync(`${userDataPath}/front-config.json`)
-// console.log(exist);
-// if (exist) {
-//   const cfg = fs.readFileSync(`${userDataPath}/front-config.json`)
-//   if (cfg) {
-//     frontCfgObj = JSON.parse(cfg)
-//     console.log('cfgObj', frontCfgObj.console);
-//   }
-// }
-
 export const windows = {}; // map of {[parentWindow.id] => BrowserWindow}
 export let dialogViewObj = null;
 // global.windows = windows;

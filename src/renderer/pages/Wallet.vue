@@ -676,6 +676,7 @@ export default {
 					this.setFixed();
 					const sendInfo = this.sendInfo;
 					sendInfo.Asset = this.balanceLists[this.balanceSelected].Symbol;
+					sendInfo.To = sendInfo.To.trim();
 					this.$axios
 						.post(this.$api.transfer, sendInfo)
 						.then(res => {

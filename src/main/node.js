@@ -132,14 +132,16 @@ const setupConfig = async (appDataPath, appName) => {
     const resourcesPath = (process.env.NODE_ENV === 'production') ?
         path.join(path.dirname(appRoot), 'bin') :
         path.join(appRoot, 'resources', getPlatform());
-    if (hasConfig) {
-        log.debug("already has config")
-        return
-    }
+    
     const srcCfgPath = `${resourcesPath}/config.json`
     if (!fs.existsSync(srcCfgPath)) {
         log.debug("config.json not exist")
         return
+    }
+    if (hasConfig) {
+        // log.debug("already has config")
+        // return
+        srcCfgPath = cfgPath;
     }
     let cfg = fs.readFileSync(srcCfgPath)
     let cfgObj = JSON.parse(cfg.toString())
@@ -155,6 +157,7 @@ const setupConfig = async (appDataPath, appName) => {
         log.debug("folder not exist")
         fs.mkdirSync(baseDir)
     }
+    cfgObj.NetworkId = 1563265186;
     try {
         await fs.writeFileSync(cfgPath, JSON.stringify(cfgObj))
     } catch (err) {

@@ -10,18 +10,24 @@
 		 @closeDialog="closeDialog"
 		 v-if="menuSelector === 'logout'"
 		></logout>
+		<is-create-channel
+		 @closeDialog="closeDialog"
+		 v-if="menuSelector === 'isCreateChannel'"
+		></is-create-channel>
 	</div>
 </template>
 
 <script>
 import { ipcRenderer } from "electron";
-import ExportPrivateKey from "./Dialog/ExportPrivateKey.vue";
-import Logout from "./Dialog/Logout.vue";
+import exportPrivateKey from "./Dialog/ExportPrivateKey.vue";
+import logout from "./Dialog/Logout.vue";
+import isCreateChannel from "./Dialog/IsCreateChannel.vue";
 export default {
 	name: "Dialog",
 	components: {
-		ExportPrivateKey,
-		Logout
+		exportPrivateKey,
+		logout,
+		isCreateChannel
 	},
 	data() {
 		return {

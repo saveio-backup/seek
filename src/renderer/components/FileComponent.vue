@@ -1,56 +1,56 @@
 <template>
-  <div class="file-component">
-    <div
-      class="top-progress"
-      v-if="transferType != 0"
-    >
-      <div class="flex1">
-        <p
-          class="grey-xs bold"
-          v-if="fileList.length>0"
-        >{{transferTypeConfig[transferType]}} Progress</p>
-        <p
-          class="grey-xs bold user-no-select"
-          v-else
-        >No task</p>
-        <el-progress
-          v-if="fileList.length>0"
-          class="progress"
-          :percentage="Math.ceil(totalProgress * 100)"
-        ></el-progress>
-      </div>
-      <el-button
-        v-if="transferType == 2"
-        @click="switchToggle.newTaskDialog=true"
-      >New Task</el-button>
-    </div>
-    <div
-      v-else
-      class="top-progress"
-    >
-      <p class="theme-font-blue ft14 user-no-select">Finished {{fileList.length}} Files</p>
-    </div>
-    <div class="file-list">
-      <el-table
-        :data="fileList"
-        border
-        empty-text='No Data'
-        height="100%"
-      >
-        <!-- :data="fileList" -->
-        <el-table-column
-          min-width="200"
-          label="File Name"
-          class-name="rowName"
-        >
-          <template slot-scope="scope">
+	<div class="file-component">
+		<div
+			class="top-progress"
+			v-if="transferType != 0"
+		>
+			<div class="flex1">
+				<p
+					class="grey-xs bold"
+					v-if="fileList.length>0"
+				>{{transferTypeConfig[transferType]}} Progress</p>
+				<p
+					class="grey-xs bold user-no-select"
+					v-else
+				>No task</p>
+				<el-progress
+					v-if="fileList.length>0"
+					class="progress"
+					:percentage="Math.ceil(totalProgress * 100)"
+				></el-progress>
+			</div>
+			<el-button
+				v-if="transferType == 2"
+				@click="switchToggle.newTaskDialog=true"
+			>New Task</el-button>
+		</div>
+		<div
+			v-else
+			class="top-progress"
+		>
+			<p class="theme-font-blue ft14 user-no-select">Finished {{fileList.length}} Files</p>
+		</div>
+		<div class="file-list">
+			<el-table
+				:data="fileList"
+				border
+				empty-text='No Data'
+				height="100%"
+			>
+				<!-- :data="fileList" -->
+				<el-table-column
+					min-width="200"
+					label="File Name"
+					class-name="rowName"
+				>
+					<template slot-scope="scope">
 						<div class="flex between">
 							<span>{{scope.row.FileName}}</span>
 							<!-- <div class="opera"> -->
-								<!-- <i class="ofont ofont-zhongxinshangchuan" title="upload again" v-show="scope.row.Status === 4"  @click="uploadAgain(scope.row)"></i> -->
-								<!-- <i class="ofont ofont-jixu" title="continue to upload" v-show="scope.row.Status === 0" @click="uploadcontinue(scope.row)"></i> -->
-								<!-- <i class="ofont ofont-zanting" title="pause to upload" v-show="scope.row.Status === 1 || scope.row.Status === 2" @click="uploadPause(scope.row)"></i> -->
-								<!-- <i v-show="scope.row.Nodes && scope.row.Nodes.length > 0" class="ofont ofont-xiangqingchakan" title="look process detail" @click="openDetailDialog(scope.row)"></i> -->
+							<!-- <i class="ofont ofont-zhongxinshangchuan" title="upload again" v-show="scope.row.Status === 4"  @click="uploadAgain(scope.row)"></i> -->
+							<!-- <i class="ofont ofont-jixu" title="continue to upload" v-show="scope.row.Status === 0" @click="uploadcontinue(scope.row)"></i> -->
+							<!-- <i class="ofont ofont-zanting" title="pause to upload" v-show="scope.row.Status === 1 || scope.row.Status === 2" @click="uploadPause(scope.row)"></i> -->
+							<!-- <i v-show="scope.row.Nodes && scope.row.Nodes.length > 0" class="ofont ofont-xiangqingchakan" title="look process detail" @click="openDetailDialog(scope.row)"></i> -->
 							<!-- </div> -->
 						</div>
 					</template>
@@ -67,13 +67,13 @@
 					</template>
 				</el-table-column>
 				<el-table-column
-				 label="File Hash"
-				 prop="FileHash"
+					label="File Hash"
+					prop="FileHash"
 					min-width="150"
 				></el-table-column>
 				<el-table-column
-				 label="File Size"
-				 prop="FileSize"
+					label="File Size"
+					prop="FileSize"
 				>
 					<template slot-scope="scope">
 						<!-- api return 'KB' unit -->
@@ -83,33 +83,33 @@
 					</template>
 				</el-table-column>
 				<el-table-column
-				 label="Progress"
-				 v-if="transferType !== 0"
-				 min-width="100"
+					label="Progress"
+					v-if="transferType !== 0"
+					min-width="100"
 				>
 					<template slot-scope="scope">
 						<el-progress
-						 class="file-progress"
-						 :class="{'progressAnimate': scope.row.Status != 4}"
-						 v-if="(scope.row.Type === 2) || (scope.row.Type === 1)"
-						 :percentage="parseInt((scope.row.Progress||0)*100)"
+							class="file-progress"
+							:class="{'progressAnimate': scope.row.Status != 4}"
+							v-if="(scope.row.Type === 2) || (scope.row.Type === 1)"
+							:percentage="parseInt((scope.row.Progress||0)*100)"
 						></el-progress>
 					</template>
 				</el-table-column>
 				<el-table-column
-				 label="Status"
-				 prop="Status"
-				 min-width="120px"
+					label="Status"
+					prop="Status"
+					min-width="120px"
 				>
 					<template slot-scope="scope">
 						<div v-if="scope.row.Status === 3">
 							<span
-							 class="light-blue"
-							 v-if="!scope.row.IsUploadAction"
+								class="light-blue"
+								v-if="!scope.row.IsUploadAction"
 							>Download Completed</span>
 							<span
-							 v-else
-							 class="light-blue"
+								v-else
+								class="light-blue"
 							>Upload Completed</span>
 						</div>
 						<div v-else-if="scope.row.Status === 4">
@@ -122,168 +122,181 @@
 							 v-else
 							 class="light-error"
 							>Upload Failed</span> -->
-            </div>
-            <div v-else-if='scope.row.Progress > 0'>
-              <span v-if="scope.row.Type === 1">Uploading</span>
-              <span v-if="scope.row.Type === 2">Downloading</span>
-            </div>
-            <div v-else>
-              <span v-if="scope.row.Type === 1">Sharding</span>
-              <span v-if="scope.row.Type === 2">Searching</span>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="Date" v-if="transferType === 0" min-width="100">
-          <template slot-scope="scope">
-            <span class="light-blue">
-              {{$dateFormat.formatTimeByTimestamp(scope.row.UpdatedAt*1000)}}
-            </span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          align="center"
-          min-width="100px"
-        >
-          <template slot-scope="scope">
-            <div class="action ">
-              <!-- <span v-if="scope.row.status === 0">continue</span>
+						</div>
+						<div v-else-if='scope.row.Progress > 0'>
+							<span v-if="scope.row.Type === 1">Uploading</span>
+							<span v-if="scope.row.Type === 2">Downloading</span>
+						</div>
+						<div v-else>
+							<span v-if="scope.row.Type === 1">Sharding</span>
+							<span v-if="scope.row.Type === 2">Searching</span>
+						</div>
+					</template>
+				</el-table-column>
+				<el-table-column
+					label="Date"
+					v-if="transferType === 0"
+					min-width="100"
+				>
+					<template slot-scope="scope">
+						<span class="light-blue">
+							{{$dateFormat.formatTimeByTimestamp(scope.row.UpdatedAt*1000)}}
+						</span>
+					</template>
+				</el-table-column>
+				<el-table-column
+					align="center"
+					min-width="100px"
+				>
+					<template slot-scope="scope">
+						<div class="action ">
+							<!-- <span v-if="scope.row.status === 0">continue</span>
 							<span v-if="scope.row.status === 2">pause</span> -->
-              <!-- <span v-if="!scope.row.IsUploadAction"><i class="el-icon-tickets"></i></span> -->
-              <span
-                title="Open folder"
-                v-if="scope.row.Path"
+							<!-- <span v-if="!scope.row.IsUploadAction"><i class="el-icon-tickets"></i></span> -->
+							<span
+								title="Open folder"
+								v-if="scope.row.Path"
 								@click="showInFolder(scope.row.Path)"
 							><i class="ofont ofont-file"></i></span>
-              <span
-                title="Decrypt"
-                @click="setFileSelected(scope.row)"
-                v-if="!scope.row.IsUploadAction && scope.row.Path"
-              ><i class="el-icon-lock"></i></span>
-							<span :title="scope.row.IsUploadAction ? 'upload again':'download again'"
-								v-show="scope.row.Status === 4"
+							<span
+								title="Decrypt"
+								@click="setFileSelected(scope.row)"
+								v-if="!scope.row.IsUploadAction && scope.row.Path"
+							><i class="el-icon-lock"></i></span>
+							<span
+								:title="scope.row.IsUploadAction ? 'upload again':'download again'"
+								v-show="scope.row.Status === 4 || (!scope.row.IsUploadAction && scope.row.Status === 3)"
 								@click="uploadOrDownloadAgain(scope.row)"
 							><i class="ofont ofont-zhongxinshangchuan"></i></span>
 							<span
 								:title="scope.row.IsUploadAction ? 'continue to upload':'continue to download'"
-								v-show="scope.row.Status === 0" 
+								v-show="scope.row.Status === 0"
 								@click="uploadOrDownloadContinue(scope.row)"
 							><i class="ofont ofont-jixu"></i></span>
 							<span
 								:title="scope.row.IsUploadAction ? 'pause to upload':'pause to download'"
-								v-show="scope.row.Status === 1 || scope.row.Status === 2" 
+								v-show="scope.row.Status === 1 || scope.row.Status === 2"
 								@click="uploadOrDownloadPause(scope.row)"
 							><i class="ofont ofont-zanting"></i></span>
 							<span
-								title="look process detail" @click="openDetailDialog(scope.row)"
-								v-show="scope.row.Nodes && scope.row.Nodes.length > 0 && scope.row.Status !== 3 && scope.row.IsUploadAction"
+								title="look detail"
+								@click="openDetailDialog(scope.row)"
+								v-show="((scope.row.Nodes && scope.row.Nodes.length > 0) || scope.row.Status === 3) && scope.row.IsUploadAction"
 							><i class="ofont ofont-xiangqingchakan"></i></span>
-            </div>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
-    <el-dialog
-      width='600px'
-      center
-      :close-on-click-modal='false'
-      :visible.sync="switchToggle.newTaskDialog"
-    >
-      <div slot="title">
-        <h2>New Download</h2>
-        <div class="dialog-title-border"></div>
-      </div>
-      <download-dialog
-        v-if="switchToggle.newTaskDialog"
-        v-on:closedialog='hideTaskDialog'
-      ></download-dialog>
-    </el-dialog>
-    <el-dialog
-      width="600px"
-      :close-on-click-modal='false'
-      :visible.sync="switchToggle.decryptDialog"
+						</div>
+					</template>
+				</el-table-column>
+			</el-table>
+		</div>
+		<el-dialog
+			width='600px'
 			center
-    >
+			:close-on-click-modal='false'
+			:visible.sync="switchToggle.newTaskDialog"
+		>
 			<div slot="title">
-        <h2>Confirm</h2>
-        <div class="dialog-title-border"></div>
-      </div>
-      <div class="loading-content">
+				<h2>New Download</h2>
+				<div class="dialog-title-border"></div>
+			</div>
+			<download-dialog
+				v-if="switchToggle.newTaskDialog"
+				v-on:closedialog='hideTaskDialog'
+			></download-dialog>
+		</el-dialog>
+		<el-dialog
+			width="600px"
+			:close-on-click-modal='false'
+			:visible.sync="switchToggle.decryptDialog"
+			center
+		>
+			<div slot="title">
+				<h2>Confirm</h2>
+				<div class="dialog-title-border"></div>
+			</div>
+			<div class="loading-content">
 				<el-form>
-					<el-form-item
-						label="Password:"
-					>
+					<el-form-item label="Password:">
 						<el-input
 							v-model="fileSelected.Password"
 							class="grey-theme mb10"
 						></el-input>
 					</el-form-item>
 				</el-form>
-        <div slot="footer">
-          <el-button
-            class="primary"
-            type="primary"
-            @click="toDecrypt"
-          >Confirm</el-button>
-        </div>
-      </div>
-    </el-dialog>
-    <el-dialog
-      width='600px'
-      :close-on-click-modal='false'
-      :visible.sync="switchToggle.deleteDialog"
-      center
-    >
-			<div slot="title">
-        <h2>Notice</h2>
-        <div class="dialog-title-border"></div>
-      </div>
-      <p>Are your Sure to Delete this File?</p>
-      <p>{{executedFile.FileName}}</p>
-      <div slot="footer">
-        <el-button @click="switchToggle.deleteDialog = false">Cancel</el-button>
-        <el-button
-          type="danger"
-          @click="toDeleteFile(executedFile.FileHash)"
-        >Delete</el-button>
-      </div>
-    </el-dialog>
+				<div slot="footer">
+					<el-button
+						class="primary"
+						type="primary"
+						@click="toDecrypt"
+					>Confirm</el-button>
+				</div>
+			</div>
+		</el-dialog>
 		<el-dialog
-      width="600px"
-      :close-on-click-modal='false'
-      :visible.sync="switchToggle.detailDialog"
-      center
-    >
+			width='600px'
+			:close-on-click-modal='false'
+			:visible.sync="switchToggle.deleteDialog"
+			center
+		>
 			<div slot="title">
-        <h2>Upload detail</h2>
-        <div class="dialog-title-border"></div>
-      </div>
+				<h2>Notice</h2>
+				<div class="dialog-title-border"></div>
+			</div>
+			<p>Are your Sure to Delete this File?</p>
+			<p>{{executedFile.FileName}}</p>
+			<div slot="footer">
+				<el-button @click="switchToggle.deleteDialog = false">Cancel</el-button>
+				<el-button
+					type="danger"
+					@click="toDeleteFile(executedFile.FileHash)"
+				>Delete</el-button>
+			</div>
+		</el-dialog>
+		<el-dialog
+			width="600px"
+			:close-on-click-modal='false'
+			:visible.sync="switchToggle.detailDialog"
+			center
+		>
+			<div slot="title">
+				<h2>Upload detail</h2>
+				<div class="dialog-title-border"></div>
+			</div>
 			<div class="loading-content node-wrapper">
 				<div class="node-count mt10"><span>Node:</span> {{fileDetailNodes.length}}</div>
 				<ul class="mb20">
-					<li class="flex between" v-for="(item,index) in fileDetailNodes" :key="item.HostAddr">
+					<li
+						class="flex between"
+						v-for="(item,index) in fileDetailNodes"
+						:key="item.HostAddr"
+					>
 						<div class="node-name">Node {{index+1}}</div>
 						<!-- more-than-5 class: gt text color is white lt text color is #202020-->
 						<div class="node-process">
 							<el-progress
-							:text-inside="true"
-							:stroke-width="14"
-							class="file-progress"
-							:percentage="parseInt(((item.UploadSize?item.UploadSize:item.DownloadSize)/fileObjByHash[detailHash].FileSize)*100)"
-							:class="{'more-than-5': (((item.UploadSize?item.UploadSize:item.DownloadSize)/fileObjByHash[detailHash].FileSize) < 0.05),'progressAnimate': fileObjByHash[detailHash].Status != 4}"
-						></el-progress>
+								:text-inside="true"
+								:stroke-width="14"
+								class="file-progress"
+								:percentage="parseInt(((item.UploadSize?item.UploadSize:item.DownloadSize)/fileObjByHash[detailId].FileSize)*100)"
+								:class="{'more-than-5': (((item.UploadSize?item.UploadSize:item.DownloadSize)/fileObjByHash[detailId].FileSize) < 0.05),'progressAnimate': fileObjByHash[detailId].Status != 4}"
+							></el-progress>
 						</div>
 					</li>
 				</ul>
 				<div slot="footer">
-					<el-button class="primary" @click="switchToggle.detailDialog = false">OK</el-button>
+					<el-button
+						class="primary"
+						@click="switchToggle.detailDialog = false"
+					>OK</el-button>
 				</div>
 			</div>
-    </el-dialog>
-  </div>
+		</el-dialog>
+		<upload-file-detail-dialog @closeUploadFileDetail="toCloseUploadFileDetail" :hash="uploadDetailHash" v-if="transferType === 0"></upload-file-detail-dialog>
+	</div>
 </template>
 <script>
 import util from "../assets/config/util";
 import downloadDialog from "./DownloadDialog.vue";
+import uploadFileDetailDialog from "./UploadFileDetailDialog.vue";
 import { shell } from "electron";
 export default {
 	props: {
@@ -293,7 +306,8 @@ export default {
 		}
 	},
 	components: {
-		downloadDialog
+		downloadDialog,
+		uploadFileDetailDialog
 	},
 	data() {
 		return {
@@ -311,7 +325,8 @@ export default {
 				"uploadTransferList",
 				"downloadTransferList"
 			],
-			detailHash: "",
+			detailId: "",
+			uploadDetailHash: "",
 			transferItem: {},
 			transferTypeConfig: ["Completed", "Upload", "Download"],
 			fileSelected: {
@@ -334,38 +349,38 @@ export default {
 					Profit: 0,
 					Privilege: 1,
 					Nodes: [
-							{
-								"HostAddr": "tcp://127.0.0.1:14001",
-								"UploadSize": 188,
-								"DownloadSize": 188,
-							},
-							{
-								"HostAddr": "tcp://127.0.0.1:14002",
-								"UploadSize": 188,
-								"DownloadSize": 1406
-							},
-							{
-								"HostAddr": "tcp://127.0.0.1:14002",
-								"UploadSize": 188,
-								"DownloadSize": 16
-							},
-							{
-								"HostAddr": "tcp://127.0.0.1:14002",
-								"UploadSize": 188,
-								"DownloadSize": 140
-							},
-							{
-								"HostAddr": "tcp://127.0.0.1:14002",
-								"UploadSize": 188,
-								"DownloadSize": 1406
-							},
-							{
-								"HostAddr": "tcp://127.0.0.1:14002",
-								"UploadSize": 1406,
-								"DownloadSize": 1406
-							}
-						]
-					},
+						{
+							HostAddr: "tcp://127.0.0.1:14001",
+							UploadSize: 188,
+							DownloadSize: 188
+						},
+						{
+							HostAddr: "tcp://127.0.0.1:14002",
+							UploadSize: 188,
+							DownloadSize: 1406
+						},
+						{
+							HostAddr: "tcp://127.0.0.1:14002",
+							UploadSize: 188,
+							DownloadSize: 16
+						},
+						{
+							HostAddr: "tcp://127.0.0.1:14002",
+							UploadSize: 188,
+							DownloadSize: 140
+						},
+						{
+							HostAddr: "tcp://127.0.0.1:14002",
+							UploadSize: 188,
+							DownloadSize: 1406
+						},
+						{
+							HostAddr: "tcp://127.0.0.1:14002",
+							UploadSize: 1406,
+							DownloadSize: 1406
+						}
+					]
+				},
 				{
 					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsY11",
 					FileName: "hahat.txt",
@@ -494,35 +509,47 @@ export default {
 		},
 		fileList: function() {
 			// return this.mockFileList || [];
-			return this.$store.state.Transfer[this.TransferConfig[this.transferType]] || [];
+			return (
+				this.$store.state.Transfer[this.TransferConfig[this.transferType]] || []
+			);
 		},
 		fileObjByHash() {
 			let obj = {};
-			for(let value of this.fileList) {
-				obj[value.FileHash] = value;
+			for (let value of this.fileList) {
+				obj[value.Id] = value;
 			}
 			return obj;
 		},
 		fileDetailNodes() {
-			if(!this.detailHash) return [];
-			let arr = this.fileObjByHash[this.detailHash] && this.fileObjByHash[this.detailHash]['Nodes'] || [];
-			arr.sort((a,b) => {
+			if (!this.detailId) return [];
+			let arr =
+				(this.fileObjByHash[this.detailId] &&
+					this.fileObjByHash[this.detailId]["Nodes"]) ||
+				[];
+			arr.sort((a, b) => {
 				return a.HostAddr.localeCompare(b.HostAddr);
-			})
+			});
 			return arr;
 		}
 	},
 	methods: {
+		toCloseUploadFileDetail() {
+			this.uploadDetailHash = '';
+		},
 		openDetailDialog(row) {
-			this.detailHash = row.FileHash;
-			this.switchToggle.detailDialog = true;
+			if(row.Status === 3) {
+				this.uploadDetailHash = row.FileHash;
+			} else {
+				this.detailId = row.Id;
+				this.switchToggle.detailDialog = true;
+			}
 		},
 		uploadOrDownloadAgain(row) {
 			let url = this.$api.uploadRetry;
-			if(!row.IsUploadAction) url = this.$api.downloadRetry;
+			if (!row.IsUploadAction) url = this.$api.downloadRetry;
 			let params = {
 				Hash: row.FileHash
-			}
+			};
 			this.$axios.post(url, params).then(res => {
 				if (res.data.Error === 0) {
 					this.$message({
@@ -536,10 +563,10 @@ export default {
 		},
 		uploadOrDownloadContinue(row) {
 			let url = this.$api.uploadResume;
-			if(!row.IsUploadAction) url = this.$api.downloadResume;
+			if (!row.IsUploadAction) url = this.$api.downloadResume;
 			let params = {
 				Hash: row.FileHash
-			}
+			};
 			this.$axios.post(url, params).then(res => {
 				if (res.data.Error === 0) {
 					this.$message({
@@ -553,10 +580,10 @@ export default {
 		},
 		uploadOrDownloadPause(row) {
 			let url = this.$api.uploadPause;
-			if(!row.IsUploadAction) url = this.$api.downloadPause;
+			if (!row.IsUploadAction) url = this.$api.downloadPause;
 			let params = {
 				Hash: row.FileHash
-			}
+			};
 			this.$axios.post(url, params).then(res => {
 				if (res.data.Error === 0) {
 					this.$message({
@@ -751,14 +778,14 @@ $light-grey: #f9f9fb;
 			li {
 				// margin: 15px 0;
 				padding: 15px 0;
-				border-bottom: 1px solid rgba(0, 0, 0, .1);
+				border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 				.node-name {
-					width:10%;
+					width: 10%;
 					color: #202020;
 					text-overflow: ellipsis;
 					overflow: hidden;
 					white-space: nowrap;
-				}	
+				}
 				.node-process {
 					width: 88%;
 					.more-than-5 {
@@ -771,11 +798,11 @@ $light-grey: #f9f9fb;
 		}
 		.node-count {
 			text-align: right;
-			color: #2F8FF0;
+			color: #2f8ff0;
 			span {
 				margin-right: 5px;
 			}
-		}	
+		}
 	}
 }
 </style>

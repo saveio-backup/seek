@@ -88,10 +88,16 @@
                   ></i>
                   <i
                     v-if="page === 'miner' && scope.row.Path"
-                    @click="showInFolder(scope.row.Path)"
+                    @click.stop="showInFolder(scope.row.Path)"
                     class="ofont ofont-file"
                     title="Open Folder"
                   ></i>
+									<i 
+                    v-if="page === 'filebox'"
+										class="el-icon-xiangqingchakan ofont ofont-xiangqingchakan "
+                    title="look detail"
+										@click.stop="openDetailDialog(scope.row)">
+									</i>
                   <!-- @click.stop="switchToggle.deleteDialog = true" -->
                 </div>
               </div>
@@ -250,6 +256,7 @@
 				</div>
 			</div>
 		</el-dialog>
+		<upload-file-detail-dialog @closeUploadFileDetail="toCloseUploadFileDetail" :hash="uploadDetailHash"></upload-file-detail-dialog>
 	</div>
 </template>
 <script>
@@ -257,7 +264,7 @@ import date from "../../../assets/tool/date";
 import util from "../../../assets/config/util";
 import { clipboard, shell } from "electron";
 import { constants } from 'fs';
-
+import uploadFileDetailDialog from "./../../../components/UploadFileDetailDialog";
 let tableElement;
 export default {
 	data() {
@@ -268,6 +275,7 @@ export default {
 			util,
 			executedFile: {}, // a file be opera
 			filterInput: "",
+			uploadDetailHash: "",
 			mockMiner: [
 				{
 					Hash: "QmP9pWe9W6KWnVkoEAFPFvfRYDHft7bvq5aAsTGhjpUCvK",
@@ -489,6 +497,9 @@ export default {
 			currentFile: null
 		};
 	},
+	components: {
+		uploadFileDetailDialog
+	},
 	mounted() {
 		// window.vue = this;
 		this.page = this.$route.query.page || "filebox";
@@ -501,6 +512,12 @@ export default {
 		this.addListenScroll();
 	},
 	methods: {
+		toCloseUploadFileDetail() {
+			this.uploadDetailHash = '';
+		},
+		openDetailDialog(row) {
+			this.uploadDetailHash = row.Hash;
+		},
 		goStorage() {
 			this.$router.push({name:'expand'});
 		},

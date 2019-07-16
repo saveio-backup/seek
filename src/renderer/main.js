@@ -9,6 +9,7 @@ import './assets/css/style.scss'
 import dateFormat from './assets/tool/date'
 import ElementUI from 'element-ui'
 import locale from 'element-ui/lib/locale/lang/en'
+// import axios from './assets/config/http'
 Vue.use(ElementUI, {
   locale
 })

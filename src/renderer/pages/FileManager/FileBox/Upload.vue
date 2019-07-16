@@ -536,10 +536,10 @@ export default {
 				this.advancedData.Privilege === 2
 					? this.advancedData.WhiteList.length
 					: 0;
-			const StoreType = this.switchToggle.advanced ? 1 : 0;
+			const storetype = this.switchToggle.advanced ? 1 : 0;
 			this.$axios
 				.get(this.$api.uploadfee + path, {
-					params: { duration, interval, copynum, whitelistcount, StoreType }
+					params: { duration, interval, copynum, whitelistcount, storetype }
 				})
 				.then(res => {
 					console.log(res);

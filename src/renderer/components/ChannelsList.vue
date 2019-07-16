@@ -21,6 +21,14 @@
 						<div class="bold">{{scope.row.ChannelId}}</div>
 					</template>
 				</el-table-column>
+				<el-table-column
+				 label='Status'
+				 :min-with="120"
+				>
+					<template slot-scope="scope">
+						<div :title="scope.row.Connected ? 'online' : 'offline'" :class="{'theme-font-blue-40':!scope.row.Connected}">{{scope.row.Connected ? 'online' : 'offline'}}</div>
+					</template>
+				</el-table-column>
 				<el-table-column label='Balance(SAVE)'>
 					<template slot-scope="scope">
 						<div class="grey-xs ft14">
@@ -68,9 +76,10 @@
 					<template slot-scope="scope">
 						<span
 							v-show="scope.row.Participant1State !== 0"
-							class="light-blue cursor-pointer cursor-click user-no-select"
+							class="user-no-select"
+							:class="{'theme-font-blue-40':!scope.row.Connected,'light-blue cursor-pointer cursor-click':scope.row.Connected}"
 							@click="openTransfer(scope.row)"
-							title="transfer"
+							:title="scope.row.Connected?'transfer':'The channel is offline and no transfer is allowed'"
 						>
 						<!-- Transfer -->
 						<i class="ofont ofont-huazhuan"></i>
@@ -408,6 +417,7 @@ export default {
 			);
 		},
 		openTransfer(channelSelected) {
+			if(!channelSelected.Connected) return;
 			this.channelSelected = channelSelected;
 			this.switchToggle.assetTransferDialog = true;
 		},

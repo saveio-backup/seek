@@ -113,7 +113,7 @@ function requestTransActions(commit, config) {
           this.dispatch('setTxRecords', {
             asset
           }); // heart loading
-        }, 3000);
+        }, 5000);
       }
     }).catch(thrown => {
       if (axios.isCancel(thrown)) {

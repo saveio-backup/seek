@@ -16,7 +16,7 @@
 				<el-form
 				 class="form"
 				 v-show="step === 0"
-				 ref='form'
+				 ref='form' 
 				 :model='form'
 				 :rules='rules'
 				>
@@ -24,7 +24,7 @@
 					 label="User Name"
 					 prop='Label'
 					>
-						<el-input v-model="form.Label" class="grey-theme"></el-input>
+						<el-input v-model="form.Label" class="grey-theme" placeholder="Input User Name"></el-input>
 					</el-form-item>
 					<el-form-item
 					 label="Password"
@@ -33,17 +33,19 @@
 						<el-input
 						 v-model="form.Password"
 						 type="password"
+						 placeholder="Input Password"
 						 show-password
 						 class="grey-theme"
 						></el-input>
 					</el-form-item>
 					<el-form-item
-					 label="Confirm password"
+					 label="Confirm Password"
 					 prop='Confirm'
 					>
 						<el-input
 						 v-model="form.Confirm"
 						 @keyup.enter.native="submitForm('form')"
+						 placeholder="Confirm Your Password"
 						 show-password
 						 type="password"
 						 class="grey-theme"

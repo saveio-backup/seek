@@ -1,61 +1,64 @@
 <template>
-	<div id="disk">
-		<div
-		 class="func-nav"
-		 v-if="controlBar !== 'close'"
-		>
-			<div class="fun-button">
-				<!-- <router-link :to="{name:'upload'}"> -->
-					<el-button class="primary theme-font-blue" @click="goUpload">Upload</el-button>
-				<!-- </router-link> -->
-				<el-button
-				 class="ml10 bt-download theme-font-blue"
-				 @click="batchDownload"
-				>
-					Download
-				</el-button>
-			</div>
-			<div class="fun-search">
-				<el-input
-				 v-model="filterInput"
-				 prefix-icon="el-icon-search"
-				 placeholder="search by name"
-				  class="grey-theme-at-grey"
-				></el-input>
-			</div>
-		</div>
-		<div
-		 class="func-nav"
-		 v-else
-		>
-			<p class='light-theme-title user-no-select'>
-				Miner Control
-			</p>
-			<div class="fun-search">
-				<el-input
-				 v-model="filterInput"
-				 prefix-icon="el-icon-search"
-				 placeholder="search by name"
-				 class="grey-theme-at-grey"
-				></el-input>
-			</div>
-		</div>
-		<div class="content">
-			<div class="table-element">
-				<el-table
-				border
-				 ref='table'
-				 @row-click="clickRow"
-				 :data="filterListData"
-				 height="100%"
-				 @selection-change="selectFile"
-				>
-					<!-- :data="filterListData" -->
-					<el-table-column
-					 v-if="toggleFilebox"
-					 type="selection"
-					 width="30"
-					></el-table-column>
+  <div id="disk">
+    <div
+      class="func-nav"
+      v-if="controlBar !== 'close'"
+    >
+      <div class="fun-button">
+        <!-- <router-link :to="{name:'upload'}"> -->
+        <el-button
+          class="primary theme-font-blue"
+          @click="goUpload"
+        >Upload</el-button>
+        <!-- </router-link> -->
+        <el-button
+          class="ml10 bt-download theme-font-blue"
+          @click="batchDownload"
+        >
+          Download
+        </el-button>
+      </div>
+      <div class="fun-search">
+        <el-input
+          v-model="filterInput"
+          prefix-icon="el-icon-search"
+          placeholder="Search by Name"
+          class="grey-theme-at-grey"
+        ></el-input>
+      </div>
+    </div>
+    <div
+      class="func-nav"
+      v-else
+    >
+      <p class='light-theme-title user-no-select'>
+        Miner Control
+      </p>
+      <div class="fun-search">
+        <el-input
+          v-model="filterInput"
+          prefix-icon="el-icon-search"
+          placeholder="Search by Name"
+          class="grey-theme-at-grey"
+        ></el-input>
+      </div>
+    </div>
+    <div class="content">
+      <div class="table-element">
+        <el-table
+          border
+          ref='table'
+          @row-click="clickRow"
+          :data="filterListData"
+          height="100%"
+          @selection-change="selectFile"
+        >
+          <!-- :data="filterListData" -->
+          <el-table-column
+            v-if="toggleFilebox"
+            type="selection"
+            width="30"
+          ></el-table-column>
 
           <el-table-column
             label="File Name"
@@ -92,28 +95,32 @@
                     class="ofont ofont-file"
                     title="Open Folder"
                   ></i>
-									<i 
+                  <i
                     v-if="page === 'filebox'"
-										class="el-icon-xiangqingchakan ofont ofont-xiangqingchakan "
+                    class="el-icon-xiangqingchakan ofont ofont-xiangqingchakan "
                     title="look detail"
-										@click.stop="openDetailDialog(scope.row)">
-									</i>
+                    @click.stop="openDetailDialog(scope.row)"
+                  >
+                  </i>
                   <!-- @click.stop="switchToggle.deleteDialog = true" -->
                 </div>
               </div>
             </template>
           </el-table-column>
-					<el-table-column
-						label="Model"
-						min-width="100"
-					>
-						<template slot-scope="scope">
-							<div>
-								{{scope.row.StoreType === 1 ? 'Advance' : scope.row.StoreType === 0 ? 'Normal' : ''}}
-							</div>
-						</template>
-					</el-table-column>
-          <el-table-column label ="Owner" v-if="page ==='miner'">
+          <el-table-column
+            label="Model"
+            min-width="100"
+          >
+            <template slot-scope="scope">
+              <div>
+                {{scope.row.StoreType === 1 ? 'Advance' : scope.row.StoreType === 0 ? 'Normal' : ''}}
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="Owner"
+            v-if="page ==='miner'"
+          >
             <template slot-scope="scope">
               <span class="td-grey">{{scope.row.OwnerAddress || 'Nameless'}}</span>
             </template>
@@ -162,543 +169,584 @@
 							<span class="td-grey">{{date.formatTime(new Date(scope.row.LastShareAt * 1000))}}</span>
 						</template>
 					</el-table-column> -->
-					<el-table-column
-					 label="Type"
-					 v-if="page === 'filebox'"
-					>
-						<template slot-scope="scope">
-							<span class="td-grey">
-								{{privilegeConfig[scope.row.Privilege]}}
-							</span>
-						</template>
-					</el-table-column>
-				</el-table>
-			</div>
-		</div>
-		<el-dialog
-		 :close-on-click-modal='false'
-		 width='550px'
-		 :visible.sync="switchToggle.shareDialog"
-		 center
-		>
-			<div slot="title">
-				<h2>Share</h2>
-				<div class="dialog-title-border"></div>
-			</div>
-			<div class="loading-content">
-				<p class="mt10 mb10 tl">File name:{{executedFile.Name}}</p>
-				<el-form>
-					<el-form-item label="Link:">
-						<el-input
-						readonly
-						:value="executedFile.Url || executedFile.Hash"
-						class="mb20 grey-theme icon-no-bg"
-						>
-							<template slot="append">
-								<i
-								class="el-icon-document addr_btn"
-								@click="toClipboard(executedFile.Url || executedFile.Hash)"
-								:aria-label='executedFile.Hash'
-								></i>
-							</template>
-						</el-input>
-					</el-form-item>
-				</el-form>
-				<div slot="footer">
-					<!-- slot="footer" -->
-					<el-button
-					type="primer"
-					class="primary"
-					@click="switchToggle.shareDialog = false"
-					>Close</el-button>
-				</div>
-			</div>
-		</el-dialog>
-		<!-- noStorageDialog -->
-		<el-dialog
+          <el-table-column
+            label="Type"
+            v-if="page === 'filebox'"
+          >
+            <template slot-scope="scope">
+              <span class="td-grey">
+                {{privilegeConfig[scope.row.Privilege]}}
+              </span>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </div>
+    <el-dialog
+      :close-on-click-modal='false'
+      width='550px'
+      :visible.sync="switchToggle.shareDialog"
+      center
+    >
+      <div slot="title">
+        <h2>Share</h2>
+        <div class="dialog-title-border"></div>
+      </div>
+      <div class="loading-content">
+        <p class="mt10 mb10 tl">File name:{{executedFile.Name}}</p>
+        <el-form>
+          <el-form-item label="Link:">
+            <el-input
+              readonly
+              :value="executedFile.Url || executedFile.Hash"
+              class="mb20 grey-theme icon-no-bg"
+            >
+              <template slot="append">
+                <i
+                  class="el-icon-document addr_btn"
+                  @click="toClipboard(executedFile.Url || executedFile.Hash)"
+                  :aria-label='executedFile.Hash'
+                ></i>
+              </template>
+            </el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer">
+          <!-- slot="footer" -->
+          <el-button
+            type="primer"
+            class="primary"
+            @click="switchToggle.shareDialog = false"
+          >Close</el-button>
+        </div>
+      </div>
+    </el-dialog>
+    <!-- noStorageDialog -->
+    <el-dialog
       width='600px'
-			:close-on-click-modal="false"
-			:visible.sync="switchToggle.noStorageDialog"
-			center
-		>
-			<div slot="title">
-				<h2>Notice</h2>
-				<div class="dialog-title-border"></div>
-			</div>
-			<div class="loading-content">
-				<p class="mt10 mb20 ft14">Sorry, you don't have any storage available yet. Please get the storage space before uploading.</p>
-				<div slot="footer">
-					<el-button class="primary" @click="goStorage">Get Storage</el-button>
-					<el-button @click="switchToggle.noStorageDialog = false">Canncel</el-button>
-				</div>
-			</div>
-		</el-dialog>
-		<el-dialog
-		 :close-on-click-modal='false'
+      :close-on-click-modal="false"
+      :visible.sync="switchToggle.noStorageDialog"
+      center
+    >
+      <div slot="title">
+        <h2>Notice</h2>
+        <div class="dialog-title-border"></div>
+      </div>
+      <div class="loading-content">
+        <p class="mt10 mb20 ft14">Sorry, you don't have any storage available yet. Please get the storage space before uploading.</p>
+        <div slot="footer">
+          <el-button
+            class="primary"
+            @click="goStorage"
+          >Get Storage</el-button>
+          <el-button @click="switchToggle.noStorageDialog = false">Canncel</el-button>
+        </div>
+      </div>
+    </el-dialog>
+    <el-dialog
+      :close-on-click-modal='false'
       width='600px'
-		 :visible.sync="switchToggle.deleteDialog"
-		 center
-		>
-			<div slot="title">
-				<h2>Notice</h2>
-				<div class="dialog-title-border"></div>
-			</div>
-			<div class="loading-content">
-				<p class="mt10 mb10">Are your Sure to Delete this File?</p>
-				<p class="mb20">{{executedFile.Name}}</p>
-				<div slot="footer">
-					<el-button @click="switchToggle.deleteDialog = false">Cancel</el-button>
-					<el-button
-					type="danger"
-					class="primary"
-					@click="toDeleteFile(fileListData, executedFile.Hash)"
-					>Delete</el-button>
-				</div>
-			</div>
-		</el-dialog>
-		<upload-file-detail-dialog @closeUploadFileDetail="toCloseUploadFileDetail" :hash="uploadDetailHash"></upload-file-detail-dialog>
-	</div>
+      :visible.sync="switchToggle.deleteDialog"
+      center
+    >
+      <div slot="title">
+        <h2>Notice</h2>
+        <div class="dialog-title-border"></div>
+      </div>
+      <div class="loading-content">
+        <p class="mt10 mb10">Are you sure you want to delete the selected file?</p>
+        <p class="mb20">{{executedFile.Name}}</p>
+        <div slot="footer">
+          <el-button @click="switchToggle.deleteDialog = false">Cancel</el-button>
+          <el-button
+            type="danger"
+            class="primary"
+            @click="toDeleteFile(fileListData, executedFile.Hash)"
+          >Delete</el-button>
+        </div>
+      </div>
+    </el-dialog>
+    <upload-file-detail-dialog
+      @closeUploadFileDetail="toCloseUploadFileDetail"
+      :hash="uploadDetailHash"
+    ></upload-file-detail-dialog>
+  </div>
 </template>
 <script>
 import date from "../../../assets/tool/date";
 import util from "../../../assets/config/util";
 import { clipboard, shell } from "electron";
-import { constants } from 'fs';
+import { constants } from "fs";
 import uploadFileDetailDialog from "./../../../components/UploadFileDetailDialog";
 let tableElement;
 export default {
-	data() {
-		return {
-			clipboard,
-			toggleFilebox: false,
-			date,
-			util,
-			executedFile: {}, // a file be opera
-			filterInput: "",
-			uploadDetailHash: "",
-			mockMiner: [
-				{
-					Hash: "QmP9pWe9W6KWnVkoEAFPFvfRYDHft7bvq5aAsTGhjpUCvK",
-					Name: "text.txt",
-					Size: 1024,
-					DownloadCount: 10,
-					DownloadAt: 1555166657,
-					LastShareAt: 1555166657,
-					Privilege: 0,
-					Profit: 10
-				}
-			],
-			mockData: [
-				{
-					Hash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
-					Name: "hahat.txt",
-					Size: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 1555051356,
-					UpdatedAt: 0,
-					Profit: 0,
-					Privilege: 0
-				},
-				{
-					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-					Name: "nihaoaaaaaa.txt",
-					Size: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 1555051257,
-					UpdatedAt: 0,
-					Profit: 0,
-					Privilege: 1
-				},
-				{
-					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-					Name: "helloworld.txt",
-					Size: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 1555051257,
-					UpdatedAt: 0,
-					Profit: 0,
-					Privilege: 1
-				},
-				{
-					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-					Name: "hahat.txt",
-					Size: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 1555051257,
-					UpdatedAt: 0,
-					Profit: 0,
-					Privilege: 1
-				},
-				{
-					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-					Name: "hahat.txt",
-					Size: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 1555051257,
-					UpdatedAt: 0,
-					Profit: 0,
-					Privilege: 1
-				},
-				{
-					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-					Name: "hahat.txt",
-					Size: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 1555051257,
-					UpdatedAt: 0,
-					Profit: 0,
-					Privilege: 1
-				},
-				{
-					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-					Name: "hahat.txt",
-					Size: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 1555051257,
-					UpdatedAt: 0,
-					Profit: 0,
-					Privilege: 1
-				},
-				{
-					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-					Name: "hahat.txt",
-					Size: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 1555051257,
-					UpdatedAt: 0,
-					Profit: 0,
-					Privilege: 1
-				},
-				{
-					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-					Name: "hahat.txt",
-					Size: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 1555051257,
-					UpdatedAt: 0,
-					Profit: 0,
-					Privilege: 1
-				},
-				{
-					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-					Name: "hahat.txt",
-					Size: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 1555051257,
-					UpdatedAt: 0,
-					Profit: 0,
-					Privilege: 1
-				},
-				{
-					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-					Name: "hahat.txt",
-					Size: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 1555051257,
-					UpdatedAt: 0,
-					Profit: 0,
-					Privilege: 1
-				},
-				{
-					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-					Name: "hahat.txt",
-					Size: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 1555051257,
-					UpdatedAt: 0,
-					Profit: 0,
-					Privilege: 1
-				},
-				{
-					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-					Name: "hahat.txt",
-					Size: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 1555051257,
-					UpdatedAt: 0,
-					Profit: 0,
-					Privilege: 1
-				},
-				{
-					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-					Name: "hahat.txt",
-					Size: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 1555051257,
-					UpdatedAt: 0,
-					Profit: 0,
-					Privilege: 1
-				},
-				{
-					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-					Name: "hahat.txt",
-					Size: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 1555051257,
-					UpdatedAt: 0,
-					Profit: 0,
-					Privilege: 1
-				},
-				{
-					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-					Name: "hahat.txt",
-					Size: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 1555051257,
-					UpdatedAt: 0,
-					Profit: 0,
-					Privilege: 1
-				},
-				{
-					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-					Name: "hahat.txt",
-					Size: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 1555051257,
-					UpdatedAt: 0,
-					Profit: 0,
-					Privilege: 1
-				},
-				{
-					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-					Name: "hahat.txt",
-					Size: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 1555051257,
-					UpdatedAt: 0,
-					Profit: 0,
-					Privilege: 1
-				},
-				{
-					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-					Name: "hahat.txt",
-					Size: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 1555051257,
-					UpdatedAt: 0,
-					Profit: 0,
-					Privilege: 1
-				}
-			],
-			fileListData: [],
-			privilegeConfig: ["Private", "Public", "Whitelist"],
-			fileSelected: [],
-			controlBar: true,
-			type: "",
-			switchToggle: {
-				shareDialog: false,
-				deleteDialog: false,
-				noStorageDialog: false,
-				load: true
-			},
-			page: "",
-			addrAPI: "",
-			limitCount: 20,
-			currentFile: null
-		};
-	},
-	components: {
-		uploadFileDetailDialog
-	},
-	mounted() {
-		// window.vue = this;
-		this.page = this.$route.query.page || "filebox";
-		this.$nextTick(() => {
-			if (this.page == "filebox") {
-				this.toggleFilebox = true;
-			}
-		});
-		tableElement = this.$refs.table.bodyWrapper;
-		this.addListenScroll();
-	},
-	methods: {
-		toCloseUploadFileDetail() {
-			this.uploadDetailHash = '';
-		},
-		openDetailDialog(row) {
-			this.uploadDetailHash = row.Hash;
-		},
-		goStorage() {
-			this.$router.push({name:'expand'});
-		},
-		goUpload() {
-			if(!this.space || (this.space.Used === 0 && this.space.Remain === 0)) return this.switchToggle.noStorageDialog = true;
-			this.$router.push({name:'upload'});
-		},
-		clipText(el) {
-			clipboard.writeText(this.executedFile.Hash);
-			this.$message({
-				message: "Copied",
-				duration: 1200,
-				type: "success"
-			});
-		},
-		toClipboard(text) {
-			clipboard.writeText(text);
-			this.$message({
-				message: "Copied",
-				duration: 1200,
-				type: "success"
-			});
-		},
-		showInFolder(path) {
-			shell.showItemInFolder(path);
-		},
-		clickRow(row) {
-			this.$refs.table.clearSelection();
-			this.$refs.table.toggleRowSelection(row);
-		},
-		addListenScroll() {
-			const that = this;
-			const distance = 300;
-			tableElement.addEventListener("scroll", function() {
-				if (that.switchToggle.load) {
-					if (
-						tableElement.scrollTop + tableElement.clientHeight + distance >=
-						tableElement.scrollHeight
-					) {
-						console.log("scroll Toggle");
-						that.getFileLists();
-					}
-				} else {
-				}
-			});
-		},
-		selectFile(file) {
-			console.log("file Select!!!");
-			console.log(file);
-			this.fileSelected = file;
-		},
-		getFileLists() {
-			if (!this.switchToggle.load) return;
-			this.switchToggle.load = false; // if your are loading list now,  the switch will be set to false
-			let addr =
-				this.addrAPI +
-				this.type +
-				"/" +
-				this.fileListData.length +
-				"/" +
-				this.limitCount;
-			this.$axios
-				.get(addr)
-				.then(res => {
-					if (res.data.Error === 0) {
-						const result = res.data.Result;
-						if (result.length) {
-							// do sth
-							this.fileListData = this.fileListData.concat(result);
-						} else {
-							this.switchToggle.load = false;
-							return;
-						}
-					}
-					this.switchToggle.load = true;
-				})
-				.catch(err => {
-					console.error(err);
-					this.switchToggle.load = true;
-				});
-		},
-		shareFile(file) {
-			this.executedFile = file;
-			this.switchToggle.shareDialog = true;
-		},
-		downloadFile(file) {
-			this.toDownload([file]);
-		},
-		batchDownload() {
-			const NO_DOWNLOAD_FILE_MSG =
-				"Please select the file you want to download.";
-			if (!this.fileSelected || this.fileSelected.length === 0) {
-				this.$message({
-					message: NO_DOWNLOAD_FILE_MSG
-				});
-				return;
-			}
-			this.toDownload(this.fileSelected);
-		},
-		toDownload(downloadFiles) {
-			const length = downloadFiles.length;
-			const commitAll = [];
-			for (let i = 0; i < length; i++) {
-				console.log(i);
-				commitAll.push(
-					this.$axios
-						.post(this.$api.download, {
-							Url: downloadFiles[i].Url,
-							MaxPeerNum: 10
-						})
-						.then(res => {
-							console.log("downloading");
-							console.log(res);
-						})
-				);
-			}
-			this.$axios.all(commitAll).then(
-				this.$axios.spread(() => {
-					// this.$store.dispatch("setDownload");
-					this.$router.push({
-						name: "transfer",
-						query: {
-							transferType: 2
-						}
-					});
-				})
-			);
-		},
-		deleteFile(file) {
-			this.executedFile = file;
-			this.switchToggle.deleteDialog = true;
-		},
-		toDeleteFile(dataList, hash) {
-			this.switchToggle.deleteDialog = false;
-			this.$axios.post(this.$api.delete, { Hash: hash }).then(res => {
-				if (res.data.Error === 0) {
-					dataList.some((item, index) => {
-						if (item.Hash === hash) {
-							dataList.splice(index, 1);
-							return true;
-						} else {
-							return false;
-						}
-					});
-				}
-			});
-		}
-	},
-	computed: {
-		space() {
-			return this.$store.state.Filemanager.space;
-		},
-		filterListData() {
-			const fileListData = this.fileListData;
-			return fileListData.filter(item => {
-				return item.Name.indexOf(this.filterInput) >= 0 && item.Url;
-			});
-		}
-	},
-	beforeRouteEnter(to, from, next) {
-		next(vm => {
-			vm.type = to.query.type;
-			vm.controlBar = to.query.controlBar;
-			if (to.query.addrAPI) {
-				vm.addrAPI = to.query.addrAPI;
-			} else if (to.query.page === "miner") {
-				vm.addrAPI = vm.$api.getDownloadFileList;
-			} else {
-				vm.addrAPI = vm.$api.getFileList;
-			}
-			// vm.page = to.query.type || "filebox";
-			vm.getFileLists();
-		});
-	},
-	beforeRouteUpdate(to, from, next) {
-		this.type = to.query.type;
-		this.switchToggle.load = true;
-		this.fileListData = [];
-		this.getFileLists();
-		next();
-	}
+  data() {
+    return {
+      clipboard,
+      toggleFilebox: false,
+      date,
+      util,
+      executedFile: {}, // a file be opera
+      filterInput: "",
+      uploadDetailHash: "",
+      mockMiner: [
+        {
+          Hash: "QmP9pWe9W6KWnVkoEAFPFvfRYDHft7bvq5aAsTGhjpUCvK",
+          Name: "text.txt",
+          Size: 1024,
+          DownloadCount: 10,
+          DownloadAt: 1555166657,
+          LastShareAt: 1555166657,
+          Privilege: 0,
+          Profit: 10
+        }
+      ],
+      mockData: [
+        {
+          Hash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
+          Name: "hahat.txt",
+          Size: 1536,
+          DownloadCount: 0,
+          ExpiredAt: 1555051356,
+          UpdatedAt: 0,
+          Profit: 0,
+          Privilege: 0
+        },
+        {
+          Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
+          Name: "nihaoaaaaaa.txt",
+          Size: 1536,
+          DownloadCount: 0,
+          ExpiredAt: 1555051257,
+          UpdatedAt: 0,
+          Profit: 0,
+          Privilege: 1
+        },
+        {
+          Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
+          Name: "helloworld.txt",
+          Size: 1536,
+          DownloadCount: 0,
+          ExpiredAt: 1555051257,
+          UpdatedAt: 0,
+          Profit: 0,
+          Privilege: 1
+        },
+        {
+          Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
+          Name: "hahat.txt",
+          Size: 1536,
+          DownloadCount: 0,
+          ExpiredAt: 1555051257,
+          UpdatedAt: 0,
+          Profit: 0,
+          Privilege: 1
+        },
+        {
+          Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
+          Name: "hahat.txt",
+          Size: 1536,
+          DownloadCount: 0,
+          ExpiredAt: 1555051257,
+          UpdatedAt: 0,
+          Profit: 0,
+          Privilege: 1
+        },
+        {
+          Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
+          Name: "hahat.txt",
+          Size: 1536,
+          DownloadCount: 0,
+          ExpiredAt: 1555051257,
+          UpdatedAt: 0,
+          Profit: 0,
+          Privilege: 1
+        },
+        {
+          Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
+          Name: "hahat.txt",
+          Size: 1536,
+          DownloadCount: 0,
+          ExpiredAt: 1555051257,
+          UpdatedAt: 0,
+          Profit: 0,
+          Privilege: 1
+        },
+        {
+          Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
+          Name: "hahat.txt",
+          Size: 1536,
+          DownloadCount: 0,
+          ExpiredAt: 1555051257,
+          UpdatedAt: 0,
+          Profit: 0,
+          Privilege: 1
+        },
+        {
+          Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
+          Name: "hahat.txt",
+          Size: 1536,
+          DownloadCount: 0,
+          ExpiredAt: 1555051257,
+          UpdatedAt: 0,
+          Profit: 0,
+          Privilege: 1
+        },
+        {
+          Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
+          Name: "hahat.txt",
+          Size: 1536,
+          DownloadCount: 0,
+          ExpiredAt: 1555051257,
+          UpdatedAt: 0,
+          Profit: 0,
+          Privilege: 1
+        },
+        {
+          Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
+          Name: "hahat.txt",
+          Size: 1536,
+          DownloadCount: 0,
+          ExpiredAt: 1555051257,
+          UpdatedAt: 0,
+          Profit: 0,
+          Privilege: 1
+        },
+        {
+          Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
+          Name: "hahat.txt",
+          Size: 1536,
+          DownloadCount: 0,
+          ExpiredAt: 1555051257,
+          UpdatedAt: 0,
+          Profit: 0,
+          Privilege: 1
+        },
+        {
+          Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
+          Name: "hahat.txt",
+          Size: 1536,
+          DownloadCount: 0,
+          ExpiredAt: 1555051257,
+          UpdatedAt: 0,
+          Profit: 0,
+          Privilege: 1
+        },
+        {
+          Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
+          Name: "hahat.txt",
+          Size: 1536,
+          DownloadCount: 0,
+          ExpiredAt: 1555051257,
+          UpdatedAt: 0,
+          Profit: 0,
+          Privilege: 1
+        },
+        {
+          Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
+          Name: "hahat.txt",
+          Size: 1536,
+          DownloadCount: 0,
+          ExpiredAt: 1555051257,
+          UpdatedAt: 0,
+          Profit: 0,
+          Privilege: 1
+        },
+        {
+          Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
+          Name: "hahat.txt",
+          Size: 1536,
+          DownloadCount: 0,
+          ExpiredAt: 1555051257,
+          UpdatedAt: 0,
+          Profit: 0,
+          Privilege: 1
+        },
+        {
+          Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
+          Name: "hahat.txt",
+          Size: 1536,
+          DownloadCount: 0,
+          ExpiredAt: 1555051257,
+          UpdatedAt: 0,
+          Profit: 0,
+          Privilege: 1
+        },
+        {
+          Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
+          Name: "hahat.txt",
+          Size: 1536,
+          DownloadCount: 0,
+          ExpiredAt: 1555051257,
+          UpdatedAt: 0,
+          Profit: 0,
+          Privilege: 1
+        },
+        {
+          Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
+          Name: "hahat.txt",
+          Size: 1536,
+          DownloadCount: 0,
+          ExpiredAt: 1555051257,
+          UpdatedAt: 0,
+          Profit: 0,
+          Privilege: 1
+        }
+      ],
+      fileListData: [],
+      privilegeConfig: ["Private", "Public", "Whitelist"],
+      fileSelected: [],
+      controlBar: true,
+      type: "",
+      switchToggle: {
+        shareDialog: false,
+        deleteDialog: false,
+        noStorageDialog: false,
+        load: true
+      },
+      page: "",
+      addrAPI: "",
+      limitCount: 20,
+      currentFile: null
+    };
+  },
+  components: {
+    uploadFileDetailDialog
+  },
+  mounted() {
+    // window.vue = this;
+    this.page = this.$route.query.page || "filebox";
+    this.$nextTick(() => {
+      if (this.page == "filebox") {
+        this.toggleFilebox = true;
+      }
+    });
+    tableElement = this.$refs.table.bodyWrapper;
+    this.addListenScroll();
+  },
+  methods: {
+    toCloseUploadFileDetail() {
+      this.uploadDetailHash = "";
+    },
+    openDetailDialog(row) {
+      this.uploadDetailHash = row.Hash;
+    },
+    goStorage() {
+      this.$router.push({ name: "expand" });
+    },
+    goUpload() {
+      if (!this.space || (this.space.Used === 0 && this.space.Remain === 0))
+        return (this.switchToggle.noStorageDialog = true);
+      this.$router.push({ name: "upload" });
+    },
+    clipText(el) {
+      clipboard.writeText(this.executedFile.Hash);
+      this.$message({
+        message: "Copied",
+        duration: 1200,
+        type: "success"
+      });
+    },
+    toClipboard(text) {
+      clipboard.writeText(text);
+      this.$message({
+        message: "Copied",
+        duration: 1200,
+        type: "success"
+      });
+    },
+    showInFolder(path) {
+      shell.showItemInFolder(path);
+    },
+    clickRow(row) {
+      this.$refs.table.clearSelection();
+      this.$refs.table.toggleRowSelection(row);
+    },
+    addListenScroll() {
+      const that = this;
+      const distance = 300;
+      tableElement.addEventListener("scroll", function() {
+        if (that.switchToggle.load) {
+          if (
+            tableElement.scrollTop + tableElement.clientHeight + distance >=
+            tableElement.scrollHeight
+          ) {
+            console.log("scroll Toggle");
+            that.getFileLists();
+          }
+        } else {
+        }
+      });
+    },
+    selectFile(file) {
+      console.log("file Select!!!");
+      console.log(file);
+      this.fileSelected = file;
+    },
+    getFileLists() {
+      if (!this.switchToggle.load) return;
+      this.switchToggle.load = false; // if your are loading list now,  the switch will be set to false
+      let addr =
+        this.addrAPI +
+        this.type +
+        "/" +
+        this.fileListData.length +
+        "/" +
+        this.limitCount;
+      this.$axios
+        .get(addr)
+        .then(res => {
+          if (res.data.Error === 0) {
+            const result = res.data.Result;
+            if (result.length) {
+              // do sth
+              this.fileListData = this.fileListData.concat(result);
+            } else {
+              this.switchToggle.load = false;
+              return;
+            }
+          }
+          this.switchToggle.load = true;
+        })
+        .catch(err => {
+          console.error(err);
+          this.switchToggle.load = true;
+        });
+    },
+    shareFile(file) {
+      this.executedFile = file;
+      this.switchToggle.shareDialog = true;
+    },
+    downloadFile(file) {
+      this.toDownload([file]);
+    },
+    batchDownload() {
+      const NO_DOWNLOAD_FILE_MSG =
+        "Please select the file you want to download.";
+      if (!this.fileSelected || this.fileSelected.length === 0) {
+        this.$message({
+          message: NO_DOWNLOAD_FILE_MSG
+        });
+        return;
+      }
+      this.toDownload(this.fileSelected);
+    },
+    toDownload(downloadFiles) {
+      const length = downloadFiles.length;
+      const commitAll = [];
+      for (let i = 0; i < length; i++) {
+        console.log(i);
+        commitAll.push(
+          this.$axios
+            .post(this.$api.download, {
+              Url: downloadFiles[i].Url,
+              MaxPeerNum: 10
+            })
+            .then(res => {
+              console.log("downloading");
+              console.log(res);
+            })
+        );
+      }
+      this.$axios.all(commitAll).then(
+        this.$axios.spread(() => {
+          // this.$store.dispatch("setDownload");
+          this.$router.push({
+            name: "transfer",
+            query: {
+              transferType: 2
+            }
+          });
+        })
+      );
+    },
+    deleteFile(file) {
+      this.executedFile = file;
+      this.switchToggle.deleteDialog = true;
+    },
+    toDeleteFileNew(deleteFiles) {
+      this.switchToggle.deleteDialog = false;
+      const length = deleteFiles.length;
+      const commitAll = [];
+      for (let i = 0; i < length; i++) {
+        console.log(i);
+        commitAll.push(
+          this.$axios
+            .post(this.$api.delete, {
+              Hash: deleteFiles[i].Hash
+            })
+            .then(res => {
+              if (res.data.Error === 0) {
+                this.fileListData.some((item, index) => {
+                  if (item.Hash === deleteFiles[i].Hash) {
+                    this.fileListData.splice(index, 1);
+                    return true;
+                  } else {
+                    return false;
+                  }
+                });
+              }
+              console.log("delete");
+              console.log(res);
+            })
+        );
+      }
+      this.$axios.all(commitAll).then(
+        this.$axios.spread(() => {
+          // this.$store.dispatch("setDownload");
+          this.$store.dispatch("setSpace"); // get userspace everytime user del file
+        })
+      );
+    },
+    toDeleteFile(dataList, hash) {
+      this.switchToggle.deleteDialog = false;
+      this.$axios.post(this.$api.delete, { Hash: hash }).then(res => {
+        if (res.data.Error === 0) {
+          dataList.some((item, index) => {
+            if (item.Hash === hash) {
+              dataList.splice(index, 1);
+              return true;
+            } else {
+              return false;
+            }
+          });
+        }
+      });
+    }
+  },
+  computed: {
+    space() {
+      return this.$store.state.Filemanager.space;
+    },
+    filterListData() {
+      const fileListData = this.fileListData;
+      return fileListData.filter(item => {
+        return item.Name.indexOf(this.filterInput) >= 0 && item.Url;
+      });
+    }
+  },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.type = to.query.type;
+      vm.controlBar = to.query.controlBar;
+      if (to.query.addrAPI) {
+        vm.addrAPI = to.query.addrAPI;
+      } else if (to.query.page === "miner") {
+        vm.addrAPI = vm.$api.getDownloadFileList;
+      } else {
+        vm.addrAPI = vm.$api.getFileList;
+      }
+      // vm.page = to.query.type || "filebox";
+      vm.getFileLists();
+    });
+  },
+  beforeRouteUpdate(to, from, next) {
+    this.type = to.query.type;
+    this.switchToggle.load = true;
+    this.fileListData = [];
+    this.getFileLists();
+    next();
+  }
 };
 </script>
 <style lang="scss">
@@ -756,91 +804,90 @@ $theme-font-blue: #040f39;
     .fun-search {
       width: 240px;
 
-			.el-input__inner {
-				height: 33px;
-				line-height: 33px;
-				border-radius: 17px;
-				// color: rgba(32, 32, 32, 0.7);
-				padding-left: 40px;
-				// border: 1px solid #dee2ea;
-				// background: #EDEFF4;
-				// &:focus {
-				// 	background: #DEE2EA;
-				// 	border: 1px solid #dee2ea !important;
-				// }
-			}
-			.el-input__prefix {
-				left: 10px;
-				.el-input__icon {
-					line-height: 34px;
-					font-size: 16px;
-					color: rgba(32, 32, 32, 0.4);
-				}
-			}
-		}
-	}
-	& > .content {
-		position: absolute;
-		top: 80px;
-		bottom: 0px;
-		width: 100%;
-		padding-top: 20px;
-		background: #f9f9fb;
+      .el-input__inner {
+        height: 33px;
+        line-height: 33px;
+        border-radius: 17px;
+        // color: rgba(32, 32, 32, 0.7);
+        padding-left: 40px;
+        // border: 1px solid #dee2ea;
+        // background: #EDEFF4;
+        // &:focus {
+        // 	background: #DEE2EA;
+        // 	border: 1px solid #dee2ea !important;
+        // }
+      }
+      .el-input__prefix {
+        left: 10px;
+        .el-input__icon {
+          line-height: 34px;
+          font-size: 16px;
+          color: rgba(32, 32, 32, 0.4);
+        }
+      }
+    }
+  }
+  & > .content {
+    position: absolute;
+    top: 80px;
+    bottom: 0px;
+    width: 100%;
+    padding-top: 20px;
+    background: #f9f9fb;
 
-		.table-element {
-			// font-weight: bold;
-			height: 100%;
-			overflow-y: hidden;
-			.rowName {
-				.opera {
-					display: none;
-					color: rgba(32, 32, 32, 0.4);
-					font-weight: bold;
-					[class^="el-icon-"] {
-						margin: 0px 4px;
-						font-size: 18px;
-						cursor: pointer;
-						&:hover {
-							color: $light-blue;
-						}
-						&:active {
-							opacity: 0.7;
-						}
-					}
-				}
-				&:hover {
-					.opera {
-						display: flex;
-						justify-content: center;
-						align-items: center;
-					}
-				}
-			}
-		}
-		.td-grey {
-			color: rgba(32, 32, 32, 0.4);
-		}
-
-	}
-	.icon-no-bg {
-		.el-input-group__append {
-			background: #F1F3F7;
-			border: 0;
-			i {
-				&:hover {
-					color: #2F8FF0;
-				}
-				&:active {
-					color: rgba(47, 143, 240, .7);
-				}
-			}
-		}
-	}
-	.el-input-group__append {
-		[class^="el-icon-"] {
-			font-size: 18px;
-			cursor: pointer;
-		}
-	}
+    .table-element {
+      // font-weight: bold;
+      height: 100%;
+      overflow-y: hidden;
+      .rowName {
+        .opera {
+          display: none;
+          color: rgba(32, 32, 32, 0.4);
+          font-weight: bold;
+          [class^="el-icon-"] {
+            margin: 0px 4px;
+            font-size: 18px;
+            cursor: pointer;
+            &:hover {
+              color: $light-blue;
+            }
+            &:active {
+              opacity: 0.7;
+            }
+          }
+        }
+        &:hover {
+          .opera {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+        }
+      }
+    }
+    .td-grey {
+      color: rgba(32, 32, 32, 0.4);
+    }
+  }
+  .icon-no-bg {
+    .el-input-group__append {
+      background: #f1f3f7;
+      border: 0;
+      i {
+        &:hover {
+          color: #2f8ff0;
+        }
+        &:active {
+          color: rgba(47, 143, 240, 0.7);
+        }
+      }
+    }
+  }
+  .el-input-group__append {
+    [class^="el-icon-"] {
+      font-size: 18px;
+      cursor: pointer;
+    }
+  }
 }
 </style>

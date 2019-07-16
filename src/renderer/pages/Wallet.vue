@@ -240,7 +240,7 @@
 							>
 								<el-input
 								 v-model="sendInfo.Amount"
-								 placeholder="Input amount"
+								 placeholder="Input Amount"
 								 min='0'
 								 type="number"
 								 class="grey-theme"
@@ -255,7 +255,7 @@
 								<el-input
 								 v-model="sendInfo.To"
 								 class="grey-theme"
-								 :placeholder="'Input ' +balanceLists[balanceSelected].Symbol+' address'"
+								 :placeholder="'Input ' +balanceLists[balanceSelected].Symbol.toUpperCase()+' Address'"
 								></el-input>
 							</el-form-item>
 							<el-form-item
@@ -267,6 +267,7 @@
 								 v-model="sendInfo.Password"
 								 @keyup.enter.native='sendTransfer'
 								 show-password
+								 placeholder="Input Password"
 								 type="password"
 								 class="grey-theme"
 								></el-input>
@@ -695,7 +696,7 @@ export default {
 									"Transaction failed, please check your Address."
 								);
 							} else {
-								this.$message.error(res.data.Desc);
+								this.$message.error('Transfer failed: ' + res.data.Error);
 							}
 							this.switchToggle.loading.close();
 							this.switchToggle.loading = null;

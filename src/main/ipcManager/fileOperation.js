@@ -9,6 +9,10 @@ import path from 'path';
 // File operation
 ipcMain.on('open-file-dialog', (event) => {
   dialog.showOpenDialog({
+    filters: [{
+      name: 'Text Type',
+      extensions: ['dat', 'txt', 'text']
+    }],
     properties: ['openFile']
   }, (files) => {
     if (files) {
@@ -19,9 +23,10 @@ ipcMain.on('open-file-dialog', (event) => {
 })
 ipcMain.on('open-wallet-dialog', (event) => {
   dialog.showOpenDialog({
-    filters: [
-      {name: 'Text Type', extensions:['dat', 'text']}
-    ],
+    filters: [{
+      name: 'Text Type',
+      extensions: ['dat', 'txt', 'text']
+    }],
     properties: ['openFile']
   }, (files) => {
     if (files) {

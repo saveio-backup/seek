@@ -75,6 +75,7 @@
 						<el-input
 						 ref="inputUrl"
 						 class="input-url"
+						 placeholder="Input URL"
 						 v-model="inputDisplayUrl"
 						 @keyup.esc.native='inputDisplayUrl=activeView.displayURL'
 						 @keyup.enter.native='remoteLoadURL(activeView)'

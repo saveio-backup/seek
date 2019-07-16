@@ -7,7 +7,7 @@ const state = {
   channels: [],
   channelBind: {},
   revenue: 0,
-  revenueFormat:0,
+  revenueFormat: 0,
   loginStatus: -1,
   initChannelProgress: 0
 }
@@ -17,7 +17,7 @@ const state = {
 const mutations = {
   'SET_BALANCE_TOTAL'(state, result) {
     state.balanceTotal = result.BalanceFormat;
-    if (result.Channels.length > 0) {
+    if (result.Channels && (result.Channels.length > 0)) {
       state.balanceAddress = result.Channels[0].Address;
     }
     state.channels = result.Channels;
@@ -25,6 +25,7 @@ const mutations = {
   },
   'SET_CHANNEL_BIND'(state, Id) {
     state.channelBind = {};
+    state.channels = state.channels || [];
     let result = state.channels.some(channel => {
       if (channel.ChannelId.toString() === Id) {
         state.channelBind = channel;

@@ -10,5 +10,5 @@ module.exports = {
   DEFAULT_URL,
   DEFAULT_PROTOCOL: 'seek',
   Y_POSITION: 63,
-  X_POSITION:40
+  X_POSITION: 40
 }

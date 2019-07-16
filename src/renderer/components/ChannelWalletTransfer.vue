@@ -53,7 +53,7 @@
 				 type="number"
 				 min='0'
 				 v-model="transferInfo.Amount"
-				 placeholder="input amount"
+				 placeholder="Input Amount"
 				 @blur="setFixed"
 				>
 				</el-input>
@@ -65,6 +65,7 @@
 				<el-input
 				 class="transfer-input grey-theme"
 				 v-model="transferInfo.Password"
+				 placeholder="Input Password"
 				 show-password
 				 @keyup.enter.native='toTransfer'
 				 type="password"

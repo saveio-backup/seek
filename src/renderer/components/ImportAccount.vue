@@ -28,7 +28,7 @@
                 v-model="data.Wallet"
                 cols="30"
                 rows="10"
-                placeholder="key"
+                placeholder="Key"
                 class="grey-theme"
               >
               </el-input>
@@ -66,6 +66,7 @@
             >
               <el-input
                 v-model="privateKeyForm.PrivateKey"
+                placeholder="Input/Import privatekey here"
                 class="grey-theme"
               ></el-input>
               <div class="tr"><a
@@ -79,6 +80,7 @@
             >
               <el-input
                 v-model="privateKeyForm.Label"
+                placeholder="Input User Name"
                 class="grey-theme"
               ></el-input>
             </el-form-item>
@@ -88,6 +90,7 @@
             >
               <el-input
                 v-model="privateKeyForm.Password"
+                placeholder="Input Password"
                 show-password
                 type="password"
                 class="grey-theme"
@@ -103,6 +106,7 @@
                 show-password
                 type="password"
                 class="grey-theme"
+				placeholder="Confirm Your Password"
               ></el-input>
             </el-form-item>
           </el-form>

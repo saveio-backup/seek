@@ -1,7 +1,6 @@
 {
   "name": "seek",
-  "version": "0.0.1",
-  "author": "Tianqi Zou",
+  "version": "0.0.1-alpha-0715-b1",
   "description": "seek about SAVE",
   "license": "MIT",
   "main": "./dist/electron/main.js",
@@ -24,6 +23,7 @@
   },
   "build": {
     "productName": "Seeker",
+    "artifactName":"${productName}_${version}.${ext}",
     "appId": "com.application.seeker",
     "directories": {
       "output": "build"

@@ -9,8 +9,8 @@
 			 @change="dateChanageGetIncom"
 			 unlink-panels
 			 range-separator="to"
-			 start-placeholder="start"
-			 end-placeholder="end"
+			 start-placeholder="Start"
+			 end-placeholder="End"
 			>
 			</el-date-picker>
 			<div class="total-income ft14">Total Profit: <span>{{filterFloat(result.TotalIncomeFormat).toLocaleString('en-US') || 0}} SAVE</span></div>

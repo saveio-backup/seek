@@ -119,7 +119,7 @@
                   @change='setDateValue'
                   :picker-options="pickerOptions"
                   type="date"
-                  placeholder="Choose date"
+                  placeholder="Choose Date"
                 >
                 </el-date-picker>
               </div>
@@ -151,7 +151,7 @@
                 <el-input
                   v-model="Password"
                   @keyup.enter.native='setUserSpace'
-                  placeholder="Please input password"
+                  placeholder="Please Input Password"
                   class="grey-theme"
                   show-password 
                   type="password"

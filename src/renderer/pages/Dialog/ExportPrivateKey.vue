@@ -24,7 +24,7 @@
 					>
 						<el-input
 						 v-model="dialogForm.password"
-						 placeholder="Input password"
+						 placeholder="Input Password"
 						 class="grey-theme"
 						 @keyup.enter.native='exportPrivateKey'
 						 show-password

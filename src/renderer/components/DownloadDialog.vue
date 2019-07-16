@@ -1,10 +1,5 @@
 <template>
 	<div id="download-dialog">
-		<!-- <h2 class="mb10 mt10">Donload URL:</h2>
-		<el-input
-		 v-model="downloadUrl"
-		 @input='toGetFileInfo'
-		></el-input> -->
 		<el-form
 		>
 			<el-form-item
@@ -14,6 +9,7 @@
 				<el-input
 					v-model="downloadUrl"
 					@input='toGetFileInfo'
+					placeholder="Input File URL"
 					class="grey-theme"
 				></el-input>
 			</el-form-item>

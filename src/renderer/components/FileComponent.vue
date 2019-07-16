@@ -218,6 +218,7 @@
 					<el-form-item label="Password:">
 						<el-input
 							v-model="fileSelected.Password"
+							placeholder="Input Password"
 							class="grey-theme mb10"
 						></el-input>
 					</el-form-item>

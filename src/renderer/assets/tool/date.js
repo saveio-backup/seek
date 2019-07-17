@@ -26,6 +26,13 @@ const formatYearMonthDay = date => {
   const day = date.getDate()
   return [year, month, day].map(formatNumber).join('-')
 }
+const formatYearMonthDayHour = date => {
+  const year = date.getFullYear()
+  const month = date.getMonth() + 1
+  const day = date.getDate()
+  const hour = date.getHours()
+  return [year, month, day].map(formatNumber).join('-') +', ' + hour;
+}
 const formatMonthDay = date => {
   const month = date.getMonth() + 1
   const day = date.getDate()
@@ -86,5 +93,6 @@ module.exports = {
   formatHourMinuteSecond,
   formatHourMinute,
   calculateTimeLeft,
-  calculateTimeFuture
+  calculateTimeFuture,
+  formatYearMonthDayHour
 }

@@ -161,7 +161,7 @@
 					>
 						<el-input
 						v-model="channelForm.password"
-						placeholder="Please Input Password"
+						placeholder="Please Input Wallet Password"
 						@keyup.enter.native="toPeationChannel"
 						class="channel-opeation-input grey-theme"
 						show-password

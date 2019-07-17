@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="upload-file-detail">
     <el-dialog
       width="600px"
       :close-on-click-modal='false'
@@ -48,11 +48,17 @@
               <p class="theme-font-blue ft14 mr20">{{fileDetail && (fileDetail.Priviledge===0?'private':fileDetail.Priviledge===1?'public':fileDetail.Priviledge===2?'whitelist':'') || ''}}</p>
             </div>
           </div>
-          <div v-if="fileDetail && fileDetail.Priviledge === 2" class="adjust-item">
+          <div
+            v-if="fileDetail && fileDetail.Priviledge === 2"
+            class="adjust-item"
+          >
             <p class="adjust-title theme-font-blue ft14">Whitelist:</p>
             <div class="adjust-info">
               <ul>
-                <li v-for="item in fileDetail.Whitelist" :key="item">
+                <li
+                  v-for="item in fileDetail.Whitelist"
+                  :key="item"
+                >
                   {{item}}
                 </li>
               </ul>
@@ -60,117 +66,118 @@
           </div>
         </div>
         <div slot="footer">
-					<el-button
-						class="primary"
-						type="primary"
-						@click="fileDetailDialogToggle=false"
-					>Close</el-button>
-				</div>
+          <el-button
+            class="primary"
+            type="primary"
+            @click="fileDetailDialogToggle=false"
+          >Close</el-button>
+        </div>
       </div>
     </el-dialog>
   </div>
 </template>
 <script>
 export default {
-	props: {
-		hash: {
-			required: true,
-			type: String //file hash
-		}
-	},
-	data() {
-		return {
-			fileDetailDialogToggle: false,
-			fileDetail: null,
+  props: {
+    hash: {
+      required: true,
+      type: String //file hash
+    }
+  },
+  data() {
+    return {
+      fileDetailDialogToggle: false,
+      fileDetail: null,
       loading: null
-		};
-	},
-	watch: {
-		hash() {
-			this.init();
+    };
+  },
+  watch: {
+    hash() {
+      this.init();
     },
-    fileDetailDialogToggle(oldVal,newVal) {
-      if(newVal) {
+    fileDetailDialogToggle(oldVal, newVal) {
+      if (newVal) {
         this.$nextTick(() => {
           this.toClose();
-        });    
+        });
       }
     }
-	},
-	methods: {
-		init() {
-			if (!this.hash) {
+  },
+  methods: {
+    init() {
+      if (!this.hash) {
         this.fileDetailDialogToggle = false;
       } else {
         this.fileDetailDialogToggle = true;
         this.$nextTick(() => {
           this.getFileDetail(this.hash);
-        })
+        });
       }
-		},
-		getFileDetail(hash) {
+    },
+    getFileDetail(hash) {
       this.loading = this.$loading({
-				lock: true,
-				text: "loading...",
-				target: ".loading-content"
-			});
+        lock: true,
+        text: "loading...",
+        target: ".loading-content"
+      });
       this.$axios
-				.get(this.$api.getUploadFileInfo + hash)
-				.then(res => {
-					if (res.data.Error === 0) {
-						this.fileDetail = res.data.Result;
-					} else {
-						this.$message.error(res.data.Desc || "get data failed.");
-					}
-				})
-				.catch(err => {
-					console.log(err);
-					this.$message.error("Wrong");
-				})
-				.finally(() => {
-					this.loading.close();
-					this.loading = null;
-				});
+        .get(this.$api.getUploadFileInfo + hash)
+        .then(res => {
+          if (res.data.Error === 0) {
+            this.fileDetail = res.data.Result;
+          } else {
+            this.$message.error(res.data.Desc || "get data failed.");
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          this.$message.error("Wrong");
+        })
+        .finally(() => {
+          this.loading.close();
+          this.loading = null;
+        });
     },
     toClose() {
-      this.$emit('closeUploadFileDetail')
+      this.$emit("closeUploadFileDetail");
     }
-	},
-	mounted() {
-		this.init();
-	}
+  },
+  mounted() {
+    this.init();
+  }
 };
 </script>
 <style lang="scss">
-	.adjust {
-		// border-bottom: solid 1px #ebecef;
-		padding-bottom: 20px;
-		.el-input-number__increase,
-		.el-input-number__decrease {
-			display: none;
-		}
-	}
-	.adjust-item {
-		display: flex;
-		align-items: flex-start;
-		justify-content: space-between;
-		margin: 15px 0;
-		.adjust-title {
-			font-size: 14px;
-			width: 160px;
-			padding-right: 30px;
-			text-align: right;
-      color: rgba(32, 32, 32, .4)
-		}
-		.adjust-info {
-			flex: 1;
-			width: 200px;
-			display: flex;
+.upload-file-detail {
+  .adjust {
+    // border-bottom: solid 1px #ebecef;
+    padding-bottom: 20px;
+    .el-input-number__increase,
+    .el-input-number__decrease {
+      display: none;
+    }
+  }
+  .adjust-item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin: 15px 0;
+    .adjust-title {
+      font-size: 14px;
+      width: 160px;
+      padding-right: 30px;
+      text-align: right;
+      color: rgba(32, 32, 32, 0.4);
+    }
+    .adjust-info {
+      flex: 1;
+      width: 200px;
+      display: flex;
       text-align: left;
-			.sizeunit {
-				width: 100px;
-				margin: 0 20px;
-			}
+      .sizeunit {
+        width: 100px;
+        margin: 0 20px;
+      }
       ul {
         max-height: 150px;
         overflow: auto;
@@ -178,6 +185,7 @@ export default {
           margin-bottom: 10px;
         }
       }
-		}
-	}
+    }
+  }
+}
 </style>

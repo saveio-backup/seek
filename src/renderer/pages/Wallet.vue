@@ -267,7 +267,7 @@
 								 v-model="sendInfo.Password"
 								 @keyup.enter.native='sendTransfer'
 								 show-password
-								 placeholder="Input Password"
+								 placeholder="Input Wallet Password"
 								 type="password"
 								 class="grey-theme"
 								></el-input>

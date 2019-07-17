@@ -130,18 +130,18 @@
               <p class="adjust-title theme-font-blue ft14">{{cost.TransferType === 2?'Pledge Refund':'Pledge Payment'}}:</p>
               <div class="adjust-info theme-font-blue ft14">
                 <div v-if="cost.TransferType !== 2">
-                  {{cost.FeeFormat?parseFloat(cost.FeeFormat).toFixed(3):0}} SAVE
+                  {{cost.FeeFormat?parseFloat(parseFloat(cost.FeeFormat).toFixed(3)):0}} SAVE
                 </div>
                 <div v-if="cost.TransferType === 2">
-                  {{cost.RefundFormat?parseFloat(cost.RefundFormat).toFixed(3):0}} SAVE
+                  {{cost.RefundFormat?parseFloat(parseFloat(cost.RefundFormat).toFixed(3)):0}} SAVE
                 </div>
               </div>
             </div>
             <div class="adjust-item">
               <p class="adjust-title theme-font-blue ft14"></p>
-							<div class="adjust-info theme-font-blue-40 ft14">
-								<span class="mr10">Available</span> {{mainCount?parseFloat(mainCount).toFixed(3):0}} SAVE
-							</div>
+              <div class="adjust-info theme-font-blue-40 ft14">
+                <span class="mr10">Available</span> {{mainCount?parseFloat(mainCount).toFixed(3):0}} SAVE
+              </div>
             </div>
           </div>
           <div class="adjust">
@@ -151,9 +151,9 @@
                 <el-input
                   v-model="Password"
                   @keyup.enter.native='setUserSpace'
-                  placeholder="Please Input Password"
+                  placeholder="Please Input Wallet Password"
                   class="grey-theme"
-                  show-password 
+                  show-password
                   type="password"
                 ></el-input>
               </div>
@@ -211,11 +211,11 @@ export default {
           const now = new Date().getTime();
           if (this.isUploadedFile) {
             return (
-              date.getTime() - this.space.ExpiredAt * 1000 <= 0 ||
-              date.getTime() - now <= 0
+              date.getTime() + 86399000 - this.space.ExpiredAt * 1000 <= 0 ||
+              date.getTime() + 86399000 - now <= 0
             );
           } else {
-            return date.getTime() - now <= 0;
+            return date.getTime() + 86399000 - now <= 0;
           }
         }
       },
@@ -351,7 +351,7 @@ export default {
       if (this.isUploadedFile) {
         return Math.ceil((this.space.Remain + this.space.Used) / this.sizeUnit);
       } else {
-        return 0;
+        return 5;
       }
     },
     expired_old() {
@@ -463,7 +463,7 @@ export default {
     },
     setUserSpaceCheckRes() {
       if (this.Password.length === 0) {
-        this.$message("Please input password");
+        this.$message("Please input wallet password");
         return false;
       }
       return true;
@@ -654,7 +654,7 @@ $grey: #ccc;
     padding-bottom: 20px;
     .el-input-number__increase,
     .el-input-number__decrease {
-      display: none;
+      // display: none;
     }
   }
   .adjust-item {

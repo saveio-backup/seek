@@ -28,7 +28,7 @@
 			 class="aside-progress"
 			 v-if="space"
 			>
-				<p class="tl aside-progress-num user-no-select"><i class="ofont ofont-chucun"></i>{{util.bytesToSize(space.Used *1000)}} / {{util.bytesToSize((space.Remain + space.Used)*1024)}} </p>
+				<p class="tl aside-progress-num user-no-select"><i class="ofont ofont-chucun"></i>{{util.bytesToSize(space.Used *1024)}} / {{util.bytesToSize((space.Remain + space.Used)*1024)}} </p>
 				<el-progress :percentage="takeSpace"></el-progress>
 				<p>
 					<router-link

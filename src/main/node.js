@@ -132,8 +132,8 @@ const setupConfig = async (appDataPath, appName) => {
     const resourcesPath = (process.env.NODE_ENV === 'production') ?
         path.join(path.dirname(appRoot), 'bin') :
         path.join(appRoot, 'resources', getPlatform());
-    
-    const srcCfgPath = `${resourcesPath}/config.json`
+
+    let srcCfgPath = `${resourcesPath}/config.json`
     if (!fs.existsSync(srcCfgPath)) {
         log.debug("config.json not exist")
         return
@@ -157,7 +157,8 @@ const setupConfig = async (appDataPath, appName) => {
         log.debug("folder not exist")
         fs.mkdirSync(baseDir)
     }
-    cfgObj.NetworkId = 1563265186;
+    cfgObj.Base.AutoSetupDNSEnable = true;
+    cfgObj.Base.NetworkId = 1563265186;
     try {
         await fs.writeFileSync(cfgPath, JSON.stringify(cfgObj))
     } catch (err) {
@@ -190,7 +191,7 @@ const run = (appDataPath, appName) => {
     log.debug("[run] run node++++++")
     let workerProcess = cp.spawn(cmdStr, ["--config", cfgDir], {
         cwd: resourcesPath,
-        detached: true
+        detached: getPlatform() == "win" ? false : true
     })
     // let workerProcess = cp.exec(cmdStr, {
     //     cwd: resourcesPath,

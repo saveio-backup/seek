@@ -90,7 +90,7 @@
             >
               <el-input
                 v-model="privateKeyForm.Password"
-                placeholder="Input Password"
+                placeholder="Input Wallet Password"
                 show-password
                 type="password"
                 class="grey-theme"

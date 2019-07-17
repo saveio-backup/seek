@@ -62,7 +62,7 @@
             >
               <el-input
                 v-model="uploadFormData.EncryptPassword"
-                placeholder="Input Password"
+                placeholder="File Password"
                 class="encrypt-input"
               ></el-input>
             </el-form-item>
@@ -79,11 +79,11 @@
           label-width="200px"
         >
           <el-form-item label="Storage Cycle:">
+            <p class="light-blue expire-date">Expired At: {{expiredDate}} </p>
             <el-input
               v-model="storageCycleNumber"
               :min="1"
               @change="setDuration"
-              :disabled="advancedData.Duration === 0"
               type="number"
               class="form-right-second-inside"
             ></el-input>
@@ -239,7 +239,7 @@
             <el-input
               type="password"
               class="grey-theme"
-              placeholder="Please Input Password"
+              placeholder="Please Input Wallet Password"
               show-password
               v-model="passwordForm.Password"
             ></el-input>
@@ -303,8 +303,7 @@ export default {
       Second: 1,
       Day: 86400,
       Month: 2592000,
-      Year: 31536000,
-      Permanent: 0
+      Year: 31536000
     };
     const baseKeys = Object.keys(BASE);
     return {
@@ -312,7 +311,7 @@ export default {
       BASE,
       verificationCycleSelected: baseKeys[0], // default Month
       verificationCycleNumber: 300, // Integrity verification cycle (default 2 month)
-      storageCycleSelected: baseKeys[4], // default Permanent
+      storageCycleSelected: baseKeys[2], // default Day
       storageCycleNumber: 1,
       DefaultCopyNum: "", // axios.get
       passwordForm: {
@@ -321,7 +320,7 @@ export default {
       },
       uploadRules: {
         Password: [
-          { required: true, message: "Please input password", trigger: "blur" }
+          { required: true, message: "Please input  password", trigger: "blur" }
         ]
       },
       switchToggle: {
@@ -352,7 +351,7 @@ export default {
         ]
       },
       advancedData: {
-        Duration: 0, // storage cycle  default forever
+        Duration: 2592000, // storage cycle  default forever
         Interval: 0, // Integrity verification cycle
         // Times: 1, // Integrity Times
         Privilege: 1, // Authority
@@ -567,6 +566,9 @@ export default {
   computed: {
     mainCount() {
       return this.$store.state.Wallet.mainCount;
+    },
+    expiredDate(){
+      return  this.$dateFormat.formatYearMonthDayHour(new Date(new Date().getTime() +  this.advancedData.Duration *1000))
     }
     // storageCycleNumber: function() {
     // 	return this.verificationCycleNumber * this.advancedData.Times;
@@ -578,7 +580,6 @@ export default {
 $inputBg: #edeff4;
 $inputFocusBg: #dee2ea;
 #upload {
-  height: 100%;
   background: #f9f9fb;
   & > .content {
     height: 100%;
@@ -606,7 +607,7 @@ $inputFocusBg: #dee2ea;
     }
     .el-form-item {
       border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-      padding-bottom: 15px;
+      padding-bottom: 25px;
     }
     .el-form-item__label {
       font-weight: bold;
@@ -705,7 +706,12 @@ $inputFocusBg: #dee2ea;
         }
       }
     }
-
+    .expire-date {
+      position: absolute;
+      right:0px;
+      bottom:0px;
+      transform: translateY(34px);
+    }
     h1 {
       font-size: 24px;
       // color: #ccc;

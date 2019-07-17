@@ -26,7 +26,7 @@
 		"NATProxyServerAddr": "tcp://40.73.100.114:6007",
 		"DspProtocol": "tcp",
 		"DspPortOffset": 4024,
-		"AutoSetupDNSEnable": false,
+		"AutoSetupDNSEnable": true,
 		"TrackerPortOffset": 0,
 		"DnsNodeMaxNum": 100,
 		"SeedInterval": 3600,

@@ -65,7 +65,7 @@
 				<el-input
 				 class="transfer-input grey-theme"
 				 v-model="transferInfo.Password"
-				 placeholder="Input Password"
+				 placeholder="Input Wallet Password"
 				 show-password
 				 @keyup.enter.native='toTransfer'
 				 type="password"

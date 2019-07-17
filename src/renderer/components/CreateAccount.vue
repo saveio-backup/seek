@@ -33,7 +33,7 @@
 						<el-input
 						 v-model="form.Password"
 						 type="password"
-						 placeholder="Input Password"
+						 placeholder="Input Wallet Password"
 						 show-password
 						 class="grey-theme"
 						></el-input>

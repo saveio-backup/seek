@@ -640,6 +640,7 @@ export default {
           this.$axios
             .post(this.$api.download, {
               Url: downloadFiles[i].Url,
+              SetFileName: true,
               MaxPeerNum: 10
             })
             .then(res => {
@@ -669,7 +670,6 @@ export default {
       const length = deleteFiles.length;
       const commitAll = [];
       for (let i = 0; i < length; i++) {
-        console.log(i);
         commitAll.push(
           this.$axios
             .post(this.$api.delete, {
@@ -677,6 +677,10 @@ export default {
             })
             .then(res => {
               if (res.data.Error === 0) {
+                this.$message({
+                  message: "Delete Completed",
+                  type: "Success"
+                });
                 this.fileListData.some((item, index) => {
                   if (item.Hash === deleteFiles[i].Hash) {
                     this.fileListData.splice(index, 1);
@@ -687,7 +691,6 @@ export default {
                 });
               }
               console.log("delete");
-              console.log(res);
             })
         );
       }
@@ -702,6 +705,10 @@ export default {
       this.switchToggle.deleteDialog = false;
       this.$axios.post(this.$api.delete, { Hash: hash }).then(res => {
         if (res.data.Error === 0) {
+          this.$message({
+            message: "Delete Completed",
+            type: "Success"
+          });
           dataList.some((item, index) => {
             if (item.Hash === hash) {
               dataList.splice(index, 1);

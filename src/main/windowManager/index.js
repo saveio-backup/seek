@@ -127,23 +127,15 @@ class View {
       this.forceUpdate()
     });
     this.webContents.on('will-redirect', (e, url) => {
-      console.log('will-redirect, forceUpdate')
-      console.log(url);
       this.forceUpdate()
     });
     this.webContents.on('will-navigate', (e, url) => {
-      console.log('will-navigate!!!!!!!')
-      console.log(url);
       this.onNewUrl(url, e)
     })
     this.webContents.on('did-start-navigation', (e, url) => {
-      console.log('did start navigation')
-      console.log(url)
     })
     // handler hashchange
     this.webContents.on('did-navigate-in-page', (e, url) => {
-      console.log('did-navigate-in-page, forceUpdate')
-      console.log(url)
       this.forceUpdate()
     });
   }
@@ -400,6 +392,7 @@ function removeView(win, view, index) {
 }
 
 function resizeAll(win) {
+  console.log('reseize all');
   let {
     width,
     height

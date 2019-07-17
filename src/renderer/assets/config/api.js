@@ -53,5 +53,6 @@ const API = {
   exportPrivateKey: HOST + VERSION + 'account/export/privatekey',
   channelOPen: HOST + VERSION + 'channel/open',
   channelClose: HOST + VERSION + 'channel/close',
+  getAllDns: HOST + VERSION + 'dns',
 }
 module.exports = API;

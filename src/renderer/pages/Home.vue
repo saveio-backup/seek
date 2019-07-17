@@ -134,6 +134,13 @@ export default {
 				}, 50)
 			})
 		};
+		if(this.dnsAdress && this.dnsAdress != 'done') {
+			this.$refs.channelListObj.openOpen(this.dnsAdress || '');
+			localStorage.setItem("DNSAdress", "done");
+		}
+		ipcRenderer.on("open-add-channel-dialog", () => {
+			this.$refs.channelListObj.openOpen(this.dnsAdress || '');
+		});
 	},
 	filters: {
 		firstString(value) {
@@ -155,6 +162,8 @@ export default {
 				name: localStorage.getItem("Label") || "",
 				address: localStorage.getItem("Address") || "",
 			},
+			// open add channel dialog(param)
+			dnsAdress: localStorage.getItem("DNSAdress") || "",
 			// balanceSelected: 0,
 			chartsDom: '',
 			chartsChannelDom:'',

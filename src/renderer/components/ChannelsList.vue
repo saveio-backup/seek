@@ -424,7 +424,7 @@ export default {
 		toConfirm() {
 			this.$refs["channelwallettransfer"].toTransfer();
 		},
-		openOpen() {
+		openOpen(dnsAdress) {
 			this.channelToggle = {
 				type: 'add',
 				channelCloseDialog: true,
@@ -432,6 +432,7 @@ export default {
 			}
 			this.$nextTick(() => {
 				this.$refs['channelForm'].resetFields();
+				this.channelForm.partner = dnsAdress;
 			})
 		},
 		openClose(channelSelected) {

@@ -8,7 +8,6 @@
 export default {
 	computed: {
 		routerName() {
-			console.log('123',this.$route);
 			return this.$route.name;
 		}
 	},

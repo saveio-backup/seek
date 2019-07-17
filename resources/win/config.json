@@ -2,7 +2,7 @@
 	"Base": {
 		"BaseDir": ".",
 		"LogPath": "./seekLog",
-		"NetworkId": 0,
+		"NetworkId": 1563265186,
 		"PublicIP": "",
 		"PortBase": 10000,
 		"LogLevel": 0,

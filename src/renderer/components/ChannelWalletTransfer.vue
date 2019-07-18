@@ -59,7 +59,7 @@
 				</el-input>
 			</el-form-item>
 			<el-form-item
-			 label="Password"
+			 label="Wallet Password"
 			 prop="Password"
 			>
 				<el-input

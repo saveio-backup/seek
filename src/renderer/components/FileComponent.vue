@@ -226,7 +226,7 @@
 			</div>
 			<div class="loading-content">
 				<el-form>
-					<el-form-item label="Password:">
+					<el-form-item label="File Password:">
 						<el-input
 							v-model="fileSelected.Password"
 							placeholder="Input File Password"
@@ -567,7 +567,7 @@ export default {
 				if (res.data.Error === 0) {
 					this.$message({
 						message: "Opeation Success",
-						type: "Success"
+						type: "success"
 					});
 				} else {
 					this.$message.error(res.data.Desc || "Opeation failed.");
@@ -584,7 +584,7 @@ export default {
 				if (res.data.Error === 0) {
 					this.$message({
 						message: "Opeation Success",
-						type: "Success"
+						type: "success"
 					});
 				} else {
 					this.$message.error(res.data.Desc || "Opeation failed.");
@@ -601,7 +601,7 @@ export default {
 				if (res.data.Error === 0) {
 					this.$message({
 						message: "Opeation Success",
-						type: "Success"
+						type: "success"
 					});
 				} else {
 					this.$message.error(res.data.Desc || "Opeation failed.");
@@ -628,7 +628,7 @@ export default {
 				if (res.data.Error === 0) {
 					this.$message({
 						message: "Delete Completed",
-						type: "Success"
+						type: "success"
 					});
 				}
 			});

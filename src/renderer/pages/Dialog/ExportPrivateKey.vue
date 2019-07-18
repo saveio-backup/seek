@@ -19,12 +19,12 @@
 				>
 					<el-form-item
 					 class="theme-font-blue-bold"
-					 label="Password"
+					 label="Wallet Password"
 					 prop="password"
 					>
 						<el-input
 						 v-model="dialogForm.password"
-						 placeholder="Input Password"
+						 placeholder="Input Wallet Password"
 						 class="grey-theme"
 						 @keyup.enter.native='exportPrivateKey'
 						 show-password

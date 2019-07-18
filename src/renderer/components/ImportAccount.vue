@@ -37,10 +37,10 @@
                   class="light-blue ft14 cursor-pointer cursor-click user-no-select"
                 >Select Keystore File</a></div>
             </el-form-item>
-            <el-form-item label="Password:">
+            <el-form-item label="Wallet Password:">
               <el-input
                 v-model="data.Password"
-                placeholder="Password"
+                placeholder="Input Wallet Password"
                 type="password"
                 :rows="2"
                 class="grey-theme"
@@ -85,19 +85,19 @@
               ></el-input>
             </el-form-item>
             <el-form-item
-              label="Password"
+              label="Wallet Password"
               prop='Password'
             >
               <el-input
                 v-model="privateKeyForm.Password"
-                placeholder="Input Wallet Password"
+                placeholder="Input New Wallet Password"
                 show-password
                 type="password"
                 class="grey-theme"
               ></el-input>
             </el-form-item>
             <el-form-item
-              label="Confirm password"
+              label="Confirm Wallet Password"
               prop='Confirm'
             >
               <el-input
@@ -106,7 +106,7 @@
                 show-password
                 type="password"
                 class="grey-theme"
-				placeholder="Confirm Your Password"
+                placeholder="Confirm Your Wallet Password"
               ></el-input>
             </el-form-item>
           </el-form>

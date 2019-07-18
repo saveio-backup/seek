@@ -27,7 +27,7 @@
 						<el-input v-model="form.Label" class="grey-theme" placeholder="Input User Name"></el-input>
 					</el-form-item>
 					<el-form-item
-					 label="Password"
+					 label="Wallet Password"
 					 prop='Password'
 					>
 						<el-input
@@ -39,13 +39,13 @@
 						></el-input>
 					</el-form-item>
 					<el-form-item
-					 label="Confirm Password"
+					 label="Confirm Wallet Password"
 					 prop='Confirm'
 					>
 						<el-input
 						 v-model="form.Confirm"
 						 @keyup.enter.native="submitForm('form')"
-						 placeholder="Confirm Your Password"
+						 placeholder="Confirm Your Wallet Password"
 						 show-password
 						 type="password"
 						 class="grey-theme"

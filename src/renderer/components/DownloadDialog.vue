@@ -65,7 +65,8 @@ export default {
       this.$axios
         .post(this.$api.download, {
           Url: this.downloadUrl,
-          MaxPeerNum: 10
+          SetFileName: true,
+          MaxPeerNum: 20
         })
         .then(res => {
           if (res.data.Error === 0) {

@@ -79,7 +79,7 @@
           label-width="200px"
         >
           <el-form-item label="Storage Cycle:">
-            <p class="light-blue expire-date">Expired At: {{expiredDate}} </p>
+            <p class="dark-grey expire-date">Expired At: {{expiredDate}} </p>
             <el-input
               v-model="storageCycleNumber"
               :min="1"
@@ -233,7 +233,7 @@
           @submit.native.prevent
         >
           <el-form-item
-            label="Password:"
+            label="Wallet Password:"
             prop="Password"
           >
             <el-input
@@ -311,7 +311,7 @@ export default {
       BASE,
       verificationCycleSelected: baseKeys[0], // default Month
       verificationCycleNumber: 300, // Integrity verification cycle (default 2 month)
-      storageCycleSelected: baseKeys[2], // default Day
+      storageCycleSelected: baseKeys[3], // default Year
       storageCycleNumber: 1,
       DefaultCopyNum: "", // axios.get
       passwordForm: {
@@ -534,15 +534,15 @@ export default {
       );
       const duration = this.advancedData.Duration;
       const interval = this.advancedData.Interval;
-      const copynum = this.advancedData.CopyNum;
-      const whitelistcount =
+      const copyNum = this.advancedData.CopyNum;
+      const whitelistCount =
         this.advancedData.Privilege === 2
           ? this.advancedData.WhiteList.length
           : 0;
-      const storetype = this.switchToggle.advanced ? 1 : 0;
+      const storeType = this.switchToggle.advanced ? 1 : 0;
       this.$axios
         .get(this.$api.uploadfee + path, {
-          params: { duration, interval, copynum, whitelistcount, storetype }
+          params: { duration, interval, copyNum, whitelistCount, storeType }
         })
         .then(res => {
           console.log(res);

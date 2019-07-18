@@ -107,7 +107,7 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column
+          <!-- <el-table-column
             label="Model"
             min-width="100"
             v-if="page === 'filebox'"
@@ -117,7 +117,7 @@
                 {{scope.row.StoreType === 1 ? 'Advance' : scope.row.StoreType === 0 ? 'Primary' : ''}}
               </div>
             </template>
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column
             label="Owner"
             v-if="page ==='miner'"
@@ -194,7 +194,7 @@
         <div class="dialog-title-border"></div>
       </div>
       <div class="loading-content">
-        <p class="mt10 mb10 tl">File name:{{executedFile.Name}}</p>
+        <p class="mt10 mb10 tl">File name: {{executedFile.Name}}</p>
         <el-form>
           <el-form-item label="Link:">
             <el-input
@@ -222,6 +222,53 @@
         </div>
       </div>
     </el-dialog>
+    <el-dialog
+      :close-on-click-modal='false'
+      width='550px'
+      :visible.sync="switchToggle.confrimDownloadDialog"
+      center
+    >
+      <div slot="title">
+        <h2>Download File</h2>
+        <div class="dialog-title-border"></div>
+      </div>
+      <div class="loading-content">
+        <div class="adjust">
+          <div class="adjust-item">
+            <p class="adjust-title theme-font-blue ft14">File Name:</p>
+            <div class="adjust-info">
+              <p class="theme-font-blue ft14 mr20">{{fileDownloadInfo.Name}}</p>
+            </div>
+          </div>
+          <div class="adjust-item">
+            <p class="adjust-title theme-font-blue ft14">File Size:</p>
+            <div class="adjust-info">
+              <p class="theme-font-blue ft14 mr20">{{fileDownloadInfo.Size}}</p>
+            </div>
+          </div>
+          <div class="adjust-item">
+            <p class="adjust-title theme-font-blue ft14">Save Path:</p>
+            <div class="adjust-info">
+              <p class="theme-font-blue ft14 mr20">{{fileDownloadInfo.DownloadDir || ''}}</p>
+            </div>
+          </div>
+          <div class="dialog-title-border"></div>
+          <div class="adjust-item">
+            <p class="adjust-title theme-font-blue ft14">Cost:</p>
+            <div class="adjust-info">
+              <p class="theme-font-blue ft14 mr20">{{fileDownloadInfo.Fee}}</p>
+            </div>
+          </div>
+        </div>
+        <div slot="footer">
+          <el-button @click="switchToggle.confrimDownloadDialog = false">Cancel</el-button>
+          <el-button
+            class="primary"
+            @click="toDownload(fileToDownload)"
+          >Download</el-button>
+        </div>
+      </div>
+    </el-dialog>
     <!-- noStorageDialog -->
     <el-dialog
       width='600px'
@@ -236,11 +283,11 @@
       <div class="loading-content">
         <p class="mt10 mb20 ft14">Sorry, you don't have any storage available yet. Please get the storage space before uploading.</p>
         <div slot="footer">
+          <el-button @click="switchToggle.noStorageDialog = false">Cancel</el-button>
           <el-button
             class="primary"
             @click="goStorage"
           >Get Storage</el-button>
-          <el-button @click="switchToggle.noStorageDialog = false">Canncel</el-button>
         </div>
       </div>
     </el-dialog>
@@ -276,7 +323,7 @@
 <script>
 import date from "../../../assets/tool/date";
 import util from "../../../assets/config/util";
-import { clipboard, shell } from "electron";
+import { clipboard, shell, ipcRenderer } from "electron";
 import { constants } from "fs";
 import uploadFileDetailDialog from "./../../../components/UploadFileDetailDialog";
 let tableElement;
@@ -287,13 +334,19 @@ export default {
       toggleFilebox: false,
       date,
       util,
+      fileDownloadInfo: {
+        Fee: 0,
+        Size: 0
+      },
       executedFile: {}, // a file be opera
       filterInput: "",
       uploadDetailHash: "",
+      fileToDownload: [], // the file/files which you click chekbox or download button
       mockMiner: [
         {
           Hash: "QmP9pWe9W6KWnVkoEAFPFvfRYDHft7bvq5aAsTGhjpUCvK",
-          Name: "text.txt",
+          Path: "text/tasst/",
+          Name: "miner11111.txt",
           Size: 1024,
           DownloadCount: 10,
           DownloadAt: 1555166657,
@@ -305,17 +358,20 @@ export default {
       mockData: [
         {
           Hash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
-          Name: "hahat.txt",
+          Path: "asdfsd/sdfaf",
+          Name: "no1111111.txt",
           Size: 1536,
           DownloadCount: 0,
           ExpiredAt: 1555051356,
           UpdatedAt: 0,
           Profit: 0,
-          Privilege: 0
+          Privilege: 0,
+          Url: "xxxxxx"
         },
         {
           Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-          Name: "nihaoaaaaaa.txt",
+          Path: "sdfa/sdfsd/",
+          Name: "no22222222.txt",
           Size: 1536,
           DownloadCount: 0,
           ExpiredAt: 1555051257,
@@ -331,7 +387,8 @@ export default {
           ExpiredAt: 1555051257,
           UpdatedAt: 0,
           Profit: 0,
-          Privilege: 1
+          Privilege: 1,
+          Url: "asdfsdf"
         },
         {
           Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
@@ -341,7 +398,8 @@ export default {
           ExpiredAt: 1555051257,
           UpdatedAt: 0,
           Profit: 0,
-          Privilege: 1
+          Privilege: 1,
+          Url: "aasfewfwa"
         },
         {
           Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
@@ -412,6 +470,7 @@ export default {
       type: "",
       switchToggle: {
         shareDialog: false,
+        confrimDownloadDialog: false,
         deleteDialog: false,
         noStorageDialog: false,
         load: true
@@ -530,7 +589,9 @@ export default {
       this.switchToggle.shareDialog = true;
     },
     downloadFile(file) {
-      this.toDownload([file]);
+      this.fileToDownload = [file];
+      this.switchToggle.confrimDownloadDialog = true;
+      // this.toDownload([file]);
     },
     batchDownload() {
       const NO_DOWNLOAD_FILE_MSG =
@@ -541,9 +602,16 @@ export default {
         });
         return;
       }
-      this.toDownload(this.fileSelected);
+      this.fileToDownload = this.fileSelected;
+      this.switchToggle.confrimDownloadDialog = true;
+      // this.toDownload(this.fileSelected);
     },
     toDownload(downloadFiles) {
+      this.switchToggle.loading = this.$loading({
+        lock: true,
+        text: "File Processing....",
+        target: ".loading-content"
+      });
       const length = downloadFiles.length;
       const commitAll = [];
       for (let i = 0; i < length; i++) {
@@ -553,7 +621,7 @@ export default {
             .post(this.$api.download, {
               Url: downloadFiles[i].Url,
               SetFileName: true,
-              MaxPeerNum: 10
+              MaxPeerNum: 20
             })
             .then(res => {
               console.log("downloading");
@@ -561,17 +629,27 @@ export default {
             })
         );
       }
-      this.$axios.all(commitAll).then(
-        this.$axios.spread(() => {
-          // this.$store.dispatch("setDownload");
-          this.$router.push({
-            name: "transfer",
-            query: {
-              transferType: 2
-            }
-          });
+      this.$axios
+        .all(commitAll)
+        .then(
+          this.$axios.spread(() => {
+            // this.$store.dispatch("setDownload");
+            this.switchToggle.confrimDownloadDialog = false;
+            this.$router.push({
+              name: "transfer",
+              query: {
+                transferType: 2
+              }
+            });
+          })
+        )
+        .catch(() => {
+          this.$message.error("Network Error. Download Failed!");
         })
-      );
+        .finally(() => {
+          this.switchToggle.loading.close();
+          this.switchToggle.loading = null;
+        });
     },
     deleteFile(file) {
       this.executedFile = file;
@@ -590,8 +668,8 @@ export default {
             .then(res => {
               if (res.data.Error === 0) {
                 this.$message({
-                  message: "Delete Completed",
-                  type: "Success"
+                  message: "Delete Successful",
+                  type: "success"
                 });
                 this.fileListData.some((item, index) => {
                   if (item.Hash === deleteFiles[i].Hash) {
@@ -614,22 +692,81 @@ export default {
       );
     },
     toDeleteFile(dataList, hash) {
-      this.switchToggle.deleteDialog = false;
-      this.$axios.post(this.$api.delete, { Hash: hash }).then(res => {
-        if (res.data.Error === 0) {
-          this.$message({
-            message: "Delete Completed",
-            type: "Success"
-          });
-          dataList.some((item, index) => {
-            if (item.Hash === hash) {
-              dataList.splice(index, 1);
-              return true;
-            } else {
-              return false;
-            }
-          });
+      this.switchToggle.loading = this.$loading({
+        lock: true,
+        text: "Deleting....",
+        target: ".loading-content"
+      });
+      this.$axios
+        .post(this.$api.delete, { Hash: hash })
+        .then(res => {
+          if (res.data.Error === 0) {
+            this.$message({
+              message: "Delete Successful",
+              type: "success"
+            });
+            dataList.some((item, index) => {
+              if (item.Hash === hash) {
+                dataList.splice(index, 1);
+                return true;
+              } else {
+                return false;
+              }
+            });
+            this.switchToggle.deleteDialog = false;
+          } else {
+            this.$message.error(
+              "Failed to delete, please try again. Error: " + res.data.Error
+            );
+          }
+        })
+        .catch(err => {
+          this.$message.error("Network Error. Delete Failed.");
+        })
+        .finally(() => {
+          this.switchToggle.loading.close();
+          this.switchToggle.loading = null;
+        });
+    }
+  },
+  watch: {
+    fileToDownload: function() {
+      console.log("fileToDownload Changed.");
+      let fileToDownload = this.fileToDownload;
+      let cost = 0;
+      let size = 0;
+      let name = "";
+      this.fileDownloadInfo.Fee = "Calculating";
+      fileToDownload.map((item, index) => {
+        const path = ipcRenderer.sendSync("string-to-hex", item.Url);
+        size += this.fileToDownload[index].Size;
+        if (index == fileToDownload.length - 1) {
+          this.fileDownloadInfo.Size = util.bytesToSize(size * 1024);
         }
+        name =
+          name +
+          this.fileToDownload[index].Name +
+          (index == fileToDownload.length - 1 ? "" : " / ");
+        if (name.length > 37) {
+          // max length
+          this.fileDownloadInfo.Name = name.substring(0, 37) + " ....";
+        } else {
+          this.fileDownloadInfo.Name = name;
+        }
+        this.$axios
+          .get(this.$api.downloadInfo + path)
+          .then(res => {
+            // if (res.data.Error === 0) {
+            cost += res.data.Result.Fee || 0;
+            this.fileDownloadInfo.DownloadDir = res.data.Result.DownloadDir || "";
+            this.fileDownloadInfo.Fee =
+              parseFloat((cost / 1000000000).toFixed(9)) + " SAVE";
+            // }
+          })
+          .catch(() => {
+            console.error("unable to calc");
+            this.fileDownloadInfo.Fee = "Unable to calculate, network error.";
+          });
       });
     }
   },
@@ -786,6 +923,44 @@ $theme-font-blue: #040f39;
     }
     .td-grey {
       color: rgba(32, 32, 32, 0.4);
+    }
+  }
+  .adjust {
+    // border-bottom: solid 1px #ebecef;
+    padding-bottom: 20px;
+    .el-input-number__increase,
+    .el-input-number__decrease {
+      display: none;
+    }
+  }
+  .adjust-item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin: 15px 0;
+    .adjust-title {
+      font-size: 14px;
+      width: 160px;
+      padding-right: 30px;
+      text-align: right;
+      color: rgba(32, 32, 32, 0.4);
+    }
+    .adjust-info {
+      flex: 1;
+      width: 200px;
+      display: flex;
+      text-align: left;
+      .sizeunit {
+        width: 100px;
+        margin: 0 20px;
+      }
+      ul {
+        max-height: 150px;
+        overflow: auto;
+        li {
+          margin-bottom: 10px;
+        }
+      }
     }
   }
   .icon-no-bg {

@@ -260,7 +260,7 @@
 							</el-form-item>
 							<el-form-item
 							 class="theme-font-blue-bold"
-							 label="Password"
+							 label="Wallet Password"
 							 prop="Password"
 							>
 								<el-input
@@ -690,7 +690,7 @@ export default {
 									type: "success"
 								});
 							} else if (res.data.Error === 50015) {
-								this.$message.error("Wrong Password");
+								this.$message.error("The password is incorrect.");
 							} else if (res.data.Error === 40002) {
 								this.$message.error(
 									"Transaction failed, please check your Address."

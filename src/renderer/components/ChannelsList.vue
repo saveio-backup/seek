@@ -172,7 +172,7 @@
 					</el-form-item>
 					<el-form-item
 					 class="theme-font-blue-bold"
-					 label="Password"
+					 label="Wallet Password"
 					 prop="password"
 					>
 						<el-input

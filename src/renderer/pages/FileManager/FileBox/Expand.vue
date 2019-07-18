@@ -75,10 +75,12 @@
               <div class="adjust-title theme-font-blue ft14">Adjust to:</div>
               <div class="adjust-info">
                 <el-input-number
+                ref="spaceNumberInput"
                   class="number grey-theme"
                   v-model="adjustSize"
                   :precision='0'
                   :min='minSize'
+                  @focus="$refs.spaceNumberInput.select()"
                   @blur="userSpaceCost"
                 ></el-input-number>
                 <!-- @change="setSizeValue" -->
@@ -146,7 +148,7 @@
           </div>
           <div class="adjust">
             <div class="adjust-item">
-              <div class="adjust-title theme-font-blue ft14">Password:</div>
+              <div class="adjust-title theme-font-blue ft14">Wallet Password:</div>
               <div class="adjust-info theme-font-blue-40 ft14 mr20">
                 <el-input
                   v-model="Password"
@@ -351,7 +353,7 @@ export default {
       if (this.isUploadedFile) {
         return Math.ceil((this.space.Remain + this.space.Used) / this.sizeUnit);
       } else {
-        return 5;
+        return 0;
       }
     },
     expired_old() {
@@ -507,7 +509,7 @@ export default {
             this.cost = {};
           } else if (res.data.Error === 50015) {
             this.$message({
-              message: "Wrong Password!",
+              message: "The password is incorrect.",
               type: "error"
             });
           } else {

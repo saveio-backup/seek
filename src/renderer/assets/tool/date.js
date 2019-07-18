@@ -31,7 +31,7 @@ const formatYearMonthDayHour = date => {
   const month = date.getMonth() + 1
   const day = date.getDate()
   const hour = date.getHours()
-  return [year, month, day].map(formatNumber).join('-') +', ' + hour;
+  return [year, month, day].map(formatNumber).join('-') +', ' + hour + ':00';
 }
 const formatMonthDay = date => {
   const month = date.getMonth() + 1

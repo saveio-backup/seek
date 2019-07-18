@@ -81,7 +81,15 @@ select {
 .el-dialog {
   border-radius: 5px;
 
-  .el-dialog__header {
+  .dialog-title-border {
+    height: 1px;
+    width: 100%;
+    background: #040F39;
+    opacity: 0.1;
+    margin-top: 18px;
+  }
+
+  ¸ .el-dialog__header {
     padding-top: 18px;
     user-select: none;
 
@@ -99,14 +107,6 @@ select {
       font-weight: bold;
     }
 
-    .dialog-title-border {
-      height: 1px;
-      width: 100%;
-      background: #040F39;
-      opacity: 0.1;
-      margin-top: 18px;
-    }
-
     .el-dialog__close {
       color: rgba(4, 15, 57, .4);
       font-size: 24px;
@@ -120,13 +120,16 @@ select {
       }
     }
   }
+
   .el-dialog__body {
-    padding-top : 0px;
-		color: #202020;
+    padding-top: 0px;
+    color: #202020;
   }
+
   &.el-dialog--center {
-    padding-top : 0px;
+    padding-top: 0px;
   }
+
   .el-dialog__footer {
     margin-top: 25px;
   }
@@ -135,18 +138,24 @@ select {
 .el-table {
   background: #F9F9FB;
   color: $theme-font-blue;
-  &:before, &:after{
-    content:'';
+
+  &:before,
+  &:after {
+    content: '';
     display: none;
   }
+
   &.el-table--border {
     border: none !important;
+
     tr {
       border: none !important;
     }
-    th{
-      border:none !important;
-      .cell{
+
+    th {
+      border: none !important;
+
+      .cell {
         border-right: 1px solid #EBEEF5;
       }
     }
@@ -161,7 +170,7 @@ select {
   td {
     border: none !important;
     background: #F9F9FB;
-    color: rgba(32,32,32,.7);
+    color: rgba(32, 32, 32, .7);
     font-weight: 500;
   }
 }
@@ -245,8 +254,8 @@ select {
 }
 
 .el-input__inner::placeholder {
-  font-weight:400;
-  color:rgba(32, 32, 32, .4);
+  font-weight: 400;
+  color: rgba(32, 32, 32, .4);
 }
 
 .grey-theme {
@@ -260,13 +269,14 @@ select {
     font-weight: 500;
     border: none;
     transition: all .3s ease;
-  
+
     &:focus {
       border-color: #202020 !important;
       background: #E0E2E6;
     }
   }
 }
+
 .el-input.is-disabled {
   .el-input__inner {
     background-color: #F5F7FA !important;
@@ -274,6 +284,7 @@ select {
     color: #C0C4CC !important;
   }
 }
+
 .grey-theme-at-grey {
   .el-input__inner {
     background: #F1F3F7;
@@ -295,11 +306,12 @@ select {
     }
   }
 }
+
 .el-form {
   .el-form-item__label {
     color: #202020;
     font-size: 14px;
-    font-weight:500;
+    font-weight: 500;
     height: 32px;
     line-height: 32px;
     user-select: none;

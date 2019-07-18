@@ -34,13 +34,15 @@ export default {
 		const COUNT_INTERVAL = 5000
 		return {
 			menuSelector: "",
-			dnsAdress: localStorage.getItem("DNSAdress") || "",
+			// dnsAdress: localStorage.getItem("DNSAdress") || "",
 			channelNum: null,
 			Balance: null,
 			COUNT_INTERVAL: COUNT_INTERVAL,
 			setTimeObj: null,
-			setProcessTimeObj: null,
-			Address: ""
+			setTimeAddressObj: null,
+			setTimeProcessObj: null,
+			Address: "",
+			Progress: 0
 		};
 	},
 	mounted() {
@@ -48,13 +50,24 @@ export default {
       this.menuSelector = selector;
       this.$forceUpdate()
 		});
+		localStorage.setItem("DNSAdress", "");
 		this.isNeedCreateChannel();
 	},
 	watch: {
+		Address(newVal,oldVal) {
+			this.Balance = null;
+			this.channelNum = null;
+			localStorage.setItem("DNSAdress", "");
+			this.getProcess();
+		},
 		Balance(newVal, oldVal) {
 			if(!oldVal && newVal && this.channelNum === 0) {
 				ipcRenderer.send('dialog-open', 'createChannel');
-				clearInterval(this.setTimeObj);
+			}
+		},
+		channelNum(newVal, oldVal) {
+			if(this.Balance && newVal === 0 && oldVal === null) {
+				ipcRenderer.send('dialog-open', 'createChannel');
 			}
 		}
 	},
@@ -70,27 +83,34 @@ export default {
 			}
 		},
 		isNeedCreateChannel() {
-			this.getProcess();
-			this.setProcessTimeObj = setInterval(() => {
-				this.getProcess();
+			clearInterval(this.setTimeAddressObj);
+			this.getAddress();
+			this.setTimeAddressObj = setInterval(() => {
+				this.getAddress();
 			}, this.COUNT_INTERVAL)	
 		},
-		getProcess() {
+		getAddress() {
 			this.$axios
       .get(this.$api.account)
       .then(async (res) => {
         const data = res.data;
 				if (data.Error === 0) { // response data
-					this.Address = data.Result.Address
 					if (data.Desc === "SUCCESS" && data.Result.Address) {
-						const progressResult = await this.$axios.get(this.$api.channelInitProgress);
-						if(progressResult.data.Result.Progress === 1) {
-							clearInterval(this.setProcessTimeObj);
-							this.checkCanNotAddChannel();
-						}
+						this.Address = data.Result.Address;
 					}
 				}
 			})
+		},
+		getProcess() {
+			clearInterval(this.setTimeProcessObj);
+			this.setTimeProcessObj = setInterval(() => {
+				this.$axios.get(this.$api.channelInitProgress).then(progressResult => {
+					this.Progress = progressResult.data.Result.Progress
+					if(progressResult.data.Result.Progress === 1) {
+						this.checkCanNotAddChannel();
+					}
+				})
+			},this.COUNT_INTERVAL)
 		},
 		getBalance() {
 			const vm = this;
@@ -113,12 +133,13 @@ export default {
 						clearInterval(this.setTimeObj);
 						return;
 					}
-					this.channelNum = res.data.Result && res.data.Result.Channels && res.data.Result.Channels.length || 0;
+					this.channelNum = res.data.Result && res.data.Result.Channels && res.data.Result.Channels.length;
 				}
 			})	
 		},
 		// check have channel and wallet money
 		checkCanNotAddChannel() {
+			clearInterval(this.setTimeObj);
 			this.getChannel();
 			this.getBalance();
 			this.setTimeObj = setInterval(() => {

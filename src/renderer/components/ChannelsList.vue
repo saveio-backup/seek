@@ -156,6 +156,21 @@
 					</el-form-item>
 					<el-form-item
 					 class="theme-font-blue-bold"
+					 label="Amount"
+					 prop="amount"
+					>
+						<el-input
+						v-model="channelForm.amount"
+						placeholder="Please Input Top Up Amount"
+						@blur="setFixed"
+						min="0"
+						@keyup.enter.native="toPeationChannel"
+						class="channel-opeation-input grey-theme"
+						type="number">
+						</el-input>
+					</el-form-item>
+					<el-form-item
+					 class="theme-font-blue-bold"
 					 label="Password"
 					 prop="password"
 					>
@@ -199,6 +214,14 @@ export default {
 		}
 	},
 	data() {
+		const validateMount = (rule, value ,callback) => {
+			const reg = /^[1-9](\d{0,8})\.(\d{1,9})$|^0\.(\d{0,8})[1-9]$|^[1-9](\d{0,8})$/
+			if(!reg.test(value)) {
+				callback(new Error('Please enter the correct format'));
+				return;
+			}
+			callback();
+		}
 		return {
 			switchToggle: {
 				assetTransferDialog: false
@@ -210,9 +233,21 @@ export default {
 			},
 			channelForm: {
 				password: '',
-				partner: ''
+				partner: '',
+				amount: ''
 			},
 			dialogRules: {
+				amount: [
+					{
+						required: true,
+						message: "Please fill amount",
+						trigger: "blur"
+					},
+					{
+						validator: validateMount, 
+						trigger: 'blur'
+					}
+				],
 				password: [
 					{
 						required: true,
@@ -375,6 +410,11 @@ export default {
 		this.initCurrentRow();
 	},
 	methods: {
+		setFixed() {
+			this.transferInfo.Amount = this.transferInfo.Amount
+				? parseFloat(this.transferInfo.Amount).toFixed(9)
+				: "";
+		},
 		initCurrentRow() {
 			let result = this.channels.some((channel, index) => {
 				if (
@@ -424,7 +464,7 @@ export default {
 		toConfirm() {
 			this.$refs["channelwallettransfer"].toTransfer();
 		},
-		openOpen(dnsAdress) {
+		openOpen(dnsAdress='',num=0) {
 			this.channelToggle = {
 				type: 'add',
 				channelCloseDialog: true,
@@ -433,6 +473,7 @@ export default {
 			this.$nextTick(() => {
 				this.$refs['channelForm'].resetFields();
 				this.channelForm.partner = dnsAdress;
+				this.channelForm.amount = num;
 			})
 		},
 		openClose(channelSelected) {
@@ -469,12 +510,12 @@ export default {
 			this.$axios.post(this.$api.channelOPen, params).then(res => {
 				if(res.data.Error === 0) {
 					this.$message({
-						message: "Opeation successed",
+						message: "Open channel successed",
 						type: "success"
 					});
 					this.channelToggle.channelCloseDialog = false;
 				} else {
-					this.$message.error(res.data.Desc || "Opeation Failed");
+					this.$message.error(res.data.Desc || "Open channel failed");
 				}
 				this.$store.dispatch('setChannelBalanceTotal');
 				this.channelToggle.loading.close();
@@ -483,7 +524,7 @@ export default {
 				this.channelToggle.loading.close();
 				this.channelToggle.loading = null;
 				this.$message.error(
-					"Opeation failed."
+					"Open channel failed."
 				);
 			});
 		},
@@ -492,12 +533,12 @@ export default {
 				if(res.data.Error === 0) {
 					this.channelToggle.channelDialog = false;
 					this.$message({
-						message: "Opeation successed",
+						message: "Close channel successed",
 						type: "success"
 					});
 					this.channelToggle.channelCloseDialog = false;
 				} else {
-					this.$message.error(res.data.Desc || "Opeation Failed");
+					this.$message.error(res.data.Desc || "Close channel Failed");
 				}
 				this.$store.dispatch('setChannelBalanceTotal');
 				this.channelToggle.loading.close();
@@ -506,7 +547,7 @@ export default {
 				this.channelToggle.loading.close();
 				this.channelToggle.loading = null;
 				this.$message.error(
-					"Opeation failed."
+					"Close channel failed."
 				);
 			});
 		}

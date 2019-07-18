@@ -135,11 +135,12 @@ export default {
 			})
 		};
 		if(this.dnsAdress && this.dnsAdress != 'done') {
-			this.$refs.channelListObj.openOpen(this.dnsAdress || '');
+			this.$refs.channelListObj.openOpen(this.dnsAdress, 100);
 			localStorage.setItem("DNSAdress", "done");
 		}
-		ipcRenderer.on("open-add-channel-dialog", () => {
-			this.$refs.channelListObj.openOpen(this.dnsAdress || '');
+		ipcRenderer.on("open-add-channel-dialog", (event, dnsAdress) => {
+			console.log(dnsAdress);
+			this.$refs.channelListObj.openOpen(dnsAdress, 100);
 		});
 	},
 	filters: {

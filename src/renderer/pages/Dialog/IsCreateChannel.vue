@@ -73,7 +73,7 @@ export default {
 				} else if (Object.prototype.toString.call(homeViews)  === "[object Array]") {
 					activeView.isActive = false;
 					homeViews[0].isActive = true;
-					this.win.setBrowserView(homeViews[0].browserView,dnsAddr);
+					this.win.setBrowserView(homeViews[0].browserView);
 				} else if (Object.prototype.toString.call(homeViews)  === "[object Object]"){
 					activeView.isActive = false;
 					homeViews.isActive = true;
@@ -81,7 +81,7 @@ export default {
 				}
 				// if browser have home send param to first browser 
 				const webContentsId = homeViews.browserView.webContents.id;
-				ipcRenderer.sendTo(webContentsId, 'open-add-channel-dialog')
+				ipcRenderer.sendTo(webContentsId, 'open-add-channel-dialog', dnsAddr)
 			} catch (e) {
 				console.log(e);
 			}
@@ -98,9 +98,9 @@ export default {
 				text: "loading...",
 				target: ".loading-content"
 			});
-			this.$axios.get(this.$api.getAllDns).then(data => {
+			this.$axios.get(this.$api.getAllDns).then(res => {
 				if(res.data.Error === 0) {
-					this.dns = res.data.Result[0]
+					this.dns = res.data.Result[0];
 				} else {
 					this.$message.error(res.data.Desc || "Get all dns failed");
 				}

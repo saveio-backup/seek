@@ -196,8 +196,8 @@ export default {
 								position: 'center',
 								formatter: [
 									'{a|{b}}',
-									'{b|{d}%}',
-									'{c|{c} SAVE}'
+									'{c|{c} SAVE}',
+									'{b|{d}%}'
 								].join('\n'),
 								rich: {
 									a: {
@@ -481,7 +481,7 @@ export default {
 				});
 			}
 			arr.map((channel) => {
-				channel['value'] = parseFloat(channel['BalanceFormat']).toFixed(3);
+				channel['value'] = parseFloat(channel['BalanceFormat']);
 				channel['name'] = channel['ChannelId'];
 				return channel;
 			})

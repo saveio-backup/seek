@@ -75,11 +75,11 @@
                     v-if="scope.row.Privilege != 0"
                     @click.stop="shareFile(scope.row)"
                     title="Share"
-                    class="el-icon-share"
+                    class="el-icon-share cursor-click active-blue cursor-pointer"
                   ></i>
                   <i
                     v-if="page === 'filebox'"
-                    class="el-icon-download"
+                    class="el-icon-download cursor-click active-blue cursor-pointer"
                     title="Download"
                     @click.stop="downloadFile(scope.row)"
                   ></i>
@@ -87,17 +87,17 @@
                     v-if="page === 'filebox'"
                     title="Delete"
                     @click.stop="deleteFile(scope.row)"
-                    class="el-icon-delete"
+                    class="el-icon-delete cursor-click active-blue cursor-pointer"
                   ></i>
                   <i
                     v-if="page === 'miner' && scope.row.Path"
                     @click.stop="showInFolder(scope.row.Path)"
-                    class="ofont ofont-file"
+                    class="ofont ofont-file cursor-click active-blue cursor-pointer"
                     title="Open Folder"
                   ></i>
                   <i
                     v-if="page === 'filebox'"
-                    class="el-icon-xiangqingchakan ofont ofont-xiangqingchakan "
+                    class="el-icon-xiangqingchakan ofont cursor-click active-blue cursor-pointer"
                     title="look detail"
                     @click.stop="openDetailDialog(scope.row)"
                   >
@@ -110,10 +110,11 @@
           <el-table-column
             label="Model"
             min-width="100"
+            v-if="page === 'filebox'"
           >
             <template slot-scope="scope">
               <div>
-                {{scope.row.StoreType === 1 ? 'Advance' : scope.row.StoreType === 0 ? 'Normal' : ''}}
+                {{scope.row.StoreType === 1 ? 'Advance' : scope.row.StoreType === 0 ? 'Primary' : ''}}
               </div>
             </template>
           </el-table-column>
@@ -356,10 +357,10 @@ export default {
           Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
           Name: "hahat.txt",
           Size: 1536,
-          DownloadCount: 0,
+          DownloadCount: 1536,
           ExpiredAt: 1555051257,
           UpdatedAt: 0,
-          Profit: 0,
+          Profit: 1,
           Privilege: 1
         },
         {
@@ -400,97 +401,8 @@ export default {
           ExpiredAt: 1555051257,
           UpdatedAt: 0,
           Profit: 0,
-          Privilege: 1
-        },
-        {
-          Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-          Name: "hahat.txt",
-          Size: 1536,
-          DownloadCount: 0,
-          ExpiredAt: 1555051257,
-          UpdatedAt: 0,
-          Profit: 0,
-          Privilege: 1
-        },
-        {
-          Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-          Name: "hahat.txt",
-          Size: 1536,
-          DownloadCount: 0,
-          ExpiredAt: 1555051257,
-          UpdatedAt: 0,
-          Profit: 0,
-          Privilege: 1
-        },
-        {
-          Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-          Name: "hahat.txt",
-          Size: 1536,
-          DownloadCount: 0,
-          ExpiredAt: 1555051257,
-          UpdatedAt: 0,
-          Profit: 0,
-          Privilege: 1
-        },
-        {
-          Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-          Name: "hahat.txt",
-          Size: 1536,
-          DownloadCount: 0,
-          ExpiredAt: 1555051257,
-          UpdatedAt: 0,
-          Profit: 0,
-          Privilege: 1
-        },
-        {
-          Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-          Name: "hahat.txt",
-          Size: 1536,
-          DownloadCount: 0,
-          ExpiredAt: 1555051257,
-          UpdatedAt: 0,
-          Profit: 0,
-          Privilege: 1
-        },
-        {
-          Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-          Name: "hahat.txt",
-          Size: 1536,
-          DownloadCount: 0,
-          ExpiredAt: 1555051257,
-          UpdatedAt: 0,
-          Profit: 0,
-          Privilege: 1
-        },
-        {
-          Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-          Name: "hahat.txt",
-          Size: 1536,
-          DownloadCount: 0,
-          ExpiredAt: 1555051257,
-          UpdatedAt: 0,
-          Profit: 0,
-          Privilege: 1
-        },
-        {
-          Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-          Name: "hahat.txt",
-          Size: 1536,
-          DownloadCount: 0,
-          ExpiredAt: 1555051257,
-          UpdatedAt: 0,
-          Profit: 0,
-          Privilege: 1
-        },
-        {
-          Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-          Name: "hahat.txt",
-          Size: 1536,
-          DownloadCount: 0,
-          ExpiredAt: 1555051257,
-          UpdatedAt: 0,
-          Profit: 0,
-          Privilege: 1
+          Privilege: 1,
+          Path: '123123'
         }
       ],
       fileListData: [],
@@ -854,13 +766,13 @@ $theme-font-blue: #040f39;
           [class^="el-icon-"] {
             margin: 0px 4px;
             font-size: 18px;
-            cursor: pointer;
-            &:hover {
-              color: $light-blue;
-            }
-            &:active {
-              opacity: 0.7;
-            }
+            // cursor: pointer;
+            // &:hover {
+            //   color: $light-blue;
+            // }
+            // &:active {
+            //   opacity: 0.7;
+            // }
           }
         }
         &:hover {

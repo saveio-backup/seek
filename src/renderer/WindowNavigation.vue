@@ -11,9 +11,9 @@
 					 v-for="(item,index) in views"
 					 :key="index"
 					 :class="{'is-active':item.isActive}"
-						@click="remoteSetActive(item,index)"
+						@mousedown="remoteSetActive(item,index)"
 					>
-
+						<!-- @click="remoteSetActive(item,index)" -->
 						<span
 						 v-if="item.isLoading"
 						 class="el-icon-loading ml10"

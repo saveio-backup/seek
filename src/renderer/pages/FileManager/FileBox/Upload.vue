@@ -12,7 +12,7 @@
           class="primary small"
           @click="hiddenAdvanced"
           v-show="switchToggle.advanced"
-        ><i class="ofont ofont-jiandan"></i> Simple</el-button>
+        ><i class="ofont ofont-jiandan"></i> Primary</el-button>
       </div>
       <div class="upload-params">
         <el-form

@@ -157,8 +157,8 @@ const setupConfig = async (appDataPath, appName) => {
         log.debug("folder not exist")
         fs.mkdirSync(baseDir)
     }
-    cfgObj.Base.AutoSetupDNSEnable = true;
-    cfgObj.Base.NetworkId = 1563265186;
+    cfgObj.Base.AutoSetupDNSEnable = false;
+    cfgObj.Base.NetworkId = 1563438858;
     try {
         await fs.writeFileSync(cfgPath, JSON.stringify(cfgObj))
     } catch (err) {

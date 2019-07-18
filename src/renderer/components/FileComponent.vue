@@ -44,7 +44,12 @@
 					class-name="rowName"
 				>
 					<template slot-scope="scope">
-						<div class="flex between">
+						<div class="flex ai-center">
+							<i
+								v-if="transferType === 0"
+								class="ofont mr20 ft16 active-blue"
+								:class="scope.row.IsUploadAction ? 'ofont-shangchuan':'ofont-xiazai'"
+							></i>
 							<span>{{scope.row.FileName}}</span>
 							<!-- <div class="opera"> -->
 							<!-- <i class="ofont ofont-zhongxinshangchuan" title="upload again" v-show="scope.row.Status === 4"  @click="uploadAgain(scope.row)"></i> -->
@@ -58,11 +63,11 @@
 				<el-table-column
 					label="Model"
 					min-width="100"
-					v-if="transferType !== 2"
+					v-if="transferType === 1"
 				>
 					<template slot-scope="scope">
 						<div>
-							{{scope.row.StoreType === 1 ? 'Advance' : scope.row.StoreType === 0 ? 'Normal' : ''}}
+							{{scope.row.StoreType === 1 ? 'Advance' : scope.row.StoreType === 0 ? 'Primary' : ''}}
 						</div>
 					</template>
 				</el-table-column>
@@ -149,36 +154,42 @@
 					min-width="100px"
 				>
 					<template slot-scope="scope">
-						<div class="action ">
+						<div class="action ft18">
 							<!-- <span v-if="scope.row.status === 0">continue</span>
 							<span v-if="scope.row.status === 2">pause</span> -->
 							<!-- <span v-if="!scope.row.IsUploadAction"><i class="el-icon-tickets"></i></span> -->
 							<span
 								title="Open folder"
 								v-if="scope.row.Path"
+								class="cursor-click active-blue cursor-pointer"
 								@click="showInFolder(scope.row.Path)"
 							><i class="ofont ofont-file"></i></span>
 							<span
 								title="Decrypt"
+								class="cursor-click active-blue cursor-pointer"
 								@click="setFileSelected(scope.row)"
-								v-if="!scope.row.IsUploadAction && scope.row.Path"
+								v-if="(!scope.row.IsUploadAction) && scope.row.Path"
 							><i class="el-icon-lock"></i></span>
 							<span
+								class="cursor-click active-blue cursor-pointer"
 								:title="scope.row.IsUploadAction ? 'upload again':'download again'"
 								v-show="scope.row.Status === 4 || (!scope.row.IsUploadAction && scope.row.Status === 3)"
 								@click="uploadOrDownloadAgain(scope.row)"
 							><i class="ofont ofont-zhongxinshangchuan"></i></span>
 							<span
+								class="cursor-click active-blue cursor-pointer"
 								:title="scope.row.IsUploadAction ? 'continue to upload':'continue to download'"
 								v-show="scope.row.Status === 0"
 								@click="uploadOrDownloadContinue(scope.row)"
 							><i class="ofont ofont-jixu"></i></span>
 							<span
+								class="cursor-click active-blue cursor-pointer"
 								:title="scope.row.IsUploadAction ? 'pause to upload':'pause to download'"
 								v-show="scope.row.Status === 1 || scope.row.Status === 2"
 								@click="uploadOrDownloadPause(scope.row)"
 							><i class="ofont ofont-zanting"></i></span>
 							<span
+								class="cursor-click active-blue cursor-pointer"
 								title="look detail"
 								@click="openDetailDialog(scope.row)"
 								v-show="((scope.row.Nodes && scope.row.Nodes.length > 0) || scope.row.Status === 3) && scope.row.IsUploadAction"
@@ -259,7 +270,7 @@
 			center
 		>
 			<div slot="title">
-				<h2>Upload detail</h2>
+				<h2>Upload Detail</h2>
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content node-wrapper">
@@ -349,6 +360,7 @@ export default {
 					UpdatedAt: 0,
 					Profit: 0,
 					Privilege: 1,
+					Path: '123',
 					Nodes: [
 						{
 							HostAddr: "tcp://127.0.0.1:14001",
@@ -732,17 +744,18 @@ $light-grey: #f9f9fb;
 	}
 	.action > span {
 		margin-right: 5px;
-		font-size: 18px;
-		cursor: pointer;
-		.ofont-xiangqingchakan {
-			font-size: 18px;
-		}
-		&:hover {
-			color: $light-blue;
-		}
-		&:active {
-			opacity: 0.7;
-		}
+		// font-size: 18px;
+		// color: $light-blue;
+		// cursor: pointer;
+		// .ofont-xiangqingchakan {
+		// 	font-size: 18px;
+		// }
+		// &:hover {
+		// 	color: $light-blue;
+		// }
+		// &:active {
+		// 	opacity: 0.7;
+		// }
 	}
 	.file-progress {
 		&.progressAnimate {

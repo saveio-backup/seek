@@ -51,6 +51,7 @@
 				</div>
 				<div class="loading-content">
 					<channel-wallet-transfer
+					@closeDialog='switchToggle.assetTransferDialog = false'
 					 ref="channelwallettransfer"
 					 :channelSelected='channelBind'
 					></channel-wallet-transfer>

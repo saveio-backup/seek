@@ -158,6 +158,7 @@
 					 class="theme-font-blue-bold"
 					 label="Amount"
 					 prop="amount"
+					 v-show="channelToggle.type==='add'"
 					>
 						<el-input
 						v-model="channelForm.amount"
@@ -495,13 +496,19 @@ export default {
 					text: "Processing...",
 					target: ".loading-content-2"
 				});
-				let params = {
-					Password: this.channelForm.password,
-					Partner: this.channelForm.partner
-				}	
+				
 				if(this.channelToggle.type === 'add') {
+					let params = {
+						Password: this.channelForm.password,
+						Partner: this.channelForm.partner,
+						Amount: this.channelForm.amount
+					}	
 					this.toChannelOpen(params)
 				} else {
+					let params = {
+						Password: this.channelForm.password,
+						Partner: this.channelForm.partner
+					}	
 					this.toChannelClose(params)
 				}
 			})

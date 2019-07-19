@@ -252,7 +252,7 @@
 				<h2>Confirm</h2>
 				<div class="dialog-title-border"></div>
 			</div>
-			<div class="loading-content">
+			<div class="loading-content decrypt">
 				<el-form>
 					<el-form-item label="File Password:">
 						<el-input
@@ -735,7 +735,7 @@ export default {
 			this.switchToggle.loading = this.$loading({
 				lock: true,
 				text: "Processing..",
-				target: ".loading-content"
+				target: ".loading-content.decrypt"
 			});
 			this.$axios
 				.post(this.$api.decrypt, this.fileSelected)
@@ -750,7 +750,7 @@ export default {
 						this.switchToggle.decryptDialog = false;
 					} else if (res.data.Erro === 50015) {
 						this.$message({
-							message: "Wrong Password",
+							message: "The password is in correct.",
 							type: "error"
 						});
 					} else {

@@ -11,7 +11,7 @@
 				<h2>Warning</h2>
 				<div class="dialog-title-border"></div>
 			</div>
-			<div class="loading-content">
+			<div class="loading-content logout-loading">
 				<div class="mb20">
 					<p class="mt20 text-center">Please ensure that the private key(WIF) file is properly stored before exiting.</p>
 				</div>
@@ -49,7 +49,7 @@ export default {
 			this.logoutLoding = this.$loading({
 				lock: true,
 				text: "logging out",
-				target: ".loading-content"
+				target: ".loading-content.logout-loading"
 			});
 			this.$axios
 				.post(this.$api.account + "/logout", {})

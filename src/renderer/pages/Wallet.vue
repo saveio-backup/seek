@@ -222,7 +222,7 @@
 					<h2>Transfer</h2>
 					<div class="dialog-title-border mt10"></div>
 				</div>
-				<div class="loading-content">
+				<div class="loading-content wallet-sendtransfer-loading">
 					<div class="send-form-wrap">
 						<el-form
 						 ref='transferForm'
@@ -672,7 +672,7 @@ export default {
 					this.switchToggle.loading = this.$loading({
 						lock: true,
 						text: "Transaction processing....",
-						target: ".loading-content"
+						target: ".loading-content.wallet-sendtransfer-loading"
 					});
 					this.setFixed();
 					const sendInfo = this.sendInfo;

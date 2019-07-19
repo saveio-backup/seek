@@ -79,7 +79,7 @@
           label-width="200px"
         >
           <el-form-item label="Storage Cycle:">
-            <p class="dark-grey expire-date">Expired At: {{expiredDate}} </p>
+            <p class="dark-grey expire-date">Expired Time: {{expiredDate}} </p>
             <el-input
               v-model="storageCycleNumber"
               :min="1"
@@ -171,6 +171,7 @@
               <el-input
                 v-if="switchToggle.whiteListInput"
                 v-model="wihteListString"
+                placeholder="Input one wallet address"
                 class="save-tag-input form-right"
                 ref="saveTagInput"
                 size="small"
@@ -225,7 +226,7 @@
         <h2>Confirm</h2>
         <div class="dialog-title-border"></div>
       </div>
-      <div class="loading-content">
+      <div class="loading-content upload-loading">
         <el-form
           ref="passwordForm"
           :model="passwordForm"
@@ -306,12 +307,14 @@ export default {
       Year: 31536000
     };
     const baseKeys = Object.keys(BASE);
+    const DEFAULT_KEY = "Year";
+    const DEFAULT_STORAGE_CYCLE = BASE[DEFAULT_KEY];
     return {
       baseKeys,
       BASE,
-      verificationCycleSelected: baseKeys[0], // default Month
-      verificationCycleNumber: 300, // Integrity verification cycle (default 2 month)
-      storageCycleSelected: baseKeys[3], // default Year
+      verificationCycleSelected: baseKeys[0], // default Second
+      verificationCycleNumber: 300, // Integrity verification cycle
+      storageCycleSelected: DEFAULT_KEY, // default Year
       storageCycleNumber: 1,
       DefaultCopyNum: "", // axios.get
       passwordForm: {
@@ -351,7 +354,7 @@ export default {
         ]
       },
       advancedData: {
-        Duration: 2592000, // storage cycle  default forever
+        Duration: DEFAULT_STORAGE_CYCLE, // storage cycle  default forever
         Interval: 0, // Integrity verification cycle
         // Times: 1, // Integrity Times
         Privilege: 1, // Authority
@@ -385,7 +388,8 @@ export default {
       if (!this.remindToggle.noAllowRemind) this.remindToggle.show = true;
     },
     advancedDataInit() {
-      this.advancedData = {
+      // save config
+      /* this.advancedData = {
         Duration: 0,
         Interval: 0,
         Privilege: 1,
@@ -394,6 +398,7 @@ export default {
       };
       this.verificationCycleSelected = this.baseKeys[0];
       this.verificationCycleNumber = 300;
+      this.setDuration(); */
     },
     setEncryptPassword() {
       if (!this.encryptionToggle) {
@@ -432,7 +437,7 @@ export default {
         !whiteListRex.test(this.wihteListString)
       ) {
         this.$refs.saveTagInput.$refs.input.focus();
-        this.$message("whiteList format error");
+        this.$message("Wrong Wallet Address Format");
         return;
       }
       let inputValue = this.wihteListString.trim();
@@ -487,7 +492,7 @@ export default {
         this.switchToggle.loading = this.$loading({
           lock: true,
           text: "Uploading..",
-          target: ".loading-content"
+          target: ".loading-content.upload-loading"
         });
         let data = null;
         data = this.switchToggle.advanced
@@ -567,8 +572,10 @@ export default {
     mainCount() {
       return this.$store.state.Wallet.mainCount;
     },
-    expiredDate(){
-      return  this.$dateFormat.formatYearMonthDayHour(new Date(new Date().getTime() +  this.advancedData.Duration *1000))
+    expiredDate() {
+      return this.$dateFormat.formatYearMonthDayHour(
+        new Date(new Date().getTime() + this.advancedData.Duration * 1000)
+      );
     }
     // storageCycleNumber: function() {
     // 	return this.verificationCycleNumber * this.advancedData.Times;
@@ -708,8 +715,8 @@ $inputFocusBg: #dee2ea;
     }
     .expire-date {
       position: absolute;
-      right:0px;
-      bottom:0px;
+      right: 0px;
+      bottom: 0px;
       transform: translateY(34px);
     }
     h1 {

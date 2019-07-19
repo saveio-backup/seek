@@ -10,7 +10,7 @@
         <h2>File Detail</h2>
         <div class="dialog-title-border"></div>
       </div>
-      <div class="loading-content">
+      <div class="loading-content upload-file-detail-loading">
         <div class="adjust">
           <div class="adjust-item">
             <p class="adjust-title theme-font-blue ft14">File Hash:</p>
@@ -118,7 +118,7 @@ export default {
       this.loading = this.$loading({
         lock: true,
         text: "loading...",
-        target: ".loading-content"
+        target: ".loading-content.upload-file-detail-loading"
       });
       this.$axios
         .get(this.$api.getUploadFileInfo + hash)

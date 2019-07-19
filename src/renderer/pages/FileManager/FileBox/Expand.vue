@@ -58,7 +58,7 @@
           <h2>Storage</h2>
           <div class="dialog-title-border"></div>
         </div>
-        <div class="loading-content">
+        <div class="loading-content expand-setspace-loading">
           <div class="adjust">
             <div class="adjust-item">
               <div class="adjust-title bold ft14 tl theme-font-blue-40">Space Size:</div>
@@ -478,7 +478,7 @@ export default {
       this.switchToggle.loading = this.$loading({
         lock: true,
         text: "Upgrading",
-        target: ".loading-content"
+        target: ".loading-content.expand-setspace-loading"
       });
       this.setDateValue(this.expired, "fixed");
       this.setSizeValue();

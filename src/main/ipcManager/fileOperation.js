@@ -48,7 +48,7 @@ ipcMain.on('export-file-dialog', (event, contents, defaultName) => {
 })
 ipcMain.on('upload-file-dialog', (event) => {
   dialog.showOpenDialog({
-    properties: ['openFile']
+    properties: ['openFile','treatPackageAsDirectory']
   }, (files) => {
     if (files) {
       const fileName = path.basename(files[0])

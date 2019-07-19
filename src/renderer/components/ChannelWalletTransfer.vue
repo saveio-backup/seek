@@ -148,7 +148,7 @@ export default {
 					this.switchToggle.loading = this.$loading({
 						lock: true,
 						text: "Transaction processing....",
-						target: ".loading-content"
+						target: ".loading-content.loading-channel"
 					});
 					const addr = this.withDraw
 						? this.$api.withdrawChannel

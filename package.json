@@ -1,6 +1,6 @@
 {
   "name": "seek",
-  "version": "0.0.1-alpha-0718-d14d18",
+  "version": "0.0.1-alpha-0719-764cfb",
   "description": "seek about SAVE",
   "license": "MIT",
   "main": "./dist/electron/main.js",

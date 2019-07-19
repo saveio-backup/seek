@@ -107,7 +107,7 @@
               </div>
             </template>
           </el-table-column>
-          <!-- <el-table-column
+          <el-table-column
             label="Model"
             min-width="100"
             v-if="page === 'filebox'"
@@ -117,7 +117,7 @@
                 {{scope.row.StoreType === 1 ? 'Advance' : scope.row.StoreType === 0 ? 'Primary' : ''}}
               </div>
             </template>
-          </el-table-column> -->
+          </el-table-column>
           <el-table-column
             label="Owner"
             v-if="page ==='miner'"
@@ -193,7 +193,7 @@
         <h2>Share</h2>
         <div class="dialog-title-border"></div>
       </div>
-      <div class="loading-content">
+      <div class="">
         <p class="mt10 mb10 tl">File name: {{executedFile.Name}}</p>
         <el-form>
           <el-form-item label="Link:">
@@ -232,7 +232,7 @@
         <h2>Download File</h2>
         <div class="dialog-title-border"></div>
       </div>
-      <div class="loading-content">
+      <div class="loading-content disk-download-loading">
         <div class="adjust">
           <div class="adjust-item">
             <p class="adjust-title theme-font-blue ft14">File Name:</p>
@@ -298,10 +298,10 @@
       center
     >
       <div slot="title">
-        <h2>Notice</h2>
+        <h2>Delete File</h2>
         <div class="dialog-title-border"></div>
       </div>
-      <div class="loading-content">
+      <div class="loading-content disk-delete-loading">
         <p class="mt10 mb10">Are you sure you want to delete the selected file?</p>
         <p class="mb20">{{executedFile.Name}}</p>
         <div slot="footer">
@@ -460,7 +460,7 @@ export default {
           UpdatedAt: 0,
           Profit: 0,
           Privilege: 1,
-          Path: '123123'
+          Path: "123123"
         }
       ],
       fileListData: [],
@@ -610,8 +610,9 @@ export default {
       this.switchToggle.loading = this.$loading({
         lock: true,
         text: "File Processing....",
-        target: ".loading-content"
+        target: ".loading-content.disk-download-loading"
       });
+      return;
       const length = downloadFiles.length;
       const commitAll = [];
       for (let i = 0; i < length; i++) {
@@ -695,7 +696,7 @@ export default {
       this.switchToggle.loading = this.$loading({
         lock: true,
         text: "Deleting....",
-        target: ".loading-content"
+        target: ".loading-content.disk-delete-loading"
       });
       this.$axios
         .post(this.$api.delete, { Hash: hash })
@@ -758,7 +759,8 @@ export default {
           .then(res => {
             // if (res.data.Error === 0) {
             cost += res.data.Result.Fee || 0;
-            this.fileDownloadInfo.DownloadDir = res.data.Result.DownloadDir || "";
+            this.fileDownloadInfo.DownloadDir =
+              res.data.Result.DownloadDir || "";
             this.fileDownloadInfo.Fee =
               parseFloat((cost / 1000000000).toFixed(9)) + " SAVE";
             // }

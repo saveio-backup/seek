@@ -49,11 +49,10 @@
 					<h2>Transfer</h2>
 					<div class="dialog-title-border"></div>
 				</div>
-				<div class="loading-content">
+				<div class="loading-content loading-channel">
 					<channel-wallet-transfer
 					@closeDialog='switchToggle.assetTransferDialog = false'
 					 ref="channelwallettransfer"
-					 @closeDialog='switchToggle.assetTransferDialog = false'
 					 :channelSelected='channelBind'
 					></channel-wallet-transfer>
 					<div slot="footer">

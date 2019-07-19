@@ -62,11 +62,13 @@ export default {
 		},
 		Balance(newVal, oldVal) {
 			if(!oldVal && newVal && this.channelNum === 0) {
+				console.log(`Balance(new):${newVal},Balance(old):${oldVal},channelNum:${this.channelNum}`);
 				ipcRenderer.send('dialog-open', 'createChannel');
 			}
 		},
 		channelNum(newVal, oldVal) {
 			if(this.Balance && newVal === 0 && oldVal === null) {
+				console.log(`channelNum(new):${newVal},channelNum(old):${oldVal},Balance:${this.Balance}`);
 				ipcRenderer.send('dialog-open', 'createChannel');
 			}
 		}

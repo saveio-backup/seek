@@ -61,6 +61,10 @@ $theme-color: #1b1e2f;
   @extend .theme-font-blue-bold
 }
 
+.cursor-not-allowed {
+  cursor: not-allowed;
+}
+
 .cursor-pointer {
   cursor: pointer;
 }

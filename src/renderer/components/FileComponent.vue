@@ -20,15 +20,31 @@
 				></el-progress>
 			</div>
 			<el-button
-				v-if="transferType == 2"
+				v-if="transferType === 2"
 				@click="switchToggle.newTaskDialog=true"
 			>New Task</el-button>
+			<el-button
+				v-if="transferType !== 0 && show"
+				@click="cancelAll"
+			>Cancel All</el-button>
+			<el-button
+				v-if="transferType !== 0 && show"
+				@click="continueAll"
+			>Continue All</el-button>
+			<el-button
+				v-if="transferType !== 0 && show"
+				@click="pauseAll"
+			>Pause All</el-button>
 		</div>
 		<div
 			v-else
 			class="top-progress"
 		>
-			<p class="theme-font-blue ft14 user-no-select">Finished {{fileList.length}} Files</p>
+			<p class="theme-font-blue ft14 user-no-select flex1">Finished {{fileList.length}} Files</p>
+				<el-button
+					v-if="transferType === 0 && show"
+					@click="switchToggle.newTaskDialog=true"
+				>Delete All</el-button>
 		</div>
 		<div class="file-list">
 			<el-table
@@ -144,7 +160,7 @@
 					min-width="100"
 				>
 					<template slot-scope="scope">
-						<span class="light-blue">
+						<span>
 							{{$dateFormat.formatTimeByTimestamp(scope.row.UpdatedAt*1000)}}
 						</span>
 					</template>
@@ -172,10 +188,10 @@
 							><i class="el-icon-lock"></i></span>
 							<span
 								class="cursor-click active-blue cursor-pointer"
-								:title="scope.row.IsUploadAction ? 'upload again':'download again'"
+								:title="scope.row.Status === 4 ? (scope.row.IsUploadAction ? 'continue to upload':'continue to download'):'download again'"
 								v-show="scope.row.Status === 4 || (!scope.row.IsUploadAction && scope.row.Status === 3)"
 								@click="uploadOrDownloadAgain(scope.row)"
-							><i class="ofont ofont-zhongxinshangchuan"></i></span>
+							><i class="ofont" :class="{'ofont-zhongxinshangchuan': (!scope.row.IsUploadAction && scope.row.Status === 3),'ofont-jixu': scope.row.Status === 4}"></i></span>
 							<span
 								class="cursor-click active-blue cursor-pointer"
 								:title="scope.row.IsUploadAction ? 'continue to upload':'continue to download'"
@@ -190,10 +206,22 @@
 							><i class="ofont ofont-zanting"></i></span>
 							<span
 								class="cursor-click active-blue cursor-pointer"
+								:title="scope.row.IsUploadAction ? 'cancel to upload':'cancel to download'"
+								v-show="scope.row.Status !== 3 && show"
+								@click="uploadOrDownloadCancel(scope.row)"
+							><i class="ofont ofont-cancel"></i></span>
+							<span
+								class="cursor-click active-blue cursor-pointer"
 								title="look detail"
 								@click="openDetailDialog(scope.row)"
 								v-show="((scope.row.Nodes && scope.row.Nodes.length > 0) || scope.row.Status === 3) && scope.row.IsUploadAction"
 							><i class="ofont ofont-xiangqingchakan"></i></span>
+							<span
+								class="cursor-click active-blue cursor-pointer"
+								title="delete record"
+								@click="deleteRecord(scope.row)"
+								v-show="scope.row.Status === 3 && show"
+							><i class="ofont ofont-ofont-zanting"></i></span>
 						</div>
 					</template>
 				</el-table-column>
@@ -324,6 +352,7 @@ export default {
 	data() {
 		return {
 			util,
+			show: false,
 			switchToggle: {
 				loading: null,
 				newTaskDialog: false,
@@ -556,6 +585,74 @@ export default {
 				this.detailId = row.Id;
 				this.switchToggle.detailDialog = true;
 			}
+		},
+		cancelAll() {
+			const type = this.transferType;
+			const arr = this.getTask(type, 0, 1, 2, 4);
+			this.$axios.post(this.$api.cancelAll, params).then(res => {
+				if (res.data.Error === 0) {
+					this.$message({
+						message: "Opeation Success",
+						type: "Success"
+					});
+				} else {
+					this.$message.error(res.data.Desc || "Opeation failed.");
+				}
+			});
+		},
+		continueAll() {
+			const type = this.transferType;
+			const arr = this.getTask(type, 0);
+		},
+		pauseAll() {
+			const type = this.transferType;
+			const arr = this.getTask(type, 1, 2);	
+		},
+		getTask(type, ...status) {
+			// console.log(status);
+			let filterArr = this.fileList.filter((item) => {
+				if(type === 1 && item.IsUploadAction) {
+					return false;
+				} else if (type === 2 && !item.IsUploadAction) {
+					return false;
+				} else if (status.indexOf(item.Status) === -1) {
+					return false;
+				}
+				return true;
+			});
+			return filterArr;
+		},
+		deleteRecord(row) {
+			let params = {
+				Hash: row.FileHash
+			};
+			this.$axios.post(this.$api.deleteRecord, params).then(res => {
+				if (res.data.Error === 0) {
+					this.$message({
+						message: "Opeation Success",
+						type: "Success"
+					});
+				} else {
+					this.$message.error(res.data.Desc || "Opeation failed.");
+				}
+			});
+		},
+		uploadOrDownloadCancel(row) {
+			let url = this.$api.uploadCancel;
+			if (!row.IsUploadAction) url = this.$api.downloadCancel;
+			let params = {
+				Hash: row.FileHash
+			};
+			this.$axios.post(url, params).then(res => {
+				if (res.data.Error === 0) {
+					this.$message({
+						message: "Opeation Success",
+						type: "Success"
+					});
+				} else {
+					this.$message.error(res.data.Desc || "Opeation failed.");
+				}
+			});
 		},
 		uploadOrDownloadAgain(row) {
 			let url = this.$api.uploadRetry;

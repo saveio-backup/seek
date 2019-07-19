@@ -158,7 +158,7 @@ const setupConfig = async (appDataPath, appName) => {
         fs.mkdirSync(baseDir)
     }
     cfgObj.Base.AutoSetupDNSEnable = false;
-    cfgObj.Base.NetworkId = 1563438858;
+    cfgObj.Base.NetworkId = 1563525726;
     try {
         await fs.writeFileSync(cfgPath, JSON.stringify(cfgObj))
     } catch (err) {

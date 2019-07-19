@@ -32,7 +32,7 @@
 				<el-table-column label='Balance(SAVE)'>
 					<template slot-scope="scope">
 						<div class="grey-xs ft14">
-							{{filterFloat(scope.row.BalanceFormat).toLocaleString('en-US')}}
+							{{filterFloat(scope.row.BalanceFormat).toLocaleString('en-US', { maximumFractionDigits: 9 })}}
 						</div>
 					</template>
 				</el-table-column>
@@ -74,10 +74,10 @@
 				 v-if="showTransfer"
 				>
 					<template slot-scope="scope">
+							<!-- :class="{'theme-font-blue-40':!scope.row.Connected,'light-blue cursor-pointer cursor-click':scope.row.Connected}" -->
 						<span
 							v-show="scope.row.Participant1State !== 0"
-							class="user-no-select"
-							:class="{'theme-font-blue-40':!scope.row.Connected,'light-blue cursor-pointer cursor-click':scope.row.Connected}"
+							class="light-blue cursor-pointer cursor-click user-no-select"
 							@click="openTransfer(scope.row)"
 							:title="scope.row.Connected?'transfer':'The channel is offline and no transfer is allowed'"
 						>
@@ -145,7 +145,7 @@
 					 class="theme-font-blue-bold"
 					 label="DNS Wallet Address"
 					 prop="partner"
-					v-show="channelToggle.type==='add'"
+						v-show="channelToggle.type==='add'"
 					>
 						<el-input
 						v-model="channelForm.partner"
@@ -155,11 +155,12 @@
 						</el-input>
 					</el-form-item>
 					<el-form-item
-					 class="theme-font-blue-bold"
-					 label="Amount"
+					 class="theme-font-blue-bold form-amount"
+					 label="Amount(SAVE)"
 					 prop="amount"
-					 v-show="channelToggle.type==='add'"
+					 v-if="channelToggle.type==='add'"
 					>
+						<p class="form-item-title">Recommended no less than 100 SAVE</p>
 						<el-input
 						v-model="channelForm.amount"
 						placeholder="Please Input Top Up Amount"
@@ -169,6 +170,7 @@
 						class="channel-opeation-input grey-theme"
 						type="number">
 						</el-input>
+						<p style="font-weight: 500;"></p>
 					</el-form-item>
 					<el-form-item
 					 class="theme-font-blue-bold"
@@ -412,8 +414,8 @@ export default {
 	},
 	methods: {
 		setFixed() {
-			this.transferInfo.Amount = this.transferInfo.Amount
-				? parseFloat(this.transferInfo.Amount).toFixed(9)
+			this.channelForm.amount = this.channelForm.amount
+				? parseFloat(this.channelForm.amount).toFixed(9)
 				: "";
 		},
 		initCurrentRow() {
@@ -458,9 +460,15 @@ export default {
 			);
 		},
 		openTransfer(channelSelected) {
-			if(!channelSelected.Connected) return;
 			this.channelSelected = channelSelected;
 			this.switchToggle.assetTransferDialog = true;
+			if(!channelSelected.Connected) {
+				setTimeout(() => {
+					this.$nextTick(() => {
+						this.$message({message: "Sorry, you cannot withdraw in offline status"});
+					})
+				}, 50)
+			}
 		},
 		toConfirm() {
 			this.$refs["channelwallettransfer"].toTransfer();
@@ -501,7 +509,7 @@ export default {
 					let params = {
 						Password: this.channelForm.password,
 						Partner: this.channelForm.partner,
-						Amount: this.channelForm.amount
+						Amount: (this.channelForm.amount + '')
 					}	
 					this.toChannelOpen(params)
 				} else {
@@ -572,7 +580,22 @@ $theme-color: #202020;
 	flex: 1;
 	overflow: hidden;
 	border-radius: 6px;
-	box-shadow:0px 2px 20px 0px rgba(196, 196, 196, 0.24);
+	box-shadow:0px 2px 20px 0px rgba(196, 196, 196, 0.24);	
+}
+.channel-opeation-dialog {
+	.form-amount {
+		position: relative;
+		.form-item-title {
+			position: absolute;
+			top: -3px;
+			right: 0;
+			text-align: right;
+			font-size: 14px;
+			font-weight: 500;
+			color:rgba(32,32,32,.7);
+		}
+	}	
+
 }
 .channels {
 	height: 100%;

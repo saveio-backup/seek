@@ -35,7 +35,7 @@
 					</div>
 					<span class="mr20 ft24">{{filterFloat(channelBind.BalanceFormat || 0).toLocaleString('en-US')}}<span class="user-no-select"> SAVE</span></span>
 					<i class="ofont ofont-zhuanrang ft24 cursor-click cursor-pointer user-no-select light-blue"
-					@click="switchToggle.assetTransferDialog = true"></i>
+					@click="openAssetTransferDialog"></i>
 				</div>
 			</div>
 			<el-dialog
@@ -146,6 +146,16 @@ export default {
 		};
 	},
 	methods: {
+		openAssetTransferDialog() {
+			this.switchToggle.assetTransferDialog = true;
+			if(!this.channelBind.Connected) {
+				setTimeout(() => {
+					this.$nextTick(() => {
+							this.$message({message: "Sorry, you cannot withdraw in offline status"});
+					});
+				}, 50)
+			}
+		},
 		hideAssetSettingDialog() {
 			console.log("hideAsset");
 			this.switchToggle.assetSettingDialog = false;

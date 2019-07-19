@@ -481,7 +481,7 @@ export default {
 				});
 			}
 			arr.map((channel) => {
-				channel['value'] = parseFloat(channel['BalanceFormat']);
+				channel['value'] = parseFloat(parseFloat(channel['BalanceFormat']).toFixed(3));
 				channel['name'] = channel['ChannelId'];
 				return channel;
 			})

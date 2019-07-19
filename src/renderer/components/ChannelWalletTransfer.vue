@@ -2,7 +2,7 @@
 	<div class="channel-wallet-transfer">
 		<div class="flex between pl30 pr30 mb20 mt20">
 			<div
-			 v-if="withDraw"
+			 v-if="withDraw && channelSelected.Connected"
 			 class="flex1 text-left"
 			>
 				<p class="theme-font-blue-40 transparent ft14 user-no-select">Channel</p>
@@ -20,10 +20,12 @@
 				<i class="ofont ofont-fasong"></i>
 				<i
 				 class="ofont ofont-exchange ft20 user-no-select"
-				 @click="withDraw = !withDraw"
+				 :class="{'ex-change': channelSelected.Connected,'theme-font-blue-40 cursor-not-allowed':!channelSelected.Connected}"
+				:title="channelSelected.Connected?'switchover':'Sorry, you cannot withdraw in offline status'"
+				 @click="exWithDraw()"
 				></i></div>
 			<div
-			 v-if="!withDraw"
+			 v-if="!withDraw || !channelSelected.Connected"
 			 class="flex1 text-right"
 			>
 				<p class="theme-font-blue-40 transparent ft14 user-no-select">Channel</p>
@@ -123,6 +125,13 @@ export default {
 		};
 	},
 	methods: {
+		exWithDraw() {
+			if(this.channelSelected.Connected) {
+				this.$message({message: "Sorry, you cannot withdraw in offline status"});
+				return;
+			}
+			this.withDraw = !this.withDraw;
+		},
 		setFixed() {
 			this.transferInfo.Amount = this.transferInfo.Amount
 				? parseFloat(this.transferInfo.Amount).toFixed(9)
@@ -199,20 +208,22 @@ $theme-font-blue: #202020;
 	.ofont-fasong {
 		color: #cdcfd8;
 	}
-	.ofont-exchange {
-		color: #2F8FF0;
+	.ofont-exchange{
 		width: 30px;
 		height: 30px;
 		background: #F1F3F7;
 		text-align: center;
 		line-height: 30px;
 		border-radius: 50%;
-		cursor: pointer;
-		&:hover {
-			opacity: .7;
-		}
-		&:active {
-			opacity: 1;
+		&.ex-change {
+			color: #2F8FF0;
+			cursor: pointer;
+			&:hover {
+				opacity: .7;
+			}
+			&:active {
+				opacity: 1;
+			}
 		}
 	}
 	.transfer-input {

@@ -116,6 +116,7 @@ export default {
 		this.$store.dispatch("setCurrentAccount"); // get login status
 		this.$nextTick(() => {
 			this.updateDom();
+			// this.getBalanceList()
 			this.drawBalanceView();
 			this.drawChannelView();
 		});
@@ -173,6 +174,10 @@ export default {
 		};
 	},
 	methods: {
+		getBalanceList() {
+				// this.$axios
+				// .get(this.$api.account + "/logout", {})
+		},
 		openAddChannel() {
 			this.$refs.channelListObj.openOpen();
 		},
@@ -251,7 +256,7 @@ export default {
 					that.chartsChannelDom.dispatchAction({type: 'highlight',seriesIndex: 0,dataIndex: e.dataIndex});
 			});
 		},
-		drawBalanceView() {
+		drawBalanceView(balanceXAxisData, balanceData) {
 			const balanceDom = document.getElementById('balance-view');
 			this.chartsDom = echarts.init(balanceDom);
 			this.chartsDom.setOption({
@@ -272,7 +277,8 @@ export default {
 							color: '#AFACAC'
 						}
 					},
-					data: ['06/13', '06/14', '06/15', '06/16', '06/17', '06/18', '06/19']
+					data: balanceXAxisData
+					// data: ['06/13', '06/14', '06/15', '06/16', '06/17', '06/18', '06/19']
 				},
 				yAxis: {
 					type: 'value',
@@ -296,7 +302,8 @@ export default {
 					top: '10%'
 				},
 				series: [{
-					data: [20, 40, 70, 200, 120, 100, 50],
+					data: balanceData,
+					// data: [20, 40, 70, 200, 120, 100, 50],
 					type: 'line',
 					areaStyle: {
 						normal: {

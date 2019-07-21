@@ -56,5 +56,6 @@ const API = {
   channelOPen: HOST + VERSION + 'channel/open',
   channelClose: HOST + VERSION + 'channel/close',
   getAllDns: HOST + VERSION + 'dns',
+  balancehistory: HOST + VERSION + 'balancehistory'
 }
 module.exports = API;

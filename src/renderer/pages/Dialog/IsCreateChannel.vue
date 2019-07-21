@@ -30,7 +30,6 @@
 
 <script>
 import { ipcRenderer, remote } from "electron";
-import { setTimeout } from "timers";
 export default {
 	name: "IsCreateChannel",
 	data() {

@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { ipcRenderer, dialog } from "electron";
+import { ipcRenderer, dialog, remote } from "electron";
 export default {
 	name: "ExportPrivateKey",
 	data() {
@@ -63,14 +63,22 @@ export default {
 						trigger: "blur"
 					}
 				]
-			}
+			},
+			win: remote.getCurrentWindow()
 		};
 	},
 	watch: {
 	},
 	methods: {
 		closeDialog() {
+			this.message({type:'success',info:'Export Success!'});
 			this.$emit("closeDialog", { timeout: 0 });
+		},
+		message({info,type}) {
+			let views = this.win.views;
+			let activeView = views.find(view => view.isActive);
+			const webContentsId = activeView.browserView.webContents.id;
+			ipcRenderer.sendTo(webContentsId, 'current-active-show-message', {info: info,type:type})
 		},
 		exportPrivateKey() {
 			this.$refs.dialogForm.validate(valid => {

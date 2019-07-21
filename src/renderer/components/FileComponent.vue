@@ -60,12 +60,7 @@
 					class-name="rowName"
 				>
 					<template slot-scope="scope">
-						<div class="flex ai-center">
-							<i
-								v-if="transferType === 0"
-								class="ofont mr20 ft16 active-blue"
-								:class="scope.row.IsUploadAction ? 'ofont-shangchuan':'ofont-xiazai'"
-							></i>
+						<div>
 							<span>{{scope.row.FileName}}</span>
 							<!-- <div class="opera"> -->
 							<!-- <i class="ofont ofont-zhongxinshangchuan" title="upload again" v-show="scope.row.Status === 4"  @click="uploadAgain(scope.row)"></i> -->
@@ -123,34 +118,41 @@
 					min-width="120px"
 				>
 					<template slot-scope="scope">
-						<div v-if="scope.row.Status === 3">
-							<span
-								class="light-blue"
+						<div class="flex ai-center">
+							<i
+								v-if="transferType === 0"
+								class="ofont mr20 ft16 active-blue"
+								:class="scope.row.IsUploadAction ? 'ofont-shangchuan':'ofont-xiazai'"
+							></i>
+							<div v-if="scope.row.Status === 3">
+								<span
+									class="light-blue"
+									v-if="!scope.row.IsUploadAction"
+								>Download Completed</span>
+								<span
+									v-else
+									class="light-blue"
+								>Upload Completed</span>
+							</div>
+							<div v-else-if="scope.row.Status === 4">
+								<span class="light-error">{{scope.row.ErrMsg}}</span>
+								<!-- <span
+								class="light-error"
 								v-if="!scope.row.IsUploadAction"
-							>Download Completed</span>
-							<span
+								>Download Failed</span>
+								<span
 								v-else
-								class="light-blue"
-							>Upload Completed</span>
-						</div>
-						<div v-else-if="scope.row.Status === 4">
-							<span class="light-error">{{scope.row.ErrMsg}}</span>
-							<!-- <span
-							 class="light-error"
-							 v-if="!scope.row.IsUploadAction"
-							>Download Failed</span>
-							<span
-							 v-else
-							 class="light-error"
-							>Upload Failed</span> -->
-						</div>
-						<div v-else-if='scope.row.Progress > 0'>
-							<span v-if="scope.row.Type === 1">Uploading</span>
-							<span v-if="scope.row.Type === 2">Downloading</span>
-						</div>
-						<div v-else>
-							<span v-if="scope.row.Type === 1">Sharding</span>
-							<span v-if="scope.row.Type === 2">Searching</span>
+								class="light-error"
+								>Upload Failed</span> -->
+							</div>
+							<div v-else-if='scope.row.Progress > 0'>
+								<span v-if="scope.row.Type === 1">Uploading</span>
+								<span v-if="scope.row.Type === 2">Downloading</span>
+							</div>
+							<div v-else>
+								<span v-if="scope.row.Type === 1">Sharding</span>
+								<span v-if="scope.row.Type === 2">Searching</span>
+							</div>
 						</div>
 					</template>
 				</el-table-column>

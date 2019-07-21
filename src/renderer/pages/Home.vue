@@ -116,8 +116,8 @@ export default {
 		this.$store.dispatch("setCurrentAccount"); // get login status
 		this.$nextTick(() => {
 			this.updateDom();
-			// this.getBalanceList()
-			this.drawBalanceView();
+			this.getBalanceList();
+			// this.drawBalanceView();
 			this.drawChannelView();
 		});
 		window.onresize = () => {
@@ -135,6 +135,7 @@ export default {
 				}, 50)
 			})
 		};
+		// open channel callback form createChannel of browserView dialog 
 		if(this.dnsAdress && this.dnsAdress != 'done') {
 			this.$refs.channelListObj.openOpen(this.dnsAdress, 100);
 			localStorage.setItem("DNSAdress", "done");
@@ -170,13 +171,81 @@ export default {
 			chartsDom: '',
 			chartsChannelDom:'',
 			index: 0,
-			timeoutObj: null
+			timeoutObj: null,
+			balanceListsMock: {
+				"Action": "getbalancehistory",
+				"Desc": "SUCCESS",
+				"Error": 0,
+				"Result": [
+					{
+						"DateAt": 1563379200,
+						"TxsCount": 0,
+						"TxsSendCount": 0,
+						"TxsReceiveCount": 0,
+						"Asset": "save",
+						"Balance": 550000000,
+						"BalanceFormat": "0"
+					},
+					{
+						"DateAt": 1563465600,
+						"TxsCount": 0,
+						"TxsSendCount": 0,
+						"TxsReceiveCount": 0,
+						"Asset": "save",
+						"Balance": 550000000,
+						"BalanceFormat": "0"
+					}
+				],
+				"Version": "1.0.0"
+			}
 		};
 	},
 	methods: {
+		//get history balance
 		getBalanceList() {
-				// this.$axios
-				// .get(this.$api.account + "/logout", {})
+			const DAY_NUM = 7
+			this.$axios
+			.get(this.$api.balancehistory + "/"+ this.user.address +'/'+DAY_NUM).then(res => {
+				// console.log(res);
+				// test to do
+				res = this.balanceListsMock;
+				if(res.Error === 0) {
+					const result = res.Result;
+					let balanceXAxisData = [];
+					let balanceData = [];
+					let todayZeroTimestamp = this.getZeroTimestamp();
+					let i = 0;
+					while(i < DAY_NUM) {
+						let timestamp = todayZeroTimestamp;
+						let dateItem = new Date(timestamp);
+						let monthItem = dateItem.getMonth() >= 9 ? dateItem.getMonth() + 1 : ('0' + (dateItem.getMonth() + 1));
+						let dayItem = dateItem.getDate() > 9 ? dateItem.getDate() : ('0' + dateItem.getDate());
+						balanceXAxisData.unshift(`${monthItem}/${dayItem}`);
+						i ++;
+					}
+					const dayLen = result.length || 0;
+					for(let i = 0;i < DAY_NUM;i ++) {
+						if(dayLen > i) {
+							balanceData.push(result[i].BalanceFormat || 0);
+						} else {
+							balanceData.unshift(0);
+						}
+					}
+					balanceData[(DAY_NUM - 1)] = this.currentBalanceFormat;
+					this.currentBalanceList = balanceData;
+					this.drawBalanceView(balanceXAxisData, balanceData);
+				}
+			})
+		},
+		getZeroTimestamp() {
+			let date = new Date();
+			date.setHours(0);
+			date.setMinutes(0);
+			date.setSeconds(0);
+			date.setMilliseconds(0)
+			let timestamp = date.getTime(); // 1477670400000
+			let unix_timestamp = Math.floor(date.getTime()/1000);
+			return unix_timestamp
 		},
 		openAddChannel() {
 			this.$refs.channelListObj.openOpen();
@@ -419,6 +488,18 @@ export default {
 					return;
 				};
 			}
+		},
+		currentBalanceFormat(newVal, oldVal) {
+			try {
+				this.currentBalanceList[6] = newVal;
+				this.chartsDom.setOption({
+					series : {
+						data: this.currentBalanceList
+					}
+				});
+			}catch(e) {
+				console.log(e);
+			}
 		}
 	},
 	computed: {
@@ -440,14 +521,17 @@ export default {
 		channels: function() {
 			return this.$store.state.Home.channels;
 		},
-		currentChannelTotal() {
+		currentBalanceFormat() {
 			// let sum = 0;
-			if(!this.balanceLists) return 0.000
+			if(!this.balanceLists) return 0
 			for(let value of this.balanceLists) {
 				if(value.Symbol === 'SAVE') {
-					return parseFloat(value.BalanceFormat).toFixed(3)
+					return value.BalanceFormat
 				}
 			}
+		},
+		currentChannelTotal() {
+			return parseFloat(this.currentBalanceFormat).toFixed(3);
 		},
 		// get [max, max - 1, max - 2, [min array]]
 		currentChannelData: function() {

@@ -1,8 +1,16 @@
 import {
-  ipcRenderer
+  ipcRenderer,
+  remote
 } from "electron";
 const methods = {
+  activeMessage({info,type}) {
+    let views = remote.getCurrentWindow().views;
+    let activeView = views.find(view => view.isActive);
+    const webContentsId = activeView.browserView.webContents.id;
+    ipcRenderer.sendTo(webContentsId, 'current-active-show-message', {info: info,type:type})
+  },
   install(Vue) {
+    const vm = this;
     Vue.prototype.$exportWallet = function (cb) {
       Vue.prototype.$axios
         .get(Vue.prototype.$api.account + "/export/walletfile")
@@ -15,10 +23,14 @@ const methods = {
               console.log(cb);
               cb();
             } else {
-              Vue.prototype.$message.$message({
-                message: "Export Success!",
+              vm.activeMessage({
+                info: "Export Success!",
                 type: "success"
               });
+              // Vue.prototype.$message({
+              //   message: "Export Success!",
+              //   type: "success"
+              // });
             }
           });
         })
@@ -32,8 +44,12 @@ const methods = {
         if (cb) {
           cb();
         } else {
-          Vue.prototype.$message.$message({
-            message: "Export Success!",
+          // Vue.prototype.$message({
+          //   message: "Export Success!",
+          //   type: "success"
+          // });
+          vm.activeMessage({
+            info: "Export Success!",
             type: "success"
           });
         }

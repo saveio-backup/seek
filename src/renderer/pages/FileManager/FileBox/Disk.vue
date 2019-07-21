@@ -97,7 +97,7 @@
                   ></i>
                   <i
                     v-if="page === 'filebox'"
-                    class="el-icon-xiangqingchakan ofont cursor-click active-blue cursor-pointer"
+                    class="ofont-xiangqingchakan ofont cursor-click active-blue cursor-pointer"
                     title="look detail"
                     @click.stop="openDetailDialog(scope.row)"
                   >
@@ -912,6 +912,12 @@ $theme-font-blue: #040f39;
             // &:active {
             //   opacity: 0.7;
             // }
+          }
+          .ofont-xiangqingchakan {
+            position: relative;
+            top: 1px;
+            font-size: 18px;
+            font-weight: 500;
           }
         }
         &:hover {

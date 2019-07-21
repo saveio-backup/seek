@@ -462,13 +462,6 @@ export default {
 		openTransfer(channelSelected) {
 			this.channelSelected = channelSelected;
 			this.switchToggle.assetTransferDialog = true;
-			if(!channelSelected.Connected) {
-				setTimeout(() => {
-					this.$nextTick(() => {
-						this.$message({message: "Sorry, you cannot withdraw in offline status"});
-					})
-				}, 50)
-			}
 		},
 		toConfirm() {
 			this.$refs["channelwallettransfer"].toTransfer();

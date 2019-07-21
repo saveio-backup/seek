@@ -138,7 +138,7 @@ export default {
 					label: "Export Keystore File",
 					// visible: new Boolean(user.name),
 					click() {
-						that.$exportWallet();		
+						that.exportWallet();		
 					}
 				},
 				{
@@ -167,6 +167,9 @@ export default {
 		},
 		exportPrivateKey() {
 			ipcRenderer.send('dialog-open', 'exportPrivateKey');
+		},
+		exportWallet() {
+			this.$exportWallet();
 		}
 	}
 };

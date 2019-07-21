@@ -5,13 +5,25 @@
 </template>
 
 <script>
+import {
+  ipcRenderer
+} from 'electron'
 export default {
 	computed: {
 		routerName() {
 			return this.$route.name;
 		}
 	},
-	name: "browser"
+	name: "browser",
+	mounted() {
+		ipcRenderer.on('current-active-show-message', (event, {info, type}) => {
+			this.$message({
+				message: info,
+				type: type
+			})
+		})
+		// render-show-message
+	}
 };
 </script>
 

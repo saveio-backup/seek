@@ -187,13 +187,58 @@ export default {
 						"BalanceFormat": "0"
 					},
 					{
-						"DateAt": 1563465600,
+						"DateAt": 1563379200,
 						"TxsCount": 0,
 						"TxsSendCount": 0,
 						"TxsReceiveCount": 0,
 						"Asset": "save",
 						"Balance": 550000000,
 						"BalanceFormat": "0"
+					},
+					{
+						"DateAt": 1563379200,
+						"TxsCount": 0,
+						"TxsSendCount": 0,
+						"TxsReceiveCount": 0,
+						"Asset": "save",
+						"Balance": 550000000,
+						"BalanceFormat": "2000"
+					},
+					{
+						"DateAt": 1563379200,
+						"TxsCount": 0,
+						"TxsSendCount": 0,
+						"TxsReceiveCount": 0,
+						"Asset": "save",
+						"Balance": 550000000,
+						"BalanceFormat": "1000"
+					},
+					{
+						"DateAt": 1563379200,
+						"TxsCount": 0,
+						"TxsSendCount": 0,
+						"TxsReceiveCount": 0,
+						"Asset": "save",
+						"Balance": 550000000,
+						"BalanceFormat": "5000"
+					},
+					{
+						"DateAt": 1563379200,
+						"TxsCount": 0,
+						"TxsSendCount": 0,
+						"TxsReceiveCount": 0,
+						"Asset": "save",
+						"Balance": 550000000,
+						"BalanceFormat": "20"
+					},
+					{
+						"DateAt": 1563465600,
+						"TxsCount": 0,
+						"TxsSendCount": 0,
+						"TxsReceiveCount": 0,
+						"Asset": "save",
+						"Balance": 550000000,
+						"BalanceFormat": "0.5"
 					}
 				],
 				"Version": "1.0.0"
@@ -205,10 +250,11 @@ export default {
 		getBalanceList() {
 			const DAY_NUM = 7
 			this.$axios
-			.get(this.$api.balancehistory + "/"+ this.user.address +'/'+DAY_NUM).then(res => {
+			.get(this.$api.balancehistory + "/"+ this.user.address +'/'+DAY_NUM).then(data => {
 				// console.log(res);
 				// test to do
-				res = this.balanceListsMock;
+				const res = data.data
+				// res = this.balanceListsMock;
 				if(res.Error === 0) {
 					const result = res.Result;
 					let balanceXAxisData = [];
@@ -216,7 +262,7 @@ export default {
 					let todayZeroTimestamp = this.getZeroTimestamp();
 					let i = 0;
 					while(i < DAY_NUM) {
-						let timestamp = todayZeroTimestamp;
+						let timestamp = todayZeroTimestamp - (i * 86400000);
 						let dateItem = new Date(timestamp);
 						let monthItem = dateItem.getMonth() >= 9 ? dateItem.getMonth() + 1 : ('0' + (dateItem.getMonth() + 1));
 						let dayItem = dateItem.getDate() > 9 ? dateItem.getDate() : ('0' + dateItem.getDate());
@@ -231,7 +277,8 @@ export default {
 							balanceData.unshift(0);
 						}
 					}
-					balanceData[(DAY_NUM - 1)] = this.currentBalanceFormat;
+					balanceData.push(this.currentBalanceFormat);
+					balanceData.splice(0,1);
 					this.currentBalanceList = balanceData;
 					this.drawBalanceView(balanceXAxisData, balanceData);
 				}
@@ -244,8 +291,8 @@ export default {
 			date.setSeconds(0);
 			date.setMilliseconds(0)
 			let timestamp = date.getTime(); // 1477670400000
-			let unix_timestamp = Math.floor(date.getTime()/1000);
-			return unix_timestamp
+			// let unix_timestamp = Math.floor(date.getTime()/1000);
+			return timestamp
 		},
 		openAddChannel() {
 			this.$refs.channelListObj.openOpen();

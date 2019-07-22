@@ -56,6 +56,7 @@
 				 min='0'
 				 v-model="transferInfo.Amount"
 				 placeholder="Input Amount"
+				 @keyup.enter.native='toTransfer'
 				 @blur="setFixed"
 				>
 				</el-input>

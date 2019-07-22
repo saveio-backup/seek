@@ -141,7 +141,13 @@ export default {
 			// 	]
 			// },
 			// withDraw: true,
-			location: location
+			location: location,
+			transferObj:{},
+			setTimeoutObj: {
+				upload: null,
+				download: null,
+				complete: null
+			}
 		};
 	},
 	methods: {
@@ -221,6 +227,38 @@ export default {
 			this.$store.dispatch("setChannelBalanceTotal");
 		}
 	},
+	watch: {
+		uploadTransferList(newVal, oldVal) {
+			clearTimeout(this.setTimeoutObj.upload);
+			this.setTimeoutObj.upload = setTimeout(() => {
+				for(let value of newVal) {
+					this.transferObj[value.FileHash] = value;
+				}
+			}, 50);
+		},
+		downloadTransferList(newVal, oldVal) {
+			clearTimeout(this.setTimeoutObj.download);			
+			this.setTimeoutObj.download = setTimeout(() => {
+				for(let value of newVal) {
+					this.transferObj[value.FileHash] = value;
+				}				
+			}, 50);
+		},
+		completeTransferList(newVal, oldVal) {
+			clearTimeout(this.setTimeoutObj.complete);			
+			this.setTimeoutObj.complete = setTimeout(() => {
+				for(let value of newVal) {
+					if(this.transferObj[value.FileHash].Status !== 3) {
+						this.$message({
+							message: `${value.FileName} ${this.transferObj[value.FileHash].Type === 1 ? 'Upload Success' : 'Download Success'}`,
+							type: 'success'
+						})
+					}
+					this.transferObj[value.FileHash] = value;
+				}
+			}, 50);
+		}
+	},
 	computed: {
 		mainCount: function() {
 			return this.$store.state.Wallet.mainCount;
@@ -242,10 +280,22 @@ export default {
 				this.$store.state.Transfer.downloadLength +
 				this.$store.state.Transfer.uploadLength
 			);
+		},
+		uploadTransferList: function() {
+			return this.$store.state.Transfer.uploadTransferList;
+		},
+		downloadTransferList: function() {
+			return this.$store.state.Transfer.downloadTransferList;
+		},
+		completeTransferList: function() {
+			return this.$store.state.Transfer.completeTransferList;
 		}
 	},
 	beforeRouteEnter(to, from, next) {
 		next(vm => {
+			vm.$store.dispatch("setUpload");
+			vm.$store.dispatch("setDownload");
+			vm.$store.dispatch("setComplete");
 			if (to.name === "FileManager") {
 				vm.$router.push({
 					name: "disk",

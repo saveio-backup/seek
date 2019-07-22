@@ -286,6 +286,30 @@
         </div>
       </div>
     </el-dialog>
+    <!-- no storage dialog -->
+    <el-dialog
+      width='600px'
+      :close-on-click-modal="false"
+      :visible.sync="noStorageDialog.show"
+      center
+    >
+      <div slot="title">
+        <h2>Notice</h2>
+        <div class="dialog-title-border"></div>
+      </div>
+      <div class="loading-content">
+        <p class="mt10 mb20 ft14 tl">Sorry, you don't have any storage yet. Please get storage before the Primary Upload.</p>
+        <div slot="footer">
+          <el-button
+            @click="noStorageDialog.show = false"
+          >Cancel</el-button>
+          <el-button
+            class="primary"
+            @click="goStorage"
+          >Get Storage</el-button>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -370,14 +394,24 @@ export default {
         show: false,
         // is not allow change upload model to advanced have remind dialog
         noAllowRemind: localStorage.getItem("uploadToNoAllowRemind") || false
+      },
+      noStorageDialog: {
+        show: false
       }
     };
   },
   mounted() {
+    // if no space to advanced;
+    if(!this.space || (this.space.Used === 0 && this.space.Remain === 0)) {
+      this.toAdvanced();
+    }
     this.setDataInterval();
     this.getfscontractsetting();
   },
   methods: {
+    goStorage() {
+      this.$router.push({ name: "expand" });
+    },
     // notAllowRemind change to set localstorage
     updateAllowRemind() {
       localStorage.setItem(
@@ -581,6 +615,9 @@ export default {
         });
     },
     hiddenAdvanced() {
+      if(!this.space || (this.space.Used === 0 && this.space.Remain === 0)) {
+        return this.noStorageDialog.show = true;
+      }
       this.advancedDataInit();
       this.switchToggle.advanced = false;
       this.setDataInterval();
@@ -594,6 +631,9 @@ export default {
       return this.$dateFormat.formatYearMonthDayHour(
         new Date(new Date().getTime() + this.advancedData.Duration * 1000)
       );
+    },
+    space() {
+      return this.$store.state.Filemanager.space;
     }
     // storageCycleNumber: function() {
     // 	return this.verificationCycleNumber * this.advancedData.Times;

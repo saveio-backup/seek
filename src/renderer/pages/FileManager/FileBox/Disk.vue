@@ -281,13 +281,21 @@
         <div class="dialog-title-border"></div>
       </div>
       <div class="loading-content">
-        <p class="mt10 mb20 ft14">Sorry, you don't have any storage available yet. Please get the storage space before uploading.</p>
+        <p class="mt10 mb10 ft14 tl">Sorry, you don't have any storage yet. Please get storage before the Primary Upload. Or you can do an Advanced Upload without having to purchase storage in advance.</p>
+        <p class="tr mt10 mb10">
+          <el-checkbox
+            @change="linkUpdateAllowRemind"
+            v-model="linkRemindToggle.noAllowRemind"
+          >No Longer remind, only do advanced uploads</el-checkbox>
+        </p>
         <div slot="footer">
-          <el-button @click="switchToggle.noStorageDialog = false">Cancel</el-button>
-          <el-button
-            class="primary"
+          <el-button 
             @click="goStorage"
           >Get Storage</el-button>
+          <el-button
+            class="primary"
+            @click="goAdvanceUpload"
+          >Advance Upload</el-button>
         </div>
       </div>
     </el-dialog>
@@ -478,7 +486,11 @@ export default {
       page: "",
       addrAPI: "",
       limitCount: 20,
-      currentFile: null
+      currentFile: null,
+      // if no storage link upload is not allow message
+      linkRemindToggle: {
+        noAllowRemind: (localStorage.getItem("linkUploadToNoAllowRemind") === 'true' || localStorage.getItem("linkUploadToNoAllowRemind") === true) ? true : false
+      },
     };
   },
   components: {
@@ -496,6 +508,15 @@ export default {
     this.addListenScroll();
   },
   methods: {
+    linkUpdateAllowRemind() {
+      localStorage.setItem(
+        "linkUploadToNoAllowRemind",
+        this.linkRemindToggle.noAllowRemind
+      );
+    },
+    goAdvanceUpload() {
+      this.$router.push({ name: "upload" });
+    },
     toCloseUploadFileDetail() {
       this.uploadDetailHash = "";
     },
@@ -506,8 +527,11 @@ export default {
       this.$router.push({ name: "expand" });
     },
     goUpload() {
-      if (!this.space || (this.space.Used === 0 && this.space.Remain === 0))
-        return (this.switchToggle.noStorageDialog = true);
+      if (!this.space || (this.space.Used === 0 && this.space.Remain === 0)) {
+        if(!this.linkRemindToggle.noAllowRemind) {
+          return (this.switchToggle.noStorageDialog = true);
+        }
+      }
       this.$router.push({ name: "upload" });
     },
     clipText(el) {

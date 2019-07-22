@@ -32,10 +32,18 @@
                 class="grey-theme"
               >
               </el-input>
-              <div class="tr mb20 input-opeation"><a
+              <!-- <div class="tr mb20 input-opeation"><a
                   @click='importWallet'
                   class="light-blue ft14 cursor-pointer cursor-click user-no-select"
-                >Select Keystore File</a></div>
+                >Select Keystore File</a></div> -->
+              <div class="tr input-opeation">
+                <el-button
+                  @click='importWallet'
+                  class="primary ft14"
+                >
+                  <i class="ofont ofont-DAT"></i>Select Keystore File
+                </el-button>
+              </div>
             </el-form-item>
             <el-form-item label="Wallet Password:">
               <el-input
@@ -69,10 +77,18 @@
                 placeholder="Input/Import privatekey here"
                 class="grey-theme"
               ></el-input>
-              <div class="tr"><a
+              <!-- <div class="tr"><a
                   @click='importPrivateKey'
                   class="light-blue ft14 cursor-pointer user-no-select cursor-click input-opeation"
-                >Select Private Key File</a></div>
+                >Select Private Key File</a></div> -->
+                <div 
+                  class="tr input-opeation"
+                  @click='importPrivateKey'
+                >
+                  <el-button class="primary ft14">
+                    <i class="ofont ofont-DAT"></i>Select Private Key File
+                  </el-button>
+                </div>
             </el-form-item>
             <el-form-item
               label="User Name"
@@ -340,8 +356,11 @@ export default {
   }
   .input-opeation {
     position: absolute;
-    top: -10px;
+    bottom: -40px;
     right: 0;
+    button {
+      height: 24px;
+    }
   }
 }
 </style>

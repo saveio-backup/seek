@@ -7,7 +7,7 @@ import {
   X_POSITION,
   DEFAULT_URL
 } from './defaultOption'
-import { platform } from 'os';
+import  frontCfgObj from './frontCfgObj'
 
 class dialogView {
   constructor(win) {
@@ -47,7 +47,7 @@ class dialogView {
     this.updateEvent();
     this.resize();
     this.loadDialog();
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === 'development' || frontCfgObj.console) {
       this.browserView.webContents.openDevTools();
     }
   }
@@ -62,7 +62,6 @@ class dialogView {
   updateEvent() {
 
   }
-
   initBrowserView() {
     this.browserView = new BrowserView({
       webPreferences: {

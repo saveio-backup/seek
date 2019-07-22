@@ -1,7 +1,5 @@
 <template>
 	<div class="dialogWrapper">
-		<!-- <router-view></router-view> -->
-		<!-- <router-view @closeDialog="closeDialog"></router-view> -->
 		<export-private-key
 		 @closeDialog="closeDialog"
 		 v-if="menuSelector === 'exportPrivateKey'"
@@ -14,7 +12,6 @@
 		 @closeDialog="closeDialog"
 		 v-if="menuSelector === 'createChannel'"
 		></is-create-channel>
-		 <!-- v-if="menuSelector === 'isCreateChannel'" -->
 	</div>
 </template>
 
@@ -34,7 +31,6 @@ export default {
 		const COUNT_INTERVAL = 5000
 		return {
 			menuSelector: "",
-			// dnsAdress: localStorage.getItem("DNSAdress") || "",
 			channelNum: null,
 			Balance: null,
 			COUNT_INTERVAL: COUNT_INTERVAL,
@@ -46,6 +42,7 @@ export default {
 		};
 	},
 	mounted() {
+		console.log('init Dialog.vue')
 		ipcRenderer.on("setSelector", (e, selector) => {
       this.menuSelector = selector;
       this.$forceUpdate()
@@ -55,6 +52,8 @@ export default {
 	},
 	watch: {
 		Address(newVal,oldVal) {
+			console.log(`Address--->newVal:${newVal},oldVal:${oldVal}`)
+			// alert('Address change')
 			this.Balance = null;
 			this.channelNum = null;
 			localStorage.setItem("DNSAdress", "");
@@ -62,12 +61,14 @@ export default {
 		},
 		Balance(newVal, oldVal) {
 			if(!oldVal && newVal && this.channelNum === 0) {
+				// alert('Balance change');
 				console.log(`Balance(new):${newVal},Balance(old):${oldVal},channelNum:${this.channelNum}`);
 				ipcRenderer.send('dialog-open', 'createChannel');
 			}
 		},
 		channelNum(newVal, oldVal) {
 			if(this.Balance && newVal === 0 && oldVal === null) {
+				// alert('channelNum change');
 				console.log(`channelNum(new):${newVal},channelNum(old):${oldVal},Balance:${this.Balance}`);
 				ipcRenderer.send('dialog-open', 'createChannel');
 			}
@@ -135,6 +136,7 @@ export default {
 						clearInterval(this.setTimeObj);
 						return;
 					}
+					console.log(`getChannel:${res}`)
 					this.channelNum = res.data.Result && res.data.Result.Channels && res.data.Result.Channels.length;
 				}
 			})	

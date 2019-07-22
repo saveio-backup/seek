@@ -62,9 +62,6 @@ export default {
 	},
 	beforeRouteEnter(to, from, next) {
 		next(vm => {
-			vm.$store.dispatch("setUpload");
-			vm.$store.dispatch("setDownload");
-			vm.$store.dispatch("setComplete");
 			console.log(vm.transferType);
 			vm.transferType =
 				to.query.transferType >= 0 ? to.query.transferType : vm.transferType;

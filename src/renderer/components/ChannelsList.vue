@@ -126,7 +126,7 @@
 		</el-dialog>
 		<el-dialog
 		 class="channel-opeation-dialog"
-		 width='550px'
+		 width='600px'
 		 :close-on-click-modal='false'
 		 :visible.sync="channelToggle.channelCloseDialog"
 		 center
@@ -147,12 +147,15 @@
 					 prop="partner"
 						v-show="channelToggle.type==='add'"
 					>
-						<el-input
-						v-model="channelForm.partner"
-						class="channel-opeation-input grey-theme"
-						placeholder="Please input partner dns wallet address"
-						@keyup.enter.native="toPeationChannel">
-						</el-input>
+						<el-select class="grey-theme" v-model="channelForm.partner" placeholder="Please Select">
+							<el-option
+								v-for="item in dns"
+								:key="item.WalletAddr"
+								:label="`${item.WalletAddr}(${item.HostAddr})`"
+								:value="item.WalletAddr"
+								:disabled="dnsIsSelect(item.WalletAddr)">
+							</el-option>
+						</el-select>
 					</el-form-item>
 					<el-form-item
 					 class="theme-font-blue-bold form-amount"
@@ -406,13 +409,27 @@ export default {
 					HostAddr: "tcp://127.0.0.1:13004",
 					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
 				}
-			]
+			],
+			dns: []
 		};
 	},
 	mounted() {
 		this.initCurrentRow();
 	},
 	methods: {
+		getDns() {
+			this.$axios.get(this.$api.getAllDns).then(res => {
+				if(res.data.Error === 0) {
+					this.dns = res.data.Result;
+				} else {
+					this.$message.error(res.data.Desc || "Get all dns failed");
+				}
+			}).catch(e => {
+				this.$message.error(
+					"Get all dns failed"
+				);
+			})
+		},
 		setFixed() {
 			this.channelForm.amount = this.channelForm.amount
 				? parseFloat(this.channelForm.amount).toFixed(9)
@@ -467,6 +484,7 @@ export default {
 			this.$refs["channelwallettransfer"].toTransfer();
 		},
 		openOpen(dnsAdress='',num=0) {
+			this.getDns();
 			this.channelToggle = {
 				type: 'add',
 				channelCloseDialog: true,
@@ -563,6 +581,17 @@ export default {
 	computed: {
 		channels: function() {
 			return this.$store.state.Home.channels;
+		},
+		dnsIsSelect: function() {
+			const vm = this;
+			return function(item) {
+				for(let channel of vm.channels) {
+					if(channel.Address === item) {
+						return true;
+					}
+				}
+				return false;
+			}
 		}
 	}
 };
@@ -574,6 +603,9 @@ $theme-color: #202020;
 	overflow: hidden;
 	border-radius: 6px;
 	box-shadow:0px 2px 20px 0px rgba(196, 196, 196, 0.24);	
+	.el-select {
+		width:100%;
+	}
 }
 .channel-opeation-dialog {
 	.form-amount {

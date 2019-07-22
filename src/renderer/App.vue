@@ -13,6 +13,12 @@ import {
 } from 'electron'
 export default {
   mounted() {
+    ipcRenderer.on('current-active-show-message', (event, {info, type}) => {
+			this.$message({
+				message: info,
+				type: type
+			})
+		})
     this.$axios
       .get(this.$api.version)
       .then(res => {

@@ -116,7 +116,7 @@ export default {
 		},
 		getBalance() {
 			const vm = this;
-			this.$axios.get(this.$api.host + this.$api.version + "balance" +'/'+this.Address).then(res => {
+			this.$axios.get(this.$api.balance +'/'+this.Address).then(res => {
 				if(res.data.Error === 0) {
 					for (let i = 0; i < res.data.Result.length; i++) {
 						const item = res.data.Result[i];
@@ -129,7 +129,7 @@ export default {
 			})
 		},
 		getChannel() {
-			this.$axios.get(this.$api.host + this.$api.version + "channel").then(res => {
+			this.$axios.get(this.$api.channel).then(res => {
 				if(res.data.Error === 0) {
 					if(res.data.Result && res.data.Result.Channels && res.data.Result.Channels.length > 0) {
 						clearInterval(this.setTimeObj);

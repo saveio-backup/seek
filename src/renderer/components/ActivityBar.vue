@@ -154,6 +154,12 @@ export default {
 					click() {
 						that.logout();						
 					}
+				},
+				{
+					label:'Version',
+					click(){
+						that.showVersion();
+					}
 				}
 			];
 			let menu = Menu.buildFromTemplate(customControlMenuItems);
@@ -170,6 +176,9 @@ export default {
 		},
 		exportWallet() {
 			this.$exportWallet();
+		},
+		showVersion(){
+			ipcRenderer.send('showVersion', localStorage.getItem('edgeVersion')||'');
 		}
 	}
 };

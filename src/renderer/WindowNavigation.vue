@@ -180,7 +180,7 @@ export default {
 			this.currentWindow.views.map((viewItem, index) => {
 				if (viewIndex === index) {
 					viewItem.isActive = true;
-					// viewItem.resize(); // will resize whill app-command
+					viewItem.resize(); // will resize whill app-command
 					this.currentWindow.setBrowserView(view.browserView);
 				} else if (viewItem.isActive === true) {
 					viewItem.isActive = false;

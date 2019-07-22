@@ -304,7 +304,7 @@ export function createWindow(url) {
     onAppCommand(mainWindow, cmd)
   })
   mainWindow.on('resize', () => {
-    resizeAll(mainWindow);
+    // resizeAll(mainWindow);
   })
   // Vue can't update DOM while Main process changed (Though it could update it's data)
   // so use Proxy to send IPC :(

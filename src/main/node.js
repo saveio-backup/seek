@@ -159,6 +159,8 @@ const setupConfig = async (appDataPath, appName) => {
     }
     cfgObj.Base.AutoSetupDNSEnable = false;
     cfgObj.Base.NetworkId = 1563525726;
+    cfgObj.Base.ChannelRevealTimeout = "200";
+    cfgObj.Base.ChannelSettleTimeout = "500";
     try {
         await fs.writeFileSync(cfgPath, JSON.stringify(cfgObj))
     } catch (err) {
@@ -198,7 +200,11 @@ const run = (appDataPath, appName) => {
     //     maxBuffer: 5000 * 1024,
     // })    
     app.on('will-quit', () => {
-        process.kill(-workerProcess.pid)
+        try {
+            process.kill(-workerProcess.pid)
+        } catch (error) {
+            console.log('edge had already exit.')
+        }
     })
     workerProcess.stdout.on('data', function (data) {
         // console.log('stdout: ' + data);

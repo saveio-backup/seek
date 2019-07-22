@@ -30,7 +30,7 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label='Expired At'>
+          <el-table-column label='Expired Time'>
             <template slot-scope="scope">
               <div>
                 {{ $dateFormat.formatTimeByTimestamp(scope.row.ExpiredAt * 1000)}}

@@ -21,7 +21,7 @@ console.log("HOST", HOST)
 const VERSION = 'v1/';
 const API = {
   host: HOST,
-  version: VERSION,
+  version: HOST + VERSION + 'version',
   account: HOST + VERSION + 'account',
   balance: HOST + VERSION + 'balance',
   decrypt: HOST + VERSION + 'dsp/file/decrypt',
@@ -51,8 +51,9 @@ const API = {
   downloadCancel: HOST + VERSION + 'dsp/file/download/cancel',
   withdrawChannel: HOST + VERSION + 'channel/withdraw',
   depositChannel: HOST + VERSION + 'channel/deposit',
-  channelInitProgress: HOST + VERSION + 'channel/init/progress',
   exportPrivateKey: HOST + VERSION + 'account/export/privatekey',
+  channel: HOST + VERSION + 'channel',
+  channelInitProgress: HOST + VERSION + 'channel/init/progress',
   channelOPen: HOST + VERSION + 'channel/open',
   channelClose: HOST + VERSION + 'channel/close',
   getAllDns: HOST + VERSION + 'dns',

@@ -612,7 +612,6 @@ export default {
         text: "File Processing....",
         target: ".loading-content.disk-download-loading"
       });
-      return;
       const length = downloadFiles.length;
       const commitAll = [];
       for (let i = 0; i < length; i++) {

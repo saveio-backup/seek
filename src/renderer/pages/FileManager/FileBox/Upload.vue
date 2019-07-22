@@ -79,7 +79,7 @@
           label-width="200px"
         >
           <el-form-item label="Storage Cycle:">
-            <p class="dark-grey expire-date">Expired Time: {{expiredDate}} </p>
+            <p class="dark-grey tootips">Expired Time: {{expiredDate}} </p>
             <el-input
               v-model="storageCycleNumber"
               :min="1"
@@ -105,13 +105,16 @@
             label="Integrity verification cycle:"
             prop="Interval"
           >
-            <el-input
+            <p class="dark-grey tootips">Integrity Verification Cycle cannot be longer than Storage Cycle</p>
+            <el-input-number
+              :precision='0'
               v-model="verificationCycleNumber"
-              :min='1'
+              :min='0'
+              :max='advancedData.Duration / BASE[this.verificationCycleSelected]'
               @change="setDataInterval"
               class="form-right-second-inside"
               type="number"
-            ></el-input>
+            ></el-input-number>
             <el-select
               class="form-right"
               v-model="verificationCycleSelected"
@@ -242,6 +245,7 @@
               class="grey-theme"
               placeholder="Please Input Wallet Password"
               show-password
+              @keyup.native.enter='toUploadFile'
               v-model="passwordForm.Password"
             ></el-input>
           </el-form-item>
@@ -457,13 +461,27 @@ export default {
     setDuration() {
       this.advancedData.Duration =
         this.storageCycleNumber * this.BASE[this.storageCycleSelected];
+      this.formatVerificationCycleNumber();
       this.toGetPrice();
     },
     setDataInterval() {
+      this.formatVerificationCycleNumber();
+      console.log("verificationCycleNumber is: ");
+      console.log(this.verificationCycleNumber);
       this.advancedData.Interval =
         this.verificationCycleNumber *
         this.BASE[this.verificationCycleSelected];
       this.toGetPrice();
+    },
+    formatVerificationCycleNumber() {
+      console.log("before foramt verificationCycleNumber is ");
+      console.log(this.verificationCycleNumber);
+      this.verificationCycleNumber = Math.min(
+        this.verificationCycleNumber,
+        Math.floor(
+          this.advancedData.Duration / this.BASE[this.verificationCycleSelected]
+        )
+      );
     },
     toEmptyUpload() {
       this.uploadFormData.Path = "";
@@ -539,7 +557,7 @@ export default {
       );
       const duration = this.advancedData.Duration;
       const interval = this.advancedData.Interval;
-      const copyNum = this.advancedData.CopyNum;
+      const copyNum = (this.advancedData.CopyNum *= 1);
       const whitelistCount =
         this.advancedData.Privilege === 2
           ? this.advancedData.WhiteList.length
@@ -688,6 +706,10 @@ $inputFocusBg: #dee2ea;
           background: $inputFocusBg;
         }
       }
+      .el-input-number__increase,
+      .el-input-number__decrease {
+        display: none;
+      }
     }
     .form-vertical {
       position: relative;
@@ -713,11 +735,12 @@ $inputFocusBg: #dee2ea;
         }
       }
     }
-    .expire-date {
+    .tootips {
       position: absolute;
       right: 0px;
       bottom: 0px;
       transform: translateY(34px);
+      white-space: nowrap;
     }
     h1 {
       font-size: 24px;
@@ -767,6 +790,8 @@ $inputFocusBg: #dee2ea;
       padding-bottom: 0;
     }
     .price-div {
+      display: flex;
+      justify-content: space-around;
       width: calc(100% - 30px);
       height: 54px;
       margin: 0 auto 20px;
@@ -792,15 +817,18 @@ $inputFocusBg: #dee2ea;
       }
       .price-gas-fee {
         float: left;
-        margin-right: 30px;
+        // margin-right: 10px;
         font-size: 18px;
         font-weight: 500;
+        white-space: nowrap;
       }
       .price-balance {
         float: left;
         font-size: 14px;
         font-weight: 500;
         opacity: 0.7;
+        white-space: nowrap;
+        overflow: hidden;
       }
     }
   }

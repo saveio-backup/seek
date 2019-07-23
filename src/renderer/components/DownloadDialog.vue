@@ -8,6 +8,7 @@
         <el-input
           v-model="downloadUrl"
           @input='toGetFileInfo'
+          @keyup.native.enter='toDownload'
           placeholder="Input File URL"
           class="grey-theme"
         ></el-input>

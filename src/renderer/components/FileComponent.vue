@@ -256,6 +256,7 @@
 					<el-form-item label="File Password:">
 						<el-input
 							v-model="fileSelected.Password"
+							@keyup.native.enter='toDecrypt'
 							placeholder="Input File Password"
 							class="grey-theme mb10"
 						></el-input>

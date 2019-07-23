@@ -563,6 +563,10 @@ export default {
                 name: "transfer",
                 query: { transferType: 1 }
               });
+              this.$message({
+                type: "success",
+                message: "Start Upload"
+              });
             } else if (res.data.Error === 54002) {
               this.$message.error("You don't have enough storage space to use");
             } else if (res.data.Error === 55011) {

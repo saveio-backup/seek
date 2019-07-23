@@ -524,6 +524,10 @@ export default {
         .catch(err => {
           console.error(err);
           this.submitToggle = true;
+          this.$message({
+              message: `Server connection has been disconnected.`,
+              type: "error"
+            });
           this.switchToggle.loading.close();
         });
     },

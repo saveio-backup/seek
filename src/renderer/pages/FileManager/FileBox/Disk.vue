@@ -659,6 +659,10 @@ export default {
           this.$axios.spread(() => {
             // this.$store.dispatch("setDownload");
             this.switchToggle.confrimDownloadDialog = false;
+            this.$message({
+              message: "Start download",
+              type: "success"
+            });
             this.$router.push({
               name: "transfer",
               query: {
@@ -790,7 +794,7 @@ export default {
           })
           .catch(() => {
             console.error("unable to calc");
-            this.fileDownloadInfo.Fee = "Unable to calculate, network error.";
+            this.fileDownloadInfo.Fee = "Unable to calculate. network error.";
           });
       });
     }

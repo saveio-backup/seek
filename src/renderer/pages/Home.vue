@@ -1,39 +1,48 @@
 <template>
 	<div
-	 id="home"
-	 class="common-main"
+		id="home"
+		class="common-main"
 	>
 		<div
-		 class="content islogin"
-		 v-show="loginStatus ===1"
+			class="content islogin"
+			v-show="loginStatus ===1"
 		>
 			<div class="user-meta">
 				<div class="user-meta-left">
 					<div class="user-name">
 						<div class="user-name-left">
 							<div class="user-name-first-wrapper">
-								<i v-if="!user.name" class="ofont ofont-user user user-first"></i>
-								<i v-else class="user-first">{{user.name | firstString}}</i>
+								<i
+									v-if="!user.name"
+									class="ofont ofont-user user user-first"
+								></i>
+								<i
+									v-else
+									class="user-first"
+								>{{user.name | firstString}}</i>
 							</div>
 							<div class="user-name-content">
 								<p class="user-name-name ft24">{{userName}}</p>
 								<p class="ft12">
-									<span class="address" :title="user.address">
+									<span
+										class="address"
+										:title="user.address"
+									>
 										{{user.address}}
 									</span>
 									<i
-									class="ofont ofont-fuzhi"
-									@click="clipText"
+										class="ofont ofont-fuzhi"
+										@click="clipText"
 									></i>
 								</p>
 								<div class="user-name-bottom">
 									<el-button
-									class="seek-btn"
-									@click="exportPrivateKey"
+										class="seek-btn"
+										@click="exportPrivateKey"
 									><i class="user-name-btn-icon ofont ofont-20daochu"></i> <span class="user-name-btn-content">Private Key(WIF)</span></el-button>
 									<el-button
-									class="seek-btn"
-									@click="$exportWallet"
+										class="seek-btn"
+										@click="$exportWallet"
 									><i class="user-name-btn-icon ofont ofont-20daochu"></i> <span class="user-name-btn-content">Keystore File</span></el-button>
 								</div>
 							</div>
@@ -51,20 +60,32 @@
 				<div class="user-meta-center">
 					<p class="grey-xs bold ft14 user-meta-title">Total Balance:</p>
 					<p class="total-num"> {{balanceLists.length>0?filterFloat(balanceLists[0].BalanceFormat).toLocaleString('en-US'):'0'}}<span> SAVE</span></p>
-					<div id="balance-view" class="balanceView"></div>
+					<div
+						id="balance-view"
+						class="balanceView"
+					></div>
 				</div>
 				<div class="user-meta-right">
 					<p class="grey-xs bold ft14 user-meta-title">Channel Asset:</p>
-					<div id="channel-view" class="channelView"></div>
+					<div
+						id="channel-view"
+						class="channelView"
+					></div>
 					<div class="circle-assist"></div>
 				</div>
 			</div>
-			<el-button class="openAddChannel primary" @click="openAddChannel"><i class="el-icon-plus"></i> New Channel</el-button>
-			<channels-list ref="channelListObj" :showTransfer='true'></channels-list>
+			<el-button
+				class="openAddChannel primary"
+				@click="openAddChannel"
+			><i class="el-icon-plus"></i> New Channel</el-button>
+			<channels-list
+				ref="channelListObj"
+				:showTransfer='true'
+			></channels-list>
 		</div>
 		<div
-		 class="content not-login"
-		 v-if="loginStatus === 0"
+			class="content not-login"
+			v-if="loginStatus === 0"
 		>
 			<canvas-bg ref="canvasBgObg"></canvas-bg>
 			<div class="account-box flex column jc-center">
@@ -78,19 +99,23 @@
 						> -->
 						<div class="save-log-desc user-no-select">
 							<!-- Seeker -->
-							<img src="./../assets/images/home_seeker.svg" alt="" srcset="">
+							<img
+								src="./../assets/images/home_seeker.svg"
+								alt=""
+								srcset=""
+							>
 						</div>
 					</div>
 					<div class="tologin">
 						<router-link
-						 to="/CreateAccount"
-						 class="button"
+							to="/CreateAccount"
+							class="button"
 						>
 							<el-button type="primary">Create Account</el-button>
 						</router-link>
 						<router-link
-						 to="/ImportAccount"
-						 class="button"
+							to="/ImportAccount"
+							class="button"
 						>
 							<el-button class="primary">Import Account</el-button>
 						</router-link>
@@ -105,7 +130,7 @@ const { ipcRenderer, clipboard } = require("electron");
 import { filterFloat } from "../assets/config/util";
 import channelsList from "../components/ChannelsList.vue";
 import canvasBg from "./Home/CanvasBg.vue";
-import echarts from 'echarts'
+import echarts from "echarts";
 export default {
 	components: {
 		channelsList,
@@ -114,29 +139,9 @@ export default {
 	mounted() {
 		document.title = "Home";
 		this.$store.dispatch("setCurrentAccount"); // get login status
-		this.$nextTick(() => {
-			this.updateDom();
-			this.getBalanceList();
-			// this.drawBalanceView();
-			this.drawChannelView();
-		});
-		window.onresize = () => {
-			this.updateDom();
-			this.$nextTick(() => {
-				clearTimeout(this.timeoutObj);
-				this.timeoutObj = setTimeout(() => {
-					if(this.loginStatus === 1) {
-						this.chartsDom.resize();
-						this.chartsChannelDom.resize();
-						this.chartsChannelDom.dispatchAction({type: 'highlight',seriesIndex: 0,dataIndex: this.index})
-					} else {
-						this.$refs.canvasBgObg.init();
-					}
-				}, 50)
-			})
-		};
-		// open channel callback form createChannel of browserView dialog 
-		if(this.dnsAdress && this.dnsAdress != 'done') {
+		this.chartInit();
+		// open channel callback form createChannel of browserView dialog
+		if (this.dnsAdress && this.dnsAdress != "done") {
 			this.$refs.channelListObj.openOpen(this.dnsAdress, 100);
 			localStorage.setItem("DNSAdress", "done");
 		}
@@ -147,8 +152,8 @@ export default {
 	},
 	filters: {
 		firstString(value) {
-			if(!value) return '';
-			value += '';
+			if (!value) return "";
+			value += "";
 			return value[0];
 		}
 	},
@@ -156,186 +161,258 @@ export default {
 		return {
 			// switchToggle: {
 			// 	loading: null,
-				// logoutDialog: false
+			// logoutDialog: false
 			// },
 			filterFloat,
 			// balanceValue: "",
 			// loginStatus: 0, // 1: login 0: not login
 			user: {
 				name: localStorage.getItem("Label") || "",
-				address: localStorage.getItem("Address") || "",
+				address: localStorage.getItem("Address") || ""
 			},
 			// open add channel dialog(param)
 			dnsAdress: localStorage.getItem("DNSAdress") || "",
 			// balanceSelected: 0,
-			chartsDom: '',
-			chartsChannelDom:'',
+			chartsDom: "",
+			chartsChannelDom: "",
 			index: 0,
 			timeoutObj: null,
 			balanceListsMock: {
-				"Action": "getbalancehistory",
-				"Desc": "SUCCESS",
-				"Error": 0,
-				"Result": [
+				Action: "getbalancehistory",
+				Desc: "SUCCESS",
+				Error: 0,
+				Result: [
 					{
-						"DateAt": 1563379200,
-						"TxsCount": 0,
-						"TxsSendCount": 0,
-						"TxsReceiveCount": 0,
-						"Asset": "save",
-						"Balance": 550000000,
-						"BalanceFormat": "0"
+						DateAt: 1563379200,
+						TxsCount: 0,
+						TxsSendCount: 0,
+						TxsReceiveCount: 0,
+						Asset: "save",
+						Balance: 550000000,
+						BalanceFormat: "0"
 					},
 					{
-						"DateAt": 1563379200,
-						"TxsCount": 0,
-						"TxsSendCount": 0,
-						"TxsReceiveCount": 0,
-						"Asset": "save",
-						"Balance": 550000000,
-						"BalanceFormat": "0"
+						DateAt: 1563379200,
+						TxsCount: 0,
+						TxsSendCount: 0,
+						TxsReceiveCount: 0,
+						Asset: "save",
+						Balance: 550000000,
+						BalanceFormat: "0"
 					},
 					{
-						"DateAt": 1563379200,
-						"TxsCount": 0,
-						"TxsSendCount": 0,
-						"TxsReceiveCount": 0,
-						"Asset": "save",
-						"Balance": 550000000,
-						"BalanceFormat": "2000"
+						DateAt: 1563379200,
+						TxsCount: 0,
+						TxsSendCount: 0,
+						TxsReceiveCount: 0,
+						Asset: "save",
+						Balance: 550000000,
+						BalanceFormat: "2000"
 					},
 					{
-						"DateAt": 1563379200,
-						"TxsCount": 0,
-						"TxsSendCount": 0,
-						"TxsReceiveCount": 0,
-						"Asset": "save",
-						"Balance": 550000000,
-						"BalanceFormat": "1000"
+						DateAt: 1563379200,
+						TxsCount: 0,
+						TxsSendCount: 0,
+						TxsReceiveCount: 0,
+						Asset: "save",
+						Balance: 550000000,
+						BalanceFormat: "1000"
 					},
 					{
-						"DateAt": 1563379200,
-						"TxsCount": 0,
-						"TxsSendCount": 0,
-						"TxsReceiveCount": 0,
-						"Asset": "save",
-						"Balance": 550000000,
-						"BalanceFormat": "5000"
+						DateAt: 1563379200,
+						TxsCount: 0,
+						TxsSendCount: 0,
+						TxsReceiveCount: 0,
+						Asset: "save",
+						Balance: 550000000,
+						BalanceFormat: "5000"
 					},
 					{
-						"DateAt": 1563379200,
-						"TxsCount": 0,
-						"TxsSendCount": 0,
-						"TxsReceiveCount": 0,
-						"Asset": "save",
-						"Balance": 550000000,
-						"BalanceFormat": "20"
+						DateAt: 1563379200,
+						TxsCount: 0,
+						TxsSendCount: 0,
+						TxsReceiveCount: 0,
+						Asset: "save",
+						Balance: 550000000,
+						BalanceFormat: "20"
 					},
 					{
-						"DateAt": 1563465600,
-						"TxsCount": 0,
-						"TxsSendCount": 0,
-						"TxsReceiveCount": 0,
-						"Asset": "save",
-						"Balance": 550000000,
-						"BalanceFormat": "0.5"
+						DateAt: 1563465600,
+						TxsCount: 0,
+						TxsSendCount: 0,
+						TxsReceiveCount: 0,
+						Asset: "save",
+						Balance: 550000000,
+						BalanceFormat: "0.5"
 					}
 				],
-				"Version": "1.0.0"
+				Version: "1.0.0"
 			}
 		};
 	},
 	methods: {
+		// init chart dom and listening resize event to change chart
+		chartInit() {
+			// bind resize event
+			window.onresize = () => {
+				this.updateDom();
+				this.$nextTick(() => {
+					clearTimeout(this.timeoutObj);
+					this.timeoutObj = setTimeout(() => {
+						if (this.loginStatus === 1) {
+							try {
+								this.chartsDom.resize();
+							} catch (e) {
+								console.log(e);
+							}
+							try {
+								this.chartsChannelDom.resize();
+								this.chartsChannelDom.dispatchAction({
+									type: "highlight",
+									seriesIndex: 0,
+									dataIndex: this.index
+								});
+							} catch (e) {
+								console.log(e);
+							}
+						} else {
+							this.$refs.canvasBgObg.init();
+						}
+					}, 50);
+				});
+			};
+			this.updateDom();
+			// this nextTick is updateDom function update dom is done
+			this.$nextTick(() => {
+				this.initDrawBalanceView();
+				this.drawChannelView();
+				//this nexetTick is chart dom loading is done
+				this.$nextTick(() => {
+					this.getBalanceList();
+					try {
+						this.chartsDom.resize();
+					} catch (e) {
+						console.log(e);
+					}
+					try {
+						this.chartsChannelDom.resize();
+						this.chartsChannelDom.dispatchAction({
+							type: "highlight",
+							seriesIndex: 0,
+							dataIndex: this.index
+						});
+					} catch (e) {
+						console.log(e);
+					}
+				});
+			});
+		},
 		//get history balance
 		getBalanceList() {
-			const DAY_NUM = 7
+			const DAY_NUM = 7;
 			this.$axios
-			.get(this.$api.balancehistory + "/"+ this.user.address +'/'+DAY_NUM).then(data => {
-				// console.log(res);
-				// test to do
-				const res = data.data
-				// res = this.balanceListsMock;
-				if(res.Error === 0) {
-					const result = res.Result;
-					let balanceXAxisData = [];
-					let balanceData = [];
-					let todayZeroTimestamp = this.getZeroTimestamp();
-					let i = 0;
-					while(i < DAY_NUM) {
-						let timestamp = todayZeroTimestamp - (i * 86400000);
-						let dateItem = new Date(timestamp);
-						let monthItem = dateItem.getMonth() >= 9 ? dateItem.getMonth() + 1 : ('0' + (dateItem.getMonth() + 1));
-						let dayItem = dateItem.getDate() > 9 ? dateItem.getDate() : ('0' + dateItem.getDate());
-						balanceXAxisData.unshift(`${monthItem}/${dayItem}`);
-						i ++;
-					}
-					const dayLen = result.length || 0;
-					for(let i = 0;i < DAY_NUM;i ++) {
-						if(dayLen > i) {
-							balanceData.push(result[i].BalanceFormat || 0);
-						} else {
-							balanceData.unshift(0);
+				.get(this.$api.balancehistory + "/" + this.user.address + "/" + DAY_NUM)
+				.then(data => {
+					// console.log(res);
+					// test to do
+					const res = data.data;
+					// res = this.balanceListsMock;
+					if (res.Error === 0) {
+						const result = res.Result;
+						// let balanceXAxisData = [];
+						let balanceData = [];
+						// let todayZeroTimestamp = this.getZeroTimestamp();
+						// let i = 0;
+						// while (i < DAY_NUM) {
+						// 	let timestamp = todayZeroTimestamp - i * 86400000;
+						// 	let dateItem = new Date(timestamp);
+						// 	let monthItem =
+						// 		dateItem.getMonth() >= 9
+						// 			? dateItem.getMonth() + 1
+						// 			: "0" + (dateItem.getMonth() + 1);
+						// 	let dayItem =
+						// 		dateItem.getDate() > 9
+						// 			? dateItem.getDate()
+						// 			: "0" + dateItem.getDate();
+						// 	balanceXAxisData.unshift(`${monthItem}/${dayItem}`);
+						// 	i++;
+						// }
+						const dayLen = result.length || 0;
+						for (let i = 0; i < DAY_NUM; i++) {
+							if (dayLen > i) {
+								balanceData.push(result[i].BalanceFormat || 0);
+							} else {
+								balanceData.unshift(0);
+							}
 						}
+						balanceData.push(this.currentBalanceFormat);
+						balanceData.splice(0, 1);
+						this.currentBalanceList = balanceData;
+						this.chartsDom.setOption({
+							series: {
+								data: balanceData
+							}
+						})
+						// this.drawBalanceView(balanceXAxisData, balanceData);
 					}
-					balanceData.push(this.currentBalanceFormat);
-					balanceData.splice(0,1);
-					this.currentBalanceList = balanceData;
-					this.drawBalanceView(balanceXAxisData, balanceData);
-				}
-			})
+				});
 		},
+		//get today 00:00 timestamp
 		getZeroTimestamp() {
 			let date = new Date();
 			date.setHours(0);
 			date.setMinutes(0);
 			date.setSeconds(0);
-			date.setMilliseconds(0)
+			date.setMilliseconds(0);
 			let timestamp = date.getTime(); // 1477670400000
 			// let unix_timestamp = Math.floor(date.getTime()/1000);
-			return timestamp
+			return timestamp;
 		},
 		openAddChannel() {
 			this.$refs.channelListObj.openOpen();
 		},
+		// init channel chart
 		drawChannelView() {
 			const that = this;
-			const channelDom = document.getElementById('channel-view');
+			const channelDom = document.getElementById("channel-view");
 			this.chartsChannelDom = echarts.init(channelDom);
-			const currentChannelData = this.currentChannelData.length === 0 ? [{value: 0,name: 'No Channel'}] : this.currentChannelData;
-			const color = this.currentChannelData.length === 0 ? ['#D4DDEB']:['#3E6695', '#3B81EB','#FF607B','#D3E84E','#E15C91'];
+			const currentChannelData =
+				this.currentChannelData.length === 0
+					? [{ value: 0, name: "No Channel" }]
+					: this.currentChannelData;
+			const color =
+				this.currentChannelData.length === 0
+					? ["#D4DDEB"]
+					: ["#3E6695", "#3B81EB", "#FF607B", "#D3E84E", "#E15C91"];
 			this.chartsChannelDom.setOption({
 				series: [
 					{
-						name:'channel info:',
-						type:'pie',
-						radius: ['77%', '88%'],
+						name: "channel info:",
+						type: "pie",
+						radius: ["77%", "88%"],
 						avoidLabelOverlap: false,
-						backgroundColor: '#000111',
+						backgroundColor: "#000111",
 						label: {
 							normal: {
 								show: false,
-								position: 'center',
-								formatter: [
-									'{a|{b}}',
-									'{c|{c} SAVE}',
-									'{b|{d}%}'
-								].join('\n'),
+								position: "center",
+								formatter: ["{a|{b}}", "{c|{c} SAVE}", "{b|{d}%}"].join("\n"),
 								rich: {
 									a: {
-										color: '#2F8FF0',
-										fontFamily: 'Montserrat-Medium',
+										color: "#2F8FF0",
+										fontFamily: "Montserrat-Medium",
 										fontSize: 16,
-										padding: [10,0,10,0]
+										padding: [10, 0, 10, 0]
 									},
 									b: {
-										color: 'rgba(32, 32, 32, .4)',
-										fontFamily: 'Montserrat-Medium',
+										color: "rgba(32, 32, 32, .4)",
+										fontFamily: "Montserrat-Medium",
 										fontSize: 14,
-										padding: [5,0,0,0]
+										padding: [5, 0, 0, 0]
 									},
 									c: {
-										color: 'rgba(32, 32, 32, .4)',
-										fontFamily: 'Montserrat-Medium',
+										color: "rgba(32, 32, 32, .4)",
+										fontFamily: "Montserrat-Medium",
 										fontSize: 14
 									}
 								}
@@ -343,8 +420,8 @@ export default {
 							emphasis: {
 								show: true,
 								textStyle: {
-									fontSize: '12',
-									fontWeight: 'bold'
+									fontSize: "12",
+									fontWeight: "bold"
 								}
 							}
 						},
@@ -361,49 +438,85 @@ export default {
 				]
 			});
 			// default selcet and bind select event
-			this.chartsChannelDom.dispatchAction({type: 'highlight',seriesIndex: 0,dataIndex: 0})
-			this.chartsChannelDom.on('mouseover',function(e) {
-				if(e.dataIndex != that.index) {
-					that.chartsChannelDom.dispatchAction({type: 'downplay',seriesIndex: 0,dataIndex: that.index});
+			this.chartsChannelDom.dispatchAction({
+				type: "highlight",
+				seriesIndex: 0,
+				dataIndex: 0
+			});
+			this.chartsChannelDom.on("mouseover", function(e) {
+				if (e.dataIndex != that.index) {
+					that.chartsChannelDom.dispatchAction({
+						type: "downplay",
+						seriesIndex: 0,
+						dataIndex: that.index
+					});
 				}
 			});
-			this.chartsChannelDom.on('mouseout',function(e){
-					that.index = e.dataIndex;
-					that.chartsChannelDom.dispatchAction({type: 'highlight',seriesIndex: 0,dataIndex: e.dataIndex});
+			this.chartsChannelDom.on("mouseout", function(e) {
+				that.index = e.dataIndex;
+				that.chartsChannelDom.dispatchAction({
+					type: "highlight",
+					seriesIndex: 0,
+					dataIndex: e.dataIndex
+				});
 			});
 		},
+		// init draw balance chart to get date
+		initDrawBalanceView() {
+			const DAY_NUM = 7;
+			let balanceXAxisData = [];
+			let balanceData = [0,0,0,0,0,0,0];
+			let todayZeroTimestamp = this.getZeroTimestamp();
+			let i = 0;
+			while (i < DAY_NUM) {
+				let timestamp = todayZeroTimestamp - i * 86400000;
+				let dateItem = new Date(timestamp);
+				let monthItem =
+					dateItem.getMonth() >= 9
+						? dateItem.getMonth() + 1
+						: "0" + (dateItem.getMonth() + 1);
+				let dayItem =
+					dateItem.getDate() > 9
+						? dateItem.getDate()
+						: "0" + dateItem.getDate();
+				balanceXAxisData.unshift(`${monthItem}/${dayItem}`);
+				i++;
+			}
+			this.drawBalanceView(balanceXAxisData, balanceData)
+		},
+		// init balance chart
 		drawBalanceView(balanceXAxisData, balanceData) {
-			const balanceDom = document.getElementById('balance-view');
+			const balanceDom = document.getElementById("balance-view");
 			this.chartsDom = echarts.init(balanceDom);
 			this.chartsDom.setOption({
-				tooltip : {
-					trigger: 'axis',
+				tooltip: {
+					trigger: "axis",
 					axisPointer: {
-						type: 'cross',
+						type: "cross",
 						label: {
-							backgroundColor: '#3094F1'
+							backgroundColor: "#3094F1"
 						}
 					}
 				},
 				xAxis: {
-					type: 'category',
+					type: "category",
 					boundaryGap: false,
 					axisLine: {
 						lineStyle: {
-							color: '#AFACAC'
+							color: "#AFACAC"
 						}
 					},
 					data: balanceXAxisData
 					// data: ['06/13', '06/14', '06/15', '06/16', '06/17', '06/18', '06/19']
 				},
 				yAxis: {
-					type: 'value',
+					type: "value",
 					axisLine: {
 						lineStyle: {
-							color: '#AFACAC'
+							color: "#AFACAC"
 						}
 					},
-					color: ['#fff'],
+					color: ["#fff"],
 					splitArea: {
 						show: true,
 						areaStyle: {
@@ -412,36 +525,41 @@ export default {
 					}
 				},
 				grid: {
-					left: '10%',
-					right: '8%',
-					bottom: '10%',
-					top: '10%'
+					left: "60",
+					right: "8%",
+					bottom: "10%",
+					top: "10%"
 				},
-				series: [{
-					data: balanceData,
-					// data: [20, 40, 70, 200, 120, 100, 50],
-					type: 'line',
-					areaStyle: {
-						normal: {
-							color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-								offset: 0,
-								color: 'rgba(55, 142, 239, .69)'
-							}, {
-								offset: 1,
-								color: 'rgba(54, 143, 239, .08)'
-							}])
-						}
-					},
-					smooth: true,
-					color: ['#3094F1']
-				}]
+				series: [
+					{
+						data: balanceData,
+						// data: [20, 40, 70, 200, 120, 100, 50],
+						type: "line",
+						areaStyle: {
+							normal: {
+								color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+									{
+										offset: 0,
+										color: "rgba(55, 142, 239, .69)"
+									},
+									{
+										offset: 1,
+										color: "rgba(54, 143, 239, .08)"
+									}
+								])
+							}
+						},
+						smooth: true,
+						color: ["#3094F1"]
+					}
+				]
 			});
 		},
 		updateDom() {
-			const channelDom = document.getElementById('channel-view');
-			channelDom.style.width = document.body.clientWidth*0.4-265+'px';
-			const balanceDom = document.getElementById('balance-view');
-			balanceDom.style.width = document.body.clientWidth*0.6-395+'px';
+			const channelDom = document.getElementById("channel-view");
+			channelDom.style.width = document.body.clientWidth * 0.4 - 265 + "px";
+			const balanceDom = document.getElementById("balance-view");
+			balanceDom.style.width = document.body.clientWidth * 0.6 - 395 + "px";
 		},
 		clipText(el) {
 			console.log("clip");
@@ -452,35 +570,6 @@ export default {
 				type: "success"
 			});
 		},
-		// setBalanceListsIndex(index) {
-		// 	this.balanceSelected = index;
-		// },
-		// getBalance() {
-		// 	this.$store.dispatch("setBalanceLists");
-		// },
-		// getAllChannels() {
-		// 	this.$store.dispatch("setChannelBalanceTotal");
-		// },
-		// logOut() {
-		// 	this.switchToggle.loading = this.$loading({
-		// 		lock: true,
-		// 		text: "logging out",
-		// 		target: ".loading-content"
-		// 	});
-		// 	this.$axios
-		// 		.post(this.$api.account + "/logout", {})
-		// 		.then(res => {
-		// 			if (res.data.Desc === "SUCCESS" && res.data.Error === 0) {
-		// 				window.localStorage.clear();
-		// 				window.location.href = location.origin + location.pathname; // success login out link to home page
-		// 			}
-		// 		})
-		// 		.catch(err => {
-		// 			this.switchToggle.loading.close();
-		// 			this.switchToggle.loading = null;
-		// 			console.error(err);
-		// 		});
-		// },
 		exportWallet() {
 			this.$axios
 				.get(this.$api.account + "/export/walletfile")
@@ -504,47 +593,58 @@ export default {
 				});
 		},
 		exportPrivateKey() {
-			ipcRenderer.send('dialog-open', 'exportPrivateKey');
+			ipcRenderer.send("dialog-open", "exportPrivateKey");
 		}
 	},
 	watch: {
-		currentChannelData(newVal,oldVal) {
+		currentChannelData(newVal, oldVal) {
 			let obj = {};
-			if(newVal.length != oldVal.length) {
-				const color = newVal.length === 0 ? ['#D4DDEB']:['#3E6695', '#3B81EB','#FF607B','#D3E84E','#E15C91'];
+			if (newVal.length != oldVal.length) {
+				const color =
+					newVal.length === 0
+						? ["#D4DDEB"]
+						: ["#3E6695", "#3B81EB", "#FF607B", "#D3E84E", "#E15C91"];
 				this.chartsChannelDom.setOption({
-					series : {
+					series: {
 						data: newVal,
 						color: color
 					}
 				});
-				this.chartsChannelDom.dispatchAction({type: 'highlight',seriesIndex: 0,dataIndex: this.index})
+				this.chartsChannelDom.dispatchAction({
+					type: "highlight",
+					seriesIndex: 0,
+					dataIndex: this.index
+				});
 				return;
 			}
-			for(let value of oldVal) {
+			for (let value of oldVal) {
 				obj[value.ChannelId] = value.BalanceFormat;
 			}
-			for(let value of newVal) {
-				if(obj[value.ChannelId] !== value.BalanceFormat) {
+			for (let value of newVal) {
+				if (obj[value.ChannelId] !== value.BalanceFormat) {
 					this.chartsChannelDom.setOption({
-						series : {
+						series: {
 							data: newVal
 						}
 					});
-					this.chartsChannelDom.dispatchAction({type: 'highlight',seriesIndex: 0,dataIndex: this.index})
+					this.chartsChannelDom.dispatchAction({
+						type: "highlight",
+						seriesIndex: 0,
+						dataIndex: this.index
+					});
 					return;
-				};
+				}
 			}
 		},
 		currentBalanceFormat(newVal, oldVal) {
 			try {
 				this.currentBalanceList[6] = newVal;
 				this.chartsDom.setOption({
-					series : {
+					series: {
 						data: this.currentBalanceList
 					}
 				});
-			}catch(e) {
+			} catch (e) {
 				console.log(e);
 			}
 		}
@@ -570,10 +670,10 @@ export default {
 		},
 		currentBalanceFormat() {
 			// let sum = 0;
-			if(!this.balanceLists) return 0
-			for(let value of this.balanceLists) {
-				if(value.Symbol === 'SAVE') {
-					return value.BalanceFormat
+			if (!this.balanceLists) return 0;
+			for (let value of this.balanceLists) {
+				if (value.Symbol === "SAVE") {
+					return value.BalanceFormat;
 				}
 			}
 		},
@@ -582,13 +682,13 @@ export default {
 		},
 		// get [max, max - 1, max - 2, [min array]]
 		currentChannelData: function() {
-			if(!this.channels) return [];
+			if (!this.channels) return [];
 			const maxNum = 4; // default show alone channel number
 			let arr = [];
 			let otherArr = [];
-			for(let value of this.channels) {
-				if(arr.length === maxNum) {
-					if(value.Balance > arr[maxNum - 1].Balance) {
+			for (let value of this.channels) {
+				if (arr.length === maxNum) {
+					if (value.Balance > arr[maxNum - 1].Balance) {
 						otherArr.push(arr[maxNum - 1]);
 						arr.splice(maxNum - 1, 1, value);
 						arr.sort((a, b) => {
@@ -597,7 +697,7 @@ export default {
 					}
 					continue;
 				}
-				if(arr.length === maxNum - 1) {
+				if (arr.length === maxNum - 1) {
 					arr.push(value);
 					// sort
 					arr.sort((a, b) => {
@@ -608,22 +708,24 @@ export default {
 				arr.push(value);
 			}
 			//if have other channel sum push arr
-			if(otherArr.length !== 0) {
+			if (otherArr.length !== 0) {
 				let sum = 0;
-				for(let value of otherArr) {
-					sum += value.Balance
+				for (let value of otherArr) {
+					sum += value.Balance;
 				}
 				arr.push({
-					BalanceFormat: sum/1000000000,
-					ChannelId: 'remain',
+					BalanceFormat: sum / 1000000000,
+					ChannelId: "remain"
 				});
 			}
-			arr.map((channel) => {
-				channel['value'] = parseFloat(parseFloat(channel['BalanceFormat']).toFixed(3));
-				channel['name'] = channel['ChannelId'];
+			arr.map(channel => {
+				channel["value"] = parseFloat(
+					parseFloat(channel["BalanceFormat"]).toFixed(3)
+				);
+				channel["name"] = channel["ChannelId"];
 				return channel;
-			})
-			return arr;	
+			});
+			return arr;
 		}
 	}
 };
@@ -665,7 +767,7 @@ $input-color: rgba(203, 203, 203, 1);
 			}
 		}
 	}
-	.el-select  {
+	.el-select {
 		border-color: $input-color !important;
 	}
 	.content {
@@ -705,7 +807,7 @@ $input-color: rgba(203, 203, 203, 1);
 					}
 					& > .save-log-desc {
 						text-align: center;
-						color: #2F8FF0;
+						color: #2f8ff0;
 						font-size: 40px;
 						font-weight: 600;
 						margin-top: 30px;
@@ -728,8 +830,8 @@ $input-color: rgba(203, 203, 203, 1);
 					// 	border-radius: 0px;
 					// }
 					// .el-button--default {
-						// color: #040f39;
-						// border-color: rgba(4, 15, 57, 0.5);
+					// color: #040f39;
+					// border-color: rgba(4, 15, 57, 0.5);
 					// }
 				}
 			}
@@ -772,19 +874,23 @@ $input-color: rgba(203, 203, 203, 1);
 					height: 152px;
 					background: #fff;
 					padding: 5px 10px;
-					background:linear-gradient(90deg,rgba(19,176,250,1) 0%,rgba(62,126,235,1) 100%);
-					box-shadow: 0px 2px 20px 0px rgba(196,196,196,0.24);
-					border-radius:6px;
+					background: linear-gradient(
+						90deg,
+						rgba(19, 176, 250, 1) 0%,
+						rgba(62, 126, 235, 1) 100%
+					);
+					box-shadow: 0px 2px 20px 0px rgba(196, 196, 196, 0.24);
+					border-radius: 6px;
 					position: relative;
 
 					&::before {
-						content: 'S';
+						content: "S";
 						font-size: 100px;
-						color: rgba(255, 255, 255, .06);
+						color: rgba(255, 255, 255, 0.06);
 						position: absolute;
 						top: -27px;
 						right: -5px;
-						font-family: 'OpenSans-Bold';
+						font-family: "OpenSans-Bold";
 						font-weight: bold;
 					}
 
@@ -797,8 +903,6 @@ $input-color: rgba(203, 203, 203, 1);
 						align-items: center;
 						justify-content: space-between;
 						height: 75%;
-
-						
 					}
 
 					.user-name-first-wrapper {
@@ -810,14 +914,14 @@ $input-color: rgba(203, 203, 203, 1);
 						// border: 1px solid black;
 						margin-right: 15px;
 						user-select: none;
-						background: #76CAFA;
+						background: #76cafa;
 						color: #fff;
-						align-self:flex-start;
+						align-self: flex-start;
 
 						.user-first {
 							font-style: initial;
 							margin: 0;
-							font-size: 50px;				
+							font-size: 50px;
 						}
 					}
 
@@ -832,20 +936,20 @@ $input-color: rgba(203, 203, 203, 1);
 							position: relative;
 							top: -2px;
 							cursor: pointer;
-							
+
 							&:hover {
-								opacity: .7;
+								opacity: 0.7;
 							}
-							
+
 							&:active {
 								opacity: 1;
 							}
 						}
-		
+
 						.address {
-							display:inline-block;
-							width:230px;
-							overflow:hidden;
+							display: inline-block;
+							width: 230px;
+							overflow: hidden;
 							text-overflow: ellipsis;
 						}
 					}
@@ -872,11 +976,11 @@ $input-color: rgba(203, 203, 203, 1);
 					border-radius: 6px;
 					background: #fff;
 					padding: 5px 36px 5px 16px;
-					box-shadow:0px 2px 20px 0px rgba(196,196,196,0.24);
-					
+					box-shadow: 0px 2px 20px 0px rgba(196, 196, 196, 0.24);
+
 					& > p {
 						user-select: none;
-						color: rgba(32, 32, 32, .4);
+						color: rgba(32, 32, 32, 0.4);
 					}
 
 					& > div {
@@ -884,7 +988,7 @@ $input-color: rgba(203, 203, 203, 1);
 							position: relative;
 							top: 5px;
 							user-select: none;
-						} 
+						}
 					}
 				}
 				.please-login {
@@ -903,7 +1007,7 @@ $input-color: rgba(203, 203, 203, 1);
 				background: #fff;
 				border-radius: 6px;
 				padding: 5px 16px;
-				box-shadow:0px 2px 20px 0px rgba(196,196,196,0.24);
+				box-shadow: 0px 2px 20px 0px rgba(196, 196, 196, 0.24);
 
 				.user-meta-title {
 					margin-top: 12px;
@@ -935,7 +1039,7 @@ $input-color: rgba(203, 203, 203, 1);
 				background: #fff;
 				border-radius: 6px;
 				padding: 5px 16px;
-				box-shadow: 0px 2px 20px 0px rgba(196,196,196,0.24);
+				box-shadow: 0px 2px 20px 0px rgba(196, 196, 196, 0.24);
 				position: relative;
 
 				.user-meta-title {
@@ -950,10 +1054,10 @@ $input-color: rgba(203, 203, 203, 1);
 				}
 
 				.circle-assist {
-					width:128px;
+					width: 128px;
 					height: 128px;
 					border-radius: 50%;
-					border: 3px solid #EAEFFD;
+					border: 3px solid #eaeffd;
 					position: absolute;
 					top: 91px;
 					left: 50%;

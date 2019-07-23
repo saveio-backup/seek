@@ -17,6 +17,12 @@
         >
           Download
         </el-button>
+        <el-button
+          class="ml10 bt-download theme-font-blue"
+          @click="batchDelete"
+        >
+          Delete
+        </el-button>
       </div>
       <div class="fun-search">
         <el-input
@@ -49,7 +55,7 @@
           border
           ref='table'
           @row-click="clickRow"
-          :data="filterListData"
+          :data="mockData"
           height="100%"
           @selection-change="selectFile"
         >
@@ -289,9 +295,7 @@
           >No Longer remind, only do advanced uploads</el-checkbox>
         </p>
         <div slot="footer">
-          <el-button 
-            @click="goStorage"
-          >Get Storage</el-button>
+          <el-button @click="goStorage">Get Storage</el-button>
           <el-button
             class="primary"
             @click="goAdvanceUpload"
@@ -311,13 +315,13 @@
       </div>
       <div class="loading-content disk-delete-loading">
         <p class="mt10 mb10">Are you sure you want to delete the selected file?</p>
-        <p class="mb20">{{executedFile.Name}}</p>
+        <p class="mb20">{{fileDeleteInfo.Name}}</p>
         <div slot="footer">
           <el-button @click="switchToggle.deleteDialog = false">Cancel</el-button>
           <el-button
             type="danger"
             class="primary"
-            @click="toDeleteFile(fileListData, executedFile.Hash)"
+            @click="toDeleteFileNew(fileToDelete)"
           >Delete</el-button>
         </div>
       </div>
@@ -346,10 +350,14 @@ export default {
         Fee: 0,
         Size: 0
       },
+      fileDeleteInfo: {
+        Name: ""
+      },
       executedFile: {}, // a file be opera
       filterInput: "",
       uploadDetailHash: "",
-      fileToDownload: [], // the file/files which you click chekbox or download button
+      fileToDownload: [], // the file/files which chekbox or download button you click
+      fileToDelete: [], // the file/files which chekbox  or delete button you click
       mockMiner: [
         {
           Hash: "QmP9pWe9W6KWnVkoEAFPFvfRYDHft7bvq5aAsTGhjpUCvK",
@@ -489,8 +497,12 @@ export default {
       currentFile: null,
       // if no storage link upload is not allow message
       linkRemindToggle: {
-        noAllowRemind: (localStorage.getItem("linkUploadToNoAllowRemind") === 'true' || localStorage.getItem("linkUploadToNoAllowRemind") === true) ? true : false
-      },
+        noAllowRemind:
+          localStorage.getItem("linkUploadToNoAllowRemind") === "true" ||
+          localStorage.getItem("linkUploadToNoAllowRemind") === true
+            ? true
+            : false
+      }
     };
   },
   components: {
@@ -528,7 +540,7 @@ export default {
     },
     goUpload() {
       if (!this.space || (this.space.Used === 0 && this.space.Remain === 0)) {
-        if(!this.linkRemindToggle.noAllowRemind) {
+        if (!this.linkRemindToggle.noAllowRemind) {
           return (this.switchToggle.noStorageDialog = true);
         }
       }
@@ -680,7 +692,18 @@ export default {
         });
     },
     deleteFile(file) {
-      this.executedFile = file;
+      this.fileToDelete = [file];
+      this.switchToggle.deleteDialog = true;
+    },
+    batchDelete() {
+      const NO_DELETE_FILE_MSG = "Please select the file you want to Delete.";
+      if (!this.fileSelected || this.fileSelected.length === 0) {
+        this.$message({
+          message: NO_DELETE_FILE_MSG
+        });
+        return;
+      }
+      this.fileToDelete = this.fileSelected;
       this.switchToggle.deleteDialog = true;
     },
     toDeleteFileNew(deleteFiles) {
@@ -715,7 +738,7 @@ export default {
       this.$axios.all(commitAll).then(
         this.$axios.spread(() => {
           // this.$store.dispatch("setDownload");
-          this.$store.dispatch("setSpace"); // get userspace everytime user del file
+          this.$store.dispatch("setSpace"); // get userspace
         })
       );
     },
@@ -796,6 +819,23 @@ export default {
             console.error("unable to calc");
             this.fileDownloadInfo.Fee = "Unable to calculate. network error.";
           });
+      });
+    },
+    fileToDelete: function() {
+      console.log("file to delete info changed");
+      let fileToDelete = this.fileToDelete;
+      let name = "";
+      fileToDelete.map((item, index) => {
+        name =
+          name +
+          this.fileToDelete[index].Name +
+          (index == fileToDelete.length - 1 ? "" : " / ");
+        if (name.length > 37) {
+          // max length
+          this.fileDeleteInfo.Name = name.substring(0, 37) + " ....";
+        } else {
+          this.fileDeleteInfo.Name = name;
+        }
       });
     }
   },

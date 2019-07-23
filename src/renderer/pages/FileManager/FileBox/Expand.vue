@@ -3,7 +3,7 @@
     <div class="content">
       <div class="space-header">
         <div class="space-progress">
-          <div class="theme-font-blue bold mb10 ft14 user-no-select">Used: {{util.bytesToSize(space.Used * 1024)}} / {{util.bytesToSize((space.Used + space.Remain) *1024)}}</div>
+          <div class="theme-font-blue bold mb10 ft14 user-no-select">Used: {{util.bytesToSize(space.Used * 1024)}} / {{util.bytesToSize((space.Used + space.Remain) *1024)}}  <span class="theme-font-blue-40 bold ft14 ">ExpiredAt :{{expired_old}}</span> </div>
           <el-progress
             :stroke-width="30"
             :percentage="takeSpace"
@@ -80,6 +80,7 @@
                   v-model="adjustSize"
                   :precision='0'
                   :min='minSize'
+                  @change="userSpaceCost"
                   @focus="$refs.spaceNumberInput.select()"
                   @blur="userSpaceCost"
                 ></el-input-number>

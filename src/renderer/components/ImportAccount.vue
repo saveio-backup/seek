@@ -146,7 +146,7 @@ export default {
       if (this.privateKeyForm.Password === this.privateKeyForm.Confirm) {
         callback();
       } else {
-        callback(new Error("Inconsistent passwords filled in twice"));
+        callback(new Error("Inconsistent passwords filled in twice."));
       }
     };
     return {

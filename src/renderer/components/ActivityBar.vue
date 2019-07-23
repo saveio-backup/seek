@@ -17,40 +17,34 @@
 					</li> -->
 					<li class="action-item">
 						<div
-						 title="FileManager"
-						 class="nav-button"
-						 @click="remoteOpenComponent('FileManager')"
-						 active-class="slidebar-active"
-						:class="{'theme-color-yellow':activeView.displayURL.indexOf('seek://FileManager')>=0}"
+							title="FileManager"
+							class="nav-button"
+							@click="remoteOpenComponent('FileManager')"
+							active-class="slidebar-active"
+							:class="{'theme-color-yellow':activeView.displayURL.indexOf('seek://FileManager')>=0}"
 						>
-							<i
-							 class="ofont ofont-wenjianjia-"
-							></i>
+							<i class="ofont ofont-wenjianjia-"></i>
 						</div>
 					</li>
 					<li class="action-item">
 						<div
-						 title="Wallet"
-						 class="nav-button"
-						 @click="remoteOpenComponent('Wallet')"
-						:class="{'theme-color-yellow':activeView.displayURL.indexOf('seek://Wallet')>=0}"
+							title="Wallet"
+							class="nav-button"
+							@click="remoteOpenComponent('Wallet')"
+							:class="{'theme-color-yellow':activeView.displayURL.indexOf('seek://Wallet')>=0}"
 						>
-							<i
-							 class="ofont ofont-qianbao"
-							></i>
+							<i class="ofont ofont-qianbao"></i>
 						</div>
 					</li>
 					<li class="action-item item-bottom-line">
 						<div
-						 title="Miner"
-						 class="nav-button"
-						 @click="remoteOpenComponent('Miner')"
-						 active-class="slidebar-active"
-						:class="{'theme-color-yellow':activeView.displayURL.indexOf('seek://Miner')>=0}"
+							title="Miner"
+							class="nav-button"
+							@click="remoteOpenComponent('Miner')"
+							active-class="slidebar-active"
+							:class="{'theme-color-yellow':activeView.displayURL.indexOf('seek://Miner')>=0}"
 						>
-							<i
-							 class="ofont ofont-wakuang"
-							></i>
+							<i class="ofont ofont-kuanggong"></i>
 							<!-- <img
 							 v-show="activeView.displayURL.indexOf('seek://Miner')<0"
 							 src="../assets/images/aside_miner.png"
@@ -65,36 +59,36 @@
 					</li>
 					<li class="action-item">
 						<div
-						 title="Coming Soon.."
-						 class="nav-button"
-						 style="background:none;"
+							title="Coming Soon.."
+							class="nav-button"
+							style="background:none;"
 						>
 							<span
-							 class="ofont ofont-dapp1"
-							 style='color:#C7CAD0;background:none;cursor:not-allowed;'
+								class="ofont ofont-dapp1"
+								style='color:#C7CAD0;background:none;cursor:not-allowed;'
 							></span>
 						</div>
 					</li>
 					<li class="action-item">
 						<div
-						 title="Coming Soon.."
-						 class="nav-button"
-						 style="background:none;"
+							title="Coming Soon.."
+							class="nav-button"
+							style="background:none;"
 						>
 							<span
-							 class="ofont ofont-tianjia"
-							 style='color:#C7CAD0;cursor:not-allowed;'
+								class="ofont ofont-tianjia"
+								style='color:#C7CAD0;cursor:not-allowed;'
 							></span>
 						</div>
 					</li>
 				</ul>
 			</div>
-			<div
-			 class="setting-bar"
-			>
+			<div class="setting-bar">
 				<div style="position:relative; z-index:2">
-					<i class="ofont ofont-caidan user-no-select cursor-pointer cursor-click"
-					@click="toPopCustomControlMenu"></i>
+					<i
+						class="ofont ofont-caidan user-no-select cursor-pointer cursor-click"
+						@click="toPopCustomControlMenu"
+					></i>
 				</div>
 			</div>
 		</div>
@@ -138,26 +132,26 @@ export default {
 					label: "Export Keystore File",
 					// visible: new Boolean(user.name),
 					click() {
-						that.exportWallet();		
+						that.exportWallet();
 					}
 				},
 				{
 					label: "Export Private Key(WIF)",
 					// visible: new Boolean(user.name),
 					click() {
-						that.exportPrivateKey();				
+						that.exportPrivateKey();
 					}
 				},
 				{
 					label: "Log Out",
 					// visible: new Boolean(user.name),
 					click() {
-						that.logout();						
+						that.logout();
 					}
 				},
 				{
-					label:'Version',
-					click(){
+					label: "Version",
+					click() {
 						that.showVersion();
 					}
 				}
@@ -169,24 +163,27 @@ export default {
 			this.activeView.openComponent(path);
 		},
 		logout() {
-			ipcRenderer.send('dialog-open', 'logout');
+			ipcRenderer.send("dialog-open", "logout");
 		},
 		exportPrivateKey() {
-			ipcRenderer.send('dialog-open', 'exportPrivateKey');
+			ipcRenderer.send("dialog-open", "exportPrivateKey");
 		},
 		exportWallet() {
 			this.$exportWallet();
 		},
-		showVersion(){
-			ipcRenderer.send('showVersion', localStorage.getItem('edgeVersion')||'');
+		showVersion() {
+			ipcRenderer.send(
+				"showVersion",
+				localStorage.getItem("edgeVersion") || ""
+			);
 		}
 	}
 };
 </script>
 <style lang="scss">
-$theme-color-yellow: #4F5154;
+$theme-color-yellow: #4f5154;
 // $theme-color: #1b1e2f;
-$theme-color: #DFE2E9;
+$theme-color: #dfe2e9;
 
 $slidebar-active-color: linear-gradient(
 	110deg,
@@ -208,11 +205,11 @@ $slidebar-active-color: linear-gradient(
 		z-index: 999;
 		height: 100%;
 		color: #808185;
-		box-shadow:inset -15px 0px  10px -15px rgba(182,182,182,0.3);
+		box-shadow: inset -15px 0px 10px -15px rgba(182, 182, 182, 0.3);
 
 		.theme-color-yellow {
 			color: $theme-color-yellow;
-			background: #C0C6D1;
+			background: #c0c6d1;
 		}
 		.action-container {
 			text-align: center;
@@ -225,12 +222,11 @@ $slidebar-active-color: linear-gradient(
 					font-size: 24px;
 					&.ofont-qianbao {
 						position: relative;
-						left: -1px;
+						font-size: 20px;
 					}
-					&.ofont-wakuang {
-						font-size: 28px;
+					&.ofont-kuanggong {
+						font-size: 18px;
 						position: relative;
-						left: -1px;
 					}
 					&.ofont-dapp1 {
 						font-size: 26px;
@@ -272,13 +268,13 @@ $slidebar-active-color: linear-gradient(
 					// font-size: 18px;
 
 					&:hover {
-						transition: all .2s ease;
+						transition: all 0.2s ease;
 						color: $theme-color-yellow;
-						background: #C0C6D1;
+						background: #c0c6d1;
 					}
 
 					&:active {
-						opacity: .7;
+						opacity: 0.7;
 					}
 
 					&.slidebar-active {
@@ -307,7 +303,7 @@ $slidebar-active-color: linear-gradient(
 			color: #202020;
 			font-size: 30px;
 			top: -30px;
-			
+
 			.setting-ul {
 				opacity: 0;
 				transition: all 0.5s;
@@ -329,7 +325,7 @@ $slidebar-active-color: linear-gradient(
 			}
 
 			.ofont-caidan {
-				color: rgba(32, 32, 32, .5);
+				color: rgba(32, 32, 32, 0.5);
 			}
 		}
 	}

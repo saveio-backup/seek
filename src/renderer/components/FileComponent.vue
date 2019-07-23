@@ -41,10 +41,10 @@
 			class="top-progress"
 		>
 			<p class="theme-font-blue ft14 user-no-select flex1">Finished {{fileList.length}} Files</p>
-				<el-button
-					v-if="transferType === 0 && show"
-					@click="switchToggle.newTaskDialog=true"
-				>Delete All</el-button>
+			<el-button
+				v-if="transferType === 0 && show"
+				@click="switchToggle.newTaskDialog=true"
+			>Delete All</el-button>
 		</div>
 		<div class="file-list">
 			<el-table
@@ -62,12 +62,6 @@
 					<template slot-scope="scope">
 						<div>
 							<span>{{scope.row.FileName}}</span>
-							<!-- <div class="opera"> -->
-							<!-- <i class="ofont ofont-zhongxinshangchuan" title="upload again" v-show="scope.row.Status === 4"  @click="uploadAgain(scope.row)"></i> -->
-							<!-- <i class="ofont ofont-jixu" title="continue to upload" v-show="scope.row.Status === 0" @click="uploadcontinue(scope.row)"></i> -->
-							<!-- <i class="ofont ofont-zanting" title="pause to upload" v-show="scope.row.Status === 1 || scope.row.Status === 2" @click="uploadPause(scope.row)"></i> -->
-							<!-- <i v-show="scope.row.Nodes && scope.row.Nodes.length > 0" class="ofont ofont-xiangqingchakan" title="look process detail" @click="openDetailDialog(scope.row)"></i> -->
-							<!-- </div> -->
 						</div>
 					</template>
 				</el-table-column>
@@ -122,7 +116,7 @@
 							<i
 								v-if="transferType === 0"
 								class="ofont mr20 ft16 active-blue"
-								:class="scope.row.IsUploadAction ? 'ofont-shangchuan':'ofont-xiazai'"
+								:class="scope.row.IsUploadAction ? 'ofont-shangchuan':'ofont-xiazai2'"
 							></i>
 							<div v-if="scope.row.Status === 3">
 								<span
@@ -193,7 +187,10 @@
 								:title="scope.row.Status === 4 ? (scope.row.IsUploadAction ? 'continue to upload':'continue to download'):'download again'"
 								v-show="scope.row.Status === 4 || (!scope.row.IsUploadAction && scope.row.Status === 3)"
 								@click="uploadOrDownloadAgain(scope.row)"
-							><i class="ofont" :class="{'ofont-zhongxinshangchuan': (!scope.row.IsUploadAction && scope.row.Status === 3),'ofont-jixu': scope.row.Status === 4}"></i></span>
+							><i
+									class="ofont"
+									:class="{'ofont-zhongxin': (!scope.row.IsUploadAction && scope.row.Status === 3),'ofont-jixu': scope.row.Status === 4}"
+								></i></span>
 							<span
 								class="cursor-click active-blue cursor-pointer"
 								:title="scope.row.IsUploadAction ? 'continue to upload':'continue to download'"
@@ -211,19 +208,19 @@
 								:title="scope.row.IsUploadAction ? 'cancel to upload':'cancel to download'"
 								v-show="scope.row.Status !== 3 && show"
 								@click="uploadOrDownloadCancel(scope.row)"
-							><i class="ofont ofont-cancel"></i></span>
+							><i class="ofont ofont-guanbi"></i></span>
 							<span
 								class="cursor-click active-blue cursor-pointer"
 								title="look detail"
 								@click="openDetailDialog(scope.row)"
 								v-show="((scope.row.Nodes && scope.row.Nodes.length > 0) || scope.row.Status === 3) && scope.row.IsUploadAction"
-							><i class="ofont ofont-xiangqingchakan"></i></span>
+							><i class="ofont ofont-xiangqing"></i></span>
 							<span
 								class="cursor-click active-blue cursor-pointer"
 								title="delete record"
 								@click="deleteRecord(scope.row)"
 								v-show="scope.row.Status === 3 && show"
-							><i class="ofont ofont-ofont-zanting"></i></span>
+							><i class="ofont ofont-shanchu"></i></span>
 						</div>
 					</template>
 				</el-table-column>
@@ -332,7 +329,11 @@
 				</div>
 			</div>
 		</el-dialog>
-		<upload-file-detail-dialog @closeUploadFileDetail="toCloseUploadFileDetail" :hash="uploadDetailHash" v-if="transferType === 0"></upload-file-detail-dialog>
+		<upload-file-detail-dialog
+			@closeUploadFileDetail="toCloseUploadFileDetail"
+			:hash="uploadDetailHash"
+			v-if="transferType === 0"
+		></upload-file-detail-dialog>
 	</div>
 </template>
 <script>
@@ -391,7 +392,7 @@ export default {
 					UpdatedAt: 0,
 					Profit: 0,
 					Privilege: 1,
-					Path: '123',
+					Path: "123",
 					Nodes: [
 						{
 							HostAddr: "tcp://127.0.0.1:14001",
@@ -578,10 +579,10 @@ export default {
 	},
 	methods: {
 		toCloseUploadFileDetail() {
-			this.uploadDetailHash = '';
+			this.uploadDetailHash = "";
 		},
 		openDetailDialog(row) {
-			if(row.Status === 3) {
+			if (row.Status === 3) {
 				this.uploadDetailHash = row.FileHash;
 			} else {
 				this.detailId = row.Id;
@@ -608,12 +609,12 @@ export default {
 		},
 		pauseAll() {
 			const type = this.transferType;
-			const arr = this.getTask(type, 1, 2);	
+			const arr = this.getTask(type, 1, 2);
 		},
 		getTask(type, ...status) {
 			// console.log(status);
-			let filterArr = this.fileList.filter((item) => {
-				if(type === 1 && item.IsUploadAction) {
+			let filterArr = this.fileList.filter(item => {
+				if (type === 1 && item.IsUploadAction) {
 					return false;
 				} else if (type === 2 && !item.IsUploadAction) {
 					return false;

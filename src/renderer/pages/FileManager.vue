@@ -2,48 +2,64 @@
 	<div id="fileManager">
 		<div class="content">
 			<div class="top-nav">
-				<div class="change-channel mr10"  @click="switchToggle.channelListDialog = true" title="Change Channel">
+				<div
+					class="change-channel mr10"
+					@click="switchToggle.channelListDialog = true"
+					title="Change Channel"
+				>
 					<i class="ofont ofont-qiehuan"></i>
 				</div>
-				<div class="ft14 mr10 flex column between channel-info" :class="{'channel-not-have': !channelBind.ChannelId}">
-					<p class="channel-info-first user-no-select" :title="channelBind.ChannelId || 'Not Selected'">{{channelBind.ChannelId || 'Not Selected'}}</p>
-					<p class="channel-info-last user-no-select" :title="channelBind.Address" v-if="channelBind.Address">{{channelBind.Address.replace(channelBind.Address.slice(5,-5),'...')}}</p>
+				<div
+					class="ft14 mr10 flex column between channel-info"
+					:class="{'channel-not-have': !channelBind.ChannelId}"
+				>
+					<p
+						class="channel-info-first user-no-select"
+						:title="channelBind.ChannelId || 'Not Selected'"
+					>{{channelBind.ChannelId || 'Not Selected'}}</p>
+					<p
+						class="channel-info-last user-no-select"
+						:title="channelBind.Address"
+						v-if="channelBind.Address"
+					>{{channelBind.Address.replace(channelBind.Address.slice(5,-5),'...')}}</p>
 				</div>
 				<!-- {{location.href}}  -->
 				<div class="router">
 					<router-link
-					 :to="{name:'filebox'}"
-					 active-class="active-blue"
-					 class="user-no-select"
-					 :replace="true"
+						:to="{name:'filebox'}"
+						active-class="active-blue"
+						class="user-no-select"
+						:replace="true"
 					>Filebox</router-link>
 					<!-- <router-link
 					 :to="{name:'discovery'}"
 					 active-class="active-blue"
 					>Discovery</router-link> -->
 					<router-link
-					 :to="{name:'transfer'}"
-					 class="user-no-select"
-					 active-class="active-blue"
+						:to="{name:'transfer'}"
+						class="user-no-select"
+						active-class="active-blue"
 					>Transfer <span
-						 class="badge"
-						 v-show="transferLength>0"
+							class="badge"
+							v-show="transferLength>0"
 						>{{transferLength}}</span></router-link>
 				</div>
 				<div class="coin">
 					<div class="flex jc-end">
 					</div>
 					<span class="mr20 ft24">{{filterFloat(channelBind.BalanceFormat || 0).toLocaleString('en-US')}}<span class="user-no-select"> SAVE</span></span>
-					<i class="ofont ofont-zhuanrang ft24 cursor-click cursor-pointer user-no-select light-blue"
-					@click="openAssetTransferDialog"></i>
+					<i
+						class="ofont ofont-zhuanrang ft24 cursor-click cursor-pointer user-no-select light-blue"
+						@click="openAssetTransferDialog"
+					></i>
 				</div>
 			</div>
 			<el-dialog
-			 class="asset-transfer-dialog"
-			 width='550px'
-			 :close-on-click-modal='false'
-			 :visible.sync="switchToggle.assetTransferDialog"
-			 center
+				class="asset-transfer-dialog"
+				width='550px'
+				:close-on-click-modal='false'
+				:visible.sync="switchToggle.assetTransferDialog"
+				center
 			>
 				<div slot="title">
 					<h2>Transfer</h2>
@@ -51,23 +67,23 @@
 				</div>
 				<div class="loading-content loading-channel">
 					<channel-wallet-transfer
-					@closeDialog='switchToggle.assetTransferDialog = false'
-					 ref="channelwallettransfer"
-					 :channelSelected='channelBind'
+						@closeDialog='switchToggle.assetTransferDialog = false'
+						ref="channelwallettransfer"
+						:channelSelected='channelBind'
 					></channel-wallet-transfer>
 					<div slot="footer">
 						<el-button
-						 type="primary"
-						 class="primary"
-						 @click="toConfirm"
+							type="primary"
+							class="primary"
+							@click="toConfirm"
 						>Confirm</el-button>
 					</div>
 				</div>
 			</el-dialog>
 			<el-dialog
-			 :close-on-click-modal='false'
-			 :visible.sync="switchToggle.channelListDialog"
-			 center
+				:close-on-click-modal='false'
+				:visible.sync="switchToggle.channelListDialog"
+				center
 			>
 				<div slot="title">
 					<h2>Channel Select</h2>
@@ -76,16 +92,16 @@
 				<div class="loading-content">
 					<div style="height:400px; overflow:hidden; display:flex;">
 						<channel-list
-						ref="channellist"
-						:showRadio='true'
+							ref="channellist"
+							:showRadio='true'
 						></channel-list>
 					</div>
 					<div slot="footer">
 						<el-button @click="toCancelChange">Cancel</el-button>
 						<el-button
-						type="primary"
-						class="primary"
-						@click="toApplyChange"
+							type="primary"
+							class="primary"
+							@click="toApplyChange"
 						>Apply</el-button>
 					</div>
 				</div>
@@ -142,7 +158,7 @@ export default {
 			// },
 			// withDraw: true,
 			location: location,
-			transferObj:{},
+			transferObj: {},
 			setTimeoutObj: {
 				upload: null,
 				download: null,
@@ -153,12 +169,14 @@ export default {
 	methods: {
 		openAssetTransferDialog() {
 			this.switchToggle.assetTransferDialog = true;
-			if(!this.channelBind.Connected) {
+			if (!this.channelBind.Connected) {
 				setTimeout(() => {
 					this.$nextTick(() => {
-							this.$message({message: "Sorry, you cannot withdraw in offline status"});
+						this.$message({
+							message: "Sorry, you cannot withdraw in offline status"
+						});
 					});
-				}, 50)
+				}, 50);
 			}
 		},
 		hideAssetSettingDialog() {
@@ -231,30 +249,37 @@ export default {
 		uploadTransferList(newVal, oldVal) {
 			clearTimeout(this.setTimeoutObj.upload);
 			this.setTimeoutObj.upload = setTimeout(() => {
-				for(let value of newVal) {
-					this.transferObj[value.FileHash] = value;
+				for (let value of newVal) {
+					this.transferObj[value.Id] = value;
 				}
 			}, 50);
 		},
 		downloadTransferList(newVal, oldVal) {
-			clearTimeout(this.setTimeoutObj.download);			
+			clearTimeout(this.setTimeoutObj.download);
 			this.setTimeoutObj.download = setTimeout(() => {
-				for(let value of newVal) {
-					this.transferObj[value.FileHash] = value;
-				}				
+				for (let value of newVal) {
+					this.transferObj[value.Id] = value;
+				}
 			}, 50);
 		},
 		completeTransferList(newVal, oldVal) {
-			clearTimeout(this.setTimeoutObj.complete);			
+			clearTimeout(this.setTimeoutObj.complete);
 			this.setTimeoutObj.complete = setTimeout(() => {
-				for(let value of newVal) {
-					if(this.transferObj[value.FileHash].Status !== 3) {
+				for (let value of newVal) {
+					if (
+						this.transferObj[value.Id] &&
+						this.transferObj[value.Id].Status !== 3
+					) {
 						this.$message({
-							message: `${value.FileName} ${this.transferObj[value.FileHash].Type === 1 ? 'Upload Success' : 'Download Success'}`,
-							type: 'success'
-						})
+							message: `${value.FileName} ${
+								this.transferObj[value.Id].Type === 1
+									? "Upload Success"
+									: "Download Success"
+							}`,
+							type: "success"
+						});
 					}
-					this.transferObj[value.FileHash] = value;
+					this.transferObj[value.Id] = value;
 				}
 			}, 50);
 		}
@@ -341,13 +366,17 @@ $grey: #ccc;
 				width: 40px;
 				height: 40px;
 				border-radius: 50%;
-				background: linear-gradient(180deg,rgba(23,171,249,1) 0%,rgba(53,137,238,1) 100%);
+				background: linear-gradient(
+					180deg,
+					rgba(23, 171, 249, 1) 0%,
+					rgba(53, 137, 238, 1) 100%
+				);
 				cursor: pointer;
-				color: #FFFFFF;
+				color: #ffffff;
 				text-align: center;
 				line-height: 40px;
 				&:hover {
-					opacity: .7;
+					opacity: 0.7;
 				}
 				&:active {
 					opacity: 1;
@@ -357,20 +386,20 @@ $grey: #ccc;
 				font-weight: 400;
 				color: #202020;
 				width: 140px;
-				position:relative;
+				position: relative;
 				.channel-info-first {
-					color: #2F8FF0;
+					color: #2f8ff0;
 					text-overflow: ellipsis;
 					white-space: nowrap;
 					overflow: hidden;
 				}
 				&.channel-not-have {
 					.channel-info-first {
-						color: rgba(32, 32, 32, .7);
+						color: rgba(32, 32, 32, 0.7);
 					}
 				}
-				.channel-info-last{
-					opacity: .4;
+				.channel-info-last {
+					opacity: 0.4;
 					margin-top: 2px;
 				}
 			}
@@ -378,16 +407,16 @@ $grey: #ccc;
 				width: 200px;
 			}
 			.router {
-				color: rgba(32, 32, 32, .7);
+				color: rgba(32, 32, 32, 0.7);
 				font-size: 18px;
 				& > a {
 					position: relative;
 					padding-right: 48px;
 					&:hover {
-						opacity: .7;
+						opacity: 0.7;
 					}
 					&:active {
-						opacity: 1;						
+						opacity: 1;
 					}
 				}
 				flex: 1;

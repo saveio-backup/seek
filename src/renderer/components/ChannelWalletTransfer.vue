@@ -2,16 +2,16 @@
 	<div class="channel-wallet-transfer">
 		<div class="flex between pl30 pr30 mb20 mt20">
 			<div
-			 v-if="withDraw && channelSelected.Connected"
-			 class="flex1 text-left"
+				v-if="withDraw && channelSelected.Connected"
+				class="flex1 text-left"
 			>
 				<p class="theme-font-blue-40 transparent ft14 user-no-select">Channel</p>
 				<p class="theme-font-blue ft24 mt10">{{filterFloat(channelSelected.BalanceFormat || 0).toLocaleString('en-US')}}</p>
 				<!-- <p class="theme-font-blue transparent ft12 bold">{{channelSelected.Address}}</p> -->
 			</div>
 			<div
-			 v-else
-			 class="flex1 text-left"
+				v-else
+				class="flex1 text-left"
 			>
 				<p class="theme-font-blue-40 transparent ft14 user-no-select">Wallet</p>
 				<p class="theme-font-blue ft24 mt10">{{filterFloat(mainCount).toLocaleString('en-US')}}</p>
@@ -19,59 +19,59 @@
 			<div class="flex column between">
 				<i class="ofont ofont-fasong"></i>
 				<i
-				 class="ofont ofont-exchange ft20 user-no-select"
-				 :class="{'ex-change': channelSelected.Connected,'theme-font-blue-40 cursor-not-allowed':!channelSelected.Connected}"
-				:title="channelSelected.Connected?'switchover':'Sorry, you cannot withdraw in offline status'"
-				 @click="exWithDraw()"
+					class="ofont ofont-huazhuan ft20 user-no-select"
+					:class="{'ex-change': channelSelected.Connected,'theme-font-blue-40 cursor-not-allowed':!channelSelected.Connected}"
+					:title="channelSelected.Connected?'switchover':'Sorry, you cannot withdraw in offline status'"
+					@click="exWithDraw()"
 				></i></div>
 			<div
-			 v-if="!withDraw || !channelSelected.Connected"
-			 class="flex1 text-right"
+				v-if="!withDraw || !channelSelected.Connected"
+				class="flex1 text-right"
 			>
 				<p class="theme-font-blue-40 transparent ft14 user-no-select">Channel</p>
 				<p class="theme-font-blue ft24 mt10">{{filterFloat(channelSelected.BalanceFormat || 0).toLocaleString('en-US')}}</p>
 				<!-- <p class="theme-font-blue transparent ft12 bold">{{channelSelected.Address}}</p> -->
 			</div>
 			<div
-			 v-else
-			 class="flex1 text-right"
+				v-else
+				class="flex1 text-right"
 			>
 				<p class="theme-font-blue-40 transparent ft14 user-no-select">Wallet</p>
 				<p class="theme-font-blue ft24 mt10">{{filterFloat(mainCount).toLocaleString('en-US')}}</p>
 			</div>
 		</div>
 		<el-form
-		 ref="transferForm"
-		 class="transferForm"
-		 :model="transferInfo"
-		 :rules="transferRules"
+			ref="transferForm"
+			class="transferForm"
+			:model="transferInfo"
+			:rules="transferRules"
 		>
 			<el-form-item
-			 label="Amount(SAVE)"
-			 prop="Amount"
+				label="Amount(SAVE)"
+				prop="Amount"
 			>
 				<el-input
-				 class="transfer-input grey-theme"
-				 type="number"
-				 min='0'
-				 v-model="transferInfo.Amount"
-				 placeholder="Input Amount"
-				 @keyup.enter.native='toTransfer'
-				 @blur="setFixed"
+					class="transfer-input grey-theme"
+					type="number"
+					min='0'
+					v-model="transferInfo.Amount"
+					placeholder="Input Amount"
+					@keyup.enter.native='toTransfer'
+					@blur="setFixed"
 				>
 				</el-input>
 			</el-form-item>
 			<el-form-item
-			 label="Wallet Password"
-			 prop="Password"
+				label="Wallet Password"
+				prop="Password"
 			>
 				<el-input
-				 class="transfer-input grey-theme"
-				 v-model="transferInfo.Password"
-				 placeholder="Input Wallet Password"
-				 show-password
-				 @keyup.enter.native='toTransfer'
-				 type="password"
+					class="transfer-input grey-theme"
+					v-model="transferInfo.Password"
+					placeholder="Input Wallet Password"
+					show-password
+					@keyup.enter.native='toTransfer'
+					type="password"
 				></el-input>
 			</el-form-item>
 		</el-form>
@@ -87,14 +87,14 @@ export default {
 		}
 	},
 	data() {
-		const validateMount = (rule, value ,callback) => {
-			const reg = /^[1-9](\d{0,8})\.(\d{1,9})$|^0\.(\d{0,9})$|^[1-9](\d{0,8})$/
-			if(!reg.test(value)) {
-				callback(new Error('Please enter the correct format'));
+		const validateMount = (rule, value, callback) => {
+			const reg = /^[1-9](\d{0,8})\.(\d{1,9})$|^0\.(\d{0,9})$|^[1-9](\d{0,8})$/;
+			if (!reg.test(value)) {
+				callback(new Error("Please enter the correct format"));
 				return;
 			}
 			callback();
-		}
+		};
 		return {
 			switchToggle: { loading: null },
 			filterFloat,
@@ -111,8 +111,8 @@ export default {
 						trigger: "blur"
 					},
 					{
-						validator: validateMount, 
-						trigger: 'blur'
+						validator: validateMount,
+						trigger: "blur"
 					}
 				],
 				Password: [
@@ -127,8 +127,10 @@ export default {
 	},
 	methods: {
 		exWithDraw() {
-			if(!this.channelSelected.Connected) {
-				this.$message({message: "Sorry, you cannot withdraw in offline status"});
+			if (!this.channelSelected.Connected) {
+				this.$message({
+					message: "Sorry, you cannot withdraw in offline status"
+				});
 				return;
 			}
 			this.withDraw = !this.withDraw;
@@ -138,7 +140,7 @@ export default {
 				? parseFloat(this.transferInfo.Amount).toFixed(9)
 				: "";
 		},
-		toTransfer() {			
+		toTransfer() {
 			if (this.switchToggle.loading) return;
 			if (!this.channelSelected) {
 				this.emitMessage("Please Choose Channel Address", "error");
@@ -209,18 +211,18 @@ $theme-font-blue: #202020;
 	.ofont-fasong {
 		color: #cdcfd8;
 	}
-	.ofont-exchange{
+	.ofont-huazhuan {
 		width: 30px;
 		height: 30px;
-		background: #F1F3F7;
+		background: #f1f3f7;
 		text-align: center;
-		line-height: 30px;
+		line-height: 31px;
 		border-radius: 50%;
 		&.ex-change {
-			color: #2F8FF0;
+			color: #2f8ff0;
 			cursor: pointer;
 			&:hover {
-				opacity: .7;
+				opacity: 0.7;
 			}
 			&:active {
 				opacity: 1;
@@ -230,14 +232,14 @@ $theme-font-blue: #202020;
 	.transfer-input {
 		&.el-input {
 			// .el-input__inner {
-				// background: #ebecef;
-				// height: 35px;
-				// line-height: 35px;
-				// border-radius: 2px;
-				// border: none;
-				// &:focus {
-				// 	border: none;
-				// }
+			// background: #ebecef;
+			// height: 35px;
+			// line-height: 35px;
+			// border-radius: 2px;
+			// border: none;
+			// &:focus {
+			// 	border: none;
+			// }
 			// }
 			.el-input-group__append {
 				background: none;

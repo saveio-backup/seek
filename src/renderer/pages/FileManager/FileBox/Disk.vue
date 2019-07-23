@@ -193,7 +193,7 @@
         <h2>Share</h2>
         <div class="dialog-title-border"></div>
       </div>
-      <div class="">
+      <div class="loading-content">
         <p class="mt10 mb10 tl">File name: {{executedFile.Name}}</p>
         <el-form>
           <el-form-item label="Link:">

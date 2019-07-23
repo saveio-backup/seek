@@ -1,32 +1,35 @@
 <template>
 	<div id="channels-vue">
 		<div
-		 class="channels"
-		 v-if="channels"
+			class="channels"
+			v-if="channels"
 		>
 			<el-table
-			border
-			 :data="channels"
-			 ref="singleTable"
-			 empty-text='No Data'
-			 height='100%'
-			 :highlight-current-row='showRadio'
-			 @current-change="handleCurrentChange"
+				border
+				:data="channels"
+				ref="singleTable"
+				empty-text='No Data'
+				height='100%'
+				:highlight-current-row='showRadio'
+				@current-change="handleCurrentChange"
 			>
 				<el-table-column
-				 label='Channel'
-				 :min-with="120"
+					label='Channel'
+					:min-with="120"
 				>
 					<template slot-scope="scope">
 						<div class="bold">{{scope.row.ChannelId}}</div>
 					</template>
 				</el-table-column>
 				<el-table-column
-				 label='Status'
-				 :min-with="120"
+					label='Status'
+					:min-with="120"
 				>
 					<template slot-scope="scope">
-						<div :title="scope.row.Connected ? 'online' : 'offline'" :class="{'theme-font-blue-40':!scope.row.Connected}">{{scope.row.Connected ? 'online' : 'offline'}}</div>
+						<div
+							:title="scope.row.Connected ? 'online' : 'offline'"
+							:class="{'theme-font-blue-40':!scope.row.Connected}"
+						>{{scope.row.Connected ? 'online' : 'offline'}}</div>
 					</template>
 				</el-table-column>
 				<el-table-column label='Balance(SAVE)'>
@@ -36,18 +39,14 @@
 						</div>
 					</template>
 				</el-table-column>
-				<el-table-column
-				 label='Address'
-				>
-				<template slot-scope="scope">
-					<div class="grey-xs ft14">
-						{{scope.row.Address}}
-					</div>
-				</template>
+				<el-table-column label='Address'>
+					<template slot-scope="scope">
+						<div class="grey-xs ft14">
+							{{scope.row.Address}}
+						</div>
+					</template>
 				</el-table-column>
-				<el-table-column
-				 label='DNS'
-				>
+				<el-table-column label='DNS'>
 					<template slot-scope="scope">
 						<div class="grey-xs ft14">
 							{{scope.row.HostAddr}}
@@ -55,8 +54,8 @@
 					</template>
 				</el-table-column>
 				<el-table-column
-				 width="80"
-				 v-if="showRadio"
+					width="80"
+					v-if="showRadio"
 				>
 					<span class="channel-radio"></span>
 				</el-table-column>
@@ -70,19 +69,19 @@
 					</template>
 				</el-table-column> -->
 				<el-table-column
-				width="160"
-				 v-if="showTransfer"
+					width="160"
+					v-if="showTransfer"
 				>
 					<template slot-scope="scope">
-							<!-- :class="{'theme-font-blue-40':!scope.row.Connected,'light-blue cursor-pointer cursor-click':scope.row.Connected}" -->
+						<!-- :class="{'theme-font-blue-40':!scope.row.Connected,'light-blue cursor-pointer cursor-click':scope.row.Connected}" -->
 						<span
 							v-show="scope.row.Participant1State !== 0"
 							class="light-blue cursor-pointer cursor-click user-no-select"
 							@click="openTransfer(scope.row)"
 							:title="scope.row.Connected?'transfer':'The channel is offline and no transfer is allowed'"
 						>
-						<!-- Transfer -->
-						<i class="ofont ofont-huazhuan"></i>
+							<!-- Transfer -->
+							<i class="ofont ofont-huazhuan"></i>
 						</span>
 						<span
 							v-show="scope.row.Participant1State !== 0"
@@ -90,20 +89,23 @@
 							@click="openClose(scope.row)"
 							title="close channel"
 						>
-						<i class="ofont ofont-close"></i>
-						<!-- Close -->
+							<i class="ofont ofont-guanbi ft14"></i>
+							<!-- Close -->
 						</span>
-						<span class="closingWrapper" v-show="scope.row.Participant1State === 0">settle...</span>
+						<span
+							class="closingWrapper"
+							v-show="scope.row.Participant1State === 0"
+						>settle...</span>
 					</template>
 				</el-table-column>
 			</el-table>
 		</div>
 		<el-dialog
-		 class="asset-transfer-dialog"
-		 width='550px'
-		 :close-on-click-modal='false'
-		 :visible.sync="switchToggle.assetTransferDialog"
-		 center
+			class="asset-transfer-dialog"
+			width='550px'
+			:close-on-click-modal='false'
+			:visible.sync="switchToggle.assetTransferDialog"
+			center
 		>
 			<div slot="title">
 				<h2>Transfer</h2>
@@ -111,9 +113,9 @@
 			</div>
 			<div class="loading-content loading-channel">
 				<channel-wallet-transfer
-				 @closeDialog='switchToggle.assetTransferDialog = false'
-				 ref="channelwallettransfer"
-				 :channelSelected='channelSelected'
+					@closeDialog='switchToggle.assetTransferDialog = false'
+					ref="channelwallettransfer"
+					:channelSelected='channelSelected'
 				></channel-wallet-transfer>
 				<div slot="footer">
 					<el-button
@@ -125,11 +127,11 @@
 			</div>
 		</el-dialog>
 		<el-dialog
-		 class="channel-opeation-dialog"
-		 width='600px'
-		 :close-on-click-modal='false'
-		 :visible.sync="channelToggle.channelCloseDialog"
-		 center
+			class="channel-opeation-dialog"
+			width='600px'
+			:close-on-click-modal='false'
+			:visible.sync="channelToggle.channelCloseDialog"
+			center
 		>
 			<div slot="title">
 				<h2>{{channelToggle.type === 'del' ? 'Close' : 'Open'}} Channel</h2>
@@ -137,65 +139,72 @@
 			</div>
 			<div class="loading-content loading-content-2">
 				<el-form
-				ref="channelForm"
-				:model="channelForm"
-				:rules="dialogRules"
+					ref="channelForm"
+					:model="channelForm"
+					:rules="dialogRules"
 				>
 					<el-form-item
-					 class="theme-font-blue-bold"
-					 label="DNS Wallet Address"
-					 prop="partner"
+						class="theme-font-blue-bold"
+						label="DNS Wallet Address"
+						prop="partner"
 						v-show="channelToggle.type==='add'"
 					>
-						<el-select class="grey-theme" v-model="channelForm.partner" placeholder="Please Select">
+						<el-select
+							class="grey-theme"
+							v-model="channelForm.partner"
+							placeholder="Please Select"
+						>
 							<el-option
 								v-for="item in dns"
 								:key="item.WalletAddr"
 								:label="`${item.WalletAddr}(${item.HostAddr})`"
 								:value="item.WalletAddr"
-								:disabled="dnsIsSelect(item.WalletAddr)">
+								:disabled="dnsIsSelect(item.WalletAddr)"
+							>
 							</el-option>
 						</el-select>
 					</el-form-item>
 					<el-form-item
-					 class="theme-font-blue-bold form-amount"
-					 label="Amount(SAVE)"
-					 prop="amount"
-					 v-if="channelToggle.type==='add'"
+						class="theme-font-blue-bold form-amount"
+						label="Amount(SAVE)"
+						prop="amount"
+						v-if="channelToggle.type==='add'"
 					>
 						<p class="form-item-title">Recommended no less than 100 SAVE</p>
 						<el-input
-						v-model="channelForm.amount"
-						placeholder="Please Input Top Up Amount"
-						@blur="setFixed"
-						min="0"
-						@keyup.enter.native="toPeationChannel"
-						class="channel-opeation-input grey-theme"
-						type="number">
+							v-model="channelForm.amount"
+							placeholder="Please Input Top Up Amount"
+							@blur="setFixed"
+							min="0"
+							@keyup.enter.native="toPeationChannel"
+							class="channel-opeation-input grey-theme"
+							type="number"
+						>
 						</el-input>
 						<p style="font-weight: 500;"></p>
 					</el-form-item>
 					<el-form-item
-					 class="theme-font-blue-bold"
-					 label="Wallet Password"
-					 prop="password"
+						class="theme-font-blue-bold"
+						label="Wallet Password"
+						prop="password"
 					>
 						<el-input
-						v-model="channelForm.password"
-						placeholder="Please Input Wallet Password"
-						@keyup.enter.native="toPeationChannel"
-						class="channel-opeation-input grey-theme"
-						show-password
-						type="password">
+							v-model="channelForm.password"
+							placeholder="Please Input Wallet Password"
+							@keyup.enter.native="toPeationChannel"
+							class="channel-opeation-input grey-theme"
+							show-password
+							type="password"
+						>
 						</el-input>
 					</el-form-item>
 				</el-form>
 				<div slot="footer">
 					<el-button @click="channelToggle.channelCloseDialog = false">Cancel</el-button>
 					<el-button
-					 type="primary"
-					 class="primary"
-					 @click="toPeationChannel"
+						type="primary"
+						class="primary"
+						@click="toPeationChannel"
 					>Confirm</el-button>
 				</div>
 			</div>
@@ -220,14 +229,14 @@ export default {
 		}
 	},
 	data() {
-		const validateMount = (rule, value ,callback) => {
-			const reg = /^[1-9](\d{0,8})\.(\d{1,9})$|^0\.(\d{0,8})[1-9]$|^[1-9](\d{0,8})$/
-			if(!reg.test(value)) {
-				callback(new Error('Please enter the correct format'));
+		const validateMount = (rule, value, callback) => {
+			const reg = /^[1-9](\d{0,8})\.(\d{1,9})$|^0\.(\d{0,8})[1-9]$|^[1-9](\d{0,8})$/;
+			if (!reg.test(value)) {
+				callback(new Error("Please enter the correct format"));
 				return;
 			}
 			callback();
-		}
+		};
 		return {
 			switchToggle: {
 				assetTransferDialog: false
@@ -235,12 +244,12 @@ export default {
 			channelToggle: {
 				channelDialog: false,
 				loading: null,
-				type: 'del' // add or del
+				type: "del" // add or del
 			},
 			channelForm: {
-				password: '',
-				partner: '',
-				amount: ''
+				password: "",
+				partner: "",
+				amount: ""
 			},
 			dialogRules: {
 				amount: [
@@ -250,8 +259,8 @@ export default {
 						trigger: "blur"
 					},
 					{
-						validator: validateMount, 
-						trigger: 'blur'
+						validator: validateMount,
+						trigger: "blur"
 					}
 				],
 				password: [
@@ -418,17 +427,18 @@ export default {
 	},
 	methods: {
 		getDns() {
-			this.$axios.get(this.$api.getAllDns).then(res => {
-				if(res.data.Error === 0) {
-					this.dns = res.data.Result;
-				} else {
-					this.$message.error(res.data.Desc || "Get all dns failed");
-				}
-			}).catch(e => {
-				this.$message.error(
-					"Get all dns failed"
-				);
-			})
+			this.$axios
+				.get(this.$api.getAllDns)
+				.then(res => {
+					if (res.data.Error === 0) {
+						this.dns = res.data.Result;
+					} else {
+						this.$message.error(res.data.Desc || "Get all dns failed");
+					}
+				})
+				.catch(e => {
+					this.$message.error("Get all dns failed");
+				});
 		},
 		setFixed() {
 			this.channelForm.amount = this.channelForm.amount
@@ -483,99 +493,101 @@ export default {
 		toConfirm() {
 			this.$refs["channelwallettransfer"].toTransfer();
 		},
-		openOpen(dnsAdress='',num=0) {
+		openOpen(dnsAdress = "", num = 0) {
 			this.getDns();
 			this.channelToggle = {
-				type: 'add',
+				type: "add",
 				channelCloseDialog: true,
 				loading: null
-			}
+			};
 			this.$nextTick(() => {
-				this.$refs['channelForm'].resetFields();
+				this.$refs["channelForm"].resetFields();
 				this.channelForm.partner = dnsAdress;
 				this.channelForm.amount = num;
-			})
+			});
 		},
 		openClose(channelSelected) {
 			this.channelToggle = {
-				type: 'del',
+				type: "del",
 				channelCloseDialog: true,
 				loading: null
-			}
+			};
 			this.$nextTick(() => {
-				this.$refs['channelForm'].resetFields();
+				this.$refs["channelForm"].resetFields();
 				this.channelForm.partner = channelSelected.Address;
-			})
+			});
 		},
 		toPeationChannel() {
-			this.$refs['channelForm'].validate(valid => {
-				if(!valid) return;
+			this.$refs["channelForm"].validate(valid => {
+				if (!valid) return;
 				this.channelToggle.loading = this.$loading({
 					lock: true,
 					text: "Processing...",
 					target: ".loading-content-2"
 				});
-				
-				if(this.channelToggle.type === 'add') {
+
+				if (this.channelToggle.type === "add") {
 					let params = {
 						Password: this.channelForm.password,
 						Partner: this.channelForm.partner,
-						Amount: (this.channelForm.amount + '')
-					}	
-					this.toChannelOpen(params)
+						Amount: this.channelForm.amount + ""
+					};
+					this.toChannelOpen(params);
 				} else {
 					let params = {
 						Password: this.channelForm.password,
 						Partner: this.channelForm.partner
-					}	
-					this.toChannelClose(params)
+					};
+					this.toChannelClose(params);
 				}
-			})
+			});
 		},
 		toChannelOpen(params) {
-			this.$axios.post(this.$api.channelOPen, params).then(res => {
-				if(res.data.Error === 0) {
-					this.$message({
-						message: "Open channel successed",
-						type: "success"
-					});
-					this.channelToggle.channelCloseDialog = false;
-				} else {
-					this.$message.error(res.data.Desc || "Open channel failed");
-				}
-				this.$store.dispatch('setChannelBalanceTotal');
-				this.channelToggle.loading.close();
-				this.channelToggle.loading = null;
-			}).catch(() => {
-				this.channelToggle.loading.close();
-				this.channelToggle.loading = null;
-				this.$message.error(
-					"Open channel failed."
-				);
-			});
+			this.$axios
+				.post(this.$api.channelOPen, params)
+				.then(res => {
+					if (res.data.Error === 0) {
+						this.$message({
+							message: "Open channel successed",
+							type: "success"
+						});
+						this.channelToggle.channelCloseDialog = false;
+					} else {
+						this.$message.error(res.data.Desc || "Open channel failed");
+					}
+					this.$store.dispatch("setChannelBalanceTotal");
+					this.channelToggle.loading.close();
+					this.channelToggle.loading = null;
+				})
+				.catch(() => {
+					this.channelToggle.loading.close();
+					this.channelToggle.loading = null;
+					this.$message.error("Open channel failed.");
+				});
 		},
 		toChannelClose(params) {
-			this.$axios.post(this.$api.channelClose, params).then(res => {
-				if(res.data.Error === 0) {
-					this.channelToggle.channelDialog = false;
-					this.$message({
-						message: "Close channel successed",
-						type: "success"
-					});
-					this.channelToggle.channelCloseDialog = false;
-				} else {
-					this.$message.error(res.data.Desc || "Close channel Failed");
-				}
-				this.$store.dispatch('setChannelBalanceTotal');
-				this.channelToggle.loading.close();
-				this.channelToggle.loading = null;
-			}).catch(() => {
-				this.channelToggle.loading.close();
-				this.channelToggle.loading = null;
-				this.$message.error(
-					"Close channel failed."
-				);
-			});
+			this.$axios
+				.post(this.$api.channelClose, params)
+				.then(res => {
+					if (res.data.Error === 0) {
+						this.channelToggle.channelDialog = false;
+						this.$message({
+							message: "Close channel successed",
+							type: "success"
+						});
+						this.channelToggle.channelCloseDialog = false;
+					} else {
+						this.$message.error(res.data.Desc || "Close channel Failed");
+					}
+					this.$store.dispatch("setChannelBalanceTotal");
+					this.channelToggle.loading.close();
+					this.channelToggle.loading = null;
+				})
+				.catch(() => {
+					this.channelToggle.loading.close();
+					this.channelToggle.loading = null;
+					this.$message.error("Close channel failed.");
+				});
 		}
 	},
 	computed: {
@@ -585,13 +597,13 @@ export default {
 		dnsIsSelect: function() {
 			const vm = this;
 			return function(item) {
-				for(let channel of vm.channels) {
-					if(channel.Address === item) {
+				for (let channel of vm.channels) {
+					if (channel.Address === item) {
 						return true;
 					}
 				}
 				return false;
-			}
+			};
 		}
 	}
 };
@@ -602,9 +614,9 @@ $theme-color: #202020;
 	flex: 1;
 	overflow: hidden;
 	border-radius: 6px;
-	box-shadow:0px 2px 20px 0px rgba(196, 196, 196, 0.24);	
+	box-shadow: 0px 2px 20px 0px rgba(196, 196, 196, 0.24);
 	.el-select {
-		width:100%;
+		width: 100%;
 	}
 }
 .channel-opeation-dialog {
@@ -617,10 +629,9 @@ $theme-color: #202020;
 			text-align: right;
 			font-size: 14px;
 			font-weight: 500;
-			color:rgba(32,32,32,.7);
+			color: rgba(32, 32, 32, 0.7);
 		}
-	}	
-
+	}
 }
 .channels {
 	height: 100%;
@@ -636,7 +647,7 @@ $theme-color: #202020;
 		td {
 			background: rgba(255, 2555, 255, 1);
 		}
-		
+
 		thead th {
 			color: $theme-color;
 			// font-weight: bold;
@@ -672,13 +683,13 @@ $theme-color: #202020;
 }
 .closingWrapper {
 	width: 40px;
-	color: #49C269;
+	color: #49c269;
 	overflow: hidden;
 	white-space: nowrap;
 	display: block;
 	animation: closingAnmiation 1.5s linear infinite;
 }
-@keyframes  closingAnmiation {
+@keyframes closingAnmiation {
 	0% {
 		width: 40px;
 	}

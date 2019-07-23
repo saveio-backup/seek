@@ -3,37 +3,37 @@
 		<div class="aside">
 			<div class="aside-link">
 				<router-link
-				 class="allfile"
-				 :class="{'theme-font-blue-bold link-hover': fileType == 0}"
-				 :to="{name:'disk', query:{type:0}}"
-				><span><i class="el-icon-arrow-down"></i><span class="ofont ofont-weibiaoti--"></span> File</span></router-link>
+					class="allfile"
+					:class="{'theme-font-blue-bold link-hover': fileType == 0}"
+					:to="{name:'disk', query:{type:0}}"
+				><span><i class="el-icon-arrow-down"></i><span class="ofont ofont-resource"></span> File</span></router-link>
 				<router-link
-				 :class="{'theme-font-blue-bold link-hover': fileType == 1}"
-				 :to="{name:'disk', query:{type:1}}"
+					:class="{'theme-font-blue-bold link-hover': fileType == 1}"
+					:to="{name:'disk', query:{type:1}}"
 				>Image</router-link>
 				<router-link
-				 :class="{'theme-font-blue-bold link-hover': fileType == 2}"
-				 :to="{name:'disk', query:{type:2}}"
+					:class="{'theme-font-blue-bold link-hover': fileType == 2}"
+					:to="{name:'disk', query:{type:2}}"
 				>Document</router-link>
 				<router-link
-				 :class="{'theme-font-blue-bold link-hover': fileType == 3}"
-				 :to="{name:'disk', query:{type:3}}"
+					:class="{'theme-font-blue-bold link-hover': fileType == 3}"
+					:to="{name:'disk', query:{type:3}}"
 				>Video</router-link>
 				<router-link
-				 :class="{'theme-font-blue-bold link-hover': fileType == 4}"
-				 :to="{name:'disk', query:{type:4}}"
+					:class="{'theme-font-blue-bold link-hover': fileType == 4}"
+					:to="{name:'disk', query:{type:4}}"
 				>Music</router-link>
 			</div>
 			<div
-			 class="aside-progress"
-			 v-if="space"
+				class="aside-progress"
+				v-if="space"
 			>
-				<p class="tl aside-progress-num user-no-select"><i class="ofont ofont-chucun"></i>{{util.bytesToSize(space.Used *1024)}} / {{util.bytesToSize((space.Remain + space.Used)*1024)}} </p>
+				<p class="tl aside-progress-num user-no-select"><i class="ofont ofont-yingpan"></i>{{util.bytesToSize(space.Used *1024)}} / {{util.bytesToSize((space.Remain + space.Used)*1024)}} </p>
 				<el-progress :percentage="takeSpace"></el-progress>
 				<p>
 					<router-link
-					 class="active-blue ft12 link"
-					 :to="{name:'expand'}"
+						class="active-blue ft12 link"
+						:to="{name:'expand'}"
 					>Upgrade Storage</router-link>
 				</p>
 			</div>

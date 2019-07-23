@@ -14,7 +14,7 @@
 							<div class="user-name-first-wrapper">
 								<i
 									v-if="!user.name"
-									class="ofont ofont-user user user-first"
+									class="ofont ofont-yonghu user user-first"
 								></i>
 								<i
 									v-else
@@ -39,11 +39,11 @@
 									<el-button
 										class="seek-btn"
 										@click="exportPrivateKey"
-									><i class="user-name-btn-icon ofont ofont-20daochu"></i> <span class="user-name-btn-content">Private Key(WIF)</span></el-button>
+									><i class="user-name-btn-icon ofont ofont-daochu"></i> <span class="user-name-btn-content">Private Key(WIF)</span></el-button>
 									<el-button
 										class="seek-btn"
 										@click="$exportWallet"
-									><i class="user-name-btn-icon ofont ofont-20daochu"></i> <span class="user-name-btn-content">Keystore File</span></el-button>
+									><i class="user-name-btn-icon ofont ofont-daochu"></i> <span class="user-name-btn-content">Keystore File</span></el-button>
 								</div>
 							</div>
 						</div>
@@ -352,7 +352,7 @@ export default {
 							series: {
 								data: balanceData
 							}
-						})
+						});
 						// this.drawBalanceView(balanceXAxisData, balanceData);
 					}
 				});
@@ -465,7 +465,7 @@ export default {
 		initDrawBalanceView() {
 			const DAY_NUM = 7;
 			let balanceXAxisData = [];
-			let balanceData = [0,0,0,0,0,0,0];
+			let balanceData = [0, 0, 0, 0, 0, 0, 0];
 			let todayZeroTimestamp = this.getZeroTimestamp();
 			let i = 0;
 			while (i < DAY_NUM) {
@@ -482,7 +482,7 @@ export default {
 				balanceXAxisData.unshift(`${monthItem}/${dayItem}`);
 				i++;
 			}
-			this.drawBalanceView(balanceXAxisData, balanceData)
+			this.drawBalanceView(balanceXAxisData, balanceData);
 		},
 		// init balance chart
 		drawBalanceView(balanceXAxisData, balanceData) {
@@ -852,7 +852,7 @@ $input-color: rgba(203, 203, 203, 1);
 					align-items: center;
 					justify-content: space-around;
 					background: #fff;
-					.ofont-user {
+					.ofont-yonghu {
 						width: 80px;
 						display: flex;
 						justify-content: center;
@@ -862,7 +862,7 @@ $input-color: rgba(203, 203, 203, 1);
 						flex: initial;
 					}
 				}
-				.ofont-user {
+				.ofont-yonghu {
 					font-size: 45px;
 				}
 				.user-name {
@@ -894,7 +894,7 @@ $input-color: rgba(203, 203, 203, 1);
 						font-weight: bold;
 					}
 
-					.ofont-user {
+					.ofont-yonghu {
 						margin: 0 8px;
 					}
 

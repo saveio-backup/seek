@@ -1,7 +1,7 @@
 <template>
 	<div
-	 id="wallet"
-	 class=""
+		id="wallet"
+		class=""
 	>
 		<div class="content">
 			<div class="wallet-aside">
@@ -9,46 +9,46 @@
 					<p class="person-info-name ft24">{{user.name || ''}}</p>
 					<p class="person-info-address ft14">
 						<span
-						 class="address"
-						 :title="user.address || ''"
+							class="address"
+							:title="user.address || ''"
 						>
 							{{user.address || ''}}
 						</span>
 						<i
-						 class="ofont ofont-fuzhi"
-						 @click="clipSaveAddress"
+							class="ofont ofont-fuzhi"
+							@click="clipSaveAddress"
 						></i>
 					</p>
 				</div>
 				<div class="balance-content-wrapper">
 					<div class="wallet-select user-no-select">
 						<el-select
-						 v-model='balanceSelected'
-						 @change="changeSelectedAsset"
+							v-model='balanceSelected'
+							@change="changeSelectedAsset"
 						>
 							<div
-							 slot="prefix"
-							 class="prefix-icon"
+								slot="prefix"
+								class="prefix-icon"
 							>
 								<img
-								 v-if="balanceLists.length>0"
-								 class="asset-icon"
-								 :src="'static/images/logo/'+balanceLists[balanceSelected].Symbol+'.png'"
-								 alt=""
+									v-if="balanceLists.length>0"
+									class="asset-icon"
+									:src="'static/images/logo/'+balanceLists[balanceSelected].Symbol+'.png'"
+									alt=""
 								>
 							</div>
 							<el-option
-							 v-for="(item,index) in balanceLists"
-							 :key='index'
-							 :label='item.Symbol'
-							 :value='index'
-							 class="asset-item"
-							 :disabled="item.Symbol !== 'SAVE'"
+								v-for="(item,index) in balanceLists"
+								:key='index'
+								:label='item.Symbol'
+								:value='index'
+								class="asset-item"
+								:disabled="item.Symbol !== 'SAVE'"
 							>
 								<img
-								 class="asset-icon mr10"
-								 :src="'static/images/logo/'+ item.Symbol+ '.png'"
-								 :alt="item.Symbol"
+									class="asset-icon mr10"
+									:src="'static/images/logo/'+ item.Symbol+ '.png'"
+									:alt="item.Symbol"
 								> <span class="">{{item.Symbol}}</span>
 							</el-option>
 						</el-select>
@@ -58,8 +58,8 @@
 						<div class="total"> <span class="symbol"></span> <span v-if="balanceLists && balanceLists.length>0">{{parseFloat(balanceLists[balanceSelected].BalanceFormat).toFixed(3)}}</span></div>
 					</div>
 					<div
-					 class="balance-content"
-					 v-if="balanceLists && balanceLists.length>0"
+						class="balance-content"
+						v-if="balanceLists && balanceLists.length>0"
 					>
 						<!-- <ul class="child-ul">
 							<li class="child-list selected">
@@ -71,13 +71,16 @@
 								<div class="balance theme-bold">{{parseFloat(balanceLists[balanceSelected].BalanceFormat).toFixed(3)}}</div>
 							</li>
 						</ul> -->
-						<div class="asset-display-li asset-display" :class="{'asset-display-li-select': childrenChain === 0}">
+						<div
+							class="asset-display-li asset-display"
+							:class="{'asset-display-li-select': childrenChain === 0}"
+						>
 							<div class="asset-display-logo">
 								<img
-								 v-if="balanceLists.length>0"
-								 class="asset-icon"
-								 :src="'static/images/logo/'+balanceLists[balanceSelected].Symbol+'.png'"
-								 alt=""
+									v-if="balanceLists.length>0"
+									class="asset-icon"
+									:src="'static/images/logo/'+balanceLists[balanceSelected].Symbol+'.png'"
+									alt=""
 								>
 								<span class="asset-display-logo-name">{{balanceLists[balanceSelected].Symbol}}</span>
 							</div>
@@ -87,37 +90,37 @@
 							</div>
 						</div>
 						<div
-						 @click="switchToggle.assetDialog = true"
-						 class="asset-display-li set-asset-display"
+							@click="switchToggle.assetDialog = true"
+							class="asset-display-li set-asset-display"
 						><i class="el-icon-plus"></i></div>
 					</div>
 					<div class="wallet-deal">
 						<el-button
-						 class="primary"
-						 @click="getQRCode"
-						><i class="ofont ofont-transfer_in"></i> <span>Receive</span></el-button>
-						<el-button @click="switchToggle.sendDialog = true"><i class="ofont ofont-transfer_out"></i> <span>Send</span></el-button>
-						<!-- <div @click="getQRCode"><i class="ofont ofont-transfer_in"></i> <span class="theme-bold">Receive</span></div> -->
-						<!-- <div @click="switchToggle.sendDialog =true"><i class="ofont ofont-transfer_out"></i> <span class="theme-bold">Send</span></div> -->
+							class="primary"
+							@click="getQRCode"
+						><i class="ofont ofont-jieshou"></i> <span>Receive</span></el-button>
+						<el-button @click="switchToggle.sendDialog = true"><i class="ofont ofont-send"></i> <span>Send</span></el-button>
+						<!-- <div @click="getQRCode"><i class="ofont ofont-jieshou"></i> <span class="theme-bold">Receive</span></div> -->
+						<!-- <div @click="switchToggle.sendDialog =true"><i class="ofont ofont-send"></i> <span class="theme-bold">Send</span></div> -->
 					</div>
 				</div>
 			</div>
 			<div class="wallet-layout-main">
 				<div class="tx-select">
 					<p
-					 @click="txType = 'txRecords';txDetailIndex =-1"
-					 class="select-button"
-					 :class="{'current-select':txType === 'txRecords'}"
+						@click="txType = 'txRecords';txDetailIndex =-1"
+						class="select-button"
+						:class="{'current-select':txType === 'txRecords'}"
 					>All Transfer</p>
 					<p
-					 class="select-button"
-					 @click="txType = 'transferIn';txDetailIndex =-1"
-					 :class="{'current-select':txType === 'transferIn'}"
+						class="select-button"
+						@click="txType = 'transferIn';txDetailIndex =-1"
+						:class="{'current-select':txType === 'transferIn'}"
 					> Receive</p>
 					<p
-					 class="select-button"
-					 @click="txType = 'transferOut';txDetailIndex =-1"
-					 :class="{'current-select':txType === 'transferOut'}"
+						class="select-button"
+						@click="txType = 'transferOut';txDetailIndex =-1"
+						:class="{'current-select':txType === 'transferOut'}"
 					>Send</p>
 				</div>
 				<ul class="tx-ul">
@@ -125,43 +128,58 @@
 					<!-- v-for="(item,index) in this[txType]" -->
 					<!-- v-for="(item,index) in mockTxRecords" -->
 					<li
-					 class="tx-li"
-					 v-for="(item,index) in this[txType]"
-					 :key="index"
+						class="tx-li"
+						v-for="(item,index) in this[txType]"
+						:key="index"
 					>
 						<div
-						 @click="txDetailIndex === index?txDetailIndex = -1: txDetailIndex = index "
-						 class="tx-li-item"
-						 v-if="balanceLists.length>0"
+							@click="txDetailIndex === index?txDetailIndex = -1: txDetailIndex = index "
+							class="tx-li-item"
+							v-if="balanceLists.length>0"
 						>
 							<div class="item-addr">
 								<i
-								 class="ofont"
-								 :class="item.Type ==1 ? 'ofont-transfer_out':'ofont-transfer_in'"
+									class="ofont"
+									:class="item.Type ==1 ? 'ofont-send':'ofont-jieshou'"
 								></i>
 								<div class="addr-info">
-									<p class='from-or-to' :title="item.Type ==1?item.To:item.From">{{item.Type ==1 ? item.To.replace(item.To.slice(5,-5),'...'): item.From.replace(item.From.slice(5,-5),'...')}}</p>
+									<p
+										class='from-or-to'
+										:title="item.Type ==1?item.To:item.From"
+									>{{item.Type ==1 ? item.To.replace(item.To.slice(5,-5),'...'): item.From.replace(item.From.slice(5,-5),'...')}}</p>
 									<p class="tx-date grey-xs">{{date.formatTimeByTimestamp(item.Timestamp * 1000)}}</p>
 								</div>
 							</div>
 							<div class="item-amount">{{item.Type ==1 ? '-':'+'}} {{parseFloat(parseFloat(item.AmountFormat).toFixed(9))}} {{item.Asset.toUpperCase()}}</div>
 							<div
-							 class="item-more"
-							 v-if="item.BlockHeight>0"
+								class="item-more"
+								v-if="item.BlockHeight>0"
 							>
 								<i class="el-icon-success"></i>
 								<i class="el-icon-more"></i>
 							</div>
 						</div>
 						<div
-						 class="tx-li-item-detail"
-						 v-show="index === txDetailIndex"
+							class="tx-li-item-detail"
+							v-show="index === txDetailIndex"
 						>
-							<div class="txid grey-xs user-no-select">ID: {{item.Txid || ''}} <i class="ofont ofont-fuzhi tx-copy" @click="clipText(item.Txid || '')" title="click to copy"></i></div>
+							<div class="txid grey-xs user-no-select">ID: {{item.Txid || ''}} <i
+									class="ofont ofont-fuzhi tx-copy"
+									@click="clipText(item.Txid || '')"
+									title="click to copy"
+								></i></div>
 							<div class="towards theme-bold">
-								<p class='from user-no-select'>{{item.From}} <i class="ofont ofont-fuzhi tx-copy" title="click to copy" @click="clipText(item.From)"></i></p>
-								<i class="ofont ofont-transfer_right arrow"></i>
-								<p class="to user-no-select">{{item.To}} <i class="ofont ofont-fuzhi tx-copy" title="click to copy"  @click="clipText(item.To)"></i></p>
+								<p class='from user-no-select'>{{item.From}} <i
+										class="ofont ofont-fuzhi tx-copy"
+										title="click to copy"
+										@click="clipText(item.From)"
+									></i></p>
+								<i class="ofont ofont-fasong arrow"></i>
+								<p class="to user-no-select">{{item.To}} <i
+										class="ofont ofont-fuzhi tx-copy"
+										title="click to copy"
+										@click="clipText(item.To)"
+									></i></p>
 							</div>
 							<div class="flex between bottom-info">
 								<div class="minerfee"><span class="theme-font-color user-no-select">Miner fee</span> <span class="theme-font-blue bold">{{item.FeeFormat}}</span> {{balanceLists[balanceSelected].Symbol}}</div>
@@ -174,18 +192,18 @@
 			</div>
 		</div>
 		<div
-		 v-if="balanceLists.length>0"
-		 class="send-dialog"
+			v-if="balanceLists.length>0"
+			class="send-dialog"
 		>
 			<el-dialog
-			 :close-on-click-modal='false'
-			 :visible.sync='switchToggle.receiveDialog'
-			 width="600px"
-			 center
+				:close-on-click-modal='false'
+				:visible.sync='switchToggle.receiveDialog'
+				width="600px"
+				center
 			>
 				<div
-				 class="dialog-header el-dialog__header"
-				 slot="title"
+					class="dialog-header el-dialog__header"
+					slot="title"
 				>
 					<h2>Receive</h2>
 					<div class="dialog-title-border"></div>
@@ -194,29 +212,30 @@
 					<div class="flex ai-center mb10">
 						<p class="mr10 theme-font-blue-transparent ft14">{{balanceLists.length>0?balanceLists[balanceSelected].Address : 'Text Addr'}}</p>
 						<i
-						 class="ofont ofont-fuzhi addr_btn"
-						 @click="clipText(balanceLists[balanceSelected].Address)"
+							class="ofont ofont-fuzhi addr_btn"
+							@click="clipText(balanceLists[balanceSelected].Address)"
 						></i>
 						<!-- :aria-label='balanceLists[balanceSelected].Address' -->
 					</div>
-					<div id="qrcode-content" class="mb20"></div>
-					 <!-- class="mt20" -->
 					<div
-					 slot="footer"
-					>
+						id="qrcode-content"
+						class="mb20"
+					></div>
+					<!-- class="mt20" -->
+					<div slot="footer">
 						<el-button
-						 class="done primary"
-						 type="primary"
-						 @click="switchToggle.receiveDialog = false"
+							class="done primary"
+							type="primary"
+							@click="switchToggle.receiveDialog = false"
 						>Done</el-button>
 					</div>
 				</div>
 			</el-dialog>
 			<el-dialog
-			 width='600px'
-			 center
-			 :visible.sync="switchToggle.sendDialog"
-			 :close-on-click-modal='false'
+				width='600px'
+				center
+				:visible.sync="switchToggle.sendDialog"
+				:close-on-click-modal='false'
 			>
 				<div slot="title">
 					<h2>Transfer</h2>
@@ -225,51 +244,54 @@
 				<div class="loading-content wallet-sendtransfer-loading">
 					<div class="send-form-wrap">
 						<el-form
-						 ref='transferForm'
-						 :model="sendInfo"
-						 :rules="sendRules"
+							ref='transferForm'
+							:model="sendInfo"
+							:rules="sendRules"
 						>
 							<div class="flex between mb10 mt10">
 								<p class="theme-font-blue-bold ft14">{{balanceLists[balanceSelected].Symbol}}</p>
-								<p v-if="balanceLists && balanceLists.length>0" class="ft14 tl theme-font-blue-70">{{parseFloat(balanceLists[balanceSelected].BalanceFormat).toFixed(2)}} {{balanceLists[balanceSelected].Symbol}}</p>
+								<p
+									v-if="balanceLists && balanceLists.length>0"
+									class="ft14 tl theme-font-blue-70"
+								>{{parseFloat(balanceLists[balanceSelected].BalanceFormat).toFixed(2)}} {{balanceLists[balanceSelected].Symbol}}</p>
 							</div>
 							<el-form-item
-							 class="theme-font-blue-bold"
-							 label="Amount"
-							 prop="Amount"
+								class="theme-font-blue-bold"
+								label="Amount"
+								prop="Amount"
 							>
 								<el-input
-								 v-model="sendInfo.Amount"
-								 placeholder="Input Amount"
-								 min='0'
-								 type="number"
-								 class="grey-theme"
-								 @blur="setFixed"
+									v-model="sendInfo.Amount"
+									placeholder="Input Amount"
+									min='0'
+									type="number"
+									class="grey-theme"
+									@blur="setFixed"
 								></el-input>
 							</el-form-item>
 							<el-form-item
-							 class="theme-font-blue-bold"
-							 label="Send to"
-							 prop="To"
+								class="theme-font-blue-bold"
+								label="Send to"
+								prop="To"
 							>
 								<el-input
-								 v-model="sendInfo.To"
-								 class="grey-theme"
-								 :placeholder="'Input ' +balanceLists[balanceSelected].Symbol.toUpperCase()+' Address'"
+									v-model="sendInfo.To"
+									class="grey-theme"
+									:placeholder="'Input ' +balanceLists[balanceSelected].Symbol.toUpperCase()+' Address'"
 								></el-input>
 							</el-form-item>
 							<el-form-item
-							 class="theme-font-blue-bold"
-							 label="Wallet Password"
-							 prop="Password"
+								class="theme-font-blue-bold"
+								label="Wallet Password"
+								prop="Password"
 							>
 								<el-input
-								 v-model="sendInfo.Password"
-								 @keyup.enter.native='sendTransfer'
-								 show-password
-								 placeholder="Input Wallet Password"
-								 type="password"
-								 class="grey-theme"
+									v-model="sendInfo.Password"
+									@keyup.enter.native='sendTransfer'
+									show-password
+									placeholder="Input Wallet Password"
+									type="password"
+									class="grey-theme"
 								></el-input>
 							</el-form-item>
 						</el-form>
@@ -281,22 +303,22 @@
 					</div>
 					<span slot="footer">
 						<el-button
-						 type="primary"
-						 class="primary"
-						 @click="sendTransfer"
+							type="primary"
+							class="primary"
+							@click="sendTransfer"
 						>Transfer</el-button>
 					</span>
 				</div>
 			</el-dialog>
 			<el-dialog
-			 width='600px'
-			 :close-on-click-modal='false'
-			 :visible.sync="switchToggle.assetDialog"
-			 center
+				width='600px'
+				:close-on-click-modal='false'
+				:visible.sync="switchToggle.assetDialog"
+				center
 			>
 				<div
-				 class="dialog-header el-dialog__header"
-				 slot="title"
+					class="dialog-header el-dialog__header"
+					slot="title"
 				>
 					<h2>My Assets</h2>
 					<div class="dialog-title-border mt10"></div>
@@ -305,9 +327,9 @@
 					<ul class="asset-ul mb20">
 						<li class="asset-list">
 							<img
-							class="asset-icon-lg"
-							:src="'static/images/logo/' +balanceLists[balanceSelected].Symbol+'.png'"
-							alt=""
+								class="asset-icon-lg"
+								:src="'static/images/logo/' +balanceLists[balanceSelected].Symbol+'.png'"
+								alt=""
 							>
 							<div class="flex1 ml10 tl">
 								<p class="theme-font-blue ft18"><span class="bold">{{balanceLists[balanceSelected].Symbol}}</span> <span class="theme-font-blue-40 ft14 ml10 balance-select-name"> {{balanceLists[balanceSelected].Name}}</span></p>
@@ -322,9 +344,9 @@
 					</ul>
 					<div slot="footer">
 						<el-button
-						type="primary"
-						class="primary"
-						@click="switchToggle.assetDialog = false"
+							type="primary"
+							class="primary"
+							@click="switchToggle.assetDialog = false"
 						>Comfirm</el-button>
 					</div>
 				</div>
@@ -350,14 +372,14 @@ export default {
 		);
 	},
 	data() {
-		const validateMount = (rule, value ,callback) => {
-			const reg = /^[1-9](\d{0,8})\.(\d{1,9})$|^0\.(\d{0,8})[1-9]$|^[1-9](\d{0,8})$/
-			if(!reg.test(value)) {
-				callback(new Error('Please enter the correct format'));
+		const validateMount = (rule, value, callback) => {
+			const reg = /^[1-9](\d{0,8})\.(\d{1,9})$|^0\.(\d{0,8})[1-9]$|^[1-9](\d{0,8})$/;
+			if (!reg.test(value)) {
+				callback(new Error("Please enter the correct format"));
 				return;
 			}
 			callback();
-		}
+		};
 		return {
 			QRCode,
 			date,
@@ -383,8 +405,8 @@ export default {
 						trigger: "blur"
 					},
 					{
-						validator: validateMount, 
-						trigger: 'blur'
+						validator: validateMount,
+						trigger: "blur"
 					}
 				],
 				To: [
@@ -403,7 +425,7 @@ export default {
 				]
 			},
 			cancelReachBottomTxRequest: null,
-			childrenChain: 0,//children chain select index
+			childrenChain: 0, //children chain select index
 			mockTxRecords: [
 				{
 					Txid:
@@ -696,7 +718,7 @@ export default {
 									"Transaction failed, please check your Address."
 								);
 							} else {
-								this.$message.error('Transfer failed: ' + res.data.Error);
+								this.$message.error("Transfer failed: " + res.data.Error);
 							}
 							this.switchToggle.loading.close();
 							this.switchToggle.loading = null;
@@ -997,7 +1019,7 @@ $light-grey: #f7f7f7;
 							}
 						}
 						&.asset-display-li-select {
-							background: #E7E9EF;
+							background: #e7e9ef;
 						}
 					}
 				}
@@ -1068,10 +1090,10 @@ $light-grey: #f7f7f7;
 							& > i {
 								font-size: 20px;
 								margin-right: 15px;
-								&.ofont-transfer_out {
+								&.ofont-send {
 									color: #ff4f78;
 								}
-								&.ofont-transfer_in {
+								&.ofont-jieshou {
 									color: #52a1ff;
 								}
 							}
@@ -1139,7 +1161,7 @@ $light-grey: #f7f7f7;
 							position: relative;
 							top: 2px;
 							&:hover {
-								opacity: .7; 	
+								opacity: 0.7;
 							}
 							&:active {
 								opacity: 1;
@@ -1178,11 +1200,11 @@ $light-grey: #f7f7f7;
 	.ofont-fuzhi {
 		cursor: pointer;
 		&:hover {
-			color: #2F8FF0;
+			color: #2f8ff0;
 		}
 
 		&:active {
-			color: rgba(47, 143, 240, .7);
+			color: rgba(47, 143, 240, 0.7);
 		}
 	}
 	.send-form-wrap {

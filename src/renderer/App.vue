@@ -1,39 +1,40 @@
 <template>
-	<div
-		id="app"
-		:class="{'haveBg':routerName !== 'Dialog'}"
-	>
-		<router-view></router-view>
-	</div>
+  <div
+    id="app"
+    :class="{'haveBg':routerName !== 'Dialog'}"
+  >
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>
 import { ipcRenderer } from "electron";
 export default {
-	mounted() {
-		ipcRenderer.on("current-active-show-message", (event, { info, type }) => {
-			this.$message({
-				message: info,
-				type: type
-			});
-		});
-		this.$axios
-			.get(this.$api.version)
-			.then(res => {
-				if(res.Error === 0) {
-					localStorage.setItem("edgeVersion", res.Result || "");
-				} else {
-					localStorage.setItem("edgeVersion", "")
-				}
-			})
-			.catch(localStorage.setItem("edgeVersion", ""));
-	},
-	computed: {
-		routerName() {
-			return this.$route.name;
-		}
-	},
-	name: "browser"
+  mounted() {
+    ipcRenderer.on("current-active-show-message", (event, { info, type }) => {
+      this.$message({
+        message: info,
+        type: type
+      });
+    });
+    this.$axios
+      .get(this.$api.version)
+      .then(res => {
+        localStorage.setItem("edgeVersion", res.Result || "");
+      })
+      .catch(localStorage.setItem("edgeVersion", ""));
+    document.addEventListener("visibilitychange", function() {
+			console.log('visibilitychange')
+			console.log(document.visibilityState);
+			console.log(location.href);
+    });
+  },
+  computed: {
+    routerName() {
+      return this.$route.name;
+    }
+  },
+  name: "browser"
 };
 </script>
 
@@ -41,23 +42,23 @@ export default {
 $light-grey: #f9f9fb;
 $tabs-height: 70px;
 #app {
-	height: 100vh;
-	&.haveBg {
-		background: #f9f9fb;
-	}
+  height: 100vh;
+  &.haveBg {
+    background: #f9f9fb;
+  }
 }
 
 .common-main {
-	background: $light-grey;
-	height: 100%;
-	width: 100%;
+  background: $light-grey;
+  height: 100%;
+  width: 100%;
 }
 .layout-main {
-	position: absolute;
-	left: 200px;
-	top: 60px;
-	bottom: 0px;
-	right: 0px;
+  position: absolute;
+  left: 200px;
+  top: 60px;
+  bottom: 0px;
+  right: 0px;
 }
 </style>
 

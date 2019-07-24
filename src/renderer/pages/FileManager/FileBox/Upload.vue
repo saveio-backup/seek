@@ -597,6 +597,7 @@ export default {
 					? this.advancedData.WhiteList.length
 					: 0;
 			const storeType = this.switchToggle.advanced ? 1 : 0;
+			if (!path) return;
 			this.$axios
 				.get(this.$api.uploadfee + path, {
 					params: { duration, interval, copyNum, whitelistCount, storeType }

@@ -148,7 +148,7 @@ export default {
 			}
 			this.$refs.transferForm.validate(valid => {
 				if (valid) {
-					const addr = this.withDraw
+					const addr = this.withDraw && this.channelSelected.Connected
 						? this.$api.withdrawChannel
 						: this.$api.depositChannel;
 					this.$axios

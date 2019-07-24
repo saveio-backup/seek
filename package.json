@@ -1,6 +1,6 @@
 {
   "name": "seek",
-  "version": "0.0.1-alpha-0719-55aa2dab9f-b1",
+  "version": "0.0.1-alpha-0724-8a6a88c7d3",
   "description": "seek about SAVE",
   "license": "MIT",
   "main": "./dist/electron/main.js",
@@ -23,7 +23,7 @@
   },
   "build": {
     "productName": "Seeker",
-    "artifactName":"${productName}_${version}.${ext}",
+    "artifactName": "${productName}_${version}.${ext}",
     "appId": "com.application.seeker",
     "directories": {
       "output": "build"
@@ -66,7 +66,7 @@
     },
     "nsis": {
       "oneClick": false,
-      "perMachine":true,
+      "perMachine": true,
       "allowToChangeInstallationDirectory": true
     }
   },
@@ -80,7 +80,7 @@
     "element-ui": "^2.10.1",
     "spark-md5": "^3.0.0",
     "uninstall": "0.0.0",
-    "vue": "^2.5.16",
+    "vue": "^2.6.10",
     "vue-electron": "^1.0.6",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",

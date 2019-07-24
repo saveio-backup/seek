@@ -178,7 +178,7 @@
 								v-if="scope.row.Path"
 								class="cursor-click active-blue cursor-pointer"
 								@click="showInFolder(scope.row.Path)"
-							><i class="ofont ofont-file"></i></span>
+							><i class="ofont ofont-wenjianxiangqing"></i></span>
 							<span
 								title="Decrypt"
 								class="cursor-click active-blue cursor-pointer"

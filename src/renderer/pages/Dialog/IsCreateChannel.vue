@@ -11,7 +11,7 @@
 				<h2>Notice</h2>
 				<div class="dialog-title-border"></div>
 			</div>
-			<div class="loading-content">
+			<div class="loading-content isCreateChannelDialog">
 				<div class="mb20">
 					<p class="mt20 tl">The system detecets that you have not open a Channel,you can create a new channel based on the DNS Wallet address recommended by the current network.</p>
 					<p class="mt20 tl">Recommend DNS: {{dns && dns.WalletAddr || ''}}</p>
@@ -55,32 +55,38 @@ export default {
 
 				let activeView = views.find(view => view.isActive);
 				// send param
-				let dnsAddr = this.dns && this.dns.WalletAddr || '00';
+				let dnsAddr = (this.dns && this.dns.WalletAddr) || "00";
 				// current browserView url is home
-				if(activeView.displayURL.indexOf("seek://Home") === 0) {
+				if (activeView.displayURL.indexOf("seek://Home") === 0) {
 					const webContentsId = activeView.browserView.webContents.id;
-					ipcRenderer.sendTo(webContentsId, 'open-add-channel-dialog',dnsAddr)
+					ipcRenderer.sendTo(webContentsId, "open-add-channel-dialog", dnsAddr);
 					return;
 				}
 				// find all browser list when the url is home
-				let homeViews = views.find(view => view.displayURL.indexOf("seek://Home") === 0);
-				if(!homeViews) {
+				let homeViews = views.find(
+					view => view.displayURL.indexOf("seek://Home") === 0
+				);
+				if (!homeViews) {
 					// list no data: add home browserView pass DNSAdrss send param
 					localStorage.setItem("DNSAdress", dnsAddr);
 					activeView.create();
 					return;
-				} else if (Object.prototype.toString.call(homeViews)  === "[object Array]") {
+				} else if (
+					Object.prototype.toString.call(homeViews) === "[object Array]"
+				) {
 					activeView.isActive = false;
 					homeViews[0].isActive = true;
 					this.win.setBrowserView(homeViews[0].browserView);
-				} else if (Object.prototype.toString.call(homeViews)  === "[object Object]"){
+				} else if (
+					Object.prototype.toString.call(homeViews) === "[object Object]"
+				) {
 					activeView.isActive = false;
 					homeViews.isActive = true;
 					this.win.setBrowserView(homeViews.browserView);
 				}
-				// if browser have home send param to first browser 
+				// if browser have home send param to first browser
 				const webContentsId = homeViews.browserView.webContents.id;
-				ipcRenderer.sendTo(webContentsId, 'open-add-channel-dialog', dnsAddr)
+				ipcRenderer.sendTo(webContentsId, "open-add-channel-dialog", dnsAddr);
 			} catch (e) {
 				console.log(e);
 			}
@@ -89,33 +95,23 @@ export default {
 			this.isCreateChannelToggle = true;
 			this.$nextTick(() => {
 				this.getDns();
-			})
+			});
 		},
 		getDns() {
-			this.loading = this.$loading({
-				lock: true,
-				text: "loading...",
-				target: ".loading-content"
-			});
-			this.$axios.get(this.$api.getAllDns).then(res => {
-				if(res.data.Error === 0) {
-					this.dns = res.data.Result[0];
-				} else {
-					this.$message.error(res.data.Desc || "Get all dns failed");
-				}
-				this.loading.close();
-				this.loading = null;
-			}).catch(e => {
-				this.loading.close();
-				this.loading = null;
-				this.$message.error(
-					"Get all dns failed"
-				);
-			})
+			this.$axios
+				.get(this.$api.getAllDns, {
+					loading: {
+						text: "loading...",
+						target: ".isCreateChannelDialog.loading-content"
+					}
+				})
+				.then(res => {
+					this.dns = res.Result[0];
+				});
 		}
 	},
 	mounted() {
-		this.init()
+		this.init();
 	}
 };
 </script>

@@ -87,16 +87,11 @@ export default {
 					password: this.dialogForm.password
 				};
 				this.exportPrivateKeyByPassword(params).then(res => {
-					if (res.data.Desc === "SUCCESS" && res.data.Error === 0) {
-						ipcRenderer.send(
-							"export-file-dialog",
-							res.data.Result.PrivateKey,
-							"PrivateKey"
-						);
-					} else {
-						this.$message.error(res.data.Desc);
-						return;
-					}
+					ipcRenderer.send(
+						"export-file-dialog",
+						res.Result.PrivateKey,
+						"PrivateKey"
+					);
 					ipcRenderer.once("export-finished", () => {
             // ipcRenderer.send("open-info-dialog", { info: "Export Success!" });
             this.$refs.dialogForm.resetFields();

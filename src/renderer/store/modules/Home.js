@@ -86,44 +86,41 @@ const actions = {
     axios
       .get(api.account)
       .then(async (res) => {
-        const data = res.data;
-        if (data.Error === 0) { // response data
-          if (data.Desc === "SUCCESS" && data.Result.Address) { // Wallet(Account) exist
-            try {
-              const progress = await axios.get(api.channelInitProgress)
-              if (progress.data.Error === 0 && (progress.data.Result.Progress < 1)) { // but no Channel
-                rebackToCreateAccount(commit, progress.data.Result.Progress); // back to create account
-                this.dispatch('getChannelInitProgress'); // Loop loading progress
-              } else if (progress.data.Error === 0) { // both Wallet and Channel exist
-                const result = data.Result;
-                for (let key in result) {
-                  window.localStorage.setItem(key, result[key]);
-                }
-                commit('SET_CURRENT_ACCOUNT', 1) // login success
-                this.dispatch("setBalanceLists"); // getBalance
-                this.dispatch("setChannelBalanceTotal"); // getAllChannels
-                this.dispatch("setRevenue");
+        // const data = res.data;
+        // if (data.Error === 0) { // response data
+        if (res.Result.Address) { // Wallet(Account) exist
+          try {
+            const progress = await axios.get(api.channelInitProgress)
+            if (progress.Error === 0 && (progress.Result.Progress < 1)) { // but no Channel
+              rebackToCreateAccount(commit, progress.Result.Progress); // back to create account
+              this.dispatch('getChannelInitProgress'); // Loop loading progress
+            } else if (progress.Error === 0) { // both Wallet and Channel exist
+              const result = res.Result;
+              for (let key in result) {
+                window.localStorage.setItem(key, result[key]);
               }
-
-            } catch (error) {
-              console.error(error)
-              commit('SET_CURRENT_ACCOUNT', 0) // login fail
+              commit('SET_CURRENT_ACCOUNT', 1) // login success
+              this.dispatch("setBalanceLists"); // getBalance
+              this.dispatch("setChannelBalanceTotal"); // getAllChannels
+              this.dispatch("setRevenue");
             }
-          } else {
+
+          } catch (error) {
+            console.error(error)
             commit('SET_CURRENT_ACCOUNT', 0) // login fail
-            window.localStorage.clear(); // remove all local infomation
           }
-        } else { // if user not login and not in Homepage
-          if (location.href.indexOf('Home') < 0) {
-            router.replace({
-              name: 'Home'
-            })
-          }
-          commit('SET_CURRENT_ACCOUNT', 0) // login fail Or no user
+        } else {
+          commit('SET_CURRENT_ACCOUNT', 0) // login fail
+          window.localStorage.clear(); // remove all local infomation
         }
       })
       .catch(err => { // network wrong
-        commit('SET_CURRENT_ACCOUNT', 0) // login fail
+        if (location.href.indexOf('Home') < 0) {
+          router.replace({
+            name: 'Home'
+          })
+        }
+        commit('SET_CURRENT_ACCOUNT', 0) // login fail Or no user
         console.error(err);
       });
   },
@@ -133,16 +130,14 @@ const actions = {
     clearInterval(timer.channelInitProgress);
     timer.channelInitProgress = setInterval(() => {
       axios.get(api.channelInitProgress).then(res => {
-        if (res.data.Error === 0) {
-          if (res.data.Result.Progress >= 1) {
-            commit('SET_CHANNEL_PROGRESS', 1)
-            clearInterval(timer.channelInitProgress);
-            window.location.href = location.origin + location.pathname; // success login link to home page
-          }
-          commit('SET_CHANNEL_PROGRESS', res.data.Result.Progress)
-          commit('SET_CURRENT_HEIGHT', res.data.Result.Now)
-          commit('SET_TOTAL_HEIGHT', res.data.Result.End)
+        if (res.Result.Progress >= 1) {
+          commit('SET_CHANNEL_PROGRESS', 1)
+          clearInterval(timer.channelInitProgress);
+          window.location.href = location.origin + location.pathname; // success login link to home page
         }
+        commit('SET_CHANNEL_PROGRESS', res.Result.Progress)
+        commit('SET_CURRENT_HEIGHT', res.Result.Now)
+        commit('SET_TOTAL_HEIGHT', res.Result.End)
       });
     }, timer.COUNT_INTERVAL);
   },
@@ -167,9 +162,7 @@ function requestChannelBalanceTotal(commit) {
   axios
     .get(api.channel)
     .then(res => {
-      if (res.data.Desc === "SUCCESS" && res.data.Error === 0) {
-        commit('SET_BALANCE_TOTAL', res.data.Result)
-      }
+      commit('SET_BALANCE_TOTAL', res.Result)
     })
     .catch(err => {
       console.error(err);
@@ -178,9 +171,7 @@ function requestChannelBalanceTotal(commit) {
 
 function requestRevenue(commit) {
   axios.get(api.revenue).then(res => {
-    if (res.data.Error === 0) {
-      commit('SET_REVENUE', res.data.Result);
-    }
+    commit('SET_REVENUE', res.Result);
   })
 }
 export default {

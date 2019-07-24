@@ -1,46 +1,48 @@
 import axios from 'axios';
 import {
-  Loading,
   Message
 } from 'element-ui'
+import loadingClass from './loadingClass';
+import errorCode from './i18n/error.js';
 
-let loadinginstace;
+axios.defaults.timeout = 10000
 // http requst proxy
 axios.interceptors.request.use(request => {
-  if (request.loading) {
-    loadinginstace = Loading.service({
-      target: request.loading.target || ".loading-content",
-      text: request.loading.text || "Loading",
-      lock: true
-    })
-  }
+  loadingClass.addLoading(request);
   return request
 }, error => {
-  loadinginstace && loadinginstace.close()
   Message.error({
     message: 'Request Timeout!'
   })
   return Promise.reject(error)
 })
 
-
 // http response proxy
 axios.interceptors.response.use(
   response => {
-    console.log(response);
-    loadinginstace && loadinginstace.close();
-    if(response.data.error === 0) {
-      return response;
+    loadingClass.removeLoading(response);
+    if(response.data.Error === 0) {
+      return response.data;
     } else {
+      Message.error({
+        message: response.data.Error && errorCode[response.data.Error] && errorCode[response.data.Error]['en'] || response.data.Desc || ''
+      })
       return Promise.reject(response.data);
     }
   },
   error => {
-    loadinginstace && loadinginstace.close();
+    console.log('error',error)
+    loadingClass.removeLoading(error);
     if(typeof error !== Object) {
-      Message.error({
-        message: error || 'Response Error'
-      })
+      if(error.message.includes('timeout')){
+        Message.error({
+          message: 'Request Timeout!'
+        })
+      } else {
+        Message.error({
+          message: error || 'Response Error'
+        })
+      }
     } else if (error.response.status == 500 || error.response.status == 504) {
       Message.error({
         message: 'Server Error!!!'
@@ -57,8 +59,12 @@ axios.interceptors.response.use(
       Message.error({
         message: 'Request Parameter Error!!!'
       })
+    } else {
+      Message.error({
+        message: error || 'Response Error'
+      })
     }
-    return Promise.reject(error.response.data)
+    return Promise.reject(error.response)
   }
 );
 

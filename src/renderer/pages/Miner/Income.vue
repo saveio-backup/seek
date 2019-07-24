@@ -3,34 +3,32 @@
 		<div class="header">
 			<p class="light-theme-title mb10 user-no-select">Profit Detail</p>
 			<el-date-picker
-			 class="common-el-input"
-			 v-model="dateRange"
-			 type="daterange"
-			 @change="dateChanageGetIncom"
-			 unlink-panels
-			 range-separator="to"
-			 start-placeholder="Start"
-			 end-placeholder="End"
+				class="common-el-input"
+				v-model="dateRange"
+				type="daterange"
+				@change="dateChanageGetIncom"
+				unlink-panels
+				range-separator="to"
+				start-placeholder="Start"
+				end-placeholder="End"
 			>
 			</el-date-picker>
 			<div class="total-income ft14">Total Profit: <span>{{filterFloat(result.TotalIncomeFormat).toLocaleString('en-US') || 0}} SAVE</span></div>
 		</div>
 
 		<el-table
-		 class="flex1 incomeTable"
-		 border
-		 ref="incomeTable"
-		 :data="result.Incomes"
-		 empty-text="No Data"
-		 height='100%'
+			class="flex1 incomeTable"
+			border
+			ref="incomeTable"
+			:data="result.Incomes"
+			empty-text="No Data"
+			height='100%'
 		>
 			<el-table-column
-			 label="File Name"
-			 prop="Name"
+				label="File Name"
+				prop="Name"
 			></el-table-column>
-			<el-table-column
-			 label="Profit(SAVE)"
-			>
+			<el-table-column label="Profit(SAVE)">
 				<template slot-scope="scope">
 					<div>
 						{{scope.row.ProfitFormat}}
@@ -171,20 +169,18 @@ export default {
 				.get(addr)
 				.then(res => {
 					console.log(res);
-					if (res.data.Error === 0) {
-						const result = res.data.Result;
-						this.result.TotalIncome = result.TotalIncome;
-						this.result.TotalIncomeFormat = result.TotalIncomeFormat;
-						// this.result.TotalIncomeFormat = 20124.123;
-						// this.result.Incomes = this.mockData;
-						if (result.Incomes.length > 0) {
-							this.result.Incomes = this.result.Incomes.concat(result.Incomes);
-						} else {
-							this.loadSwitch = false;
-							return;
-						}
-						this.loadSwitch = true;
+					const result = res.Result;
+					this.result.TotalIncome = result.TotalIncome;
+					this.result.TotalIncomeFormat = result.TotalIncomeFormat;
+					// this.result.TotalIncomeFormat = 20124.123;
+					// this.result.Incomes = this.mockData;
+					if (result.Incomes.length > 0) {
+						this.result.Incomes = this.result.Incomes.concat(result.Incomes);
+					} else {
+						this.loadSwitch = false;
+						return;
 					}
+					this.loadSwitch = true;
 				})
 				.catch(err => {
 					console.error(err);
@@ -200,10 +196,10 @@ export default {
 	display: flex;
 	flex-direction: column;
 	& > .header {
-		background: #F9F9FB;
+		background: #f9f9fb;
 		padding: 20px 20px;
-		border-bottom: 1px solid rgba(32, 32, 32, .1);
-		position: relative;		
+		border-bottom: 1px solid rgba(32, 32, 32, 0.1);
+		position: relative;
 	}
 	.incomeTable {
 		height: 100%;
@@ -212,13 +208,13 @@ export default {
 		padding-top: 20px;
 	}
 	.total-income {
-		color: rgba(32, 32, 32, .4);
+		color: rgba(32, 32, 32, 0.4);
 		font-size: 14px;
 		position: absolute;
 		bottom: 15px;
 		right: 70px;
 		span {
-			color: rgba(32,32,32,1);
+			color: rgba(32, 32, 32, 1);
 			font-size: 18px;
 			margin-left: 10px;
 		}

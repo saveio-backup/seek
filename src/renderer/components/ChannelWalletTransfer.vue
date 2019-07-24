@@ -148,44 +148,37 @@ export default {
 			}
 			this.$refs.transferForm.validate(valid => {
 				if (valid) {
-					this.switchToggle.loading = this.$loading({
-						lock: true,
-						text: "Transaction processing....",
-						target: ".loading-content.loading-channel"
-					});
 					const addr = this.withDraw
 						? this.$api.withdrawChannel
 						: this.$api.depositChannel;
 					this.$axios
-						.post(addr, {
-							Partner: this.channelSelected.Address,
-							Amount: this.transferInfo.Amount,
-							Password: this.transferInfo.Password
-						})
-						.then(res => {
-							if (res.data.Error === 0) {
-								// this.transferInfo.Amount = 0; // reset
-								// this.transferInfo.Password = ""; // reset
-								this.$refs.transferForm.resetFields();
-								this.$message({
-									message: "Transfer Success!",
-									type: "success"
-								});
-								this.$emit("closeDialog");
-								this.initBalanceRequest();
-							} else if (res.data.Error === 50015) {
-								this.$message.error("Wrong Password");
-							} else {
-								this.$message.error(res.data.Desc || "Transfer Failed");
+						.post(
+							addr,
+							{
+								Partner: this.channelSelected.Address,
+								Amount: this.transferInfo.Amount,
+								Password: this.transferInfo.Password
+							},
+							{
+								loading: {
+									target: ".loading-content.loading-channel",
+									text: "Transaction processing...."
+								}
 							}
-							this.switchToggle.loading.close();
-							this.switchToggle.loading = null;
+						)
+						.then(res => {
+							// this.transferInfo.Amount = 0; // reset
+							// this.transferInfo.Password = ""; // reset
+							this.$refs.transferForm.resetFields();
+							this.$message({
+								message: "Transfer Success!",
+								type: "success"
+							});
+							this.$emit("closeDialog");
+							this.initBalanceRequest();
 						})
 						.catch(err => {
 							console.error(err);
-							this.switchToggle.loading.close();
-							this.switchToggle.loading = null;
-							this.$message.error("Transfer Failed");
 						});
 				}
 			});

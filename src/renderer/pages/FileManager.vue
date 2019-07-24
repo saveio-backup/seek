@@ -186,52 +186,6 @@ export default {
 		toConfirm() {
 			this.$refs["channelwallettransfer"].toTransfer();
 		},
-		// toTransfer() {
-		// 	if (this.switchToggle.loading) return;
-		// 	if (!this.channelBind) {
-		// 		this.emitMessage("Please Choose Channel Address", "error");
-		// 		return;
-		// 	}
-		// 	this.$refs.transferForm.validate(valid => {
-		// 		if (valid) {
-		// 			this.switchToggle.loading = this.$loading({
-		// 				lock: true,
-		// 				text: "Transaction processing....",
-		// 				target: ".loading-content"
-		// 			});
-		// 			const addr = this.withDraw
-		// 				? this.$api.withdrawChannel
-		// 				: this.$api.depositChannel;
-		// 			this.$axios
-		// 				.post(addr, {
-		// 					Partner: this.channelBind.Address,
-		// 					Amount: this.transferInfo.Amount,
-		// 					Password: this.transferInfo.Password
-		// 				})
-		// 				.then(res => {
-		// 					if (res.data.Error === 0) {
-		// 						this.transferInfo.Amount = 0; // reset
-		// 						this.transferInfo.Password = ""; // reset
-		// 						this.emitMessage("Transfer Success!", "success");
-		// 						this.switchToggle.assetTransferDialog = false;
-		// 						this.initBalanceRequest();
-		// 					} else if (res.data.Error === 50015) {
-		// 						this.$message.error("Wrong Password");
-		// 					} else {
-		// 						this.$message.error(res.data.Desc || "Transfer Failed");
-		// 					}
-		// 					this.switchToggle.loading.close();
-		// 					this.switchToggle.loading = null;
-		// 				})
-		// 				.catch(err => {
-		// 					console.error(err);
-		// 					this.switchToggle.loading.close();
-		// 					this.switchToggle.loading = null;
-		// 					this.$message.error("Transfer Failed");
-		// 				});
-		// 		}
-		// 	});
-		// },
 		toApplyChange() {
 			this.$refs.channellist.applyChange();
 			this.switchToggle.channelListDialog = false;

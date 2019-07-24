@@ -158,7 +158,7 @@ const setupConfig = async (appDataPath, appName) => {
         fs.mkdirSync(baseDir)
     }
     cfgObj.Base.AutoSetupDNSEnable = false;
-    cfgObj.Base.NetworkId = 1563525726;
+    cfgObj.Base.NetworkId = 1563935261;
     cfgObj.Base.ChannelRevealTimeout = "200";
     cfgObj.Base.ChannelSettleTimeout = "500";
     try {

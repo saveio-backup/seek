@@ -45,27 +45,19 @@ export default {
 			this.$emit("closeDialog", { timeout: 0 });
 		},
 		logout() {
-			// this.logoutUploadViews();return;
-			this.logoutLoding = this.$loading({
-				lock: true,
-				text: "logging out",
-				target: ".loading-content.logout-loading"
-			});
 			this.$axios
-				.post(this.$api.account + "/logout", {})
-				.then(res => {
-					this.logoutLoding.close();
-					if (res.data.Desc === "SUCCESS" && res.data.Error === 0) {
-						window.localStorage.clear();
-						this.logoutUploadViews();
-						this.closeDialog();
-						// ipcRenderer.send("open-info-dialog", { info: "Logout Success!" });
-					} else {
-						this.$message.error(res.data.Desc);
+				.post(this.$api.account + "/logout", {
+					loading: {
+						text: "logging out",
+						target: ".loading-content.logout-loading"
 					}
 				})
+				.then(res => {
+					window.localStorage.clear();
+					this.logoutUploadViews();
+					this.closeDialog();
+				})
 				.catch(err => {
-					this.logoutLoding.close();
 					console.error(err);
 				});
 		},

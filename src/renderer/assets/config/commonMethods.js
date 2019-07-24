@@ -3,21 +3,19 @@ import {
   remote
 } from "electron";
 const methods = {
-  activeMessage({info,type}) {
+  activeMessage({ info, type }) {
     let views = remote.getCurrentWindow().views;
     let activeView = views.find(view => view.isActive);
     const webContentsId = activeView.browserView.webContents.id;
-    ipcRenderer.sendTo(webContentsId, 'current-active-show-message', {info: info,type:type})
+    ipcRenderer.sendTo(webContentsId, 'current-active-show-message', { info: info, type: type })
   },
   install(Vue) {
     const vm = this;
-    Vue.prototype.$exportWallet = function (cb) {
+    Vue.prototype.$exportWallet = function (event, cb) {
       Vue.prototype.$axios
         .get(Vue.prototype.$api.account + "/export/walletfile")
         .then(res => {
-          if (res.data.Desc === "SUCCESS" && res.data.Error === 0) {
-            ipcRenderer.send("export-file-dialog", res.data.Result.Wallet, 'Wallet');
-          }
+          ipcRenderer.send("export-file-dialog", res.Result.Wallet, 'Wallet');
           ipcRenderer.once("export-finished", () => {
             if (cb) {
               console.log(cb);
@@ -27,10 +25,6 @@ const methods = {
                 info: "Export Success!",
                 type: "success"
               });
-              // Vue.prototype.$message({
-              //   message: "Export Success!",
-              //   type: "success"
-              // });
             }
           });
         })
@@ -44,10 +38,6 @@ const methods = {
         if (cb) {
           cb();
         } else {
-          // Vue.prototype.$message({
-          //   message: "Export Success!",
-          //   type: "success"
-          // });
           vm.activeMessage({
             info: "Export Success!",
             type: "success"

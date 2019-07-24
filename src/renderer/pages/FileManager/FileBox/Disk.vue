@@ -66,10 +66,10 @@
             width="30"
           ></el-table-column>
 
+            <!-- prop="Name" -->
           <el-table-column
             label="File Name"
             width="500"
-            prop="Name"
             class-name="rowName"
           >
             <template slot-scope="scope">
@@ -132,14 +132,15 @@
               <span class="td-grey">{{scope.row.OwnerAddress || 'Nameless'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="Size">
+          <!-- api return 'KB' unit -->
+          <el-table-column label="Size" column-key="Size">
             <template slot-scope="scope">
-              <!-- api return 'KB' unit -->
               <span class="td-grey">
                 {{util.bytesToSize(scope.row.Size * 1024)}}
               </span>
             </template>
           </el-table-column>
+
           <!-- <el-table-column
 					 label="Download statistics"
 					 prop="DownloadCount"
@@ -147,6 +148,7 @@
           <el-table-column
             v-if="page ==='miner'"
             label="Profit"
+            
           >
             <template slot-scope="scope">
               <div class="light-blue">
@@ -161,10 +163,10 @@
           >
 
           </el-table-column>
-          <el-table-column label="Date">
+          <el-table-column label="Date" v-if="true" column-key="UpdatedAt">
             <template slot-scope="scope">
               <div class="td-grey">
-                {{date.formatTime(new Date( (scope.row.DownloadAt||scope.row.UpdatedAt) * 1000))}}
+                {{date.formatTime(new Date( (scope.row.UpdatedAt || scope.row.DownloadAt) * 1000))}}
               </div>
             </template>
           </el-table-column>
@@ -603,15 +605,13 @@ export default {
       this.$axios
         .get(addr)
         .then(res => {
-          if (res.data.Error === 0) {
-            const result = res.data.Result;
-            if (result.length) {
-              // do sth
-              this.fileListData = this.fileListData.concat(result);
-            } else {
-              this.switchToggle.load = false;
-              return;
-            }
+          const result = res.Result;
+          if (result.length) {
+            // do sth
+            this.fileListData = this.fileListData.concat(result);
+          } else {
+            this.switchToggle.load = false;
+            return;
           }
           this.switchToggle.load = true;
         })
@@ -717,20 +717,18 @@ export default {
               Hash: deleteFiles[i].Hash
             })
             .then(res => {
-              if (res.data.Error === 0) {
-                this.$message({
-                  message: "Delete Successful",
-                  type: "success"
-                });
-                this.fileListData.some((item, index) => {
-                  if (item.Hash === deleteFiles[i].Hash) {
-                    this.fileListData.splice(index, 1);
-                    return true;
-                  } else {
-                    return false;
-                  }
-                });
-              }
+              this.$message({
+                message: "Delete Successful",
+                type: "success"
+              });
+              this.fileListData.some((item, index) => {
+                if (item.Hash === deleteFiles[i].Hash) {
+                  this.fileListData.splice(index, 1);
+                  return true;
+                } else {
+                  return false;
+                }
+              });
               console.log("delete");
             })
         );
@@ -743,15 +741,14 @@ export default {
       );
     },
     toDeleteFile(dataList, hash) {
-      this.switchToggle.loading = this.$loading({
-        lock: true,
-        text: "Deleting....",
-        target: ".loading-content.disk-delete-loading"
-      });
       this.$axios
-        .post(this.$api.delete, { Hash: hash })
+        .post(this.$api.delete, { Hash: hash }, {
+          loading: {
+            text: "Deleting....",
+            target: ".loading-content.disk-delete-loading"
+          }
+        })
         .then(res => {
-          if (res.data.Error === 0) {
             this.$message({
               message: "Delete Successful",
               type: "success"
@@ -765,19 +762,7 @@ export default {
               }
             });
             this.switchToggle.deleteDialog = false;
-          } else {
-            this.$message.error(
-              "Failed to delete, please try again. Error: " + res.data.Error
-            );
-          }
         })
-        .catch(err => {
-          this.$message.error("Network Error. Delete Failed.");
-        })
-        .finally(() => {
-          this.switchToggle.loading.close();
-          this.switchToggle.loading = null;
-        });
     }
   },
   watch: {
@@ -807,13 +792,11 @@ export default {
         this.$axios
           .get(this.$api.downloadInfo + path)
           .then(res => {
-            // if (res.data.Error === 0) {
-            cost += res.data.Result.Fee || 0;
+            cost += res.Result.Fee || 0;
             this.fileDownloadInfo.DownloadDir =
-              res.data.Result.DownloadDir || "";
+              res.Result.DownloadDir || "";
             this.fileDownloadInfo.Fee =
               parseFloat((cost / 1000000000).toFixed(9)) + " SAVE";
-            // }
           })
           .catch(() => {
             console.error("unable to calc");

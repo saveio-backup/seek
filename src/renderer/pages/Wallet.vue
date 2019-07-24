@@ -691,45 +691,26 @@ export default {
 			if (this.switchToggle.loading) return;
 			this.$refs.transferForm.validate(valid => {
 				if (valid) {
-					this.switchToggle.loading = this.$loading({
-						lock: true,
-						text: "Transaction processing....",
-						target: ".loading-content.wallet-sendtransfer-loading"
-					});
 					this.setFixed();
 					const sendInfo = this.sendInfo;
 					sendInfo.Asset = this.balanceLists[this.balanceSelected].Symbol;
 					sendInfo.To = sendInfo.To.trim();
 					this.$axios
-						.post(this.$api.transfer, sendInfo)
-						.then(res => {
-							if (res.data.Error === 0) {
-								this.sendInfo.Password = "";
-								this.$refs.transferForm.resetFields();
-								this.switchToggle.sendDialog = false;
-								this.$message({
-									message: "Successful transfer",
-									type: "success"
-								});
-							} else if (res.data.Error === 50015) {
-								this.$message.error("The password is incorrect.");
-							} else if (res.data.Error === 40002) {
-								this.$message.error(
-									"Transaction failed, please check your Address."
-								);
-							} else {
-								this.$message.error("Transfer failed: " + res.data.Error);
+						.post(this.$api.transfer, sendInfo, {
+							loading: {
+								text: "Transaction processing....",
+								target: ".loading-content.wallet-sendtransfer-loading"
 							}
-							this.switchToggle.loading.close();
-							this.switchToggle.loading = null;
 						})
-						.catch(() => {
-							this.switchToggle.loading.close();
-							this.switchToggle.loading = null;
-							this.$message.error(
-								"Transaction failed. Please try again later."
-							);
-						});
+						.then(res => {
+							this.sendInfo.Password = "";
+							this.$refs.transferForm.resetFields();
+							this.switchToggle.sendDialog = false;
+							this.$message({
+								message: "Successful transfer",
+								type: "success"
+							});
+						})
 				}
 			});
 		},
@@ -771,10 +752,9 @@ export default {
 					}
 				)
 				.then(res => {
-					if (res.data.Error === 0) {
 						const transferIn = [];
 						const transferOut = [];
-						const result = res.data.Result;
+						const result = res.Result;
 						for (let i = 0; i < result.length; i++) {
 							if (result[i].Type === 1) {
 								transferOut.push(result[i]);
@@ -797,7 +777,6 @@ export default {
 						this.$store.dispatch("setTxRecords", {
 							asset
 						});
-					}
 				})
 				.catch(err => {
 					console.log(err);

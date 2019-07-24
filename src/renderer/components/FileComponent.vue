@@ -594,14 +594,10 @@ export default {
 			const type = this.transferType;
 			const arr = this.getTask(type, 0, 1, 2, 4);
 			this.$axios.post(this.$api.cancelAll, params).then(res => {
-				if (res.data.Error === 0) {
-					this.$message({
-						message: "Opeation Success",
-						type: "Success"
-					});
-				} else {
-					this.$message.error(res.data.Desc || "Opeation failed.");
-				}
+				this.$message({
+					message: "Opeation Success",
+					type: "Success"
+				});
 			});
 		},
 		continueAll() {
@@ -631,14 +627,10 @@ export default {
 				Hash: row.FileHash
 			};
 			this.$axios.post(this.$api.deleteRecord, params).then(res => {
-				if (res.data.Error === 0) {
-					this.$message({
-						message: "Opeation Success",
-						type: "Success"
-					});
-				} else {
-					this.$message.error(res.data.Desc || "Opeation failed.");
-				}
+				this.$message({
+					message: "Opeation Success",
+					type: "Success"
+				});
 			});
 		},
 		uploadOrDownloadCancel(row) {
@@ -648,14 +640,10 @@ export default {
 				Hash: row.FileHash
 			};
 			this.$axios.post(url, params).then(res => {
-				if (res.data.Error === 0) {
-					this.$message({
-						message: "Opeation Success",
-						type: "Success"
-					});
-				} else {
-					this.$message.error(res.data.Desc || "Opeation failed.");
-				}
+				this.$message({
+					message: "Opeation Success",
+					type: "Success"
+				});
 			});
 		},
 		uploadOrDownloadAgain(row) {
@@ -665,14 +653,10 @@ export default {
 				Hash: row.FileHash
 			};
 			this.$axios.post(url, params).then(res => {
-				if (res.data.Error === 0) {
-					this.$message({
-						message: "Opeation Success",
-						type: "success"
-					});
-				} else {
-					this.$message.error(res.data.Desc || "Opeation failed.");
-				}
+				this.$message({
+					message: "Opeation Success",
+					type: "success"
+				});
 			});
 		},
 		uploadOrDownloadContinue(row) {
@@ -682,14 +666,10 @@ export default {
 				Hash: row.FileHash
 			};
 			this.$axios.post(url, params).then(res => {
-				if (res.data.Error === 0) {
-					this.$message({
-						message: "Opeation Success",
-						type: "success"
-					});
-				} else {
-					this.$message.error(res.data.Desc || "Opeation failed.");
-				}
+				this.$message({
+					message: "Opeation Success",
+					type: "success"
+				});
 			});
 		},
 		uploadOrDownloadPause(row) {
@@ -699,14 +679,10 @@ export default {
 				Hash: row.FileHash
 			};
 			this.$axios.post(url, params).then(res => {
-				if (res.data.Error === 0) {
-					this.$message({
-						message: "Opeation Success",
-						type: "success"
-					});
-				} else {
-					this.$message.error(res.data.Desc || "Opeation failed.");
-				}
+				this.$message({
+					message: "Opeation Success",
+					type: "success"
+				});
 			});
 		},
 		hideTaskDialog() {
@@ -726,48 +702,32 @@ export default {
 		toDeleteFile(hash) {
 			this.switchToggle.deleteDialog = false;
 			this.$axios.post(this.$api.delete, { Hash: hash }).then(res => {
-				if (res.data.Error === 0) {
-					this.$message({
-						message: "Delete Completed",
-						type: "success"
-					});
-				}
+				this.$message({
+					message: "Delete Completed",
+					type: "success"
+				});
 			});
 		},
 		toDecrypt() {
 			if (this.switchToggle.loading) return;
-			this.switchToggle.loading = this.$loading({
-				lock: true,
-				text: "Processing..",
-				target: ".loading-content.decrypt"
-			});
 			this.$axios
-				.post(this.$api.decrypt, this.fileSelected)
-				.then(res => {
-					if (res.data.Error === 0) {
-						this.$message({
-							message: "Decryption successed",
-							type: "success"
-						});
-						this.fileList.Password = "";
-						this.fileList.Path = "";
-						this.switchToggle.decryptDialog = false;
-					} else if (res.data.Erro === 50015) {
-						this.$message({
-							message: "The password is in correct.",
-							type: "error"
-						});
-					} else {
-						this.$message.error("Decription failed.");
+				.post(this.$api.decrypt, this.fileSelected, {
+					loading: {
+						text: "Processing..",
+						target: ".loading-content.decrypt"
 					}
+				})
+				.then(res => {
+					this.$message({
+						message: "Decryption successed",
+						type: "success"
+					});
+					this.fileList.Password = "";
+					this.fileList.Path = "";
+					this.switchToggle.decryptDialog = false;
 				})
 				.catch(err => {
 					console.log(err);
-					this.$message.error("Wrong");
-				})
-				.finally(() => {
-					this.switchToggle.loading.close();
-					this.switchToggle.loading = null;
 				});
 		}
 	}

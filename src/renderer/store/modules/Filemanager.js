@@ -18,11 +18,7 @@ const actions = {
     axios
       .get(api.userspace + window.localStorage.getItem("Address"))
       .then(res => {
-        if (res.data.Desc === "SUCCESS") {
-          if (res.data.Error === 0) {
-            commit('SET_SPACE', res.data.Result)
-          }
-        }
+        commit('SET_SPACE', res.Result)
       })
       .catch(err => {
         console.error(err);

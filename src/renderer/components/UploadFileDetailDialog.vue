@@ -115,28 +115,19 @@ export default {
       }
     },
     getFileDetail(hash) {
-      this.loading = this.$loading({
-        lock: true,
-        text: "loading...",
-        target: ".loading-content.upload-file-detail-loading"
-      });
       this.$axios
-        .get(this.$api.getUploadFileInfo + hash)
-        .then(res => {
-          if (res.data.Error === 0) {
-            this.fileDetail = res.data.Result;
-          } else {
-            this.$message.error(res.data.Desc || "get data failed.");
+        .get(this.$api.getUploadFileInfo + hash, {
+          loading: {
+            text: "loading...",
+            target: ".loading-content.upload-file-detail-loading"
           }
+        })
+        .then(res => {
+          this.fileDetail = res.Result;
         })
         .catch(err => {
           console.log(err);
-          this.$message.error("Wrong");
         })
-        .finally(() => {
-          this.loading.close();
-          this.loading = null;
-        });
     },
     toClose() {
       this.$emit("closeUploadFileDetail");

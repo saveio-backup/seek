@@ -141,151 +141,129 @@
 <script>
 const { ipcRenderer } = require("electron");
 export default {
-  data() {
-    let validatePassword = (rule, value, callback) => {
-      if (this.privateKeyForm.Password === this.privateKeyForm.Confirm) {
-        callback();
-      } else {
-        callback(new Error("Inconsistent passwords filled in twice."));
-      }
-    };
-    return {
-      switchToggle: {
-        loading: null
-      },
-      importWay: 0, // 0 Wallet 1 PrivateKey
-      privateKeyForm: {
-        PrivateKey: "",
-        Label: "",
-        Password: "",
-        Confirm: ""
-      },
-      privateKeyRules: {
-        PrivateKey: [
-          {
-            required: true,
-            message: "please fill your Private Key",
-            trigger: "blur"
-          }
-        ],
-        Label: [
-          {
-            required: true,
-            message: "please fill your name",
-            trigger: "blur"
-          }
-        ],
-        Password: {
-          // validator: validatePassword,
-          message: "please fill your password",
-          required: true,
-          trigger: ["blur", "input"]
-        },
-        Confirm: {
-          validator: validatePassword,
-          required: true,
-          trigger: ["blur"]
-        }
-      },
-      data: {
-        Wallet: "",
-        Password: ""
-      }
-    };
-  },
-  methods: {
-    importWallet() {
-      ipcRenderer.send("open-wallet-dialog");
-      ipcRenderer.once("selected-wallet", (event, content) => {
-        this.data.Wallet = content;
-      });
-    },
-    importPrivateKey() {
-      ipcRenderer.send("open-file-dialog");
-      ipcRenderer.once("selected-file", (event, content) => {
-        this.privateKeyForm.PrivateKey = content;
-      });
-    },
-    importAccount() {
-      switch (this.importWay) {
-        case 0:
-          this.importAccountWithWalletFile();
-          break;
-        case 1:
-          this.importAccountWithPrivateKey();
-        default:
-          break;
-      }
-    },
-    importAccountWithWalletFile() {
-      if (this.switchToggle.loading) return;
-      this.switchToggle.loading = this.$loading({
-        lock: true,
-        text: "Importing",
-        target: ".loading"
-      });
-      this.$axios
-        .post(this.$api.account + "/import/walletfile", this.data)
-        .then(res => {
-          if (res.data.Desc === "SUCCESS" && res.data.Error === 0) {
-            const result = res.data.Result;
-            for (let key in result) {
-              window.localStorage.setItem(key, result[key]);
-            }
-            window.location.href = location.origin + location.pathname; // success login link to home page
-          } else if ((res.data.Error = 50015)) {
-            this.switchToggle.loading.close();
-            this.switchToggle.loading = null;
-            this.$message.error("Account not exit or Wrong Password");
-          } else {
-            this.switchToggle.loading.close();
-            this.switchToggle.loading = null;
-            this.$message.error(res.data.Desc);
-          }
-        })
-        .catch(err => {
-          this.switchToggle.loading.close();
-          this.switchToggle.loading = null;
-          this.$message.error("Login Error! Server connection has been disconnected.");
-          console.error(err);
-        });
-    },
-    importAccountWithPrivateKey() {
-      if (this.switchToggle.loading) return;
-      this.$refs.privatekeyform.validate(valid => {
-        if (valid) {
-          this.switchToggle.loading = this.$loading({
-            lock: true,
-            text: "Importing",
-            target: ".loading"
-          });
-          this.$axios
-            .post(this.$api.account + "/import/privatekey", this.privateKeyForm)
-            .then(res => {
-              const data = res.data;
-              if (data.Desc === "SUCCESS") {
-                const result = res.data.Result;
-                for (let key in result) {
-                  window.localStorage.setItem(key, result[key]);
-                }
-                window.location.href = location.origin + location.pathname; // success login link to home page
-              } else {
-                this.switchToggle.loading.close();
-                this.switchToggle.loading = null;
-                this.$message.error(
-                  data.Desc || `Login Error! Erro: ${data.Error}`
-                );
-              }
-            })
-            .catch(() => {
-              this.switchToggle.loading.close();
-              this.switchToggle.loading = null;
-              this.$message.error("Login Error! Network connection has been disconnected.");
-            });
-        }
-      });
-    }
-  }
+	data() {
+		let validatePassword = (rule, value, callback) => {
+			if (this.privateKeyForm.Password === this.privateKeyForm.Confirm) {
+				callback();
+			} else {
+				callback(new Error("Inconsistent passwords filled in twice."));
+			}
+		};
+		return {
+			switchToggle: {
+				loading: null
+			},
+			importWay: 0, // 0 Wallet 1 PrivateKey
+			privateKeyForm: {
+				PrivateKey: "",
+				Label: "",
+				Password: "",
+				Confirm: ""
+			},
+			privateKeyRules: {
+				PrivateKey: [
+					{
+						required: true,
+						message: "please fill your Private Key",
+						trigger: "blur"
+					}
+				],
+				Label: [
+					{
+						required: true,
+						message: "please fill your name",
+						trigger: "blur"
+					}
+				],
+				Password: {
+					// validator: validatePassword,
+					message: "please fill your password",
+					required: true,
+					trigger: ["blur", "input"]
+				},
+				Confirm: {
+					validator: validatePassword,
+					required: true,
+					trigger: ["blur"]
+				}
+			},
+			data: {
+				Wallet: "",
+				Password: ""
+			}
+		};
+	},
+	methods: {
+		importWallet() {
+			ipcRenderer.send("open-wallet-dialog");
+			ipcRenderer.once("selected-wallet", (event, content) => {
+				this.data.Wallet = content;
+			});
+		},
+		importPrivateKey() {
+			ipcRenderer.send("open-file-dialog");
+			ipcRenderer.once("selected-file", (event, content) => {
+				this.privateKeyForm.PrivateKey = content;
+			});
+		},
+		importAccount() {
+			switch (this.importWay) {
+				case 0:
+					this.importAccountWithWalletFile();
+					break;
+				case 1:
+					this.importAccountWithPrivateKey();
+				default:
+					break;
+			}
+		},
+		importAccountWithWalletFile() {
+			if (this.switchToggle.loading) return;
+			this.$axios
+				.post(this.$api.account + "/import/walletfile", this.data, {
+					loading: {
+						text: "Importing",
+						target: ".loading"
+					}
+				})
+				.then(res => {
+					const result = res.Result;
+					for (let key in result) {
+						window.localStorage.setItem(key, result[key]);
+					}
+					window.location.href = location.origin + location.pathname; // success login link to home page
+				})
+				.catch(err => {
+					console.error(err);
+				});
+		},
+		importAccountWithPrivateKey() {
+			if (this.switchToggle.loading) return;
+			this.$refs.privatekeyform.validate(valid => {
+				if (valid) {
+					this.$axios
+						.post(
+							this.$api.account + "/import/privatekey",
+							this.privateKeyForm,
+							{
+								loading: {
+									lock: true,
+									text: "Importing",
+									target: ".loading"
+								}
+							}
+						)
+						.then(res => {
+							const result = res.Result;
+							for (let key in result) {
+								window.localStorage.setItem(key, result[key]);
+							}
+							window.location.href = location.origin + location.pathname; // success login link to home page
+						});
+				}
+			});
+		}
+	}
 };
 </script>
 <style lang="scss">

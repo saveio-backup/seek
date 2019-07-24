@@ -20,7 +20,7 @@ export default {
 		this.$axios
 			.get(this.$api.version)
 			.then(res => {
-				localStorage.setItem("edgeVersion", res.data.Result || "");
+				localStorage.setItem("edgeVersion", res.Result || "");
 			})
 			.catch(localStorage.setItem("edgeVersion", ""));
 	},

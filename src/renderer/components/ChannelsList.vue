@@ -427,18 +427,9 @@ export default {
 	},
 	methods: {
 		getDns() {
-			this.$axios
-				.get(this.$api.getAllDns)
-				.then(res => {
-					if (res.data.Error === 0) {
-						this.dns = res.data.Result;
-					} else {
-						this.$message.error(res.data.Desc || "Get all dns failed");
-					}
-				})
-				.catch(e => {
-					this.$message.error("Get all dns failed");
-				});
+			this.$axios.get(this.$api.getAllDns).then(res => {
+				this.dns = res.Result;
+			});
 		},
 		setFixed() {
 			this.channelForm.amount = this.channelForm.amount
@@ -520,12 +511,6 @@ export default {
 		toPeationChannel() {
 			this.$refs["channelForm"].validate(valid => {
 				if (!valid) return;
-				this.channelToggle.loading = this.$loading({
-					lock: true,
-					text: "Processing...",
-					target: ".loading-content-2"
-				});
-
 				if (this.channelToggle.type === "add") {
 					let params = {
 						Password: this.channelForm.password,
@@ -544,49 +529,37 @@ export default {
 		},
 		toChannelOpen(params) {
 			this.$axios
-				.post(this.$api.channelOPen, params)
-				.then(res => {
-					if (res.data.Error === 0) {
-						this.$message({
-							message: "Open channel successed",
-							type: "success"
-						});
-						this.channelToggle.channelCloseDialog = false;
-					} else {
-						this.$message.error(res.data.Desc || "Open channel failed");
+				.post(this.$api.channelOPen, params, {
+					loading: {
+						text: "Processing...",
+						target: ".loading-content-2"
 					}
-					this.$store.dispatch("setChannelBalanceTotal");
-					this.channelToggle.loading.close();
-					this.channelToggle.loading = null;
 				})
-				.catch(() => {
-					this.channelToggle.loading.close();
-					this.channelToggle.loading = null;
-					this.$message.error("Open channel failed.");
+				.then(res => {
+					this.$message({
+						message: "Open channel successed",
+						type: "success"
+					});
+					this.channelToggle.channelCloseDialog = false;
+					this.$store.dispatch("setChannelBalanceTotal");
 				});
 		},
 		toChannelClose(params) {
 			this.$axios
-				.post(this.$api.channelClose, params)
-				.then(res => {
-					if (res.data.Error === 0) {
-						this.channelToggle.channelDialog = false;
-						this.$message({
-							message: "Close channel successed",
-							type: "success"
-						});
-						this.channelToggle.channelCloseDialog = false;
-					} else {
-						this.$message.error(res.data.Desc || "Close channel Failed");
+				.post(this.$api.channelClose, params, {
+					loading: {
+						text: "Processing...",
+						target: ".loading-content-2"
 					}
-					this.$store.dispatch("setChannelBalanceTotal");
-					this.channelToggle.loading.close();
-					this.channelToggle.loading = null;
 				})
-				.catch(() => {
-					this.channelToggle.loading.close();
-					this.channelToggle.loading = null;
-					this.$message.error("Close channel failed.");
+				.then(res => {
+					this.channelToggle.channelDialog = false;
+					this.$message({
+						message: "Close channel successed",
+						type: "success"
+					});
+					this.channelToggle.channelCloseDialog = false;
+					this.$store.dispatch("setChannelBalanceTotal");
 				});
 		}
 	},

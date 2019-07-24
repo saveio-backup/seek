@@ -40,51 +40,45 @@ let timer = null;
 import { ipcRenderer } from "electron";
 import util from "../assets/config/util";
 export default {
-  data() {
-    return {
-      util,
-      formatUrl: "save://share/",
-      downloadUrl: "",
-      downloadInfo: {}
-    };
-  },
-  methods: {
-    toGetFileInfo() {
-      if (this.downloadUrl.indexOf(this.formatUrl) != 0) return;
-      const path = ipcRenderer.sendSync("string-to-hex", this.downloadUrl);
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        this.$axios.get(this.$api.downloadInfo + path).then(res => {
-          if (res.data.Error === 0) {
-            this.downloadInfo = res.data.Result;
-          }
-        });
-      }, 1500);
-    },
-    toDownload() {
-      if (this.downloadUrl.indexOf(this.formatUrl) != 0) return;
-      this.$axios
-        .post(this.$api.download, {
-          Url: this.downloadUrl,
-          SetFileName: true,
-          MaxPeerNum: 20
-        })
-        .then(res => {
-          if (res.data.Error === 0) {
-            this.$emit("closedialog");
-            this.$store.dispatch("setDownload");
-            this.$router.push({
-              name: "transfer",
-              query: {
-                transferType: 2
-              }
-            });
-          } else {
-            this.$message.error(res.data.Desc || "To Download Failed");
-          }
-        });
-    }
-  }
+	data() {
+		return {
+			util,
+			formatUrl: "save://share/",
+			downloadUrl: "",
+			downloadInfo: {}
+		};
+	},
+	methods: {
+		toGetFileInfo() {
+			if (this.downloadUrl.indexOf(this.formatUrl) != 0) return;
+			const path = ipcRenderer.sendSync("string-to-hex", this.downloadUrl);
+			clearTimeout(timer);
+			timer = setTimeout(() => {
+				this.$axios.get(this.$api.downloadInfo + path).then(res => {
+					this.downloadInfo = res.Result;
+				});
+			}, 1500);
+		},
+		toDownload() {
+			if (this.downloadUrl.indexOf(this.formatUrl) != 0) return;
+			this.$axios
+				.post(this.$api.download, {
+					Url: this.downloadUrl,
+					SetFileName: true,
+					MaxPeerNum: 20
+				})
+				.then(res => {
+					this.$emit("closedialog");
+					this.$store.dispatch("setDownload");
+					this.$router.push({
+						name: "transfer",
+						query: {
+							transferType: 2
+						}
+					});
+				});
+		}
+	}
 };
 </script>
  <style lang="scss">
@@ -100,19 +94,19 @@ export default {
 // }
 // }
 .new-download-wrapper {
-  div {
-    margin-bottom: 10px;
-    width: 100%;
-    overflow: hidden;
-    .new-download-left {
-      float: left;
-      width: 55px;
-      text-align: right;
-    }
-    .new-download-right {
-      float: right;
-      width: calc(100% - 60px);
-    }
-  }
+	div {
+		margin-bottom: 10px;
+		width: 100%;
+		overflow: hidden;
+		.new-download-left {
+			float: left;
+			width: 55px;
+			text-align: right;
+		}
+		.new-download-right {
+			float: right;
+			width: calc(100% - 60px);
+		}
+	}
 }
 </style>

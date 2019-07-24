@@ -1,16 +1,16 @@
 <template>
 	<div class="dialogWrapper">
 		<export-private-key
-		 @closeDialog="closeDialog"
-		 v-if="menuSelector === 'exportPrivateKey'"
+			@closeDialog="closeDialog"
+			v-if="menuSelector === 'exportPrivateKey'"
 		></export-private-key>
 		<logout
-		 @closeDialog="closeDialog"
-		 v-if="menuSelector === 'logout'"
+			@closeDialog="closeDialog"
+			v-if="menuSelector === 'logout'"
 		></logout>
 		<is-create-channel
-		 @closeDialog="closeDialog"
-		 v-if="menuSelector === 'createChannel'"
+			@closeDialog="closeDialog"
+			v-if="menuSelector === 'createChannel'"
 		></is-create-channel>
 	</div>
 </template>
@@ -28,7 +28,7 @@ export default {
 		isCreateChannel
 	},
 	data() {
-		const COUNT_INTERVAL = 5000
+		const COUNT_INTERVAL = 5000;
 		return {
 			menuSelector: "",
 			channelNum: null,
@@ -42,17 +42,17 @@ export default {
 		};
 	},
 	mounted() {
-		console.log('init Dialog.vue')
+		console.log("init Dialog.vue");
 		ipcRenderer.on("setSelector", (e, selector) => {
-      this.menuSelector = selector;
-      this.$forceUpdate()
+			this.menuSelector = selector;
+			this.$forceUpdate();
 		});
 		localStorage.setItem("DNSAdress", "");
 		this.isNeedCreateChannel();
 	},
 	watch: {
-		Address(newVal,oldVal) {
-			console.log(`Address--->newVal:${newVal},oldVal:${oldVal}`)
+		Address(newVal, oldVal) {
+			console.log(`Address--->newVal:${newVal},oldVal:${oldVal}`);
 			// alert('Address change')
 			this.Balance = null;
 			this.channelNum = null;
@@ -60,23 +60,27 @@ export default {
 			this.getProcess();
 		},
 		Balance(newVal, oldVal) {
-			if(!oldVal && newVal && this.channelNum === 0) {
+			if (!oldVal && newVal && this.channelNum === 0) {
 				// alert('Balance change');
-				console.log(`Balance(new):${newVal},Balance(old):${oldVal},channelNum:${this.channelNum}`);
-				ipcRenderer.send('dialog-open', 'createChannel');
+				console.log(
+					`Balance(new):${newVal},Balance(old):${oldVal},channelNum:${this.channelNum}`
+				);
+				ipcRenderer.send("dialog-open", "createChannel");
 			}
 		},
 		channelNum(newVal, oldVal) {
-			if(this.Balance && newVal === 0 && oldVal === null) {
+			if (this.Balance && newVal === 0 && oldVal === null) {
 				// alert('channelNum change');
-				console.log(`channelNum(new):${newVal},channelNum(old):${oldVal},Balance:${this.Balance}`);
-				ipcRenderer.send('dialog-open', 'createChannel');
+				console.log(
+					`channelNum(new):${newVal},channelNum(old):${oldVal},Balance:${this.Balance}`
+				);
+				ipcRenderer.send("dialog-open", "createChannel");
 			}
 		}
 	},
 	methods: {
 		closeDialog({ timeout = 0 }) {
-			this.menuSelector = '';
+			this.menuSelector = "";
 			if (timeout === 0) {
 				ipcRenderer.send("dialog-close");
 			} else {
@@ -90,56 +94,52 @@ export default {
 			this.getAddress();
 			this.setTimeAddressObj = setInterval(() => {
 				this.getAddress();
-			}, this.COUNT_INTERVAL)	
+			}, this.COUNT_INTERVAL);
 		},
 		getAddress() {
-			this.$axios
-      .get(this.$api.account)
-      .then(async (res) => {
-        const data = res.data;
-				if (data.Error === 0) { // response data
-					if (data.Desc === "SUCCESS" && data.Result.Address) {
-						this.Address = data.Result.Address;
-					}
+			this.$axios.get(this.$api.account).then(async res => {
+				if (res.Result.Address) {
+					this.Address = res.Result.Address;
 				}
-			})
+			});
 		},
 		getProcess() {
 			clearInterval(this.setTimeProcessObj);
 			this.setTimeProcessObj = setInterval(() => {
 				this.$axios.get(this.$api.channelInitProgress).then(progressResult => {
-					this.Progress = progressResult.data.Result.Progress
-					if(progressResult.data.Result.Progress === 1) {
+					this.Progress = progressResult.Result.Progress;
+					if (progressResult.Result.Progress === 1) {
 						this.checkCanNotAddChannel();
 					}
-				})
-			},this.COUNT_INTERVAL)
+				});
+			}, this.COUNT_INTERVAL);
 		},
 		getBalance() {
 			const vm = this;
-			this.$axios.get(this.$api.balance +'/'+this.Address).then(res => {
-				if(res.data.Error === 0) {
-					for (let i = 0; i < res.data.Result.length; i++) {
-						const item = res.data.Result[i];
-						if (item.Symbol === 'SAVE') {
-							vm.Balance = item.Balance;
-							break;
-						}
+			this.$axios.get(this.$api.balance + "/" + this.Address).then(res => {
+				for (let i = 0; i < res.Result.length; i++) {
+					const item = res.Result[i];
+					if (item.Symbol === "SAVE") {
+						vm.Balance = item.Balance;
+						break;
 					}
 				}
-			})
+			});
 		},
 		getChannel() {
 			this.$axios.get(this.$api.channel).then(res => {
-				if(res.data.Error === 0) {
-					if(res.data.Result && res.data.Result.Channels && res.data.Result.Channels.length > 0) {
-						clearInterval(this.setTimeObj);
-						return;
-					}
-					console.log(`getChannel:${res}`)
-					this.channelNum = res.data.Result && res.data.Result.Channels && res.data.Result.Channels.length;
+				if (
+					res.Result &&
+					res.Result.Channels &&
+					res.Result.Channels.length > 0
+				) {
+					clearInterval(this.setTimeObj);
+					return;
 				}
-			})	
+				console.log(`getChannel:${res}`);
+				this.channelNum =
+					res.Result && res.Result.Channels && res.Result.Channels.length;
+			});
 		},
 		// check have channel and wallet money
 		checkCanNotAddChannel() {

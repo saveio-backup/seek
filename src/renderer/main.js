@@ -1,15 +1,14 @@
 import Vue from 'vue'
-import axios from 'axios'
 import App from './App'
 import router from './router/router.js'
 import store from './store/store.js'
+import axios from './assets/config/http'
 import API from './assets/config/api'
 import commonMethods from './assets/config/commonMethods'
 import './assets/css/style.scss'
 import dateFormat from './assets/tool/date'
 import ElementUI from 'element-ui'
 import locale from 'element-ui/lib/locale/lang/en'
-// import axios from './assets/config/http'
 Vue.use(ElementUI, {
   locale
 })

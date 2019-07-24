@@ -311,50 +311,31 @@ export default {
 		getBalanceList() {
 			const DAY_NUM = 7;
 			this.$axios
-				.get(this.$api.balancehistory + "/" + this.user.address + "/" + DAY_NUM)
-				.then(data => {
-					// console.log(res);
-					// test to do
-					const res = data.data;
-					// res = this.balanceListsMock;
-					if (res.Error === 0) {
-						const result = res.Result;
-						// let balanceXAxisData = [];
-						let balanceData = [];
-						// let todayZeroTimestamp = this.getZeroTimestamp();
-						// let i = 0;
-						// while (i < DAY_NUM) {
-						// 	let timestamp = todayZeroTimestamp - i * 86400000;
-						// 	let dateItem = new Date(timestamp);
-						// 	let monthItem =
-						// 		dateItem.getMonth() >= 9
-						// 			? dateItem.getMonth() + 1
-						// 			: "0" + (dateItem.getMonth() + 1);
-						// 	let dayItem =
-						// 		dateItem.getDate() > 9
-						// 			? dateItem.getDate()
-						// 			: "0" + dateItem.getDate();
-						// 	balanceXAxisData.unshift(`${monthItem}/${dayItem}`);
-						// 	i++;
-						// }
-						const dayLen = result.length || 0;
-						for (let i = 0; i < DAY_NUM; i++) {
-							if (dayLen > i) {
-								balanceData.push(result[i].BalanceFormat || 0);
-							} else {
-								balanceData.unshift(0);
-							}
-						}
-						balanceData.push(this.currentBalanceFormat);
-						balanceData.splice(0, 1);
-						this.currentBalanceList = balanceData;
-						this.chartsDom.setOption({
-							series: {
-								data: balanceData
-							}
-						});
-						// this.drawBalanceView(balanceXAxisData, balanceData);
+				.get(
+					this.$api.balancehistory + "/" + this.user.address + "/" + DAY_NUM,
+					{
+						timeout: 120000
 					}
+				)
+				.then(res => {
+					const result = res.Result;
+					let balanceData = [];
+					const dayLen = result.length || 0;
+					for (let i = 0; i < DAY_NUM; i++) {
+						if (dayLen > i) {
+							balanceData.push(result[i].BalanceFormat || 0);
+						} else {
+							balanceData.unshift(0);
+						}
+					}
+					balanceData.push(this.currentBalanceFormat);
+					balanceData.splice(0, 1);
+					this.currentBalanceList = balanceData;
+					this.chartsDom.setOption({
+						series: {
+							data: balanceData
+						}
+					});
 				});
 		},
 		//get today 00:00 timestamp
@@ -511,6 +492,7 @@ export default {
 				},
 				yAxis: {
 					type: "value",
+					scale: true,
 					axisLine: {
 						lineStyle: {
 							color: "#AFACAC"
@@ -574,13 +556,11 @@ export default {
 			this.$axios
 				.get(this.$api.account + "/export/walletfile")
 				.then(res => {
-					if (res.data.Desc === "SUCCESS" && res.data.Error === 0) {
-						ipcRenderer.send(
-							"export-file-dialog",
-							res.data.Result.Wallet,
-							"Wallet"
-						);
-					}
+					ipcRenderer.send(
+						"export-file-dialog",
+						res.Result.Wallet,
+						"Wallet"
+					);
 					ipcRenderer.once("export-finished", () => {
 						this.$message({
 							message: "Export Success!",

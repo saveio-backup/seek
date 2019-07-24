@@ -24,6 +24,10 @@ axios.interceptors.response.use(
     if(response.data.Error === 0) {
       return response.data;
     } else {
+      console.log(response);
+      if(response.config && response.config.message && response.config.message.show === 'no') {
+        return Promise.reject(response.data);
+      }
       Message.error({
         message: response.data.Error && errorCode[response.data.Error] && errorCode[response.data.Error]['en'] || response.data.Desc || ''
       })

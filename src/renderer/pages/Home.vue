@@ -139,7 +139,6 @@ export default {
 	mounted() {
 		document.title = "Home";
 		this.$store.dispatch("setCurrentAccount"); // get login status
-		this.chartInit();
 		// open channel callback form createChannel of browserView dialog
 		if (this.dnsAdress && this.dnsAdress != "done") {
 			this.$refs.channelListObj.openOpen(this.dnsAdress, 100);
@@ -322,14 +321,14 @@ export default {
 					let balanceData = [];
 					const dayLen = result.length || 0;
 					for (let i = 0; i < DAY_NUM; i++) {
-						if (dayLen > i) {
+						if (dayLen >= i) {
 							balanceData.push(result[i].BalanceFormat || 0);
 						} else {
 							balanceData.unshift(0);
 						}
 					}
-					balanceData.push(this.currentBalanceFormat);
-					balanceData.splice(0, 1);
+					balanceData[6] = this.currentBalanceFormat;
+					// balanceData.splice(0, 1);
 					this.currentBalanceList = balanceData;
 					this.chartsDom.setOption({
 						series: {
@@ -626,6 +625,11 @@ export default {
 				});
 			} catch (e) {
 				console.log(e);
+			}
+		},
+		loginStatus(newVal, oldVal) {
+			if(newVal === 1) {
+				this.chartInit();
 			}
 		}
 	},

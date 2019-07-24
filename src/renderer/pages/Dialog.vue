@@ -28,7 +28,7 @@ export default {
 		isCreateChannel
 	},
 	data() {
-		const COUNT_INTERVAL = 5000;
+		const COUNT_INTERVAL = 10000;
 		return {
 			menuSelector: "",
 			channelNum: null,
@@ -97,7 +97,7 @@ export default {
 			}, this.COUNT_INTERVAL);
 		},
 		getAddress() {
-			this.$axios.get(this.$api.account).then(async res => {
+			this.$axios.get(this.$api.account, {message:{show:'no'}}).then(async res => {
 				if (res.Result.Address) {
 					this.Address = res.Result.Address;
 				}
@@ -106,7 +106,7 @@ export default {
 		getProcess() {
 			clearInterval(this.setTimeProcessObj);
 			this.setTimeProcessObj = setInterval(() => {
-				this.$axios.get(this.$api.channelInitProgress).then(progressResult => {
+				this.$axios.get(this.$api.channelInitProgress, {message:{show:'no'}}).then(progressResult => {
 					this.Progress = progressResult.Result.Progress;
 					if (progressResult.Result.Progress === 1) {
 						this.checkCanNotAddChannel();
@@ -116,7 +116,7 @@ export default {
 		},
 		getBalance() {
 			const vm = this;
-			this.$axios.get(this.$api.balance + "/" + this.Address).then(res => {
+			this.$axios.get(this.$api.balance + "/" + this.Address, {message:{show:'no'}}).then(res => {
 				for (let i = 0; i < res.Result.length; i++) {
 					const item = res.Result[i];
 					if (item.Symbol === "SAVE") {
@@ -127,12 +127,13 @@ export default {
 			});
 		},
 		getChannel() {
-			this.$axios.get(this.$api.channel).then(res => {
+			this.$axios.get(this.$api.channel, {message:{show:'no'}}).then(res => {
 				if (
 					res.Result &&
 					res.Result.Channels &&
 					res.Result.Channels.length > 0
 				) {
+					this.channelNum = res.Result.Channels.length;
 					clearInterval(this.setTimeObj);
 					return;
 				}

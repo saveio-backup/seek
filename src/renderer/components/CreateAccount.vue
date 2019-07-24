@@ -280,7 +280,7 @@ export default {
 		},
 		getAccountStatus() {
 			this.$axios
-				.get(this.$api.account)
+				.get(this.$api.account, {message:{show:'no'}})
 				.then(res => {
 					if (res.Result.Address) {
 						this.accountStatus = 1;
@@ -289,6 +289,7 @@ export default {
 					}
 				})
 				.catch(err => {
+					this.accountStatus = 0;
 					console.error(err);
 				});
 		},

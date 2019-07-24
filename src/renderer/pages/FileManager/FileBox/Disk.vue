@@ -55,11 +55,11 @@
           border
           ref='table'
           @row-click="clickRow"
-          :data="mockData"
+          :data="filterListData"
           height="100%"
           @selection-change="selectFile"
         >
-          <!-- :data="filterListData" -->
+          <!-- :data="mockData" -->
           <el-table-column
             v-if="toggleFilebox"
             type="selection"
@@ -103,7 +103,7 @@
                   ></i>
                   <i
                     v-if="page === 'filebox'"
-                    class="ofont-xiangqingchakan ofont cursor-click active-blue cursor-pointer"
+                    class="ofont-xiangqing ofont cursor-click active-blue cursor-pointer"
                     title="look detail"
                     @click.stop="openDetailDialog(scope.row)"
                   >
@@ -963,10 +963,10 @@ $theme-font-blue: #040f39;
             //   opacity: 0.7;
             // }
           }
-          .ofont-xiangqingchakan {
+          .ofont-xiangqing {
             position: relative;
-            top: 1px;
-            font-size: 18px;
+            top: 2px;
+            font-size: 16px;
             font-weight: 500;
           }
         }

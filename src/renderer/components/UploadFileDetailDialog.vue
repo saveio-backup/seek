@@ -45,11 +45,11 @@
           <div class="adjust-item">
             <p class="adjust-title theme-font-blue ft14">Authority:</p>
             <div class="adjust-info">
-              <p class="theme-font-blue ft14 mr20">{{fileDetail && (fileDetail.Priviledge===0?'private':fileDetail.Priviledge===1?'public':fileDetail.Priviledge===2?'whitelist':'') || ''}}</p>
+              <p class="theme-font-blue ft14 mr20">{{fileDetail && (fileDetail.Privilege===0?'private':fileDetail.Privilege===1?'public':fileDetail.Privilege===2?'whitelist':'') || ''}}</p>
             </div>
           </div>
           <div
-            v-if="fileDetail && fileDetail.Priviledge === 2"
+            v-if="fileDetail && fileDetail.Privilege === 2"
             class="adjust-item"
           >
             <p class="adjust-title theme-font-blue ft14">Whitelist:</p>

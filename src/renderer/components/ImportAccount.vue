@@ -227,11 +227,15 @@ export default {
 					}
 				})
 				.then(res => {
-					const result = res.Result;
-					for (let key in result) {
-						window.localStorage.setItem(key, result[key]);
+					if (res.Error === 0) {
+						const result = res.Result;
+						for (let key in result) {
+							window.localStorage.setItem(key, result[key]);
+						}
+						window.location.href = location.origin + location.pathname; // success login link to home page
+					} else {
+						this.$message.error(this.$i18n.error[res.Error]);
 					}
-					window.location.href = location.origin + location.pathname; // success login link to home page
 				})
 				.catch(err => {
 					console.error(err);
@@ -254,11 +258,15 @@ export default {
 							}
 						)
 						.then(res => {
-							const result = res.Result;
-							for (let key in result) {
-								window.localStorage.setItem(key, result[key]);
+							if (res.Error === 0) {
+								const result = res.Result;
+								for (let key in result) {
+									window.localStorage.setItem(key, result[key]);
+								}
+								window.location.href = location.origin + location.pathname; // success login link to home page
+							} else {
+								this.$message.error(this.$i18n.error[res.Error]);
 							}
-							window.location.href = location.origin + location.pathname; // success login link to home page
 						});
 				}
 			});

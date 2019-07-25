@@ -97,49 +97,56 @@ export default {
 			}, this.COUNT_INTERVAL);
 		},
 		getAddress() {
-			this.$axios.get(this.$api.account, {message:{show:'no'}}).then(async res => {
-				if (res.Result.Address) {
-					this.Address = res.Result.Address;
+			this.$axios.get(this.$api.account).then(async res => {
+				if (res.Error === 0) {
+					if (res.Result.Address) {
+						this.Address = res.Result.Address;
+					}
 				}
 			});
 		},
 		getProcess() {
 			clearInterval(this.setTimeProcessObj);
 			this.setTimeProcessObj = setInterval(() => {
-				this.$axios.get(this.$api.channelInitProgress, {message:{show:'no'}}).then(progressResult => {
-					this.Progress = progressResult.Result.Progress;
-					if (progressResult.Result.Progress === 1) {
-						this.checkCanNotAddChannel();
+				this.$axios.get(this.$api.channelInitProgress).then(progressResult => {
+					if (progressResult.Error === 0) {
+						this.Progress = progressResult.Result.Progress;
+						if (progressResult.Result.Progress === 1) {
+							this.checkCanNotAddChannel();
+						}
 					}
 				});
 			}, this.COUNT_INTERVAL);
 		},
 		getBalance() {
 			const vm = this;
-			this.$axios.get(this.$api.balance + "/" + this.Address, {message:{show:'no'}}).then(res => {
-				for (let i = 0; i < res.Result.length; i++) {
-					const item = res.Result[i];
-					if (item.Symbol === "SAVE") {
-						vm.Balance = item.Balance;
-						break;
+			this.$axios.get(this.$api.balance + "/" + this.Address).then(res => {
+				if (res.Error === 0) {
+					for (let i = 0; i < res.Result.length; i++) {
+						const item = res.Result[i];
+						if (item.Symbol === "SAVE") {
+							vm.Balance = item.Balance;
+							break;
+						}
 					}
 				}
 			});
 		},
 		getChannel() {
-			this.$axios.get(this.$api.channel, {message:{show:'no'}}).then(res => {
-				if (
-					res.Result &&
-					res.Result.Channels &&
-					res.Result.Channels.length > 0
-				) {
-					this.channelNum = res.Result.Channels.length;
-					clearInterval(this.setTimeObj);
-					return;
+			this.$axios.get(this.$api.channel).then(res => {
+				if (res.Error === 0) {
+					if (
+						res.Result &&
+						res.Result.Channels &&
+						res.Result.Channels.length > 0
+					) {
+						this.channelNum = res.Result.Channels.length;
+						clearInterval(this.setTimeObj);
+						return;
+					}
+					this.channelNum =
+						res.Result && res.Result.Channels && res.Result.Channels.length;
 				}
-				console.log(`getChannel:${res}`);
-				this.channelNum =
-					res.Result && res.Result.Channels && res.Result.Channels.length;
 			});
 		},
 		// check have channel and wallet money

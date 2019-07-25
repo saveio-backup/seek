@@ -3,6 +3,7 @@ import App from './App'
 import router from './router/router.js'
 import store from './store/store.js'
 import axios from './assets/config/http'
+import i18n from './assets/config/i18n/index';
 import API from './assets/config/api'
 import commonMethods from './assets/config/commonMethods'
 import './assets/css/style.scss'
@@ -16,7 +17,8 @@ Vue.use(ElementUI, {
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.use(commonMethods);
 Vue.prototype.$dateFormat = dateFormat;
-Vue.prototype.$axios = axios
+Vue.prototype.$axios = axios;
+Vue.prototype.$i18n = i18n;
 Vue.prototype.$api = API;
 Vue.config.productionTip = false
 Vue.directive('seekclickoutside', {

@@ -139,14 +139,17 @@
 								class="light-error"
 								>Upload Failed</span> -->
 							</div>
-							<div v-else-if='scope.row.Progress > 0'>
+							<div v-else>
+								{{ getDetailStatus(scope.row.Type, scope.row.DetailStatus) }}
+							</div>
+							<!-- <div v-else-if='scope.row.Progress > 0'>
 								<span v-if="scope.row.Type === 1">Uploading</span>
 								<span v-if="scope.row.Type === 2">Downloading</span>
 							</div>
 							<div v-else>
 								<span v-if="scope.row.Type === 1">Sharding</span>
 								<span v-if="scope.row.Type === 2">Searching</span>
-							</div>
+							</div> -->
 						</div>
 					</template>
 				</el-table-column>
@@ -576,6 +579,56 @@ export default {
 				return a.HostAddr.localeCompare(b.HostAddr);
 			});
 			return arr;
+		},
+		getDetailStatus() {
+			return function(type, detailStatus) {
+				console.log("type", type);
+				console.log("detailStatus", detailStatus);
+				switch (detailStatus) {
+					case 0:
+						return "";
+					case 1:
+						return "Start Sharding";
+					case 2:
+						return "Sharding to Complete";
+					case 3:
+						return "Pay on the Chain";
+					case 4:
+						return "The Payment Chain is Complete";
+					case 5:
+						return "Submit Whitelist Information";
+					case 6:
+						return "Submit Whitelist Information Completed";
+					case 7:
+						return "Find Storage Node";
+					case 8:
+						return "Find the Storage Node to Complete";
+					case 9:
+						return "Generate PDP Proof Data";
+					case 10:
+						return "Start Transferring File Block Data";
+					case 11:
+						return "Transfer File Block Data Complete";
+					case 12:
+						return "Wait for the Storage Node to Submit the PDP Proof";
+					case 13:
+						return "Storage Node Submits PDP Proof Complete";
+					case 14:
+						return "Register Information to DNS Node";
+					case 15:
+						return "Register Information to DNS Node Complete";
+					case 16:
+						return `Start ${type === 2 ? "Downloading" : "Uploading"} Files`;
+					case 17:
+						return `File  ${type === 2 ? "Downloading" : "Uploading"}`;
+					case 18:
+						return `File  ${
+							type === 2 ? "downloading" : "uploading"
+						} completed, submit sharing information to DNS node`;
+					default:
+						return "";
+				}
+			};
 		}
 	},
 	methods: {
@@ -594,10 +647,14 @@ export default {
 			const type = this.transferType;
 			const arr = this.getTask(type, 0, 1, 2, 4);
 			this.$axios.post(this.$api.cancelAll, params).then(res => {
-				this.$message({
-					message: "Opeation Success",
-					type: "Success"
-				});
+				if (res.Error === 0) {
+					this.$message({
+						message: "Opeation Success",
+						type: "Success"
+					});
+				} else {
+					this.$message.error(this.$i18n.error[res.Error]);
+				}
 			});
 		},
 		continueAll() {
@@ -627,10 +684,14 @@ export default {
 				Hash: row.FileHash
 			};
 			this.$axios.post(this.$api.deleteRecord, params).then(res => {
-				this.$message({
-					message: "Opeation Success",
-					type: "Success"
-				});
+				if (res.Error === 0) {
+					this.$message({
+						message: "Opeation Success",
+						type: "Success"
+					});
+				} else {
+					this.$message.error(this.$i18n.error[res.Error]);
+				}
 			});
 		},
 		uploadOrDownloadCancel(row) {
@@ -640,10 +701,14 @@ export default {
 				Hash: row.FileHash
 			};
 			this.$axios.post(url, params).then(res => {
-				this.$message({
-					message: "Opeation Success",
-					type: "Success"
-				});
+				if (res.Error === 0) {
+					this.$message({
+						message: "Opeation Success",
+						type: "Success"
+					});
+				} else {
+					this.$message.error(this.$i18n.error[res.Error]);
+				}
 			});
 		},
 		uploadOrDownloadAgain(row) {
@@ -653,10 +718,14 @@ export default {
 				Hash: row.FileHash
 			};
 			this.$axios.post(url, params).then(res => {
-				this.$message({
-					message: "Opeation Success",
-					type: "success"
-				});
+				if (res.Error === 0) {
+					this.$message({
+						message: "Opeation Success",
+						type: "success"
+					});
+				} else {
+					this.$message.error(this.$i18n.error[res.Error]);
+				}
 			});
 		},
 		uploadOrDownloadContinue(row) {
@@ -666,10 +735,14 @@ export default {
 				Hash: row.FileHash
 			};
 			this.$axios.post(url, params).then(res => {
-				this.$message({
-					message: "Opeation Success",
-					type: "success"
-				});
+				if (res.Error === 0) {
+					this.$message({
+						message: "Opeation Success",
+						type: "success"
+					});
+				} else {
+					this.$message.error(this.$i18n.error[res.Error]);
+				}
 			});
 		},
 		uploadOrDownloadPause(row) {
@@ -679,10 +752,14 @@ export default {
 				Hash: row.FileHash
 			};
 			this.$axios.post(url, params).then(res => {
-				this.$message({
-					message: "Opeation Success",
-					type: "success"
-				});
+				if (res.Error === 0) {
+					this.$message({
+						message: "Opeation Success",
+						type: "success"
+					});
+				} else {
+					this.$message.error(this.$i18n.error[res.Error]);
+				}
 			});
 		},
 		hideTaskDialog() {
@@ -702,10 +779,14 @@ export default {
 		toDeleteFile(hash) {
 			this.switchToggle.deleteDialog = false;
 			this.$axios.post(this.$api.delete, { Hash: hash }).then(res => {
-				this.$message({
-					message: "Delete Completed",
-					type: "success"
-				});
+				if (res.Error === 0) {
+					this.$message({
+						message: "Delete Completed",
+						type: "success"
+					});
+				} else {
+					this.$message.error(this.$i18n.error[res.Error]);
+				}
 			});
 		},
 		toDecrypt() {
@@ -718,13 +799,17 @@ export default {
 					}
 				})
 				.then(res => {
-					this.$message({
-						message: "Decryption successed",
-						type: "success"
-					});
-					this.fileList.Password = "";
-					this.fileList.Path = "";
-					this.switchToggle.decryptDialog = false;
+					if (res.Error === 0) {
+						this.$message({
+							message: "Decryption successed",
+							type: "success"
+						});
+						this.fileList.Password = "";
+						this.fileList.Path = "";
+						this.switchToggle.decryptDialog = false;
+					} else {
+						this.$message.error(this.$i18n.error[res.Error]);
+					}
 				})
 				.catch(err => {
 					console.log(err);

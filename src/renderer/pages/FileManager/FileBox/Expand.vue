@@ -1,99 +1,99 @@
 <template>
-  <div id="expand">
-    <div class="content">
-      <div class="space-header">
-        <div class="space-progress">
-          <div class="theme-font-blue bold mb10 ft14 user-no-select">Used: {{util.bytesToSize(space.Used * 1024)}} / {{util.bytesToSize((space.Used + space.Remain) *1024)}}  <span class="theme-font-blue-40 bold ft14 ">ExpiredAt :{{expired_old}}</span> </div>
-          <el-progress
-            :stroke-width="30"
-            :percentage="takeSpace"
-          ></el-progress>
-        </div>
-        <el-button
-          ref='getspace'
-          @click="openExpandDialog"
-        >Storage</el-button>
-      </div>
-      <p class="theme-font-blue bold mt40 mb10 ft14 user-no-select">Space Adjust Record</p>
-      <div class="space-record">
-        <el-table
-          :data='Records'
-          border
-          ref='recordTable'
-          empty-text='No Data'
-          height='100%'
-        >
-          <el-table-column label='Size'>
-            <template slot-scope="scope">
-              <div>
-                {{util.bytesToSize(scope.row.Size * 1024)}}
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column label='Expired Time'>
-            <template slot-scope="scope">
-              <div>
-                {{ $dateFormat.formatTimeByTimestamp(scope.row.ExpiredAt * 1000)}}
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column label='Cost'>
-            <template slot-scope="scope">
-              <div>
-                <div>
-                  {{parseFloat(scope.row.CostFormat)}} SAVE
-                </div>
-              </div>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
-      <el-dialog
-        center
-        width='600px'
-        :close-on-click-modal='false'
-        :visible.sync="expandDialogVisible"
-      >
-        <div slot="title">
-          <h2>Storage</h2>
-          <div class="dialog-title-border"></div>
-        </div>
-        <div class="loading-content expand-setspace-loading">
-          <div class="adjust">
-            <div class="adjust-item">
-              <div class="adjust-title bold ft14 tl theme-font-blue-40">Space Size:</div>
-            </div>
-            <!-- <h3 class="theme-font-blue transparent bold ft12">Space Size:</h3> -->
-            <div class="adjust-item">
-              <p class="adjust-title theme-font-blue ft14">Current:</p>
-              <div class="adjust-info">
-                <p class="theme-font-blue ft14 mr20">{{util.bytesToSize( (space.Used + space.Remain)*1024)}}</p>
-                <p class="theme-font-blue-40 ft14 ml20">{{util.bytesToSize(space.Used *1024)}} / {{util.bytesToSize( (space.Used + space.Remain)*1024)}}</p>
-              </div>
-            </div>
-            <div class="adjust-item">
-              <div class="adjust-title theme-font-blue ft14">Adjust to:</div>
-              <div class="adjust-info">
-                <el-input-number
-                ref="spaceNumberInput"
-                  class="number grey-theme"
-                  v-model="adjustSize"
-                  :precision='0'
-                  :min='minSize'
-                  @change="userSpaceCost"
-                  @focus="$refs.spaceNumberInput.select()"
-                  @blur="userSpaceCost"
-                ></el-input-number>
-                <!-- @change="setSizeValue" -->
-                <el-select
-                  class="sizeunit"
-                  @change="userSpaceCost"
-                  v-model="sizeUnit"
-                >
-                  <el-option
-                    label="MB"
-                    :value="sizeRange['MB']"
-                  >
+	<div id="expand">
+		<div class="content">
+			<div class="space-header">
+				<div class="space-progress">
+					<div class="theme-font-blue bold mb10 ft14 user-no-select">Used: {{util.bytesToSize(space.Used * 1024)}} / {{util.bytesToSize((space.Used + space.Remain) *1024)}} <span class="theme-font-blue-40 bold ft14 ">ExpiredAt :{{expired_old}}</span> </div>
+					<el-progress
+						:stroke-width="30"
+						:percentage="takeSpace"
+					></el-progress>
+				</div>
+				<el-button
+					ref='getspace'
+					@click="openExpandDialog"
+				>Storage</el-button>
+			</div>
+			<p class="theme-font-blue bold mt40 mb10 ft14 user-no-select">Space Adjust Record</p>
+			<div class="space-record">
+				<el-table
+					:data='Records'
+					border
+					ref='recordTable'
+					empty-text='No Data'
+					height='100%'
+				>
+					<el-table-column label='Size'>
+						<template slot-scope="scope">
+							<div>
+								{{util.bytesToSize(scope.row.Size * 1024)}}
+							</div>
+						</template>
+					</el-table-column>
+					<el-table-column label='Expired Time'>
+						<template slot-scope="scope">
+							<div>
+								{{ $dateFormat.formatTimeByTimestamp(scope.row.ExpiredAt * 1000)}}
+							</div>
+						</template>
+					</el-table-column>
+					<el-table-column label='Cost'>
+						<template slot-scope="scope">
+							<div>
+								<div>
+									{{parseFloat(scope.row.CostFormat)}} SAVE
+								</div>
+							</div>
+						</template>
+					</el-table-column>
+				</el-table>
+			</div>
+			<el-dialog
+				center
+				width='600px'
+				:close-on-click-modal='false'
+				:visible.sync="expandDialogVisible"
+			>
+				<div slot="title">
+					<h2>Storage</h2>
+					<div class="dialog-title-border"></div>
+				</div>
+				<div class="loading-content expand-setspace-loading">
+					<div class="adjust">
+						<div class="adjust-item">
+							<div class="adjust-title bold ft14 tl theme-font-blue-40">Space Size:</div>
+						</div>
+						<!-- <h3 class="theme-font-blue transparent bold ft12">Space Size:</h3> -->
+						<div class="adjust-item">
+							<p class="adjust-title theme-font-blue ft14">Current:</p>
+							<div class="adjust-info">
+								<p class="theme-font-blue ft14 mr20">{{util.bytesToSize( (space.Used + space.Remain)*1024)}}</p>
+								<p class="theme-font-blue-40 ft14 ml20">{{util.bytesToSize(space.Used *1024)}} / {{util.bytesToSize( (space.Used + space.Remain)*1024)}}</p>
+							</div>
+						</div>
+						<div class="adjust-item">
+							<div class="adjust-title theme-font-blue ft14">Adjust to:</div>
+							<div class="adjust-info">
+								<el-input-number
+									ref="spaceNumberInput"
+									class="number grey-theme"
+									v-model="adjustSize"
+									:precision='0'
+									:min='minSize'
+									@change="userSpaceCost"
+									@focus="$refs.spaceNumberInput.select()"
+									@blur="userSpaceCost"
+								></el-input-number>
+								<!-- @change="setSizeValue" -->
+								<el-select
+									class="sizeunit"
+									@change="userSpaceCost"
+									v-model="sizeUnit"
+								>
+									<el-option
+										label="MB"
+										:value="sizeRange['MB']"
+									>
 
 									</el-option>
 									<el-option
@@ -392,10 +392,14 @@ export default {
 		async hasUploadedFile() {
 			let addr = this.$api.getFileList + "0/0/0";
 			let result = await this.$axios.get(addr);
-			if (result.Result.length) {
-				this.isUploadedFile = true;
+			if (result.Error === 0) {
+				if (result.Result.length) {
+					this.isUploadedFile = true;
+				} else {
+					this.isUploadedFile = false;
+				}
 			} else {
-				this.isUploadedFile = false;
+				this.$message.error(this.$i18n.error[result.Error]);
 			}
 		},
 		addListenScroll(element, distance, callback) {
@@ -435,23 +439,27 @@ export default {
 			}
 			this.$axios(addr)
 				.then(res => {
-					if (res.Result.Records.length > 0) {
-						if (amount) {
-							this.Records = res.Result.Records;
-							this.switchToggle.loadSwitch = true;
+					if (res.Error === 0) {
+						if (res.Result.Records.length > 0) {
+							if (amount) {
+								this.Records = res.Result.Records;
+								this.switchToggle.loadSwitch = true;
+							} else {
+								this.Records = this.Records.concat(res.Result.Records);
+								this.switchToggle.loadSwitch = true;
+							}
+							return;
 						} else {
-							this.Records = this.Records.concat(res.Result.Records);
-							this.switchToggle.loadSwitch = true;
+							this.switchToggle.loadSwitch = false;
+							return;
 						}
-						return;
 					} else {
-						this.switchToggle.loadSwitch = false;
-						return;
+						this.$message.error(this.$i18n.error[res.Error]);
+						this.switchToggle.loadSwitch = true;
 					}
 				})
 				.catch(err => {
 					console.error(err);
-					this.switchToggle.loadSwitch = true;
 				});
 		},
 		openExpandDialog() {
@@ -496,19 +504,21 @@ export default {
 					}
 				)
 				.then(res => {
-					this.expandDialogVisible = false;
-					this.$message({
-						message: "Adjust Successed!",
-						type: "success"
-					});
-					this.$store.dispatch("setSpace");
-					this.getUserSpaceRecords(this.Records.length + 1);
-					this.setDateValue(); // no param  rest date.Type = 0
-					this.cost = {};
-					this.submitToggle = true;
-				})
-				.catch(err => {
-					this.submitToggle = true;
+					if (res.Error === 0) {
+						this.expandDialogVisible = false;
+						this.$message({
+							message: "Adjust Successed!",
+							type: "success"
+						});
+						this.$store.dispatch("setSpace");
+						this.getUserSpaceRecords(this.Records.length + 1);
+						this.setDateValue(); // no param  rest date.Type = 0
+						this.cost = {};
+						this.submitToggle = true;
+					} else {
+						this.$message.error(this.$i18n.error[res.Error]);
+						this.submitToggle = true;
+					}
 				});
 		},
 		userSpaceCost() {
@@ -526,12 +536,15 @@ export default {
 					}
 				})
 				.then(res => {
-          this.cost = res.Result;
-				}).catch(e => {
-          this.cost.Fee = 0;
-          this.cost.FeeFormat = 0;
-          this.cost.TransferType = 1;
-        })
+					if (res.Error === 0) {
+						this.cost = res.Result;
+					} else {
+						this.cost.Fee = 0;
+						this.cost.FeeFormat = 0;
+						this.cost.TransferType = 1;
+						this.$message.error(this.$i18n.error[res.Error]);
+					}
+				});
 		},
 		setSizeValue() {
 			// this.addInfo.Size.Value = this.adjustSize;

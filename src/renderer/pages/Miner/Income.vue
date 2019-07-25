@@ -168,23 +168,27 @@ export default {
 			this.$axios
 				.get(addr)
 				.then(res => {
-					console.log(res);
-					const result = res.Result;
-					this.result.TotalIncome = result.TotalIncome;
-					this.result.TotalIncomeFormat = result.TotalIncomeFormat;
-					// this.result.TotalIncomeFormat = 20124.123;
-					// this.result.Incomes = this.mockData;
-					if (result.Incomes.length > 0) {
-						this.result.Incomes = this.result.Incomes.concat(result.Incomes);
+					if (res.Error === 0) {
+						console.log(res);
+						const result = res.Result;
+						this.result.TotalIncome = result.TotalIncome;
+						this.result.TotalIncomeFormat = result.TotalIncomeFormat;
+						// this.result.TotalIncomeFormat = 20124.123;
+						// this.result.Incomes = this.mockData;
+						if (result.Incomes.length > 0) {
+							this.result.Incomes = this.result.Incomes.concat(result.Incomes);
+						} else {
+							this.loadSwitch = false;
+							return;
+						}
+						this.loadSwitch = true;
 					} else {
-						this.loadSwitch = false;
-						return;
+						this.$message.error(this.$i18n.error[res.Error]);
+						this.loadSwitch = true;
 					}
-					this.loadSwitch = true;
 				})
 				.catch(err => {
 					console.error(err);
-					this.loadSwitch = true;
 				});
 		}
 	}

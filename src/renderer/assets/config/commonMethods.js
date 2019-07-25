@@ -15,18 +15,20 @@ const methods = {
       Vue.prototype.$axios
         .get(Vue.prototype.$api.account + "/export/walletfile")
         .then(res => {
-          ipcRenderer.send("export-file-dialog", res.Result.Wallet, 'Wallet');
-          ipcRenderer.once("export-finished", () => {
-            if (cb) {
-              console.log(cb);
-              cb();
-            } else {
-              vm.activeMessage({
-                info: "Export Success!",
-                type: "success"
-              });
-            }
-          });
+          if (res.Error === 0) {
+            ipcRenderer.send("export-file-dialog", res.Result.Wallet, 'Wallet');
+            ipcRenderer.once("export-finished", () => {
+              if (cb) {
+                console.log(cb);
+                cb();
+              } else {
+                vm.activeMessage({
+                  info: "Export Success!",
+                  type: "success"
+                });
+              }
+            });
+          }
         })
         .catch(err => {
           console.error(err);

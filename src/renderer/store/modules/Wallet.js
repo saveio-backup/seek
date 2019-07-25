@@ -67,11 +67,18 @@ const actions = {
 function requestBalanceLists(commit) {
   axios
     .get(
-      api.balance + "/" + window.localStorage.getItem("Address") || ""
+      api.balance + "/" + window.localStorage.getItem("Address") || "",
+      {
+        message: {
+          once: 'onceIdWalletBalance'
+        }
+      }
     )
     .then(res => {
-      const result = res.Result;
-      commit('SET_BALANCE_LISTS', result);
+      if (res.Error === 0) {
+        const result = res.Result;
+        commit('SET_BALANCE_LISTS', result);
+      }
     })
     .catch(err => {
       console.error(err);
@@ -90,36 +97,37 @@ function requestTransActions(commit, config) {
       txTransSourceCancel = c;
     })
   }).then(res => {
-    const transferIn = [];
-    const transferOut = [];
-    const result = res.Result;
-    for (let i = 0; i < result.length; i++) {
-      if (result[i].Type === 1) {
-        transferOut.push(result[i]);
-      } else if (result[i].Type === 2) {
-        transferIn.push(result[i]);
+    if (res.Error === 0) {
+      const transferIn = [];
+      const transferOut = [];
+      const result = res.Result;
+      for (let i = 0; i < result.length; i++) {
+        if (result[i].Type === 1) {
+          transferOut.push(result[i]);
+        } else if (result[i].Type === 2) {
+          transferIn.push(result[i]);
+        }
+        if (i === result.length - 1) {
+          commit('SET_BLOCK_HEIGHT', result[i].BlockHeight)
+        }
       }
-      if (i === result.length - 1) {
-        commit('SET_BLOCK_HEIGHT', result[i].BlockHeight)
-      }
-    }
-    commit('SET_TX_RECORDS', result);
-    commit('SET_TRANSFER_IN', transferIn);
-    commit('SET_TRANSFER_OUT', transferOut);
-    timer.heart = setTimeout(() => {
-      this.dispatch('setTxRecords', {
-        asset
-      }); // heart loading
-    }, 5000);
-  }).catch(thrown => {
-    if (axios.isCancel(thrown)) {
-      console.log('Request canceled', thrown.message);
+      commit('SET_TX_RECORDS', result);
+      commit('SET_TRANSFER_IN', transferIn);
+      commit('SET_TRANSFER_OUT', transferOut);
+      timer.heart = setTimeout(() => {
+        this.dispatch('setTxRecords', {
+          asset
+        }); // heart loading
+      }, 5000);
     } else {
-      console.error('request error');
-      console.error(thrown);
+      if (axios.isCancel(thrown)) {
+        console.log('Request canceled', thrown.message);
+      } else {
+        console.error('request error');
+        console.error(thrown);
+      }
     }
   })
-    .finally(() => { })
 }
 export default {
   state,

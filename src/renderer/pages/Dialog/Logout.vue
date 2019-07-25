@@ -1,11 +1,11 @@
 <template>
 	<div class="logout">
 		<el-dialog
-		 center
-		 width='600px'
-		 :before-close="closeDialog"
-		 :close-on-click-modal='false'
-		 :visible.sync="logoutToggle"
+			center
+			width='600px'
+			:before-close="closeDialog"
+			:close-on-click-modal='false'
+			:visible.sync="logoutToggle"
 		>
 			<div slot="title">
 				<h2>Warning</h2>
@@ -18,9 +18,9 @@
 				<div slot="footer">
 					<el-button @click="closeDialog">Cancel</el-button>
 					<el-button
-					 type="primary"
-           class="primary"
-					 @click="logout"
+						type="primary"
+						class="primary"
+						@click="logout"
 					>Logout</el-button>
 				</div>
 			</div>
@@ -53,9 +53,13 @@ export default {
 					}
 				})
 				.then(res => {
-					window.localStorage.clear();
-					this.logoutUploadViews();
-					this.closeDialog();
+					if (res.Error === 0) {
+						window.localStorage.clear();
+						this.logoutUploadViews();
+						this.closeDialog();
+					} else {
+						this.$message.error(this.$i18n.error[res.Error]);
+					}
 				})
 				.catch(err => {
 					console.error(err);
@@ -82,7 +86,7 @@ export default {
 		}
 	},
 	mounted() {
-		this.logoutToggle = true
+		this.logoutToggle = true;
 	}
 };
 </script>

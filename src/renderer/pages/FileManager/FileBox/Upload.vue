@@ -443,8 +443,12 @@ export default {
 		},
 		getfscontractsetting() {
 			this.$axios.get(this.$api.getfscontractsetting).then(res => {
-				this.DefaultCopyNum = res.Result.DefaultCopyNum;
-				this.advancedData.CopyNum = this.DefaultCopyNum;
+				if (res.Error === 0) {
+					this.DefaultCopyNum = res.Result.DefaultCopyNum;
+					this.advancedData.CopyNum = this.DefaultCopyNum;
+				} else {
+					this.$message.error(this.$i18n.error[res.Error]);
+				}
 			});
 		},
 		selectUpload() {
@@ -556,20 +560,22 @@ export default {
 						}
 					})
 					.then(res => {
-						this.switchToggle.upload = true;
-						this.passwordForm.show = false;
-						this.$store.dispatch("setUpload");
-						this.$router.push({
-							name: "transfer",
-							query: { transferType: 1 }
-						});
-						this.$message({
-							type: 'success',
-							message: 'Start Upload'
-						})
-					})
-					.catch(() => {
-						this.switchToggle.upload = true;
+						if (res.Error === 0) {
+							this.switchToggle.upload = true;
+							this.passwordForm.show = false;
+							this.$store.dispatch("setUpload");
+							this.$router.push({
+								name: "transfer",
+								query: { transferType: 1 }
+							});
+							this.$message({
+								type: "success",
+								message: "Start Upload"
+							});
+						} else {
+							this.$message.error(this.$i18n.error[res.Error]);
+							this.switchToggle.upload = true;
+						}
 					});
 			});
 		},
@@ -596,8 +602,12 @@ export default {
 					params: { duration, interval, copyNum, whitelistCount, storeType }
 				})
 				.then(res => {
-					console.log(res);
-					this.uploadPrice = res.Result.FeeFormat;
+					if (res.Error === 0) {
+						console.log(res);
+						this.uploadPrice = res.Result.FeeFormat;
+					} else {
+						this.$message.error(this.$i18n.error[res.Error]);
+					}
 				});
 		},
 		hiddenAdvanced() {

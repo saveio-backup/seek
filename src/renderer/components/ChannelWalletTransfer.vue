@@ -167,15 +167,19 @@ export default {
 							}
 						)
 						.then(res => {
-							// this.transferInfo.Amount = 0; // reset
-							// this.transferInfo.Password = ""; // reset
-							this.$refs.transferForm.resetFields();
-							this.$message({
-								message: "Transfer Success!",
-								type: "success"
-							});
-							this.$emit("closeDialog");
-							this.initBalanceRequest();
+							if (res.Error === 0) {
+								// this.transferInfo.Amount = 0; // reset
+								// this.transferInfo.Password = ""; // reset
+								this.$refs.transferForm.resetFields();
+								this.$message({
+									message: "Transfer Success!",
+									type: "success"
+								});
+								this.$emit("closeDialog");
+								this.initBalanceRequest();
+							} else {
+								this.$message.error(this.$i18n.error[res.Error]);
+							}
 						})
 						.catch(err => {
 							console.error(err);

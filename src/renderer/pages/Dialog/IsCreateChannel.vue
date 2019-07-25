@@ -106,7 +106,11 @@ export default {
 					}
 				})
 				.then(res => {
-					this.dns = res.Result[0];
+					if (res.Error === 0) {
+						this.dns = res.Result[0];
+					} else {
+						this.$message.error(this.$i18n.error[res.Error]);
+					}
 				});
 		}
 	},

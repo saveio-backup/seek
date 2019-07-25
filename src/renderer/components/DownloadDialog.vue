@@ -1,39 +1,39 @@
 <template>
-  <div id="download-dialog">
-    <el-form>
-      <el-form-item
-        class="theme-font-blue-bold"
-        label="Download URL:"
-      >
-        <el-input
-          v-model="downloadUrl"
-          @input='toGetFileInfo'
-          @keyup.native.enter='toDownload'
-          placeholder="Input File URL"
-          class="grey-theme"
-        ></el-input>
-      </el-form-item>
-    </el-form>
-    <div class="mt20 text-center new-download-wrapper">
-      <div class="tl">
-        <p class="theme-font-blue new-download-left">Name:</p>
-        <p class="theme-font-blue-70 new-download-right">{{downloadInfo.Name || ''}}</p>
-      </div>
-      <div class="tl">
-        <p class="theme-font-blue new-download-left">Size:</p>
-        <p class="theme-font-blue-70 new-download-right">{{downloadInfo.Size? util.bytesToSize(downloadInfo.Size) : '0'}}</p>
-      </div> 
-      <div class="tl">
-        <p class="theme-font-blue new-download-left">Cost:</p>
-        <p class="theme-font-blue-70 new-download-right">{{downloadInfo.FeeFormat || '0'}} SAVE</p>
-      </div>
-      <el-button
-        class="mt40 primary"
-        type="primary"
-        @click="toDownload"
-      >Download</el-button>
-    </div>
-  </div>
+	<div id="download-dialog">
+		<el-form>
+			<el-form-item
+				class="theme-font-blue-bold"
+				label="Download URL:"
+			>
+				<el-input
+					v-model="downloadUrl"
+					@input='toGetFileInfo'
+					@keyup.native.enter='toDownload'
+					placeholder="Input File URL"
+					class="grey-theme"
+				></el-input>
+			</el-form-item>
+		</el-form>
+		<div class="mt20 text-center new-download-wrapper">
+			<div class="tl">
+				<p class="theme-font-blue new-download-left">Name:</p>
+				<p class="theme-font-blue-70 new-download-right">{{downloadInfo.Name || ''}}</p>
+			</div>
+			<div class="tl">
+				<p class="theme-font-blue new-download-left">Size:</p>
+				<p class="theme-font-blue-70 new-download-right">{{downloadInfo.Size? util.bytesToSize(downloadInfo.Size) : '0'}}</p>
+			</div>
+			<div class="tl">
+				<p class="theme-font-blue new-download-left">Cost:</p>
+				<p class="theme-font-blue-70 new-download-right">{{downloadInfo.FeeFormat || '0'}} SAVE</p>
+			</div>
+			<el-button
+				class="mt40 primary"
+				type="primary"
+				@click="toDownload"
+			>Download</el-button>
+		</div>
+	</div>
 </template>
 <script>
 let timer = null;
@@ -55,7 +55,11 @@ export default {
 			clearTimeout(timer);
 			timer = setTimeout(() => {
 				this.$axios.get(this.$api.downloadInfo + path).then(res => {
-					this.downloadInfo = res.Result;
+					if (res.Error === 0) {
+						this.downloadInfo = res.Result;
+					} else {
+						this.$message.error(this.$i18n.error[res.Error]);
+					}
 				});
 			}, 1500);
 		},

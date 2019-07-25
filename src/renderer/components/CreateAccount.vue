@@ -280,16 +280,19 @@ export default {
 		},
 		getAccountStatus() {
 			this.$axios
-				.get(this.$api.account, {message:{show:'no'}})
+				.get(this.$api.account)
 				.then(res => {
-					if (res.Result.Address) {
-						this.accountStatus = 1;
+					if (res.Error === 0) {
+						if (res.Result.Address) {
+							this.accountStatus = 1;
+						} else {
+							this.accountStatus = 0;
+						}
 					} else {
 						this.accountStatus = 0;
 					}
 				})
 				.catch(err => {
-					this.accountStatus = 0;
 					console.error(err);
 				});
 		},
@@ -330,13 +333,15 @@ export default {
 							}
 						})
 						.then(res => {
-							this.validation.PrivateKey = res.Result.PrivateKey;
-							this.validation.Wallet = res.Result.Wallet;
-							this.setStep(1);
-							this.switchToggle.submitSwitch = true;
-						})
-						.catch(() => {
-							this.switchToggle.submitSwitch = true;
+							if (res.Error === 0) {
+								this.validation.PrivateKey = res.Result.PrivateKey;
+								this.validation.Wallet = res.Result.Wallet;
+								this.setStep(1);
+								this.switchToggle.submitSwitch = true;
+							} else {
+								this.switchToggle.submitSwitch = true;
+								this.$message.error(this.$i18n.error[res.Error]);
+							}
 						});
 				}
 			});
@@ -360,16 +365,18 @@ export default {
 					}
 				)
 				.then(res => {
-					this.accountStatus = 1;
-					this.$store.dispatch("getChannelInitProgress");
-					const result = res.Result;
-					for (let key in result) {
-						window.localStorage.setItem(key, result[key]);
+					if (res.Error === 0) {
+						this.accountStatus = 1;
+						this.$store.dispatch("getChannelInitProgress");
+						const result = res.Result;
+						for (let key in result) {
+							window.localStorage.setItem(key, result[key]);
+						}
+						this.switchToggle.submitSwitch = true;
+					} else {
+						this.$message.error(this.$i18n.error[res.Error]);
+						this.switchToggle.submitSwitch = true;
 					}
-					this.switchToggle.submitSwitch = true;
-				})
-				.catch(() => {
-					this.switchToggle.submitSwitch = true;
 				});
 		}
 	}

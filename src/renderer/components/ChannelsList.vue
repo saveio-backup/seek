@@ -428,7 +428,11 @@ export default {
 	methods: {
 		getDns() {
 			this.$axios.get(this.$api.getAllDns).then(res => {
-				this.dns = res.Result;
+				if (res.Error === 0) {
+					this.dns = res.Result;
+				} else {
+					this.$message.error(this.$i18n.error[res.Error]);
+				}
 			});
 		},
 		setFixed() {
@@ -536,12 +540,16 @@ export default {
 					}
 				})
 				.then(res => {
-					this.$message({
-						message: "Open channel successed",
-						type: "success"
-					});
-					this.channelToggle.channelCloseDialog = false;
-					this.$store.dispatch("setChannelBalanceTotal");
+					if (res.Error === 0) {
+						this.$message({
+							message: "Open channel successed",
+							type: "success"
+						});
+						this.channelToggle.channelCloseDialog = false;
+						this.$store.dispatch("setChannelBalanceTotal");
+					} else {
+						this.$message.error(this.$i18n.error[res.Error]);
+					}
 				});
 		},
 		toChannelClose(params) {
@@ -553,13 +561,17 @@ export default {
 					}
 				})
 				.then(res => {
-					this.channelToggle.channelDialog = false;
-					this.$message({
-						message: "Close channel successed",
-						type: "success"
-					});
-					this.channelToggle.channelCloseDialog = false;
-					this.$store.dispatch("setChannelBalanceTotal");
+					if (res.Error === 0) {
+						this.channelToggle.channelDialog = false;
+						this.$message({
+							message: "Close channel successed",
+							type: "success"
+						});
+						this.channelToggle.channelCloseDialog = false;
+						this.$store.dispatch("setChannelBalanceTotal");
+					} else {
+						this.$message.error(this.$i18n.error[res.Error]);
+					}
 				});
 		}
 	},

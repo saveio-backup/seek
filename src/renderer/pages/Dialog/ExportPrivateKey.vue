@@ -1,11 +1,11 @@
 <template>
 	<div class="exportPrivateKey">
 		<el-dialog
-		 width='550px'
-		 :before-close="closeDialog"
-		 :close-on-click-modal='false'
-		 :visible.sync="exportPrivateKeyToggle"
-		 center
+			width='550px'
+			:before-close="closeDialog"
+			:close-on-click-modal='false'
+			:visible.sync="exportPrivateKeyToggle"
+			center
 		>
 			<div slot="title">
 				<h2>Export Private Key(WIF)</h2>
@@ -13,31 +13,31 @@
 			</div>
 			<div class="loading-content">
 				<el-form
-				 ref="dialogForm"
-				 :model="dialogForm"
-				 :rules="dialogRules"
+					ref="dialogForm"
+					:model="dialogForm"
+					:rules="dialogRules"
 				>
 					<el-form-item
-					 class="theme-font-blue-bold"
-					 label="Wallet Password"
-					 prop="password"
+						class="theme-font-blue-bold"
+						label="Wallet Password"
+						prop="password"
 					>
 						<el-input
-						 v-model="dialogForm.password"
-						 placeholder="Input Wallet Password"
-						 class="grey-theme"
-						 @keyup.enter.native='exportPrivateKey'
-						 show-password
-						 type="password"
+							v-model="dialogForm.password"
+							placeholder="Input Wallet Password"
+							class="grey-theme"
+							@keyup.enter.native='exportPrivateKey'
+							show-password
+							type="password"
 						></el-input>
 					</el-form-item>
 				</el-form>
 				<div slot="footer">
 					<el-button @click="closeDialog">Cancel</el-button>
 					<el-button
-					type="primary"
-					class="primary"
-					@click="exportPrivateKey"
+						type="primary"
+						class="primary"
+						@click="exportPrivateKey"
 					>Export</el-button>
 				</div>
 			</div>
@@ -67,18 +67,20 @@ export default {
 			win: remote.getCurrentWindow()
 		};
 	},
-	watch: {
-	},
+	watch: {},
 	methods: {
 		closeDialog() {
-			this.message({type:'success',info:'Export Success!'});
+			this.message({ type: "success", info: "Export Success!" });
 			this.$emit("closeDialog", { timeout: 0 });
 		},
-		message({info,type}) {
+		message({ info, type }) {
 			let views = this.win.views;
 			let activeView = views.find(view => view.isActive);
 			const webContentsId = activeView.browserView.webContents.id;
-			ipcRenderer.sendTo(webContentsId, 'current-active-show-message', {info: info,type:type})
+			ipcRenderer.sendTo(webContentsId, "current-active-show-message", {
+				info: info,
+				type: type
+			});
 		},
 		exportPrivateKey() {
 			this.$refs.dialogForm.validate(valid => {
@@ -87,17 +89,21 @@ export default {
 					password: this.dialogForm.password
 				};
 				this.exportPrivateKeyByPassword(params).then(res => {
-					ipcRenderer.send(
-						"export-file-dialog",
-						res.Result.PrivateKey,
-						"PrivateKey"
-					);
-					ipcRenderer.once("export-finished", () => {
-            // ipcRenderer.send("open-info-dialog", { info: "Export Success!" });
-            this.$refs.dialogForm.resetFields();
-            this.closeDialog();
-						// this.exportPrivateKeyToggle = false;
-					});
+					if (res.Error === 0) {
+						ipcRenderer.send(
+							"export-file-dialog",
+							res.Result.PrivateKey,
+							"PrivateKey"
+						);
+						ipcRenderer.once("export-finished", () => {
+							// ipcRenderer.send("open-info-dialog", { info: "Export Success!" });
+							this.$refs.dialogForm.resetFields();
+							this.closeDialog();
+							// this.exportPrivateKeyToggle = false;
+						});
+					} else {
+						this.$message.error(this.$i18n.error[res.Error]);
+					}
 				});
 			});
 		},

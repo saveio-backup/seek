@@ -703,13 +703,17 @@ export default {
 							}
 						})
 						.then(res => {
-							this.sendInfo.Password = "";
-							this.$refs.transferForm.resetFields();
-							this.switchToggle.sendDialog = false;
-							this.$message({
-								message: "Successful transfer",
-								type: "success"
-							});
+							if (res.Error === 0) {
+								this.sendInfo.Password = "";
+								this.$refs.transferForm.resetFields();
+								this.switchToggle.sendDialog = false;
+								this.$message({
+									message: "Successful transfer",
+									type: "success"
+								});
+							} else {
+								this.$message.error(this.$i18n.error[res.Error]);
+							}
 						})
 				}
 			});
@@ -752,6 +756,7 @@ export default {
 					}
 				)
 				.then(res => {
+					if (res.Error === 0) {
 						const transferIn = [];
 						const transferOut = [];
 						const result = res.Result;
@@ -777,6 +782,9 @@ export default {
 						this.$store.dispatch("setTxRecords", {
 							asset
 						});
+					} else {
+						this.$message.error(this.$i18n.error[res.Error]);
+					}
 				})
 				.catch(err => {
 					console.log(err);

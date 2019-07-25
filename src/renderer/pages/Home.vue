@@ -317,24 +317,28 @@ export default {
 					}
 				)
 				.then(res => {
-					const result = res.Result;
-					let balanceData = [];
-					const dayLen = result.length || 0;
-					for (let i = 0; i < DAY_NUM; i++) {
-						if (dayLen >= i) {
-							balanceData.push(result[i].BalanceFormat || 0);
-						} else {
-							balanceData.unshift(0);
+					if (res.Error === 0) {
+						const result = res.Result;
+						let balanceData = [];
+						const dayLen = result.length || 0;
+						for (let i = 0; i < DAY_NUM; i++) {
+							if (dayLen >= i) {
+								balanceData.push(result[i].BalanceFormat || 0);
+							} else {
+								balanceData.unshift(0);
+							}
 						}
+						balanceData[6] = this.currentBalanceFormat;
+						// balanceData.splice(0, 1);
+						this.currentBalanceList = balanceData;
+						this.chartsDom.setOption({
+							series: {
+								data: balanceData
+							}
+						});
+					} else {
+						this.$message.error(this.$i18n.error[res.Error]);
 					}
-					balanceData[6] = this.currentBalanceFormat;
-					// balanceData.splice(0, 1);
-					this.currentBalanceList = balanceData;
-					this.chartsDom.setOption({
-						series: {
-							data: balanceData
-						}
-					});
 				});
 		},
 		//get today 00:00 timestamp
@@ -555,17 +559,17 @@ export default {
 			this.$axios
 				.get(this.$api.account + "/export/walletfile")
 				.then(res => {
-					ipcRenderer.send(
-						"export-file-dialog",
-						res.Result.Wallet,
-						"Wallet"
-					);
-					ipcRenderer.once("export-finished", () => {
-						this.$message({
-							message: "Export Success!",
-							type: "success"
+					if (res.Error === 0) {
+						ipcRenderer.send("export-file-dialog", res.Result.Wallet, "Wallet");
+						ipcRenderer.once("export-finished", () => {
+							this.$message({
+								message: "Export Success!",
+								type: "success"
+							});
 						});
-					});
+					} else {
+						this.$message.error(this.$i18n.error[res.Error]);
+					}
 				})
 				.catch(err => {
 					console.error(err);
@@ -628,7 +632,7 @@ export default {
 			}
 		},
 		loginStatus(newVal, oldVal) {
-			if(newVal === 1) {
+			if (newVal === 1) {
 				this.chartInit();
 			}
 		}

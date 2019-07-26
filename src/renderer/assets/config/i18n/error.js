@@ -137,6 +137,9 @@ const result = {
   '55021': {
     'en': 'Update system configuration failed'
   },
+  '55022': {
+    'en': 'Update file exist'
+  },
   '55030': {
     'en': 'Node registration failed'
   },

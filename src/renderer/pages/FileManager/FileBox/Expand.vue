@@ -399,7 +399,7 @@ export default {
 					this.isUploadedFile = false;
 				}
 			} else {
-				this.$message.error(this.$i18n.error[result.Error]);
+				this.$message.error(this.$i18n.error[this.$language][result.Error]);
 			}
 		},
 		addListenScroll(element, distance, callback) {
@@ -454,7 +454,7 @@ export default {
 							return;
 						}
 					} else {
-						this.$message.error(this.$i18n.error[res.Error]);
+						this.$message.error(this.$i18n.error[res.Error][this.$language]);
 						this.switchToggle.loadSwitch = true;
 					}
 				})
@@ -516,7 +516,7 @@ export default {
 						this.cost = {};
 						this.submitToggle = true;
 					} else {
-						this.$message.error(this.$i18n.error[res.Error]);
+						this.$message.error(this.$i18n.error[res.Error][this.$language]);
 						this.submitToggle = true;
 					}
 				});
@@ -542,7 +542,7 @@ export default {
 						this.cost.Fee = 0;
 						this.cost.FeeFormat = 0;
 						this.cost.TransferType = 1;
-						this.$message.error(this.$i18n.error[res.Error]);
+						this.$message.error(this.$i18n.error[res.Error][this.$language]);
 					}
 				});
 		},

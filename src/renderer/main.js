@@ -10,6 +10,7 @@ import './assets/css/style.scss'
 import dateFormat from './assets/tool/date'
 import ElementUI from 'element-ui'
 import locale from 'element-ui/lib/locale/lang/en'
+const LANGUAGE = 'en'
 Vue.use(ElementUI, {
   locale
 })
@@ -20,6 +21,7 @@ Vue.prototype.$dateFormat = dateFormat;
 Vue.prototype.$axios = axios;
 Vue.prototype.$i18n = i18n;
 Vue.prototype.$api = API;
+Vue.prototype.$language = LANGUAGE;
 Vue.config.productionTip = false
 Vue.directive('seekclickoutside', {
   bind: function (el, binding, vnode) {

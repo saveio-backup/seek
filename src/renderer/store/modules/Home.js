@@ -117,7 +117,7 @@ const actions = {
             window.localStorage.clear(); // remove all local infomation
           }
         } else {
-          this.$message.error(this.$i18n.error[res.Error]);
+          this.$message.error(this.$i18n.error[res.Error][this.$language]);
           if (location.href.indexOf('Home') < 0) {
             router.replace({
               name: 'Home'

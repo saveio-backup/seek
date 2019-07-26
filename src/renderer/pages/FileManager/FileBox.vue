@@ -47,6 +47,7 @@
 import util from "../../assets/config/util";
 export default {
 	mounted() {
+		console.log(123);
 		this.$store.dispatch("setSpace");
 		// this.getUserSpace();
 	},

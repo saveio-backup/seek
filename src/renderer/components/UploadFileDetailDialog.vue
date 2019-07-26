@@ -126,7 +126,7 @@ export default {
 					if (res.Error === 0) {
 						this.fileDetail = res.Result;
 					} else {
-						this.$message.error(this.$i18n.error[res.Error]);
+						this.$message.error(this.$i18n.error[res.Error][this.$language]);
 					}
 				})
 				.catch(err => {

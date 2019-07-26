@@ -712,7 +712,7 @@ export default {
 									type: "success"
 								});
 							} else {
-								this.$message.error(this.$i18n.error[res.Error]);
+								this.$message.error(this.$i18n.error[res.Error][this.$language]);
 							}
 						})
 				}
@@ -783,7 +783,7 @@ export default {
 							asset
 						});
 					} else {
-						this.$message.error(this.$i18n.error[res.Error]);
+						this.$message.error(this.$i18n.error[res.Error][this.$language]);
 					}
 				})
 				.catch(err => {

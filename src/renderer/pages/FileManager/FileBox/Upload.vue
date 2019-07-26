@@ -447,7 +447,7 @@ export default {
 					this.DefaultCopyNum = res.Result.DefaultCopyNum;
 					this.advancedData.CopyNum = this.DefaultCopyNum;
 				} else {
-					this.$message.error(this.$i18n.error[res.Error]);
+					this.$message.error(this.$i18n.error[res.Error][this.$language]);
 				}
 			});
 		},
@@ -573,7 +573,7 @@ export default {
 								message: "Start Upload"
 							});
 						} else {
-							this.$message.error(this.$i18n.error[res.Error]);
+							this.$message.error(this.$i18n.error[res.Error][this.$language]);
 							this.switchToggle.upload = true;
 						}
 					});
@@ -606,7 +606,7 @@ export default {
 						console.log(res);
 						this.uploadPrice = res.Result.FeeFormat;
 					} else {
-						this.$message.error(this.$i18n.error[res.Error]);
+						this.$message.error(this.$i18n.error[res.Error][this.$language]);
 					}
 				});
 		},

@@ -234,7 +234,7 @@ export default {
 						}
 						window.location.href = location.origin + location.pathname; // success login link to home page
 					} else {
-						this.$message.error(this.$i18n.error[res.Error]);
+						this.$message.error(this.$i18n.error[res.Error][this.$language]);
 					}
 				})
 				.catch(err => {
@@ -265,7 +265,7 @@ export default {
 								}
 								window.location.href = location.origin + location.pathname; // success login link to home page
 							} else {
-								this.$message.error(this.$i18n.error[res.Error]);
+								this.$message.error(this.$i18n.error[res.Error][this.$language]);
 							}
 						});
 				}

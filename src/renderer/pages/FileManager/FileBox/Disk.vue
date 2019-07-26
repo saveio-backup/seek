@@ -622,7 +622,7 @@ export default {
 						}
 						this.switchToggle.load = true;
 					} else {
-						this.$message.error(this.$i18n.error[res.Error]);
+						this.$message.error(this.$i18n.error[res.Error][this.$language]);
 						this.switchToggle.load = true;
 					}
 				})
@@ -674,7 +674,7 @@ export default {
 								console.log("downloading");
 								console.log(res);
 							} else {
-								this.$message.error(this.$i18n.error[res.Error]);
+								this.$message.error(this.$i18n.error[res.Error][this.$language]);
 							}
 						})
 				);
@@ -683,7 +683,7 @@ export default {
 				.all(commitAll)
 				.then(
 					this.$axios.spread(() => {
-						if (res.Error === 0) {
+						// if (res.Error === 0) {
 							// this.$store.dispatch("setDownload");
 							this.switchToggle.confrimDownloadDialog = false;
 							this.$message({
@@ -696,9 +696,9 @@ export default {
 									transferType: 2
 								}
 							});
-						} else {
-							this.$message.error(this.$i18n.error[res.Error]);
-						}
+						// } else {
+						// 	this.$message.error(this.$i18n.error[res.Error][this.$language]);
+						// }
 					})
 				)
 				.finally(() => {
@@ -747,19 +747,19 @@ export default {
 								});
 								console.log("delete");
 							} else {
-								this.$message.error(this.$i18n.error[res.Error]);
+								this.$message.error(this.$i18n.error[res.Error][this.$language]);
 							}
 						})
 				);
 			}
 			this.$axios.all(commitAll).then(
 				this.$axios.spread(() => {
-					if (res.Error === 0) {
+					// if (res.Error === 0) {
 						// this.$store.dispatch("setDownload");
 						this.$store.dispatch("setSpace"); // get userspace
-					} else {
-						this.$message.error(this.$i18n.error[res.Error]);
-					}
+					// } else {
+					// 	this.$message.error(this.$i18n.error[res.Error][this.$language]);
+					// }
 				})
 			);
 		},
@@ -791,7 +791,7 @@ export default {
 						});
 						this.switchToggle.deleteDialog = false;
 					} else {
-						this.$message.error(this.$i18n.error[res.Error]);
+						this.$message.error(this.$i18n.error[res.Error][this.$language]);
 					}
 				});
 		}
@@ -829,7 +829,7 @@ export default {
 							this.fileDownloadInfo.Fee =
 								parseFloat((cost / 1000000000).toFixed(9)) + " SAVE";
 						} else {
-							this.$message.error(this.$i18n.error[res.Error]);
+							this.$message.error(this.$i18n.error[res.Error][this.$language]);
 						}
 					})
 					.catch(() => {

@@ -431,7 +431,7 @@ export default {
 				if (res.Error === 0) {
 					this.dns = res.Result;
 				} else {
-					this.$message.error(this.$i18n.error[res.Error]);
+					this.$message.error(this.$i18n.error[res.Error][this.$language]);
 				}
 			});
 		},
@@ -548,7 +548,7 @@ export default {
 						this.channelToggle.channelCloseDialog = false;
 						this.$store.dispatch("setChannelBalanceTotal");
 					} else {
-						this.$message.error(this.$i18n.error[res.Error]);
+						this.$message.error(this.$i18n.error[res.Error][this.$language]);
 					}
 				});
 		},
@@ -570,7 +570,7 @@ export default {
 						this.channelToggle.channelCloseDialog = false;
 						this.$store.dispatch("setChannelBalanceTotal");
 					} else {
-						this.$message.error(this.$i18n.error[res.Error]);
+						this.$message.error(this.$i18n.error[res.Error][this.$language]);
 					}
 				});
 		}

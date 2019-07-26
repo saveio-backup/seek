@@ -178,7 +178,7 @@ export default {
 								this.$emit("closeDialog");
 								this.initBalanceRequest();
 							} else {
-								this.$message.error(this.$i18n.error[res.Error]);
+								this.$message.error(this.$i18n.error[res.Error][this.$language]);
 							}
 						})
 						.catch(err => {

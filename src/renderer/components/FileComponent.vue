@@ -653,7 +653,7 @@ export default {
 						type: "Success"
 					});
 				} else {
-					this.$message.error(this.$i18n.error[res.Error]);
+					this.$message.error(this.$i18n.error[res.Error][this.$language]);
 				}
 			});
 		},
@@ -690,7 +690,7 @@ export default {
 						type: "Success"
 					});
 				} else {
-					this.$message.error(this.$i18n.error[res.Error]);
+					this.$message.error(this.$i18n.error[res.Error][this.$language]);
 				}
 			});
 		},
@@ -707,7 +707,7 @@ export default {
 						type: "Success"
 					});
 				} else {
-					this.$message.error(this.$i18n.error[res.Error]);
+					this.$message.error(this.$i18n.error[res.Error][this.$language]);
 				}
 			});
 		},
@@ -724,7 +724,7 @@ export default {
 						type: "success"
 					});
 				} else {
-					this.$message.error(this.$i18n.error[res.Error]);
+					this.$message.error(this.$i18n.error[res.Error][this.$language]);
 				}
 			});
 		},
@@ -741,7 +741,7 @@ export default {
 						type: "success"
 					});
 				} else {
-					this.$message.error(this.$i18n.error[res.Error]);
+					this.$message.error(this.$i18n.error[res.Error][this.$language]);
 				}
 			});
 		},
@@ -758,7 +758,7 @@ export default {
 						type: "success"
 					});
 				} else {
-					this.$message.error(this.$i18n.error[res.Error]);
+					this.$message.error(this.$i18n.error[res.Error][this.$language]);
 				}
 			});
 		},
@@ -785,7 +785,7 @@ export default {
 						type: "success"
 					});
 				} else {
-					this.$message.error(this.$i18n.error[res.Error]);
+					this.$message.error(this.$i18n.error[res.Error][this.$language]);
 				}
 			});
 		},
@@ -808,7 +808,7 @@ export default {
 						this.fileList.Path = "";
 						this.switchToggle.decryptDialog = false;
 					} else {
-						this.$message.error(this.$i18n.error[res.Error]);
+						this.$message.error(this.$i18n.error[res.Error][this.$language]);
 					}
 				})
 				.catch(err => {

@@ -165,8 +165,6 @@ function rebackToCreateAccount(commit, progress) {
 }
 
 function requestChannelBalanceTotal(commit) {
-  console.log('api.channel is ');
-  console.log(api.channel);
   axios
     .get(api.channel)
     .then(res => {

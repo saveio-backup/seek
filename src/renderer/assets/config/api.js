@@ -6,18 +6,18 @@ const userDataPath = app.getPath('userData')
 const exist = fs.existsSync(`${userDataPath}/config.json`)
 let HOST = null;
 // let HOST = 'http://localhost:10235/api/'
-console.log('userDataPath', userDataPath, exist)
+// console.log('userDataPath', userDataPath, exist)
 if (exist) {
   const cfg = fs.readFileSync(`${userDataPath}/config.json`)
   if (cfg) {
     const cfgObj = JSON.parse(cfg)
-    console.log('cfgObj', cfgObj)
+    // console.log('cfgObj', cfgObj)
     if (cfgObj) {
       HOST = `http://localhost:${cfgObj.Base.PortBase + cfgObj.Base.HttpRestPortOffset}/api/`
     }
   }
 }
-console.log("HOST", HOST)
+// console.log("HOST", HOST)
 const VERSION = 'v1/';
 const API = {
   host: HOST,
@@ -57,6 +57,7 @@ const API = {
   channelOPen: HOST + VERSION + 'channel/open',
   channelClose: HOST + VERSION + 'channel/close',
   getAllDns: HOST + VERSION + 'dns',
-  balancehistory: HOST + VERSION + 'balancehistory'
+  balancehistory: HOST + VERSION + 'balancehistory',
+  channelSync: HOST + VERSION + 'channel/syncing'
 }
 module.exports = API;

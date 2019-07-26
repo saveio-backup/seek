@@ -877,11 +877,13 @@ export default {
             if (res.Error === 0) {
               cost += res.Result.Fee || 0;
               this.fileDownloadInfo.DownloadDir = res.Result.DownloadDir || "";
-              this.fileDownloadInfo.Fee =
-                parseFloat((cost / 1000000000).toFixed(9)) + " SAVE";
+              this.fileDownloadInfo.Fee = parseFloat(
+                (cost / 1000000000).toFixed(9)
+              );
             } else {
               this.$message.error(this.$i18n.error[res.Error][this.$language]);
             }
+            // }
           })
           .catch(() => {
             console.error("unable to calc");

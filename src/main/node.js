@@ -2,7 +2,8 @@ import {
     platform
 } from 'os';
 import {
-    app
+    app,
+    ipcMain
 } from 'electron'
 // const logP = console.log;
 // const keyWords = ['ProductRegistryImpl.Registry', 'stdout'];
@@ -219,6 +220,11 @@ const run = (appDataPath, appName) => {
     });
     workerProcess.on('close', function (code) {
         log.error('workerProcess close with code' + code)
+    })
+    ipcMain.on('watchEdge', (event) => {
+        workerProcess.on('close', function (code) {
+            event.reply('edgeClose');
+        })
     })
 }
 

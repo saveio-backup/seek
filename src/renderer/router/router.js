@@ -8,7 +8,7 @@ export default new Router({
   mode: 'hash',
   routes: [{
       path: '/Navigation',
-      name: 'navigation',
+      name: 'Navigation',
       component: require('../WindowNavigation.vue').default
     },
     {
@@ -119,7 +119,7 @@ export default new Router({
     },
     {
       path: '/wallet',
-      name: 'wallet',
+      name: 'Wallet',
       component: require('../pages/Wallet.vue').default,
       meta: {
         keepAlive: true
@@ -134,12 +134,12 @@ export default new Router({
       },
       children: [{
           path: 'exportPrivateKey',
-          name: 'ExportPrivateKey',
+          name: 'exportPrivateKey',
           component: require('../pages/Dialog/ExportPrivateKey.vue').default
         },
         {
           path: 'logout',
-          name: 'Logout',
+          name: 'logout',
           component: require('../pages/Dialog/Logout.vue').default
         }
       ]

@@ -399,14 +399,26 @@ export default {
 		};
 	},
 	mounted() {
-		// if no space to advanced;
-		if (!this.space || (this.space.Used === 0 && this.space.Remain === 0)) {
-			this.toAdvanced();
-		}
+		this.getSpaceIsZero();
 		this.setDataInterval();
 		this.getfscontractsetting();
 	},
 	methods: {
+		getSpaceIsZero() {
+			this.$axios
+				.get(this.$api.userspace + window.localStorage.getItem("Address"))
+				.then(res => {
+					if (res.Error === 0) {
+						// if no space to advanced;
+						if (
+							!res.Result ||
+							(res.Result.Used === 0 && res.Result.Remain === 0)
+						) {
+							this.toAdvanced();
+						}
+					}
+				});
+		},
 		goStorage() {
 			this.$router.push({ name: "expand" });
 		},

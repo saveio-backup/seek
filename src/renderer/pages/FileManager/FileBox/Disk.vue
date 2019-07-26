@@ -831,19 +831,23 @@ export default {
           }
         )
         .then(res => {
-          this.$message({
-            message: "Delete Successful",
-            type: "success"
-          });
-          dataList.some((item, index) => {
-            if (item.Hash === hash) {
-              dataList.splice(index, 1);
-              return true;
-            } else {
-              return false;
-            }
-          });
-          this.switchToggle.deleteDialog = false;
+					if (res.Error === 0) {
+            this.$message({
+              message: "Delete Successful",
+              type: "success"
+            });
+            dataList.some((item, index) => {
+              if (item.Hash === hash) {
+                dataList.splice(index, 1);
+                return true;
+              } else {
+                return false;
+              }
+            });
+            this.switchToggle.deleteDialog = false;
+          } else {
+						this.$message.error(this.$i18n.error[res.Error][this.$language]);
+					}
         });
     }
   },

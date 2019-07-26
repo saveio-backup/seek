@@ -2,11 +2,12 @@
 	<div id="channels-vue">
 		<div
 			class="channels"
-			v-if="channels"
+			v-if="showRadio?channelsDns:channels"
 		>
+			<!-- :data="mockChannels" -->
 			<el-table
 				border
-				:data="channels"
+				:data="showRadio?channelsDns:channels"
 				ref="singleTable"
 				empty-text='No Data'
 				height='100%'
@@ -283,140 +284,85 @@ export default {
 			channelSelected: {},
 			mockChannels: [
 				{
-					ChannelId: 107,
+					ChannelId: 126,
 					Balance: 1000000000,
 					BalanceFormat: "1",
 					Address: "im007",
 					HostAddr: "tcp://127.0.0.1:13004",
-					TokenAddr: "gofkys007"
+					TokenAddr: "gofkys007",
+					IsDNS: false
 				},
 				{
-					ChannelId: 101,
+					ChannelId: 196,
 					Balance: 1000000000,
 					BalanceFormat: "1",
 					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
 					HostAddr: "tcp://127.0.0.1:13004",
-					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
+					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV",
+					IsDNS: true
 				},
 				{
-					ChannelId: 101,
+					ChannelId: 105,
 					Balance: 1000000000,
 					BalanceFormat: "1",
 					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
 					HostAddr: "tcp://127.0.0.1:13004",
-					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
+					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV",
+					IsDNS: true
 				},
 				{
-					ChannelId: 101,
+					ChannelId: 106,
 					Balance: 1000000000,
 					BalanceFormat: "1",
 					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
 					HostAddr: "tcp://127.0.0.1:13004",
-					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
+					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV",
+					IsDNS: false
 				},
 				{
-					ChannelId: 101,
+					ChannelId: 107,
 					Balance: 1000000000,
 					BalanceFormat: "1",
 					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
 					HostAddr: "tcp://127.0.0.1:13004",
-					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
+					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV",
+					IsDNS: false
 				},
 				{
-					ChannelId: 101,
+					ChannelId: 108,
 					Balance: 1000000000,
 					BalanceFormat: "1",
 					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
 					HostAddr: "tcp://127.0.0.1:13004",
-					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
+					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV",
+					IsDNS: false
 				},
 				{
-					ChannelId: 101,
+					ChannelId: 109,
 					Balance: 1000000000,
 					BalanceFormat: "1",
 					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
 					HostAddr: "tcp://127.0.0.1:13004",
-					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
+					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV",
+					IsDNS: false
 				},
 				{
-					ChannelId: 101,
+					ChannelId: 110,
 					Balance: 1000000000,
 					BalanceFormat: "1",
 					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
 					HostAddr: "tcp://127.0.0.1:13004",
-					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
+					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV",
+					IsDNS: false
 				},
 				{
-					ChannelId: 101,
+					ChannelId: 111,
 					Balance: 1000000000,
 					BalanceFormat: "1",
 					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
 					HostAddr: "tcp://127.0.0.1:13004",
-					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
-				},
-				{
-					ChannelId: 101,
-					Balance: 1000000000,
-					BalanceFormat: "1",
-					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
-					HostAddr: "tcp://127.0.0.1:13004",
-					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
-				},
-				{
-					ChannelId: 101,
-					Balance: 1000000000,
-					BalanceFormat: "1",
-					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
-					HostAddr: "tcp://127.0.0.1:13004",
-					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
-				},
-				{
-					ChannelId: 101,
-					Balance: 1000000000,
-					BalanceFormat: "1",
-					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
-					HostAddr: "tcp://127.0.0.1:13004",
-					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
-				},
-				{
-					ChannelId: 101,
-					Balance: 1000000000,
-					BalanceFormat: "1",
-					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
-					HostAddr: "tcp://127.0.0.1:13004",
-					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
-				},
-				{
-					ChannelId: 101,
-					Balance: 1000000000,
-					BalanceFormat: "1",
-					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
-					HostAddr: "tcp://127.0.0.1:13004",
-					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
-				},
-				{
-					ChannelId: 101,
-					Balance: 1000000000,
-					BalanceFormat: "1",
-					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
-					HostAddr: "tcp://127.0.0.1:13004",
-					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
-				},
-				{
-					ChannelId: 101,
-					Balance: 1000000000,
-					BalanceFormat: "1",
-					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
-					HostAddr: "tcp://127.0.0.1:13004",
-					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
-				},
-				{
-					ChannelId: 101,
-					Balance: 1000000000,
-					BalanceFormat: "1",
-					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
-					HostAddr: "tcp://127.0.0.1:13004",
-					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV"
+					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV",
+					IsDNS: true
 				}
 			],
 			dns: []
@@ -441,20 +387,20 @@ export default {
 				: "";
 		},
 		initCurrentRow() {
-			let result = this.channels.some((channel, index) => {
+			let result = this.channelsDns.some((channel, index) => {
 				if (
 					channel.ChannelId.toString() === localStorage.getItem("channelBindId")
 				) {
 					this.currentRow = channel;
-					this.setCurrent(this.channels[index]);
+					this.setCurrent(this.channelsDns[index]);
 					return true;
 				} else {
 					return false;
 				}
 			});
-			if (!result && this.channels.length > 0) {
+			if (!result && this.channelsDns.length > 0) {
 				// if no bind in localstorage ,  choose first channel
-				this.setCurrent(this.channels[0]);
+				this.setCurrent(this.channelsDns[0]);
 			}
 		},
 		setCurrent(row) {
@@ -466,11 +412,11 @@ export default {
 			console.log("oldCurrentRow is ");
 			console.log(oldCurrentRow);
 			this.currentRow = currentRow ? currentRow : oldCurrentRow;
-			this.channels.map((channel, index) => {
+			this.channelsDns.map((channel, index) => {
 				if (
 					channel.ChannelId.toString() === this.currentRow.ChannelId.toString()
 				) {
-					this.setCurrent(this.channels[index]);
+					this.setCurrent(this.channelsDns[index]);
 				}
 			});
 		},
@@ -579,6 +525,13 @@ export default {
 		channels: function() {
 			return this.$store.state.Home.channels;
 		},
+		channelsDns: function() {
+			if (!this.channels) return [];
+			const channelsDns = this.channels.filter(item => {
+				return item.IsDNS;
+			});
+			return channelsDns;
+		},
 		dnsIsSelect: function() {
 			const vm = this;
 			return function(item) {
@@ -623,7 +576,7 @@ $theme-color: #202020;
 	overflow-y: auto;
 	border-bottom-left-radius: 2px;
 	border-bottom-right-radius: 2px;
-	padding: 0 25px;
+	padding: 0 20px;
 	background: #fff;
 	.el-table {
 		color: $theme-color;

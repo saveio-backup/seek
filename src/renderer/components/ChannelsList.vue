@@ -231,7 +231,7 @@ export default {
 	},
 	data() {
 		const validateMount = (rule, value, callback) => {
-			const reg = /^[1-9](\d{0,8})\.(\d{1,9})$|^0\.(\d{0,8})[1-9]$|^[1-9](\d{0,8})$/;
+			const reg = /^[1-9](\d{0,8})\.(\d{1,9})$|^0\.(\d{0,9})$|^[1-9](\d{0,8})$|^0$/;
 			if (!reg.test(value)) {
 				callback(new Error("Please enter the correct format"));
 				return;

@@ -679,9 +679,10 @@ export default {
 			});
 			return filterArr;
 		},
+		// to do!!!!!
 		deleteRecord(row) {
 			let params = {
-				Hash: row.FileHash
+				Ids: [row.Id] 
 			};
 			this.$axios.post(this.$api.deleteRecord, params).then(res => {
 				if (res.Error === 0) {
@@ -698,7 +699,7 @@ export default {
 			let url = this.$api.uploadCancel;
 			if (!row.IsUploadAction) url = this.$api.downloadCancel;
 			let params = {
-				Hash: row.FileHash
+				Ids: [row.Id]
 			};
 			this.$axios.post(url, params).then(res => {
 				if (res.Error === 0) {
@@ -715,7 +716,7 @@ export default {
 			let url = this.$api.uploadRetry;
 			if (!row.IsUploadAction) url = this.$api.downloadRetry;
 			let params = {
-				Hash: row.FileHash
+				Ids: [row.Id]
 			};
 			this.$axios.post(url, params).then(res => {
 				if (res.Error === 0) {
@@ -732,7 +733,7 @@ export default {
 			let url = this.$api.uploadResume;
 			if (!row.IsUploadAction) url = this.$api.downloadResume;
 			let params = {
-				Hash: row.FileHash
+				Ids: [row.Id]
 			};
 			this.$axios.post(url, params).then(res => {
 				if (res.Error === 0) {
@@ -749,7 +750,7 @@ export default {
 			let url = this.$api.uploadPause;
 			if (!row.IsUploadAction) url = this.$api.downloadPause;
 			let params = {
-				Hash: row.FileHash
+				Ids: [row.Id]
 			};
 			this.$axios.post(url, params).then(res => {
 				if (res.Error === 0) {

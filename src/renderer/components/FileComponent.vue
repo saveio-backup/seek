@@ -178,7 +178,7 @@
 								v-if="scope.row.Path"
 								class="cursor-click active-blue cursor-pointer"
 								@click="showInFolder(scope.row.Path)"
-							><i class="ofont ofont-wenjianxiangqing"></i></span>
+							><i class="ofont ofont-wenjianxiangqing ft14"></i></span>
 							<span
 								title="Decrypt"
 								class="cursor-click active-blue cursor-pointer"
@@ -205,13 +205,13 @@
 									:class="{'ofont-zhongxin': (!scope.row.IsUploadAction && scope.row.Status === 3),'ofont-jixu': scope.row.Status === 4}"
 							></i></span> -->
 							<span
-								class="cursor-click active-blue cursor-pointer"
+								class="active-blue cursor-pointer"
 								:title="scope.row.IsUploadAction ? 'continue to upload':'continue to download'"
 								v-show="scope.row.Status === 0"
 								@click="uploadOrDownloadContinue(scope.row, transferType)"
 							><i class="ofont ofont-jixu"></i></span>
 							<span
-								class="cursor-click active-blue cursor-pointer"
+								class="active-blue cursor-pointer"
 								:title="scope.row.IsUploadAction ? 'pause to upload':'pause to download'"
 								v-show="(scope.row.Status === 1 || scope.row.Status === 2 )"
 								@click="uploadOrDownloadPause(scope.row, transferType)"
@@ -438,7 +438,8 @@ export default {
 							UploadSize: 1406,
 							DownloadSize: 1406
 						}
-					]
+					],
+					DetailStatus: 2
 				},
 				{
 					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsY11",
@@ -450,7 +451,8 @@ export default {
 					ExpiredAt: 1555051356,
 					UpdatedAt: 0,
 					Profit: 0,
-					Privilege: 1
+					Privilege: 1,
+					DetailStatus: 2
 				},
 				{
 					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYw10",
@@ -462,7 +464,8 @@ export default {
 					ExpiredAt: 1555051356,
 					UpdatedAt: 0,
 					Profit: 0,
-					Privilege: 1
+					Privilege: 1,
+					DetailStatus: 2
 				},
 				{
 					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYw9",
@@ -475,7 +478,8 @@ export default {
 					ExpiredAt: 1555051356,
 					UpdatedAt: 0,
 					Profit: 0,
-					Privilege: 1
+					Privilege: 1,
+					DetailStatus: 2
 				},
 				{
 					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYw8",
@@ -487,7 +491,8 @@ export default {
 					ExpiredAt: 1555051356,
 					UpdatedAt: 0,
 					Profit: 0,
-					Privilege: 1
+					Privilege: 1,
+					DetailStatus: 2
 				},
 				{
 					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYw7",
@@ -498,7 +503,8 @@ export default {
 					ExpiredAt: 1555051356,
 					UpdatedAt: 0,
 					Profit: 0,
-					Privilege: 1
+					Privilege: 1,
+					DetailStatus: 2
 				},
 				{
 					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYw6",
@@ -509,7 +515,8 @@ export default {
 					ExpiredAt: 1555051356,
 					UpdatedAt: 0,
 					Profit: 0,
-					Privilege: 1
+					Privilege: 1,
+					DetailStatus: 2
 				},
 				{
 					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYw5",
@@ -520,7 +527,8 @@ export default {
 					ExpiredAt: 1555051356,
 					UpdatedAt: 0,
 					Profit: 0,
-					Privilege: 1
+					Privilege: 1,
+					DetailStatus: 2
 				},
 				{
 					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYw4",
@@ -531,7 +539,8 @@ export default {
 					ExpiredAt: 1555051356,
 					UpdatedAt: 0,
 					Profit: 0,
-					Privilege: 1
+					Privilege: 1,
+					DetailStatus: 2
 				},
 				{
 					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYw3",
@@ -542,7 +551,8 @@ export default {
 					ExpiredAt: 1555051356,
 					UpdatedAt: 0,
 					Profit: 0,
-					Privilege: 1
+					Privilege: 1,
+					DetailStatus: 2
 				},
 				{
 					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYw2",
@@ -553,7 +563,8 @@ export default {
 					ExpiredAt: 1555051356,
 					UpdatedAt: 0,
 					Profit: 0,
-					Privilege: 1
+					Privilege: 1,
+					DetailStatus: 2
 				}
 			]
 		};
@@ -567,7 +578,7 @@ export default {
 			return parseFloat((progress / this.fileList.length).toFixed(2)) || 0;
 		},
 		fileList: function() {
-			// return this.mockFileList || [];
+			// return this.mockFileList;
 			return (
 				this.$store.state.Transfer[this.TransferConfig[this.transferType]] || []
 			);
@@ -1021,19 +1032,22 @@ $light-grey: #f9f9fb;
 		}
 	}
 	.action > span {
-		margin-right: 5px;
-		// font-size: 18px;
-		// color: $light-blue;
-		// cursor: pointer;
-		// .ofont-xiangqingchakan {
-		// 	font-size: 18px;
-		// }
-		// &:hover {
-		// 	color: $light-blue;
-		// }
-		// &:active {
-		// 	opacity: 0.7;
-		// }
+		display: inline-block;
+		width: 32px;
+		height: 32px;
+		cursor: pointer;
+		margin: 0px 4px;
+		border-radius: 50%;
+		text-align: center;
+		line-height: 32px;
+
+		&:hover {
+			background: #DFE2E9;
+		}
+
+		&:active {
+			opacity: .7;
+		}
 	}
 	.file-progress {
 		&.progressAnimate {

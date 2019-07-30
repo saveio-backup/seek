@@ -61,7 +61,6 @@
 					height="100%"
 					@selection-change="selectFile"
 				>
-
 					<!-- :data="mockData" -->
 					<el-table-column
 						v-if="toggleFilebox"
@@ -77,40 +76,52 @@
 					>
 						<template slot-scope="scope">
 							<div class="flex between">
-								<span>{{ scope.row.Name }}</span>
+								<span class="row-name">{{ scope.row.Name }}</span>
 								<!-- @click="executedFile = scope.row" -->
 								<div class="opera">
-									<i
-										v-if="scope.row.Privilege != 0"
+									<span
 										@click.stop="shareFile(scope.row)"
 										title="Share"
-										class="el-icon-share cursor-click active-blue cursor-pointer"
-									></i>
-									<i
+										v-if="scope.row.Privilege != 0"
+                    class="active-blue cursor-pointer"
+									>
+										<i class="el-icon-share ft18"></i>
+									</span>
+									<span
 										v-if="page === 'filebox'"
-										class="el-icon-download cursor-click active-blue cursor-pointer"
+										class="cursor-click active-blue cursor-pointer"
 										title="Download"
-										@click.stop="downloadFile(scope.row)"
-									></i>
-									<i
+									>
+										<i
+											@click.stop="downloadFile(scope.row)"
+											class="el-icon-download ft18"
+										></i>
+									</span>
+									<span
 										v-if="page === 'filebox'"
 										title="Delete"
 										@click.stop="deleteFile(scope.row)"
-										class="el-icon-delete cursor-click active-blue cursor-pointer"
-									></i>
-									<i
-										v-if="page === 'miner' && scope.row.Path"
+										class="cursor-click active-blue cursor-pointer"
+									>
+										<i class="el-icon-delete ft18"></i>
+									</span>
+									<span
 										@click.stop="showInFolder(scope.row.Path)"
-										class="ofont ofont-file cursor-click active-blue cursor-pointer"
+										v-if="page === 'miner' && scope.row.Path"
 										title="Open Folder"
-									></i>
-									<i
+										class="cursor-click active-blue cursor-pointer"
+									>
+										<i class="ofont ofont-wenjianxiangqing ft14"></i>
+									</span>
+									<span
 										v-if="page === 'filebox'"
-										class="ofont-xiangqing ofont cursor-click active-blue cursor-pointer"
 										title="look detail"
 										@click.stop="openDetailDialog(scope.row)"
+										class="cursor-click active-blue cursor-pointer"
 									>
-									</i>
+										<i class="ofont-xiangqing ofont ft16">
+										</i>
+									</span>
 									<!-- @click.stop="switchToggle.deleteDialog = true" -->
 								</div>
 							</div>
@@ -411,7 +422,7 @@ export default {
 				{
 					Hash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
 					Path: "asdfsd/sdfaf",
-					Name: "no1111111.txt",
+					Name: "no1gasdfasdfasdfaweqwerwqerwfasdfadsfasdfasdfadsfasdfasdfasdfsafd111111.txt",
 					Size: 1536,
 					DownloadCount: 0,
 					ExpiredAt: 1555051356,
@@ -1054,26 +1065,29 @@ $theme-font-blue: #040f39;
 			height: 100%;
 			overflow-y: hidden;
 			.rowName {
+        .row-name {
+          min-height: 32px;
+          line-height: 32px;
+        }
 				.opera {
-					display: none;
-					color: rgba(32, 32, 32, 0.4);
+          color: rgba(32, 32, 32, 0.4);
 					font-weight: bold;
-					[class^="el-icon-"] {
+					display: none;
+					span {
+						display: inline-block;
+						width: 32px;
+						height: 32px;
+						line-height: 32px;
+						text-align: center;
+						border-radius: 50%;
 						margin: 0px 4px;
-						font-size: 18px;
-						// cursor: pointer;
-						// &:hover {
-						//   color: $light-blue;
-						// }
-						// &:active {
-						//   opacity: 0.7;
-						// }
-					}
-					.ofont-xiangqing {
-						position: relative;
-						top: 2px;
-						font-size: 16px;
-						font-weight: 500;
+						cursor: pointer;
+						&:hover {
+							background: #DFE2E9;
+            }
+            &:active {
+              opacity: .7;
+            }
 					}
 				}
 				&:hover {

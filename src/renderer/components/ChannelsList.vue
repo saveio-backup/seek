@@ -77,20 +77,20 @@
 						<!-- :class="{'theme-font-blue-40':!scope.row.Connected,'light-blue cursor-pointer cursor-click':scope.row.Connected}" -->
 						<span
 							v-show="scope.row.Participant1State !== 0"
-							class="light-blue cursor-pointer cursor-click user-no-select"
+							class="opeation-icon light-blue user-no-select"
 							@click="openTransfer(scope.row)"
-							:title="scope.row.Connected?'transfer':'The channel is offline and no transfer is allowed'"
+							title="transfer"
 						>
 							<!-- Transfer -->
 							<i class="ofont ofont-huazhuan"></i>
 						</span>
 						<span
 							v-show="scope.row.Participant1State !== 0"
-							class="light-blue ml20 cursor-pointer cursor-click user-no-select"
+							class="opeation-icon light-blue ml20 user-no-select"
 							@click="openClose(scope.row)"
 							title="close channel"
 						>
-							<i class="ofont ofont-guanbi ft14"></i>
+							<i class="ofont ofont-guanbi ft12"></i>
 							<!-- Close -->
 						</span>
 						<span
@@ -664,6 +664,24 @@ $theme-color: #202020;
 		border-radius: 100%;
 		width: 14px;
 		height: 14px;
+	}
+
+	.opeation-icon {
+		display: inline-block;
+		width: 32px;
+		height: 32px;
+		cursor: pointer;
+		border-radius: 50%;
+		text-align: center;
+		line-height: 32px;
+
+		&:hover {
+			background: #DFE2E9;
+		}
+
+		&:active {
+			opacity: .7;
+		}
 	}
 }
 .closingWrapper {

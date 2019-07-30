@@ -189,9 +189,11 @@
 						</div>
 					</li>
 					<li
-						class="loading text-center theme-font-blue transparent mt20 mb20"
 						v-show="switchToggle.showLoading"
-					>Loading...</li>
+						class="loading text-center theme-font-blue transparent mt20 mb20"
+					>
+            <i class="el-icon-loading"></i>
+          </li>
 				</ul>
 			</div>
 		</div>
@@ -361,7 +363,6 @@
 <script>
 import date from "../assets/tool/date";
 import QRCode from "../assets/tool/qrcode.min";
-// import ClipboardJS from "clipboard";
 const { clipboard } = require("electron");
 export default {
 	mounted() {

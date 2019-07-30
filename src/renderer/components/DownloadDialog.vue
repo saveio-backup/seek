@@ -6,7 +6,7 @@
 				label="Download URL:"
 			>
 				<el-input
-					v-model="downloadUrl"
+					v-model.trim="downloadUrl"
 					@input='toGetFileInfo'
 					@keyup.native.enter='toDownload'
 					placeholder="Input File URL"

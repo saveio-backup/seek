@@ -28,11 +28,11 @@
 				@click="cancelAll"
 			>Cancel All</el-button>
 			<el-button
-				v-if="transferType !== 0 && show"
+				v-if="transferType !== 0"
 				@click="continueAll"
 			>Continue All</el-button>
 			<el-button
-				v-if="transferType !== 0 && show"
+				v-if="transferType !== 0"
 				@click="pauseAll"
 			>Pause All</el-button>
 		</div>
@@ -187,30 +187,40 @@
 							><i class="el-icon-lock"></i></span>
 							<span
 								class="cursor-click active-blue cursor-pointer"
-								:title="scope.row.Status === 4 ? (scope.row.IsUploadAction ? 'continue to upload':'continue to download'):'download again'"
-								v-show="scope.row.Status === 4 || (!scope.row.IsUploadAction && scope.row.Status === 3)"
-								@click="uploadOrDownloadAgain(scope.row)"
+								:title="scope.row.IsUploadAction ? 'continue to upload':'continue to download'"
+								v-show="scope.row.Status === 4"
+								@click="uploadOrDownloadAgain(scope.row, transferType)"
+							><i
+									class="ofont"
+									:class="{'ofont-zhongxin': (!scope.row.IsUploadAction && scope.row.Status === 3 && show),'ofont-jixu': scope.row.Status === 4}"
+								></i></span>
+							<!-- complete page download again -->
+							<!-- <span
+								class="cursor-click active-blue cursor-pointer"
+								title="download again'"
+								v-show="!scope.row.IsUploadAction && scope.row.Status === 3"
+								@click="uploadOrDownloadAgain(scope.row, 2)"
 							><i
 									class="ofont"
 									:class="{'ofont-zhongxin': (!scope.row.IsUploadAction && scope.row.Status === 3),'ofont-jixu': scope.row.Status === 4}"
-								></i></span>
+							></i></span> -->
 							<span
 								class="cursor-click active-blue cursor-pointer"
 								:title="scope.row.IsUploadAction ? 'continue to upload':'continue to download'"
 								v-show="scope.row.Status === 0"
-								@click="uploadOrDownloadContinue(scope.row)"
+								@click="uploadOrDownloadContinue(scope.row, transferType)"
 							><i class="ofont ofont-jixu"></i></span>
 							<span
 								class="cursor-click active-blue cursor-pointer"
 								:title="scope.row.IsUploadAction ? 'pause to upload':'pause to download'"
-								v-show="scope.row.Status === 1 || scope.row.Status === 2"
-								@click="uploadOrDownloadPause(scope.row)"
+								v-show="(scope.row.Status === 1 || scope.row.Status === 2 )"
+								@click="uploadOrDownloadPause(scope.row, transferType)"
 							><i class="ofont ofont-zanting"></i></span>
 							<span
 								class="cursor-click active-blue cursor-pointer"
 								:title="scope.row.IsUploadAction ? 'cancel to upload':'cancel to download'"
 								v-show="scope.row.Status !== 3 && show"
-								@click="uploadOrDownloadCancel(scope.row)"
+								@click="uploadOrDownloadCancel(scope.row, transferType)"
 							><i class="ofont ofont-guanbi"></i></span>
 							<span
 								class="cursor-click active-blue cursor-pointer"
@@ -582,51 +592,17 @@ export default {
 		},
 		getDetailStatus() {
 			return function(type, detailStatus) {
-				console.log("type", type);
-				console.log("detailStatus", detailStatus);
 				switch (detailStatus) {
-					case 0:
-						return "";
-					case 1:
-						return "Start Sharding";
-					case 2:
-						return "Sharding to Complete";
-					case 3:
-						return "Pay on the Chain";
-					case 4:
-						return "The Payment Chain is Complete";
-					case 5:
-						return "Submit Whitelist Information";
-					case 6:
-						return "Submit Whitelist Information Completed";
-					case 7:
-						return "Find Storage Node";
-					case 8:
-						return "Find the Storage Node to Complete";
-					case 9:
-						return "Generate PDP Proof Data";
-					case 10:
-						return "Start Transferring File Block Data";
-					case 11:
-						return "Transfer File Block Data Complete";
-					case 12:
-						return "Wait for the Storage Node to Submit the PDP Proof";
-					case 13:
-						return "Storage Node Submits PDP Proof Complete";
-					case 14:
-						return "Register Information to DNS Node";
-					case 15:
-						return "Register Information to DNS Node Complete";
-					case 16:
-						return `Start ${type === 2 ? "Downloading" : "Uploading"} Files`;
-					case 17:
-						return `File  ${type === 2 ? "Downloading" : "Uploading"}`;
 					case 18:
+						return `Start ${type === 2 ? "Downloading" : "Uploading"} Files`;
+					case 19:
+						return `File  ${type === 2 ? "Downloading" : "Uploading"}`;
+					case 20:
 						return `File  ${
 							type === 2 ? "downloading" : "uploading"
 						} completed, submit sharing information to DNS node`;
 					default:
-						return "";
+						return this.$i18n.error[detailStatus][this.$language];
 				}
 			};
 		}
@@ -646,6 +622,12 @@ export default {
 		cancelAll() {
 			const type = this.transferType;
 			const arr = this.getTask(type, 0, 1, 2, 4);
+			if (arr.length === 0) {
+				this.$message({
+					message: "There are no tasks to cancel"
+				});
+				return;
+			}
 			this.$axios.post(this.$api.cancelAll, params).then(res => {
 				if (res.Error === 0) {
 					this.$message({
@@ -653,24 +635,42 @@ export default {
 						type: "Success"
 					});
 				} else {
-					this.$message.error(this.$i18n.error[res.Error][this.$language]);
+					this.$message.error(
+						this.$i18n.error[res.Error]
+							? this.$i18n.error[res.Error][this.$language]
+							: `error code is ${res.Error}`
+					);
 				}
 			});
 		},
 		continueAll() {
 			const type = this.transferType;
 			const arr = this.getTask(type, 0);
+			if (arr.length === 0) {
+				this.$message({
+					message: "There are no tasks to continue"
+				});
+				return;
+			}
+			this.uploadOrDownloadContinue(arr, type);
 		},
 		pauseAll() {
 			const type = this.transferType;
 			const arr = this.getTask(type, 1, 2);
+			if (arr.length === 0) {
+				this.$message({
+					message: "There are no tasks to pause"
+				});
+				return;
+			}
+			this.uploadOrDownloadPause(arr, type);
 		},
 		getTask(type, ...status) {
 			// console.log(status);
 			let filterArr = this.fileList.filter(item => {
-				if (type === 1 && item.IsUploadAction) {
+				if (type === 2 && item.IsUploadAction) {
 					return false;
-				} else if (type === 2 && !item.IsUploadAction) {
+				} else if (type === 1 && !item.IsUploadAction) {
 					return false;
 				} else if (status.indexOf(item.Status) === -1) {
 					return false;
@@ -682,7 +682,7 @@ export default {
 		// to do!!!!!
 		deleteRecord(row) {
 			let params = {
-				Ids: [row.Id] 
+				Ids: [row.Id]
 			};
 			this.$axios.post(this.$api.deleteRecord, params).then(res => {
 				if (res.Error === 0) {
@@ -691,75 +691,194 @@ export default {
 						type: "Success"
 					});
 				} else {
-					this.$message.error(this.$i18n.error[res.Error][this.$language]);
+					this.$message.error(
+						this.$i18n.error[res.Error]
+							? this.$i18n.error[res.Error][this.$language]
+							: `error code is ${res.Error}`
+					);
 				}
 			});
 		},
-		uploadOrDownloadCancel(row) {
-			let url = this.$api.uploadCancel;
-			if (!row.IsUploadAction) url = this.$api.downloadCancel;
-			let params = {
-				Ids: [row.Id]
-			};
+		isArray(arg) {
+			return Object.prototype.toString.call(arg) === "[object Array]";
+		},
+		/**
+		 * params
+		 * row: transfer item or list
+		 * type: 1:upload    2:download
+		 */
+		uploadOrDownloadCancel(row, type) {
+			let url = type === 0 ? this.$api.uploadCancel : this.$api.downloadCancel;
+			let isArray = this.isArray(row);
+			let params;
+			if (isArray) {
+				let arr = [];
+				for (let value of row) {
+					arr.push(value.Id);
+				}
+				params = {
+					Ids: arr
+				};
+			} else {
+				params = {
+					Ids: [row.Id]
+				};
+			}
 			this.$axios.post(url, params).then(res => {
 				if (res.Error === 0) {
-					this.$message({
-						message: "Opeation Success",
-						type: "Success"
-					});
+					let errorArr = [];
+					for (let value of res.Result.Tasks) {
+						if (value && value.Code) {
+							errorArr.push(value);
+						}
+					}
+					if (errorArr.length === 0) {
+						this.$message({
+							message: "Opeation Success",
+							type: "success"
+						});
+					}
 				} else {
-					this.$message.error(this.$i18n.error[res.Error][this.$language]);
+					this.$message.error(
+						this.$i18n.error[res.Error]
+							? this.$i18n.error[res.Error][this.$language]
+							: `error code is ${res.Error}`
+					);
 				}
 			});
 		},
-		uploadOrDownloadAgain(row) {
-			let url = this.$api.uploadRetry;
-			if (!row.IsUploadAction) url = this.$api.downloadRetry;
-			let params = {
-				Ids: [row.Id]
-			};
+		/**
+		 * params
+		 * row: transfer item or list
+		 * type: 1:upload    2:download
+		 */
+		uploadOrDownloadAgain(row, type) {
+			let url = type === 0 ? this.$api.uploadRetry : this.$api.downloadRetry;
+			let isArray = this.isArray(row);
+			let params;
+			if (isArray) {
+				let arr = [];
+				for (let value of row) {
+					arr.push(value.Id);
+				}
+				params = {
+					Ids: arr
+				};
+			} else {
+				params = {
+					Ids: [row.Id]
+				};
+			}
 			this.$axios.post(url, params).then(res => {
 				if (res.Error === 0) {
-					this.$message({
-						message: "Opeation Success",
-						type: "success"
-					});
+					let errorArr = [];
+					for (let value of res.Result.Tasks) {
+						if (value && value.Code) {
+							errorArr.push(value);
+						}
+					}
+					if (errorArr.length === 0) {
+						this.$message({
+							message: "Opeation Success",
+							type: "success"
+						});
+					}
 				} else {
-					this.$message.error(this.$i18n.error[res.Error][this.$language]);
+					this.$message.error(
+						this.$i18n.error[res.Error]
+							? this.$i18n.error[res.Error][this.$language]
+							: `error code is ${res.Error}`
+					);
 				}
 			});
 		},
-		uploadOrDownloadContinue(row) {
-			let url = this.$api.uploadResume;
-			if (!row.IsUploadAction) url = this.$api.downloadResume;
-			let params = {
-				Ids: [row.Id]
-			};
+		/**
+		 * params
+		 * row: transfer item or list
+		 * type: 1:upload    2:download
+		 */
+		uploadOrDownloadContinue(row, type) {
+			let url = type === 0 ? this.$api.uploadResume : this.$api.downloadResume;
+			let isArray = this.isArray(row);
+			let params;
+			if (isArray) {
+				let arr = [];
+				for (let value of row) {
+					arr.push(value.Id);
+				}
+				params = {
+					Ids: arr
+				};
+			} else {
+				params = {
+					Ids: [row.Id]
+				};
+			}
 			this.$axios.post(url, params).then(res => {
 				if (res.Error === 0) {
-					this.$message({
-						message: "Opeation Success",
-						type: "success"
-					});
+					let errorArr = [];
+					for (let value of res.Result.Tasks) {
+						if (value && value.Code) {
+							errorArr.push(value);
+						}
+					}
+					if (errorArr.length === 0) {
+						this.$message({
+							message: "Opeation Success",
+							type: "success"
+						});
+					}
 				} else {
-					this.$message.error(this.$i18n.error[res.Error][this.$language]);
+					this.$message.error(
+						this.$i18n.error[res.Error]
+							? this.$i18n.error[res.Error][this.$language]
+							: `error code is ${res.Error}`
+					);
 				}
 			});
 		},
-		uploadOrDownloadPause(row) {
-			let url = this.$api.uploadPause;
-			if (!row.IsUploadAction) url = this.$api.downloadPause;
-			let params = {
-				Ids: [row.Id]
-			};
+		/**
+		 * params
+		 * row: transfer item or list
+		 * type: 1:upload    2:download
+		 */
+		uploadOrDownloadPause(row, type) {
+			let url = type === 0 ? this.$api.uploadPause : this.$api.downloadPause;
+			let isArray = this.isArray(row);
+			let params;
+			if (isArray) {
+				let arr = [];
+				for (let value of row) {
+					arr.push(value.Id);
+				}
+				params = {
+					Ids: arr
+				};
+			} else {
+				params = {
+					Ids: [row.Id]
+				};
+			}
 			this.$axios.post(url, params).then(res => {
 				if (res.Error === 0) {
-					this.$message({
-						message: "Opeation Success",
-						type: "success"
-					});
+					let errorArr = [];
+					for (let value of res.Result.Tasks) {
+						if (value && value.Code) {
+							errorArr.push(value);
+						}
+					}
+					if (errorArr.length === 0) {
+						this.$message({
+							message: "Opeation Success",
+							type: "success"
+						});
+					}
 				} else {
-					this.$message.error(this.$i18n.error[res.Error][this.$language]);
+					this.$message.error(
+						this.$i18n.error[res.Error]
+							? this.$i18n.error[res.Error][this.$language]
+							: `error code is ${res.Error}`
+					);
 				}
 			});
 		},
@@ -786,7 +905,11 @@ export default {
 						type: "success"
 					});
 				} else {
-					this.$message.error(this.$i18n.error[res.Error][this.$language]);
+					this.$message.error(
+						this.$i18n.error[res.Error]
+							? this.$i18n.error[res.Error][this.$language]
+							: `error code is ${res.Error}`
+					);
 				}
 			});
 		},
@@ -809,7 +932,11 @@ export default {
 						this.fileList.Path = "";
 						this.switchToggle.decryptDialog = false;
 					} else {
-						this.$message.error(this.$i18n.error[res.Error][this.$language]);
+						this.$message.error(
+							this.$i18n.error[res.Error]
+								? this.$i18n.error[res.Error][this.$language]
+								: `error code is ${res.Error}`
+						);
 					}
 				})
 				.catch(err => {
@@ -841,6 +968,10 @@ $light-grey: #f9f9fb;
 		align-items: center;
 		.progress {
 			flex: 1;
+		}
+		.el-button--default {
+			position: relative;
+			top: 5px;
 		}
 	}
 	.file-list {

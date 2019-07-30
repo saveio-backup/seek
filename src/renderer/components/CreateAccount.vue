@@ -340,7 +340,11 @@ export default {
 								this.switchToggle.submitSwitch = true;
 							} else {
 								this.switchToggle.submitSwitch = true;
-								this.$message.error(this.$i18n.error[res.Error][this.$language]);
+								this.$message.error(
+									this.$i18n.error[res.Error]
+										? this.$i18n.error[res.Error][this.$language]
+										: `error code is ${res.Error}`
+								);
 							}
 						});
 				}
@@ -374,7 +378,11 @@ export default {
 						}
 						this.switchToggle.submitSwitch = true;
 					} else {
-						this.$message.error(this.$i18n.error[res.Error][this.$language]);
+						this.$message.error(
+							this.$i18n.error[res.Error]
+								? this.$i18n.error[res.Error][this.$language]
+								: `error code is ${res.Error}`
+						);
 						this.switchToggle.submitSwitch = true;
 					}
 				});

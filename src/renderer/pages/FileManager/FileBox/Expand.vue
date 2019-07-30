@@ -454,7 +454,11 @@ export default {
 							return;
 						}
 					} else {
-						this.$message.error(this.$i18n.error[res.Error][this.$language]);
+						this.$message.error(
+							this.$i18n.error[res.Error]
+								? this.$i18n.error[res.Error][this.$language]
+								: `error code is ${res.Error}`
+						);
 						this.switchToggle.loadSwitch = true;
 					}
 				})
@@ -516,7 +520,11 @@ export default {
 						this.cost = {};
 						this.submitToggle = true;
 					} else {
-						this.$message.error(this.$i18n.error[res.Error][this.$language]);
+						this.$message.error(
+							this.$i18n.error[res.Error]
+								? this.$i18n.error[res.Error][this.$language]
+								: `error code is ${res.Error}`
+						);
 						this.submitToggle = true;
 					}
 				});
@@ -542,7 +550,7 @@ export default {
 						this.cost.Fee = 0;
 						this.cost.FeeFormat = 0;
 						this.cost.TransferType = 1;
-						this.$message.error(this.$i18n.error[res.Error][this.$language]);
+						// this.$message.error(this.$i18n.error[res.Error]?this.$i18n.error[res.Error][this.$language]:`error code is ${res.Error}`);
 					}
 				});
 		},

@@ -234,7 +234,11 @@ export default {
 						}
 						window.location.href = location.origin + location.pathname; // success login link to home page
 					} else {
-						this.$message.error(this.$i18n.error[res.Error][this.$language]);
+						this.$message.error(
+							this.$i18n.error[res.Error]
+								? this.$i18n.error[res.Error][this.$language]
+								: `error code is ${res.Error}`
+						);
 					}
 				})
 				.catch(err => {
@@ -265,7 +269,11 @@ export default {
 								}
 								window.location.href = location.origin + location.pathname; // success login link to home page
 							} else {
-								this.$message.error(this.$i18n.error[res.Error][this.$language]);
+								this.$message.error(
+									this.$i18n.error[res.Error]
+										? this.$i18n.error[res.Error][this.$language]
+										: `error code is ${res.Error}`
+								);
 							}
 						});
 				}

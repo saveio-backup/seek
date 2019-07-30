@@ -18,7 +18,7 @@ const mutations = {
   'SET_BALANCE_TOTAL'(state, result) {
     state.balanceTotal = result.BalanceFormat;
     if (result.Channels && (result.Channels.length > 0)) {
-      state.balanceAddress = result.Channels[0].Address;
+      state.balanceAddress = resuplt.Channels[0].Address;
     }
     state.channels = result.Channels;
     this.dispatch('setChannelBind', localStorage.getItem('channelBindId') || '')
@@ -94,8 +94,15 @@ const actions = {
               const progress = await axios.get(api.channelInitProgress)
               if (progress.Error === 0) {
                 if (progress.Error === 0 && (progress.Result.Progress < 1)) { // but no Channel
-                  rebackToCreateAccount(commit, progress.Result.Progress); // back to create account
-                  this.dispatch('getChannelInitProgress'); // Loop loading progress
+                  axios
+                    .get(api.channelSync)
+                    .then(res => {
+                      if (res.Result.Syncing === true) {
+                        console.log('progress:',progress);
+                        rebackToCreateAccount(commit, progress.Result.Progress); // back to create account
+                        this.dispatch('getChannelInitProgress'); // Loop loading progress
+                      }
+                  })
                 } else if (progress.Error === 0) { // both Wallet and Channel exist
                   const result = res.Result;
                   for (let key in result) {
@@ -117,7 +124,7 @@ const actions = {
             window.localStorage.clear(); // remove all local infomation
           }
         } else {
-          // this.$message.error(this.$i18n.error[res.Error][this.$language]);
+          // this.$message.error(this.$i18n.error[res.Error]?this.$i18n.error[res.Error][this.$language]:`error code is ${res.Error}`);
           if (location.href.indexOf('Home') < 0) {
             router.replace({
               name: 'Home'

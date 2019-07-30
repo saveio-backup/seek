@@ -67,10 +67,8 @@ export default {
 			win: remote.getCurrentWindow()
 		};
 	},
-	watch: {},
 	methods: {
 		closeDialog() {
-			this.message({ type: "success", info: "Export Success!" });
 			this.$emit("closeDialog", { timeout: 0 });
 		},
 		message({ info, type }) {
@@ -98,11 +96,16 @@ export default {
 						ipcRenderer.once("export-finished", () => {
 							// ipcRenderer.send("open-info-dialog", { info: "Export Success!" });
 							this.$refs.dialogForm.resetFields();
+							this.message({ type: "success", info: "Export Success!" });
 							this.closeDialog();
 							// this.exportPrivateKeyToggle = false;
 						});
 					} else {
-						this.$message.error(this.$i18n.error[res.Error][this.$language]);
+						this.$message.error(
+							this.$i18n.error[res.Error]
+								? this.$i18n.error[res.Error][this.$language]
+								: `error code is ${res.Error}`
+						);
 					}
 				});
 			});

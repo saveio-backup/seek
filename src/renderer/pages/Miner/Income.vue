@@ -183,7 +183,11 @@ export default {
 						}
 						this.loadSwitch = true;
 					} else {
-						this.$message.error(this.$i18n.error[res.Error][this.$language]);
+						this.$message.error(
+							this.$i18n.error[res.Error]
+								? this.$i18n.error[res.Error][this.$language]
+								: `error code is ${res.Error}`
+						);
 						this.loadSwitch = true;
 					}
 				})

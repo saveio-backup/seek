@@ -150,7 +150,16 @@
 						prop="partner"
 						v-show="channelToggle.type==='add'"
 					>
-						<el-select
+						<!-- :fetch-suggestions="querySearchAsync" -->
+						<el-autocomplete
+							class="grey-theme"
+							v-model="channelForm.partner"
+							:fetch-suggestions="querySearchAsync"
+							placeholder="Please Input"
+							@select="handleSelect"
+						></el-autocomplete>
+
+						<!-- <el-select
 							class="grey-theme"
 							v-model="channelForm.partner"
 							placeholder="Please Select"
@@ -163,7 +172,7 @@
 								:disabled="dnsIsSelect(item.WalletAddr)"
 							>
 							</el-option>
-						</el-select>
+						</el-select> -->
 					</el-form-item>
 					<el-form-item
 						class="theme-font-blue-bold form-amount"
@@ -250,7 +259,7 @@ export default {
 			channelForm: {
 				password: "",
 				partner: "",
-				amount: ""
+				amount: "0"
 			},
 			dialogRules: {
 				amount: [
@@ -365,19 +374,46 @@ export default {
 					IsDNS: true
 				}
 			],
-			dns: []
+			dns: [],
+			timeout: null
 		};
 	},
 	mounted() {
 		this.initCurrentRow();
 	},
 	methods: {
+		// get all channel select address attr
+		getAddr() {
+			let arr = [];
+			for (let value of this.channels) {
+				arr.push(value.Address);
+			}
+			return arr;
+		},
+		// get select list
+		querySearchAsync(queryString, cb) {
+			let allSelectAddr = this.getAddr();
+			let restaurants = this.dns.filter(item => {
+				if (allSelectAddr.includes(item.WalletAddr)) return false;
+				item["value"] = `${item.WalletAddr}(${item.HostAddr})`;
+				return true;
+			});
+			cb(restaurants);
+		},
+		// dns select callback
+		handleSelect(item) {
+			this.channelForm.partner = item.WalletAddr;
+		},
 		getDns() {
 			this.$axios.get(this.$api.getAllDns).then(res => {
 				if (res.Error === 0) {
 					this.dns = res.Result;
 				} else {
-					this.$message.error(this.$i18n.error[res.Error][this.$language]);
+					this.$message.error(
+						this.$i18n.error[res.Error]
+							? this.$i18n.error[res.Error][this.$language]
+							: `error code is ${res.Error}`
+					);
 				}
 			});
 		},
@@ -494,7 +530,11 @@ export default {
 						this.channelToggle.channelCloseDialog = false;
 						this.$store.dispatch("setChannelBalanceTotal");
 					} else {
-						this.$message.error(this.$i18n.error[res.Error][this.$language]);
+						this.$message.error(
+							this.$i18n.error[res.Error]
+								? this.$i18n.error[res.Error][this.$language]
+								: `error code is ${res.Error}`
+						);
 					}
 				});
 		},
@@ -516,7 +556,11 @@ export default {
 						this.channelToggle.channelCloseDialog = false;
 						this.$store.dispatch("setChannelBalanceTotal");
 					} else {
-						this.$message.error(this.$i18n.error[res.Error][this.$language]);
+						this.$message.error(
+							this.$i18n.error[res.Error]
+								? this.$i18n.error[res.Error][this.$language]
+								: `error code is ${res.Error}`
+						);
 					}
 				});
 		}
@@ -554,6 +598,9 @@ $theme-color: #202020;
 	border-radius: 6px;
 	box-shadow: 0px 2px 20px 0px rgba(196, 196, 196, 0.24);
 	.el-select {
+		width: 100%;
+	}
+	.el-autocomplete {
 		width: 100%;
 	}
 }

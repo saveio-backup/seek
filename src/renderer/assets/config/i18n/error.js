@@ -1,9 +1,76 @@
 const result = {
+  //The status code of the transmission process
+  '0': {
+    'en': ''
+  },
+  '1': {
+    'en': 'Task Pause'
+  },
+  '2': {
+    'en': 'Task continue'
+  },
+  '3': {
+    'en': 'Start Sharding'
+  },
+  '4': {
+    'en': 'Sharding to Complete'
+  },
+  '5': {
+    'en': 'Pay on the Chain'
+  },
+  '6': {
+    'en': 'The Payment Chain is Complete'
+  },
+  '7': {
+    'en': 'Submit Whitelist Information'
+  },
+  '8': {
+    'en': 'Submit Whitelist Information Completed'
+  },
+  '9': {
+    'en': 'Find Storage Node'
+  },
+  '10': {
+    'en': 'Find the Storage Node to Complete'
+  },
+  '11': {
+    'en': 'Generate PDP Proof Data'
+  },
+  '12': {
+    'en': 'Start Transferring File Block Data'
+  },
+  '13': {
+    'en': 'Transfer File Block Data Complete'
+  },
+  '14': {
+    'en': 'Wait for the Storage Node to Submit the PDP Proof'
+  },
+  '15': {
+    'en': 'Storage Node Submits PDP Proof Complete'
+  },
+  '16': {
+    'en': 'Register Information to DNS Node'
+  },
+  '17': {
+    'en': 'Register Information to DNS Node Complete'
+  },
+  '18': {
+    'en': ''
+  },
+  '19': {
+    'en': ''
+  },
+  '20': {
+    'en': ''
+  },
+  '40000': {
+    'en': 'Incorrect parameter'
+  },
   '40001': {
-    'en': 'internal server error'
+    'en': 'Internal server error'
   },
   '40002': {
-    'en': 'Incorrect parameters (missing)'
+    'en': 'Incorrect parameter (missing)'
   },
   '40003': {
     'en': 'Service not instantiated'
@@ -53,6 +120,15 @@ const result = {
   '50009': {
     'en': 'Transfer failed'
   },
+  '50010': {
+    'en': 'Failed to add whitelist'
+  },
+  '50011': {
+    'en': 'Failed to obtain PDP proof parameter'
+  },
+  '50012': {
+    'en': 'Gets a file block data exception'
+  },
   '50013': {
     'en': 'Wallet file does not exist'
   },
@@ -67,6 +143,27 @@ const result = {
   },
   '50017': {
     'en': 'Account export failed'
+  },
+  '50018': {
+    'en': 'Failed to get SessionID'
+  },
+  '50019': {
+    'en': 'File download price is abnormal'
+  },
+  '50020': {
+    'en': 'The mission has reached its limit'
+  },
+  '50021': {
+    'en': 'Not found on file info chain'
+  },
+  '50022': {
+    'en': 'Download denied'
+  },
+  '50023': {
+    'en': 'The main chain requests an exception'
+  },
+  '50024': {
+    'en': 'Task pause failed'
   },
   '54001': {
     'en': 'Failed to get FS contract configuration'
@@ -138,7 +235,25 @@ const result = {
     'en': 'Update system configuration failed'
   },
   '55022': {
-    'en': 'Update file exist'
+    'en': 'Upload file already'
+  },
+  '55023': {
+    'en': 'Upload pause failed'
+  },
+  '55024': {
+    'en': 'Continue upload failed'
+  },
+  '55025': {
+    'en': 'Retry upload failed'
+  },
+  '55026': {
+    'en': 'Download pause failed'
+  },
+  '55027': {
+    'en': 'Continue download failed'
+  },
+  '55028': {
+    'en': 'Retry download failed'
   },
   '55030': {
     'en': 'Node registration failed'
@@ -194,6 +309,12 @@ const result = {
   '55060': {
     'en': 'Querying all DNS node information failed'
   },
+  '55061': {
+    'en': 'Querying DNS node get ip infomation failed'
+  },
+  '55062': {
+    'en': 'There is not enough time in user space'
+  },
   '56000': {
     'en': 'Channel internal error'
   },
@@ -223,6 +344,27 @@ const result = {
   },
   '56009': {
     'en': 'Cooperation closure failed'
+  },
+  '56010': {
+    'en': 'Channel instantiation is not complete'
+  },
+  '56011': {
+    'en': 'Channel already exists'
+  },
+  '56012': {
+    'en': 'Unable to download without connecting DNS node'
+  },
+  '56013': {
+    'en': 'Dns node no enough,not allow download'
+  },
+  '56014': {
+    'en': 'Channel withdrawal amount is wrong'
+  },
+  '56015': {
+    'en': 'Channel is synchronizing blocks'
+  },
+  '58000': {
+    'en': 'Task for operation does not exist'
   },
   '59000': {
     'en': 'Database query sharing revenue failed'

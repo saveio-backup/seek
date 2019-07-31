@@ -567,7 +567,7 @@ export default {
 	},
 	computed: {
 		channels: function() {
-			return this.mockChannels;
+			// return this.mockChannels;
 			return this.$store.state.Home.channels;
 		},
 		channelsDns: function() {

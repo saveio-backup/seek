@@ -61,19 +61,29 @@
 								>{{user.name | firstString}}</i>
 							</div>
 							<div
-								class="el-icon-arrow-left"
-								:class="{'disable': !activeView.canGoBack}"
 								@click="remoteGoBack"
-							></div>
+								:class="{'disable': !activeView.canGoBack}"
+								title="go back"
+							>
+								<i
+									class="el-icon-arrow-left"
+								></i>
+							</div>
 							<div
-								class="el-icon-arrow-right"
-								:class="{'disable': !activeView.canGoForward}"
 								@click="remoteGoForward"
-							></div>
+								:class="{'disable': !activeView.canGoForward}"
+								title="go forward"
+							>
+								<i 
+									class="el-icon-arrow-right"
+								></i>
+							</div>
 							<div
-								class="el-icon-refresh"
 								@click="remoteReload"
-							></div>
+								title="refresh"
+							>
+								<i class="el-icon-refresh"></i>
+							</div>
 						</div>
 						<el-input
 							ref="inputUrl"
@@ -456,16 +466,21 @@ $tabs-height: 62px;
 			& > div {
 				margin: 0 5px;
 				padding: 1px;
-				border-radius: 50%;
+				width: 24px;
+				height: 24px;
 				font-size: 16px;
+				border-radius: 50%;
+				text-align: center;
+				line-height: 24px;
 
 				&:not(.disable) {
 					&:hover {
-						opacity: 0.7;
+						background: #DFE2E9;
+						cursor: pointer;
 					}
 
 					&:active {
-						opacity: 1;
+						opacity: .7;
 					}
 				}
 			}

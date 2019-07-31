@@ -89,7 +89,7 @@
 									</span>
 									<span
 										v-if="page === 'filebox'"
-										class="cursor-click active-blue cursor-pointer"
+										class="active-blue cursor-pointer"
 										title="Download"
 									>
 										<i
@@ -101,7 +101,7 @@
 										v-if="page === 'filebox'"
 										title="Delete"
 										@click.stop="deleteFile(scope.row)"
-										class="cursor-click active-blue cursor-pointer"
+										class="active-blue cursor-pointer"
 									>
 										<i class="el-icon-delete ft18"></i>
 									</span>
@@ -109,7 +109,7 @@
 										@click.stop="showInFolder(scope.row.Path)"
 										v-if="page === 'miner' && scope.row.Path"
 										title="Open Folder"
-										class="cursor-click active-blue cursor-pointer"
+										class="active-blue cursor-pointer"
 									>
 										<i class="ofont ofont-wenjianxiangqing ft14"></i>
 									</span>
@@ -117,7 +117,7 @@
 										v-if="page === 'filebox'"
 										title="look detail"
 										@click.stop="openDetailDialog(scope.row)"
-										class="cursor-click active-blue cursor-pointer"
+										class="active-blue cursor-pointer"
 									>
 										<i class="ofont-xiangqing ofont ft16">
 										</i>
@@ -1087,7 +1087,23 @@ $theme-font-blue: #040f39;
             }
             &:active {
               opacity: .7;
-            }
+						}
+						& > .el-icon-share {
+							position: relative;
+							top: 2px;
+						}
+						& > .el-icon-download {
+							position: relative;
+							top: 1px;
+						}
+						& > .el-icon-delete {
+							position: relative;
+							top: 1px;
+						}
+						& > .ofont-xiangqing {
+							position: relative;
+							left: 1px;
+						}
 					}
 				}
 				&:hover {

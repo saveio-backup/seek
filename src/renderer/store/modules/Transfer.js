@@ -1,8 +1,8 @@
 import axios from 'axios';
 import api from '../../assets/config/api';
 import { Message } from 'element-ui'
-// const transferClear = clearInterval;
-const transferClear = function () { };
+const transferClear = clearInterval;
+// const transferClear = function () { };
 const state = {
   completeTransferList: [],
   uploadTransferList: [],

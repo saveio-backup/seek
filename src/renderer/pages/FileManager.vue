@@ -48,10 +48,12 @@
           <div class="flex jc-end">
           </div>
           <span class="mr20 ft24">{{filterFloat(channelBind.BalanceFormat || 0).toLocaleString('en-US')}}<span class="user-no-select"> SAVE</span></span>
-          <i
-            class="ofont ofont-zhuanrang ft24 cursor-click cursor-pointer user-no-select light-blue"
-            @click="openAssetTransferDialog"
-          ></i>
+          <span class="coin-icon-box cursor-pointer user-no-select">
+            <i
+              class="ofont ofont-zhuanrang ft20 light-blue"
+              @click="openAssetTransferDialog"
+            ></i>
+          </span>
         </div>
       </div>
       <el-dialog
@@ -402,6 +404,20 @@ $grey: #ccc;
         display: flex;
         align-items: center;
         position: relative;
+        .coin-icon-box {
+          display: inline-block;
+          width: 36px;
+          height: 36px;
+          line-height: 36px;
+          text-align: center;
+          border-radius: 50%;
+          &:hover {
+            background: #EDEFF4;
+          }
+          &:active {
+            opacity: .7;
+          }
+        }
         // .coin-more {
         // 	width: 40px;
         // 	height: 40px;

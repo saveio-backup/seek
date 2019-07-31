@@ -76,14 +76,26 @@ export default {
 					MaxPeerNum: 20
 				})
 				.then(res => {
-					this.$emit("closedialog");
-					this.$store.dispatch("setDownload");
-					this.$router.push({
-						name: "transfer",
-						query: {
-							transferType: 2
+					if(res.Error === 0) {
+						this.$emit("closedialog");
+						// this.$store.dispatch("setDownload");
+						this.$router.push({
+							name: "transfer",
+							query: {
+								transferType: 2
+							}
+						});
+					} else {
+						if(res.Error === 50028) {
+							this.$message.error('Sorry, there are no valid files found, the file may have been deleted.');
+						} else {
+							this.$message.error(
+								this.$i18n.error[res.Error]
+									? this.$i18n.error[res.Error][this.$language]
+									: `error code is ${res.Error}`
+							);
 						}
-					});
+					}
 				});
 		}
 	}

@@ -225,20 +225,20 @@ $theme-font-blue: #202020;
 		color: #cdcfd8;
 	}
 	.ofont-huazhuan {
-		width: 30px;
-		height: 30px;
-		background: #f1f3f7;
+		width: 36px;
+		height: 36px;
 		text-align: center;
-		line-height: 31px;
+		line-height: 36px;
 		border-radius: 50%;
 		&.ex-change {
 			color: #2f8ff0;
 			cursor: pointer;
 			&:hover {
-				opacity: 0.7;
+				background: #EDEFF4;
 			}
 			&:active {
-				opacity: 1;
+				opacity: 0.7;
+				// opacity: 1;
 			}
 		}
 	}

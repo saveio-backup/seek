@@ -579,7 +579,7 @@ export default {
 						if (res.Error === 0) {
 							this.switchToggle.upload = true;
 							this.passwordForm.show = false;
-							this.$store.dispatch("setUpload");
+							// this.$store.dispatch("setUpload");
 							this.$router.push({
 								name: "transfer",
 								query: { transferType: 1 }

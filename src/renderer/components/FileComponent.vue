@@ -130,7 +130,7 @@
 								>Upload Completed</span>
 							</div>
 							<div v-else-if="scope.row.Status === 4">
-								<span class="light-error">{{scope.row.ErrMsg}}</span>
+								<span class="light-error">{{scope.row.ErrMsg || transferType === 0 ? 'Upload failed':transferType === 1?'Download failed':''}}</span>
 								<!-- <span
 								class="light-error"
 								v-if="!scope.row.IsUploadAction"
@@ -642,6 +642,20 @@ export default {
 			}
 			this.$axios.post(this.$api.cancelAll, params).then(res => {
 				if (res.Error === 0) {
+					// get transfer list info update status
+					if(type === 0) {
+						this.$store.dispatch("setUpload");
+					} else {
+						this.$store.dispatch("setDownload");
+					}
+					//get error list
+					let errorArr = [];
+					for (let value of res.Result.Tasks) {
+						if (value && value.Code) {
+							errorArr.push(value);
+						}
+					}
+					//if no err
 					this.$message({
 						message: "Opeation Success",
 						type: "Success"
@@ -698,10 +712,27 @@ export default {
 			};
 			this.$axios.post(this.$api.deleteRecord, params).then(res => {
 				if (res.Error === 0) {
-					this.$message({
-						message: "Opeation Success",
-						type: "Success"
-					});
+					this.$store.dispatch("setComplete");
+					// get transfer list info update status
+					if(type === 0) {
+						this.$store.dispatch("setUpload");
+					} else {
+						this.$store.dispatch("setDownload");
+					}
+					//get error list
+					let errorArr = [];
+					for (let value of res.Result.Tasks) {
+						if (value && value.Code) {
+							errorArr.push(value);
+						}
+					}
+					//if no err
+					if (errorArr.length === 0) {
+						this.$message({
+							message: "Opeation Success",
+							type: "success"
+						});
+					}
 				} else {
 					this.$message.error(
 						this.$i18n.error[res.Error]
@@ -738,12 +769,20 @@ export default {
 			}
 			this.$axios.post(url, params).then(res => {
 				if (res.Error === 0) {
+					// get transfer list info update status
+					if(type === 0) {
+						this.$store.dispatch("setUpload");
+					} else {
+						this.$store.dispatch("setDownload");
+					}
+					//get error list
 					let errorArr = [];
 					for (let value of res.Result.Tasks) {
 						if (value && value.Code) {
 							errorArr.push(value);
 						}
 					}
+					//if no err
 					if (errorArr.length === 0) {
 						this.$message({
 							message: "Opeation Success",
@@ -783,12 +822,20 @@ export default {
 			}
 			this.$axios.post(url, params).then(res => {
 				if (res.Error === 0) {
+					// get transfer list info update status
+					if(type === 0) {
+						this.$store.dispatch("setUpload");
+					} else {
+						this.$store.dispatch("setDownload");
+					}
+					//get error list
 					let errorArr = [];
 					for (let value of res.Result.Tasks) {
 						if (value && value.Code) {
 							errorArr.push(value);
 						}
 					}
+					//if no err
 					if (errorArr.length === 0) {
 						this.$message({
 							message: "Opeation Success",
@@ -828,12 +875,20 @@ export default {
 			}
 			this.$axios.post(url, params).then(res => {
 				if (res.Error === 0) {
+					// get transfer list info update status
+					if(type === 0) {
+						this.$store.dispatch("setUpload");
+					} else {
+						this.$store.dispatch("setDownload");
+					}
+					//get error list
 					let errorArr = [];
 					for (let value of res.Result.Tasks) {
 						if (value && value.Code) {
 							errorArr.push(value);
 						}
 					}
+					//if no err
 					if (errorArr.length === 0) {
 						this.$message({
 							message: "Opeation Success",
@@ -873,12 +928,20 @@ export default {
 			}
 			this.$axios.post(url, params).then(res => {
 				if (res.Error === 0) {
+					// get transfer list info update status
+					if(type === 0) {
+						this.$store.dispatch("setUpload");
+					} else {
+						this.$store.dispatch("setDownload");
+					}
+					//get error list
 					let errorArr = [];
 					for (let value of res.Result.Tasks) {
 						if (value && value.Code) {
 							errorArr.push(value);
 						}
 					}
+					//if no err
 					if (errorArr.length === 0) {
 						this.$message({
 							message: "Opeation Success",

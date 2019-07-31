@@ -138,10 +138,13 @@
 							v-if="balanceLists.length>0"
 						>
 							<div class="item-addr">
-								<i
+								<!-- <i
 									class="ofont"
 									:class="item.Type ==1 ? 'ofont-send':'ofont-jieshou'"
-								></i>
+								></i> -->
+								<span class="transfer-is-done">
+									<i class="ofont ofont-wancheng"></i>
+								</span>
 								<div class="addr-info">
 									<p
 										class='from-or-to'
@@ -150,12 +153,12 @@
 									<p class="tx-date grey-xs">{{date.formatTimeByTimestamp(item.Timestamp * 1000)}}</p>
 								</div>
 							</div>
-							<div class="item-amount">{{item.Type ==1 ? '-':'+'}} {{parseFloat(parseFloat(item.AmountFormat).toFixed(9))}} {{item.Asset.toUpperCase()}}</div>
+							<div class="item-amount" :class="{'send-item-amount':item.Type ==1}">{{item.Type ==1 ? '-':'+'}} {{parseFloat(parseFloat(item.AmountFormat).toFixed(9)).toLocaleString('en-US')}} {{item.Asset.toUpperCase()}}</div>
 							<div
 								class="item-more"
 								v-if="item.BlockHeight>0"
 							>
-								<i class="el-icon-success"></i>
+								<!-- <i class="el-icon-success"></i> -->
 								<i class="el-icon-more"></i>
 							</div>
 						</div>
@@ -168,13 +171,13 @@
 									@click="clipText(item.Txid || '')"
 									title="click to copy"
 								></i></div>
-							<div class="towards theme-bold">
+							<div class="towards">
 								<p class='from user-no-select'>{{item.From}} <i
 										class="ofont ofont-fuzhi tx-copy"
 										title="click to copy"
 										@click="clipText(item.From)"
 									></i></p>
-								<i class="ofont ofont-fasong arrow"></i>
+								<i class="ofont ofont-fasong arrow ft12"></i>
 								<p class="to user-no-select">{{item.To}} <i
 										class="ofont ofont-fuzhi tx-copy"
 										title="click to copy"
@@ -182,9 +185,9 @@
 									></i></p>
 							</div>
 							<div class="flex between bottom-info">
-								<div class="minerfee"><span class="theme-font-color user-no-select">Miner fee</span> <span class="theme-font-blue bold">{{item.FeeFormat}}</span> {{balanceLists[balanceSelected].Symbol}}</div>
+								<div class="minerfee"><span class="theme-font-color user-no-select">Miner fee:</span> <span class="theme-font-blue">{{item.FeeFormat}}</span> {{balanceLists[balanceSelected].Symbol}}</div>
 								<div class="flex1"></div>
-								<div class="blockheight"><span class="theme-bold user-no-select">Block</span> {{item.BlockHeight}}</div>
+								<div class="blockheight"><span class="user-no-select">Block:</span> {{item.BlockHeight}}</div>
 							</div>
 						</div>
 					</li>
@@ -872,23 +875,20 @@ $light-grey: #f7f7f7;
 			display: flex;
 			width: 284px;
 			flex-direction: column;
-			justify-content: space-between;
+			justify-content: start;
 			.person-info {
 				width: 100%;
 				height: 119px;
-				box-shadow: 0px 2px 20px 0px rgba(196, 196, 196, 0.24);
+				background:linear-gradient(90deg,rgba(19,176,250,1) 0%,rgba(62,126,235,1) 100%);
+				box-shadow:0px 2px 8px 0px rgba(196,196,196,0.24);
 				border-radius: 6px;
-				background: #fff;
-				color: #202020;
+				color: #fff;
 				display: flex;
 				justify-content: space-between;
 				flex-direction: column;
 				padding: 24px 16px;
-				.person-info-name {
-					font-weight: 400;
-				}
+				font-weight: 400;
 				.person-info-address {
-					color: rgba(32, 32, 32, 0.4);
 					.address {
 						display: inline-block;
 						width: 230px;
@@ -900,17 +900,18 @@ $light-grey: #f7f7f7;
 						top: -2px;
 						cursor: pointer;
 						&:hover {
-							color: rgba(32, 32, 32, 0.7);
+							opacity: .7;
 						}
 						&:active {
-							color: rgba(32, 32, 32, 0.4);
+							opacity: 1;
 						}
 					}
 				}
 			}
 			.balance-content-wrapper {
 				background: #fff;
-				height: calc(100% - 135px);
+				margin-top: 26px;
+				max-height: calc(100% - 135px);
 				box-shadow: 0px 2px 20px 0px rgba(196, 196, 196, 0.24);
 				border-radius: 6px;
 				padding: 0 15px;
@@ -1105,14 +1106,19 @@ $light-grey: #f7f7f7;
 						// 	border: 0;
 						// }
 						.item-addr {
-							& > i {
-								font-size: 20px;
+							& > .transfer-is-done {
+								width: 30px;
+								height: 30px;
+								background: #EDEFF4;
+								border-radius: 50%;
+								line-height: 30px;
+								text-align: center;
 								margin-right: 15px;
-								&.ofont-send {
-									color: #ff4f78;
-								}
-								&.ofont-jieshou {
-									color: #52a1ff;
+								i {
+									font-size: 16px;
+									&.ofont-wancheng {
+										color: #52a1ff;
+									}
 								}
 							}
 							width: 160px;
@@ -1132,12 +1138,15 @@ $light-grey: #f7f7f7;
 						}
 						.item-amount {
 							flex: 1;
-							font-size: 24px;
-							color: #202020;
+							font-size: 14px;
+							color: #8BD179;
 							width: 100%;
 							max-width: 400px;
 							margin: 0 auto;
-							// text-align: center;
+							text-align: center;
+							&.send-item-amount {
+								color: #EB8B7E
+							}
 						}
 						.item-more {
 							display: flex;
@@ -1153,7 +1162,7 @@ $light-grey: #f7f7f7;
 						}
 					}
 					.tx-li-item-detail {
-						background: $light-grey;
+						background: #F8F9FA;
 						padding: 10px 45px;
 						.towards {
 							display: flex;
@@ -1162,6 +1171,7 @@ $light-grey: #f7f7f7;
 							.to {
 								width: 400px;
 								font-size: 12px;
+								word-break:break-all;
 							}
 							.arrow {
 								flex: 1;
@@ -1178,6 +1188,7 @@ $light-grey: #f7f7f7;
 						.tx-copy {
 							position: relative;
 							top: 2px;
+							margin-left: 8px;
 							&:hover {
 								opacity: 0.7;
 							}

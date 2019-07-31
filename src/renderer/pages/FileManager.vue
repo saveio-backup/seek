@@ -189,6 +189,10 @@ export default {
     toApplyChange() {
       this.$refs.channellist.applyChange();
       this.switchToggle.channelListDialog = false;
+      this.$message({
+        type: 'success',
+        message: 'Switching channel successfully'
+      })
     },
     toCancelChange() {
       this.$refs.channellist.initCurrentRow();
@@ -200,6 +204,7 @@ export default {
     }
   },
   watch: {
+    // to do!!!! transfer api message need delete
     uploadTransferList(newVal, oldVal) {
       clearTimeout(this.setTimeoutObj.upload);
       this.setTimeoutObj.upload = setTimeout(() => {

@@ -20,10 +20,6 @@
 				></el-progress>
 			</div>
 			<el-button
-				v-if="transferType === 2"
-				@click="switchToggle.newTaskDialog=true"
-			>New Task</el-button>
-			<el-button
 				v-if="transferType !== 0 && show"
 				@click="cancelAll"
 			>Cancel All</el-button>
@@ -35,6 +31,11 @@
 				v-if="transferType !== 0"
 				@click="pauseAll"
 			>Pause All</el-button>
+			<el-button
+				v-if="transferType === 2"
+				class="primary"
+				@click="switchToggle.newTaskDialog=true"
+			>New Task</el-button>
 		</div>
 		<div
 			v-else

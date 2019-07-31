@@ -119,9 +119,13 @@ const setFrontConfig = async (appDataPath, appName) => {
     }
     log.debug("setup front-config success")
 }
+//cache restart need data;
+let appDataPathCache = '';
+let appNameCache = '';
+//cache page edgeClose event callback 
+let edgeCloseRestartFailed = '';
 
 const setupConfig = async (appDataPath, appName) => {
-
     let cfgPath = cfgFilePath(appDataPath, appName)
     console.log('!!!!!cfgPath: ', cfgPath);
     console.log('!!!!appDataPath: ', appDataPath);
@@ -172,6 +176,8 @@ const setupConfig = async (appDataPath, appName) => {
 }
 
 const run = (appDataPath, appName) => {
+    appDataPathCache = appDataPath;
+    appNameCache = appName;
     let cfgDir = ''
     let cmdStr = ''
     if (getPlatform() == "win") {
@@ -219,12 +225,19 @@ const run = (appDataPath, appName) => {
         // console.log('child process exited with code ' + code);
     });
     workerProcess.on('close', function (code) {
-        log.error('workerProcess close with code' + code)
+        log.error('workerProcess close with code' + code);
+        try {
+            if (appDataPathCache && appNameCache) {
+                run(appDataPathCache, appNameCache);
+                edgeCloseRestartFailed.reply('edgeClose', '1');
+            }
+        } catch (e) {
+            log.error('edge restart failed' + e)
+            edgeCloseRestartFailed.reply('edgeClose', '1');
+        }
     })
     ipcMain.on('watchEdge', (event) => {
-        workerProcess.on('close', function (code) {
-            event.reply('edgeClose');
-        })
+        edgeCloseRestartFailed = event;//cache event
     })
 }
 

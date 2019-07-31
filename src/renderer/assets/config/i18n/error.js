@@ -165,6 +165,57 @@ const result = {
   '50024': {
     'en': 'Task pause failed'
   },
+  '50025': {
+    'en': 'Failed to retrieve file information from database'
+  },
+  '50026': {
+    'en': 'File Hash not found'
+  },
+  '50027': {
+    'en': 'No DNS connected'
+  },
+  '50028': {
+    'en': 'There is no downloadable data source'
+  },
+  '50029': {
+    'en': 'Failed to obtain information from download node'
+  },
+  '50030': {
+    'en': 'Prepare Channel failed before download'
+  },
+  '50031': {
+    'en': 'File information does not exist'
+  },
+  '50032': {
+    'en': 'Failed to pay for unpaid file blocks'
+  },
+  '50033': {
+    'en': 'Failed to create download file'
+  },
+  '50034': {
+    'en': 'Failed to obtain undownloaded file block'
+  },
+  '50035': {
+    'en': 'Failed to download file block'
+  },
+  '50036': {
+    'en': 'Failed to retrieve file information'
+  },
+  '50037': {
+    'en': 'Failed to write data to file'
+  },
+  '50038': {
+    'en': 'Failed to save block to FS'
+  },
+  '50039': {
+    'en': 'Failed to add request file block'
+  },
+  '50040': {
+    'en': 'Decryption Failure'
+  },
+  '50041': {
+    'en': 'File rename failed'
+  },
   '54001': {
     'en': 'Failed to get FS contract configuration'
   },
@@ -235,7 +286,7 @@ const result = {
     'en': 'Update system configuration failed'
   },
   '55022': {
-    'en': 'Upload file already'
+    'en': 'Upload file already exists'
   },
   '55023': {
     'en': 'Upload pause failed'

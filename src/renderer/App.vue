@@ -9,6 +9,7 @@
 
 <script>
 import { ipcRenderer } from "electron";
+import { chown } from "fs";
 export default {
 	name: "browser",
 	mounted() {
@@ -39,18 +40,28 @@ export default {
 	},
 	methods: {
 		activeListener() {
+			const vm = this;
 			this.syncListener.some(item => {
 				if (this.$route.fullPath.indexOf(item) >= 0) {
 					ipcRenderer.send("watchEdge");
-					ipcRenderer.on("edgeClose", () => {
-						this.$axios.get = null;
-						this.$axios.post = null;
-						this.$message({
-							message: "Server has been closed, please restart seeker.",
-							type: "error",
-							duration: 0
-						});
-						this.$message.error = null;
+					/**
+					 * params
+					 * type: 0: failed;1: restart success
+					 */
+					ipcRenderer.on("edgeClose", (event, type) => {
+						console.log(`edgeClose callback restart: ${type === 0 ? 'failed' : 'restart success'}`);
+						if (type === "0") {
+							this.$axios.get = null;
+							this.$axios.post = null;
+							this.$message({
+								message: "Server has been closed, please restart seeker.",
+								type: "error",
+								duration: 0
+							});
+							this.$message.error = null;
+						} else {
+							vm.isSync();
+						}
 					});
 					document.addEventListener("visibilitychange", () => {
 						console.log("document.visibilityState:", document.visibilityState);

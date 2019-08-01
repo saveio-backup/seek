@@ -6,7 +6,7 @@ import {
 } from 'electron'
 import './ipcManager'
 import './protocols/protocols' // custom protocol
-
+import frontCfgObj from './windowManager/frontCfgObj'
 import {
   windows,
   createWindow
@@ -16,7 +16,7 @@ import {
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
  */
 const gotTheLock = app.requestSingleInstanceLock()
-if(!gotTheLock){
+if (!gotTheLock) {
   app.quit();
 }
 if (process.env.NODE_ENV !== 'development') {
@@ -31,7 +31,8 @@ import * as node from "./node"
 node.setupConfig(app.getPath("appData"), app.getName())
 node.setFrontConfig(app.getPath("appData"), app.getName())
 app.on('ready', function () {
-  node.run(app.getPath("appData"), app.getName())
+  const fs = require('fs');
+  (!frontCfgObj().devEdgeEnable) && node.run(app.getPath("appData"), app.getName())
   createWindow(winURL)
 })
 

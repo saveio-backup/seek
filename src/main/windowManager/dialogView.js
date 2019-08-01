@@ -47,7 +47,7 @@ class dialogView {
     this.updateEvent();
     this.resize();
     this.loadDialog();
-    if (process.env.NODE_ENV === 'development' || frontCfgObj.console) {
+    if (process.env.NODE_ENV === 'development' || frontCfgObj().console) {
       this.browserView.webContents.openDevTools();
     }
   }

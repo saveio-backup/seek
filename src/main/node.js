@@ -89,10 +89,10 @@ const setFrontConfig = async (appDataPath, appName) => {
     const resourcesPath = (process.env.NODE_ENV === 'production') ?
         path.join(path.dirname(appRoot), 'bin') :
         path.join(appRoot, 'resources', getPlatform());
-    if (hasConfig) {
-        log.debug("already has front-config")
-        return
-    }
+    // if (hasConfig) {
+    //     log.debug("already has front-config")
+    //     return
+    // }
     const srcCfgPath = `${resourcesPath}/front-config.json`
     if (!fs.existsSync(srcCfgPath)) {
         log.debug("front-config.json not exist")

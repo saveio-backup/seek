@@ -33,7 +33,7 @@
 					<div class="adjust-item">
 						<p class="adjust-title theme-font-blue ft14">Verification Cycle:</p>
 						<div class="adjust-info">
-							<p class="theme-font-blue ft14 mr20">{{fileDetail && fileDetail.Interval}} Second</p>
+							<p class="theme-font-blue ft14 mr20">{{fileDetail && (fileDetail.Interval | timeTofilter)}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
@@ -77,6 +77,12 @@
 	</div>
 </template>
 <script>
+const BASE = {
+	Second: 1,
+	Day: 86400,
+	Month: 2592000,
+	Year: 31536000
+};
 export default {
 	props: {
 		hash: {
@@ -88,8 +94,26 @@ export default {
 		return {
 			fileDetailDialogToggle: false,
 			fileDetail: null,
-			loading: null
+			loading: null,
+			BASE
 		};
+	},
+	filters: {
+		timeTofilter(value) {
+			if(!value) {
+				return ''
+			}
+			
+			if(value/BASE['Year'] >= 1) {
+				return `${value/BASE['Year']} Year`
+			} else if(value/BASE['Month'] >= 1) {
+				return `${value/BASE['Month']} Month`
+			} else if(value/BASE['Day'] >= 1) {
+				return `${value/BASE['Day']} Day`
+			} else {
+				return `${value/BASE['Second']} Second`
+			}
+		}
 	},
 	watch: {
 		hash() {

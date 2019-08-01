@@ -259,7 +259,7 @@ export default {
 			channelForm: {
 				password: "",
 				partner: "",
-				amount: "0"
+				amount: parseFloat(0).toFixed(9)
 			},
 			dialogRules: {
 				amount: [
@@ -284,7 +284,7 @@ export default {
 					{
 						required: true,
 						message: "Please fill partner wallet address",
-						trigger: "blur"
+						trigger: "change"
 					}
 				]
 			},
@@ -520,6 +520,8 @@ export default {
 						text: "Processing...",
 						target: ".loading-content-2"
 					}
+					//to do!!!! this api request time longer
+					// timeout: 1500
 				})
 				.then(res => {
 					if (res.Error === 0) {

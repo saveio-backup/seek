@@ -7,7 +7,7 @@ const result = {
     'en': 'Task Pause'
   },
   '2': {
-    'en': 'Task continue'
+    'en': 'Task Start'
   },
   '3': {
     'en': 'Start Sharding'
@@ -292,7 +292,7 @@ const result = {
     'en': 'Upload pause failed'
   },
   '55024': {
-    'en': 'Continue upload failed'
+    'en': 'Start upload failed'
   },
   '55025': {
     'en': 'Retry upload failed'
@@ -301,7 +301,7 @@ const result = {
     'en': 'Download pause failed'
   },
   '55027': {
-    'en': 'Continue download failed'
+    'en': 'Start download failed'
   },
   '55028': {
     'en': 'Retry download failed'

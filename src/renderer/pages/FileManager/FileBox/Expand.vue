@@ -511,7 +511,7 @@ export default {
 					if (res.Error === 0) {
 						this.expandDialogVisible = false;
 						this.$message({
-							message: "Adjust Successed!",
+							message: "Get storage successed.",
 							type: "success"
 						});
 						this.$store.dispatch("setSpace");

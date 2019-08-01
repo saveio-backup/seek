@@ -75,6 +75,7 @@
 					v-show="switchToggle.advanced"
 					ref="advancedForm"
 					:v-model="advancedData"
+					:rules="advancedRulus"
 					label-position="left"
 					label-width="200px"
 				>
@@ -166,14 +167,14 @@
 					</el-form-item>
 					<el-form-item
 						label="whitelist"
-						prop="WhiteList"
+						prop="wihteListString"
 						class="no-bottom-border"
-						v-show="advancedData.Privilege === 2"
+						v-if="advancedData.Privilege === 2"
 					>
 						<div class="whitelist-wrap">
 							<el-input
 								v-if="switchToggle.whiteListInput"
-								v-model="wihteListString"
+								v-model="advancedData.wihteListString"
 								placeholder="Input one wallet address"
 								class="save-tag-input form-right"
 								ref="saveTagInput"
@@ -326,6 +327,18 @@ export default {
 				callback(new Error("Please fill encryption passcode "));
 			}
 		};
+		let validateWhiteListRex = (rule, value, callback) => {			
+			const vm = this;
+			const whiteListRex = /^A[1-9A-HJ-NP-Za-km-z]{33}$/;
+			if (
+				vm.advancedData.wihteListString.length === 0 ||
+				whiteListRex.test(vm.advancedData.wihteListString)
+			) {
+				callback();
+			} else {
+				callback(new Error("Wrong Wallet Address Format"));
+			}
+		};
 		const BASE = {
 			Second: 1,
 			Day: 86400,
@@ -358,7 +371,7 @@ export default {
 				advanced: false, // advanced form
 				upload: true
 			},
-			wihteListString: "",
+			// wihteListString: "",
 			uploadPrice: DEFAULT_UPLOAD_PRICE,
 			fileSize: 0,
 			encryptionToggle: false,
@@ -379,12 +392,21 @@ export default {
 					}
 				]
 			},
+			advancedRulus: {
+				wihteListString: [
+					{
+						validator: validateWhiteListRex,
+						trigger: "blur"
+					}
+				]
+			},
 			advancedData: {
 				Duration: DEFAULT_STORAGE_CYCLE, // storage cycle  default forever
 				Interval: 0, // Integrity verification cycle
 				// Times: 1, // Integrity Times
 				Privilege: 1, // Authority
 				CopyNum: 1, // axios.get
+				wihteListString: "",
 				// "Url": "oni://share/12nsdhu",
 				WhiteList: []
 			},
@@ -487,19 +509,19 @@ export default {
 			// this.advancedData.WhiteList = array;
 			const whiteListRex = /^A[1-9A-HJ-NP-Za-km-z]{33}$/;
 			if (
-				this.wihteListString.length != 0 &&
-				!whiteListRex.test(this.wihteListString)
+				this.advancedData.wihteListString.length != 0 &&
+				!whiteListRex.test(this.advancedData.wihteListString)
 			) {
-				this.$refs.saveTagInput.$refs.input.focus();
-				this.$message("Wrong Wallet Address Format");
+				// this.$refs.saveTagInput.$refs.input.focus();
+				// this.$message("Wrong Wallet Address Format");
 				return;
 			}
-			let inputValue = this.wihteListString.trim();
+			let inputValue = this.advancedData.wihteListString.trim();
 			if (inputValue) {
 				this.advancedData.WhiteList.push(inputValue);
 			}
 			this.switchToggle.whiteListInput = false;
-			this.wihteListString = "";
+			this.advancedData.wihteListString = "";
 			this.toGetPrice();
 		},
 		showWhitelistInput() {
@@ -568,6 +590,7 @@ export default {
 					: this.uploadFormData;
 				data.Password = this.passwordForm.Password;
 				data.StoreType = this.switchToggle.advanced ? 1 : 0;
+				delete data.wihteListString;
 				this.$axios
 					.post(this.$api.upload, data, {
 						loading: {
@@ -826,6 +849,10 @@ $inputFocusBg: #dee2ea;
 			}
 			.save-tag-input {
 				width: 320px;
+			}
+			.el-form-item__error {
+				left: 70px;
+				top: calc(100% + 3px);
 			}
 		}
 		.whitelist-form-item {

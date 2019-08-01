@@ -5,7 +5,6 @@ import {
     app,
     ipcMain
 } from 'electron'
-import { configureRequestOptions } from 'builder-util-runtime';
 // const logP = console.log;
 // const keyWords = ['ProductRegistryImpl.Registry', 'stdout'];
 // console.log = function (data, ...args) {
@@ -120,11 +119,17 @@ const setFrontConfig = async (appDataPath, appName) => {
     }
     log.debug("setup front-config success")
 }
+let cacheRestartObj = {
+    appDataPathCache: "",
+    appNameCache: "",
+    edgeCloseRestartFailed: "",
+    cfgObj: ""
+}
 //cache restart need data;
-let appDataPathCache = '';
-let appNameCache = '';
+// let appDataPathCache = '';
+// let appNameCache = '';
 //cache page edgeClose event callback 
-let edgeCloseRestartFailed = '';
+// let edgeCloseRestartFailed = '';
 //cache config.json
 let cfgObj = null;
 
@@ -152,7 +157,8 @@ const setupConfig = async (appDataPath, appName) => {
         srcCfgPath = cfgPath;
     }
     let cfg = fs.readFileSync(srcCfgPath)
-    cfgObj = JSON.parse(cfg.toString())
+    let cfgObj = JSON.parse(cfg.toString());
+    cacheRestartObj.cfgObj = Object.assign({}, cfgObj);
     if (!cfgObj) {
         log.error("cfg is no object ")
         log.debug(cfg.toString())
@@ -179,8 +185,8 @@ const setupConfig = async (appDataPath, appName) => {
 }
 
 const run = (appDataPath, appName) => {
-    appDataPathCache = appDataPath;
-    appNameCache = appName;
+    cacheRestartObj.appDataPathCache = appDataPath;
+    cacheRestartObj.appNameCache = appName;
     let cfgDir = ''
     let cmdStr = ''
     if (getPlatform() == "win") {
@@ -227,24 +233,47 @@ const run = (appDataPath, appName) => {
     workerProcess.on('exit', function (code) {
         // console.log('child process exited with code ' + code);
     });
+    ipcMain.on('watchEdge', (event) => {
+        cacheRestartObj.edgeCloseRestartFailed = event;//cache event
+    })
     workerProcess.on('close', function (code) {
         log.error('workerProcess close with code' + code);
-        if(cfgObj && cfgObj.Base && cfgObj.Base.edgeIsRestart) {
+        // this setInterval for init process need edgeCloseRestartFailed have value(ipcMain watchEdge event get value)
+        let i = 0;
+        let setIntervalObj = setInterval(() => {
+            // try catch not init cache object
             try {
-                if (appDataPathCache && appNameCache) {
-                    run(appDataPathCache, appNameCache);
-                    edgeCloseRestartFailed.reply('edgeClose', '1');
+                if(cacheRestartObj.cfgObj && cacheRestartObj.cfgObj.Base && cacheRestartObj.cfgObj.Base.edgeIsRestart && cacheRestartObj.appDataPathCache && cacheRestartObj.appNameCache) {
+                    if(i >= 60) {
+                        clearInterval(setIntervalObj)
+                        log.error('main/node.js watchEdge event be executed')
+                    } if(!cacheRestartObj.edgeCloseRestartFailed) {
+                        i ++
+                        return;
+                    } else {
+                        clearInterval(setIntervalObj)
+                    }
+                    try {
+                        restartNum ++;
+                        if(restartNum >= 5) {
+                            cacheRestartObj.edgeCloseRestartFailed.reply('edgeClose', '0');
+                            log.error('edge restart failed' + e);
+                            return;
+                        }
+                        setTimeout(() => {
+                            restartNum --;
+                        }, 12000);
+                        run(cacheRestartObj.appDataPathCache, cacheRestartObj.appNameCache);
+                        cacheRestartObj.edgeCloseRestartFailed.reply('edgeClose', '1');
+                    } catch(e) {
+                        cacheRestartObj.edgeCloseRestartFailed.reply('edgeClose', '0');
+                        log.error('edge restart failed' + e)
+                    }
                 }
-            } catch (e) {
-                log.error('edge restart failed' + e)
-                edgeCloseRestartFailed.reply('edgeClose', '0');
+            } catch(e) {
+                console.log(e)
             }
-        } else {
-            edgeCloseRestartFailed.reply('edgeClose', '0');
-        }
-    })
-    ipcMain.on('watchEdge', (event) => {
-        edgeCloseRestartFailed = event;//cache event
+        }, 1000)
     })
 }
 

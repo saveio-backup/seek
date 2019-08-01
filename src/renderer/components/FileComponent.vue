@@ -26,7 +26,7 @@
 			<el-button
 				v-if="transferType !== 0"
 				@click="continueAll"
-			>Continue All</el-button>
+			>Start All</el-button>
 			<el-button
 				v-if="transferType !== 0"
 				@click="pauseAll"
@@ -188,7 +188,7 @@
 							><i class="el-icon-lock"></i></span>
 							<span
 								class="cursor-click active-blue cursor-pointer"
-								:title="scope.row.IsUploadAction ? 'continue to upload':'continue to download'"
+								:title="scope.row.IsUploadAction ? 'start to upload':'start to download'"
 								v-show="scope.row.Status === 4"
 								@click="uploadOrDownloadAgain(scope.row, transferType)"
 							><i
@@ -207,7 +207,7 @@
 							></i></span> -->
 							<span
 								class="active-blue cursor-pointer"
-								:title="scope.row.IsUploadAction ? 'continue to upload':'continue to download'"
+								:title="scope.row.IsUploadAction ? 'start to upload':'start to download'"
 								v-show="scope.row.Status === 0"
 								@click="uploadOrDownloadContinue(scope.row, transferType)"
 							><i class="ofont ofont-jixu"></i></span>
@@ -360,7 +360,7 @@ export default {
 	props: {
 		transferType: {
 			required: true,
-			type: Number // 0 upload 1 download
+			type: Number // 1 upload 2 download 0 complete
 		}
 	},
 	components: {
@@ -643,7 +643,7 @@ export default {
 			this.$axios.post(this.$api.cancelAll, params).then(res => {
 				if (res.Error === 0) {
 					// get transfer list info update status
-					if(type === 0) {
+					if(type === 1) {
 						this.$store.dispatch("setUpload");
 					} else {
 						this.$store.dispatch("setDownload");
@@ -671,14 +671,25 @@ export default {
 		},
 		continueAll() {
 			const type = this.transferType;
+			let flag = false;
+			//get pause task to continue
 			const arr = this.getTask(type, 0);
-			if (arr.length === 0) {
-				this.$message({
-					message: "There are no tasks to continue"
-				});
-				return;
+			if (arr.length > 0) {
+				flag = true;
+				this.uploadOrDownloadContinue(arr, type);
 			}
-			this.uploadOrDownloadContinue(arr, type);
+			const arr2 = this.getTask(type, 4);
+			//get error task to again
+			if (arr2.length === 0) {
+				flag = true;
+				this.uploadOrDownloadAgain(arr, type);
+			}
+			//if no task message
+			if(!flag) {
+				this.$message({
+					message: "There are no tasks to start"
+				});
+			}
 		},
 		pauseAll() {
 			const type = this.transferType;
@@ -713,12 +724,6 @@ export default {
 			this.$axios.post(this.$api.deleteRecord, params).then(res => {
 				if (res.Error === 0) {
 					this.$store.dispatch("setComplete");
-					// get transfer list info update status
-					if(type === 0) {
-						this.$store.dispatch("setUpload");
-					} else {
-						this.$store.dispatch("setDownload");
-					}
 					//get error list
 					let errorArr = [];
 					for (let value of res.Result.Tasks) {
@@ -748,10 +753,10 @@ export default {
 		/**
 		 * params
 		 * row: transfer item or list
-		 * type: 1:upload    2:download
+		 * type: 0:upload    1:download
 		 */
 		uploadOrDownloadCancel(row, type) {
-			let url = type === 0 ? this.$api.uploadCancel : this.$api.downloadCancel;
+			let url = type === 1 ? this.$api.uploadCancel : this.$api.downloadCancel;
 			let isArray = this.isArray(row);
 			let params;
 			if (isArray) {
@@ -801,10 +806,10 @@ export default {
 		/**
 		 * params
 		 * row: transfer item or list
-		 * type: 1:upload    2:download
+		 * type: 0:upload    1:download
 		 */
 		uploadOrDownloadAgain(row, type) {
-			let url = type === 0 ? this.$api.uploadRetry : this.$api.downloadRetry;
+			let url = type === 1 ? this.$api.uploadRetry : this.$api.downloadRetry;
 			let isArray = this.isArray(row);
 			let params;
 			if (isArray) {
@@ -823,7 +828,7 @@ export default {
 			this.$axios.post(url, params).then(res => {
 				if (res.Error === 0) {
 					// get transfer list info update status
-					if(type === 0) {
+					if(type === 1) {
 						this.$store.dispatch("setUpload");
 					} else {
 						this.$store.dispatch("setDownload");
@@ -854,10 +859,10 @@ export default {
 		/**
 		 * params
 		 * row: transfer item or list
-		 * type: 1:upload    2:download
+		 * type: 0:upload    1:download
 		 */
 		uploadOrDownloadContinue(row, type) {
-			let url = type === 0 ? this.$api.uploadResume : this.$api.downloadResume;
+			let url = type === 1 ? this.$api.uploadResume : this.$api.downloadResume;
 			let isArray = this.isArray(row);
 			let params;
 			if (isArray) {
@@ -876,7 +881,7 @@ export default {
 			this.$axios.post(url, params).then(res => {
 				if (res.Error === 0) {
 					// get transfer list info update status
-					if(type === 0) {
+					if(type === 1) {
 						this.$store.dispatch("setUpload");
 					} else {
 						this.$store.dispatch("setDownload");
@@ -907,10 +912,10 @@ export default {
 		/**
 		 * params
 		 * row: transfer item or list
-		 * type: 1:upload    2:download
+		 * type: 0:upload    1:download
 		 */
 		uploadOrDownloadPause(row, type) {
-			let url = type === 0 ? this.$api.uploadPause : this.$api.downloadPause;
+			let url = type === 1 ? this.$api.uploadPause : this.$api.downloadPause;
 			let isArray = this.isArray(row);
 			let params;
 			if (isArray) {
@@ -929,7 +934,7 @@ export default {
 			this.$axios.post(url, params).then(res => {
 				if (res.Error === 0) {
 					// get transfer list info update status
-					if(type === 0) {
+					if(type === 1) {
 						this.$store.dispatch("setUpload");
 					} else {
 						this.$store.dispatch("setDownload");

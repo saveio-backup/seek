@@ -5,6 +5,7 @@ import {
     app,
     ipcMain
 } from 'electron'
+import { configureRequestOptions } from 'builder-util-runtime';
 // const logP = console.log;
 // const keyWords = ['ProductRegistryImpl.Registry', 'stdout'];
 // console.log = function (data, ...args) {
@@ -124,6 +125,8 @@ let appDataPathCache = '';
 let appNameCache = '';
 //cache page edgeClose event callback 
 let edgeCloseRestartFailed = '';
+//cache config.json
+let cfgObj = null;
 
 const setupConfig = async (appDataPath, appName) => {
     let cfgPath = cfgFilePath(appDataPath, appName)
@@ -149,7 +152,7 @@ const setupConfig = async (appDataPath, appName) => {
         srcCfgPath = cfgPath;
     }
     let cfg = fs.readFileSync(srcCfgPath)
-    let cfgObj = JSON.parse(cfg.toString())
+    cfgObj = JSON.parse(cfg.toString())
     if (!cfgObj) {
         log.error("cfg is no object ")
         log.debug(cfg.toString())
@@ -226,14 +229,18 @@ const run = (appDataPath, appName) => {
     });
     workerProcess.on('close', function (code) {
         log.error('workerProcess close with code' + code);
-        try {
-            if (appDataPathCache && appNameCache) {
-                run(appDataPathCache, appNameCache);
-                edgeCloseRestartFailed.reply('edgeClose', '1');
+        if(cfgObj && cfgObj.Base && cfgObj.Base.edgeIsRestart) {
+            try {
+                if (appDataPathCache && appNameCache) {
+                    run(appDataPathCache, appNameCache);
+                    edgeCloseRestartFailed.reply('edgeClose', '1');
+                }
+            } catch (e) {
+                log.error('edge restart failed' + e)
+                edgeCloseRestartFailed.reply('edgeClose', '0');
             }
-        } catch (e) {
-            log.error('edge restart failed' + e)
-            edgeCloseRestartFailed.reply('edgeClose', '1');
+        } else {
+            edgeCloseRestartFailed.reply('edgeClose', '0');
         }
     })
     ipcMain.on('watchEdge', (event) => {

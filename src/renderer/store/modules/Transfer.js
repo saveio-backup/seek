@@ -37,6 +37,7 @@ const mutations = {
 }
 let downloadTimer = null;
 let uploadTimer = null;
+let completeTimer = null
 const TIME_COUNT = 3000;
 const actions = {
   setUpload({
@@ -56,13 +57,19 @@ const actions = {
   setComplete({
     commit
   }) {
-    axios.get(api.transferlist + '/0/0/0').then(res => {
-      if (res.Error === 0) {
-        const result = res.Result.Transfers;
-        commit('GET_COMPLETED_TRANSFER', result)
-      }
-    })
+    transferClear(completeTimer);
+    completeTransferListRequest.bind(this, commit)();
+    completeTimer = setInterval(completeTransferListRequest.bind(this, commit), TIME_COUNT)
   }
+}
+
+function completeTransferListRequest(commit) {
+  axios.get(api.transferlist + '/0/0/0').then(res => {
+    if (res.Error === 0) {
+      const result = res.Result.Transfers;
+      commit('GET_COMPLETED_TRANSFER', result)
+    }
+  })
 }
 
 function downloadTransferListRequest(commit) {
@@ -71,11 +78,11 @@ function downloadTransferListRequest(commit) {
       this.dispatch('setComplete');
       const result = res.Result.Transfers;
       if (res.Result.IsTransfering) { } else {
-        transferClear(downloadTimer);
+        // transferClear(downloadTimer);
       }
       commit('GET_DOWNLOAD_TRANSFER', result)
     } else {
-      transferClear(downloadTimer);
+      // transferClear(downloadTimer);
     }
   }).catch((error) => {
     console.error(error)
@@ -88,11 +95,11 @@ function uploadTransferListRequest(commit) {
       this.dispatch('setComplete');
       const result = res.Result.Transfers;
       if (res.Result.IsTransfering) { } else {
-        transferClear(uploadTimer);
+        // transferClear(uploadTimer);
       }
       commit('GET_UPLOAD_TRANSFER', result)
     } else {
-      transferClear(uploadTimer);
+      // transferClear(uploadTimer);
     }
   })
 }

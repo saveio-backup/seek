@@ -32,7 +32,8 @@
 		"SeedInterval": 3600,
 		"DnsChannelDeposit": 1000000000,
 		"WalletPwd": "pwd",
-		"WalletDir": "./wallet.dat"
+		"WalletDir": "./wallet.dat",
+		"edgeIsRestart": false
 	},
 	"Fs": {
 		"FsRepoRoot": "./FS",

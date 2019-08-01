@@ -282,7 +282,7 @@ export default {
     next(vm => {
       vm.$store.dispatch("setUpload");
       vm.$store.dispatch("setDownload");
-      vm.$store.dispatch("setComplete");
+      // vm.$store.dispatch("setComplete");
       if (to.name === "FileManager") {
         vm.$router.push({
           name: "disk",

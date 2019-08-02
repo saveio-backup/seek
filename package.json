@@ -73,6 +73,7 @@
   "dependencies": {
     "app-root-dir": "^1.0.2",
     "axios": "^0.18.0",
+    "bs58": "^4.0.1",
     "cfonts": "^2.4.3",
     "chalk": "^2.4.2",
     "echarts": "^4.2.1",

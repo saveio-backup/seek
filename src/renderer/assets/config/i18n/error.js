@@ -55,13 +55,13 @@ const result = {
     'en': 'Register Information to DNS Node Complete'
   },
   '18': {
-    'en': ''
+    'en': 'Start downloading files'
   },
   '19': {
-    'en': ''
+    'en': 'File download in progress'
   },
   '20': {
-    'en': ''
+    'en': 'File download complete, submit sharing information to DNS node'
   },
   '40000': {
     'en': 'Incorrect parameter'

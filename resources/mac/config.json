@@ -33,7 +33,7 @@
 		"DnsChannelDeposit": 1000000000,
 		"WalletPwd": "pwd",
 		"WalletDir": "./wallet.dat",
-		"edgeIsRestart": false
+		"edgeIsRestart": true
 	},
 	"Fs": {
 		"FsRepoRoot": "./FS",

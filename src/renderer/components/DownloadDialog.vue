@@ -78,7 +78,7 @@ export default {
 				.then(res => {
 					if(res.Error === 0) {
 						this.$emit("closedialog");
-						// this.$store.dispatch("setDownload");
+						this.$store.dispatch("setDownload");
 						this.$router.push({
 							name: "transfer",
 							query: {

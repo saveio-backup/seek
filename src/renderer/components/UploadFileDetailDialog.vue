@@ -33,7 +33,7 @@
 					<div class="adjust-item">
 						<p class="adjust-title theme-font-blue ft14">Verification Cycle:</p>
 						<div class="adjust-info">
-							<p class="theme-font-blue ft14 mr20">{{fileDetail && (fileDetail.Interval | timeTofilter)}}</p>
+							<p class="theme-font-blue ft14 mr20">{{fileDetail && timeTofilter(fileDetail.Interval)}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
@@ -80,8 +80,7 @@
 const BASE = {
 	Second: 1,
 	Day: 86400,
-	Month: 2592000,
-	Year: 31536000
+	Month: 2592000
 };
 export default {
 	props: {
@@ -98,23 +97,6 @@ export default {
 			BASE
 		};
 	},
-	filters: {
-		timeTofilter(value) {
-			if(!value) {
-				return ''
-			}
-			
-			if(value/BASE['Year'] >= 1) {
-				return `${value/BASE['Year']} Year`
-			} else if(value/BASE['Month'] >= 1) {
-				return `${value/BASE['Month']} Month`
-			} else if(value/BASE['Day'] >= 1) {
-				return `${value/BASE['Day']} Day`
-			} else {
-				return `${value/BASE['Second']} Second`
-			}
-		}
-	},
 	watch: {
 		hash() {
 			this.init();
@@ -124,6 +106,22 @@ export default {
 				this.$nextTick(() => {
 					this.toClose();
 				});
+			}
+		}
+	},
+	computed: {
+		timeTofilter() {
+			return function(value) {
+				if(!value) {
+					return ''
+				}
+				if(value/BASE['Month'] >= 1) {
+					return `${value/BASE['Month']} Month`
+				} else if(value/BASE['Day'] >= 1) {
+					return `${value/BASE['Day']} Day`
+				} else {
+					return `${value/BASE['Second']} Second`
+				}
 			}
 		}
 	},

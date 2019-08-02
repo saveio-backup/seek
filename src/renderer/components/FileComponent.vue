@@ -129,6 +129,11 @@
 									class="light-blue"
 								>Upload Completed</span>
 							</div>
+							<div v-else-if="scope.row.Status === 0">
+								<span
+									class="light-blue"
+								>Task Pause</span>
+							</div>
 							<div v-else-if="scope.row.Status === 4">
 								<span class="light-error">{{scope.row.ErrMsg || transferType === 0 ? 'Upload failed':transferType === 1?'Download failed':''}}</span>
 								<!-- <span
@@ -140,7 +145,7 @@
 								class="light-error"
 								>Upload Failed</span> -->
 							</div>
-							<div v-else>
+							<div class="light-blue" v-else>
 								{{ getDetailStatus(scope.row.Type, scope.row.DetailStatus) }}
 							</div>
 							<!-- <div v-else-if='scope.row.Progress > 0'>
@@ -680,9 +685,9 @@ export default {
 			}
 			const arr2 = this.getTask(type, 4);
 			//get error task to again
-			if (arr2.length === 0) {
+			if (arr2.length > 0) {
 				flag = true;
-				this.uploadOrDownloadAgain(arr, type);
+				this.uploadOrDownloadAgain(arr2, type);
 			}
 			//if no task message
 			if(!flag) {

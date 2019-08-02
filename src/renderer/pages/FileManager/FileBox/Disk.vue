@@ -741,7 +741,7 @@ export default {
 				.all(commitAll)
 				.then(
 					this.$axios.spread(() => {
-						// this.$store.dispatch("setDownload");
+						this.$store.dispatch("setDownload");
 						this.switchToggle.confrimDownloadDialog = false;
 						this.$message({
 							message: "Start download",

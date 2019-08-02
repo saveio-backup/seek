@@ -175,6 +175,7 @@ const setupConfig = async (appDataPath, appName) => {
     cfgObj.Base.NetworkId = 1564141146;
     cfgObj.Base.ChannelRevealTimeout = "200";
     cfgObj.Base.ChannelSettleTimeout = "500";
+    cfgObj.Base.edgeIsRestart = true;
     try {
         await fs.writeFileSync(cfgPath, JSON.stringify(cfgObj))
     } catch (err) {
@@ -243,7 +244,12 @@ const run = (appDataPath, appName) => {
         let setIntervalObj = setInterval(() => {
             // try catch not init cache object
             try {
-                if(cacheRestartObj.cfgObj && cacheRestartObj.cfgObj.Base && cacheRestartObj.cfgObj.Base.edgeIsRestart && cacheRestartObj.appDataPathCache && cacheRestartObj.appNameCache) {
+                if(cacheRestartObj.cfgObj && cacheRestartObj.cfgObj.Base && cacheRestartObj.appDataPathCache && cacheRestartObj.appNameCache) {
+                    if(!cacheRestartObj.cfgObj.Base.edgeIsRestart) {
+                        cacheRestartObj.edgeCloseRestartFailed.reply('edgeClose', '0');
+                        clearInterval(setIntervalObj)
+                        return;
+                    }
                     if(i >= 60) {
                         clearInterval(setIntervalObj)
                         log.error('main/node.js watchEdge event be executed')
@@ -254,14 +260,14 @@ const run = (appDataPath, appName) => {
                         clearInterval(setIntervalObj)
                     }
                     try {
-                        restartNum ++;
-                        if(restartNum >= 5) {
+                        cacheRestartObj.restartNum ++;
+                        if(cacheRestartObj.restartNum >= 5) {
                             cacheRestartObj.edgeCloseRestartFailed.reply('edgeClose', '0');
                             log.error('edge restart failed' + e);
                             return;
                         }
                         setTimeout(() => {
-                            restartNum --;
+                            cacheRestartObj.restartNum --;
                         }, 12000);
                         run(cacheRestartObj.appDataPathCache, cacheRestartObj.appNameCache);
                         cacheRestartObj.edgeCloseRestartFailed.reply('edgeClose', '1');
@@ -271,7 +277,7 @@ const run = (appDataPath, appName) => {
                     }
                 }
             } catch(e) {
-                console.log(e)
+                console.log('22222222222',e)
             }
         }, 1000)
     })

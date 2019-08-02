@@ -191,7 +191,7 @@
 						</div>
 					</el-form-item>
 					<el-form-item
-						class="whitelist-form-item"
+						class-name="whitelist-form-item"
 						v-show="advancedData.Privilege === 2"
 					>
 						<div class="whitelist">
@@ -602,7 +602,7 @@ export default {
 						if (res.Error === 0) {
 							this.switchToggle.upload = true;
 							this.passwordForm.show = false;
-							// this.$store.dispatch("setUpload");
+							this.$store.dispatch("setUpload");
 							this.$router.push({
 								name: "transfer",
 								query: { transferType: 1 }
@@ -850,12 +850,15 @@ $inputFocusBg: #dee2ea;
 			.save-tag-input {
 				width: 320px;
 			}
-			.el-form-item__error {
+			& + .el-form-item__error {
 				left: 70px;
 				top: calc(100% + 3px);
 			}
 		}
 		.whitelist-form-item {
+			.el-form-item__content {
+				margin-left: 0 !important;
+			}
 			.whitelist {
 				padding: 10px 15px;
 				background: #f1f3f7;
@@ -868,9 +871,6 @@ $inputFocusBg: #dee2ea;
 				.el-tag {
 					margin-right: 20px;
 				}
-			}
-			.el-form-item__content {
-				margin-left: 0 !important;
 			}
 		}
 		.no-bottom-border {

@@ -147,11 +147,11 @@
 						<div class="progress-mask">
 							<div
 								class="progress-circle"
-								:style="{'width':initChannelProgress*100 +'%'}"
+								:style="{'width':((currentHeihgt/totalHeight)?(currentHeihgt/totalHeight):0)*100 +'%'}"
 							></div>
 							<span
 								class="ofont ofont-rocket"
-								:style="{'left':initChannelProgress*100 + '%'}"
+								:style="{'left':((currentHeihgt/totalHeight)?(currentHeihgt/totalHeight):0)*100 + '%'}"
 							></span>
 						</div>
 					</div>
@@ -159,7 +159,7 @@
 				<p
 					class="ft12 mt20 dark-grey bold "
 					style="text-align:center"
-				>{{(initChannelProgress*100).toFixed(2) +'%'}} (#{{currentHeihgt}} / #{{totalHeight}})</p>
+				>{{(((currentHeihgt/totalHeight)?(currentHeihgt/totalHeight):0)*100).toFixed(2) +'%'}} (#{{currentHeihgt}} / #{{totalHeight}})</p>
 				<p class="ft12 dark-grey bold text-center mt20 user-no-select">
 					<span :class="{'ft30 ml10 mr10':loopFontIndex === 0}">Synchronizing</span>
 					<span :class="{'ft30 ml10 mr10':loopFontIndex === 1}">blocks</span>

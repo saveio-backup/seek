@@ -366,6 +366,9 @@ const result = {
   '55062': {
     'en': 'There is not enough time in user space'
   },
+  '55100': {
+    'en': 'No file information found on the chain'
+  },
   '56000': {
     'en': 'Channel internal error'
   },

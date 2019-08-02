@@ -116,9 +116,9 @@ export default {
 					return ''
 				}
 				if(value/BASE['Month'] >= 1) {
-					return `${value/BASE['Month']} Month`
+					return `${parseFloat((value/BASE['Month']).toFixed(3))} Month`
 				} else if(value/BASE['Day'] >= 1) {
-					return `${value/BASE['Day']} Day`
+					return `${parseFloat((value/BASE['Day']).toFixed(3))} Day`
 				} else {
 					return `${value/BASE['Second']} Second`
 				}

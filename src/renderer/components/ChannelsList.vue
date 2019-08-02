@@ -519,9 +519,8 @@ export default {
 					loading: {
 						text: "Processing...",
 						target: ".loading-content-2"
-					}
-					//to do!!!! this api request time longer
-					// timeout: 1500
+					},
+					timeout: 20000
 				})
 				.then(res => {
 					if (res.Error === 0) {

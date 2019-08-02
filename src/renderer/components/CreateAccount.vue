@@ -159,7 +159,7 @@
 				<p
 					class="ft12 mt20 dark-grey bold "
 					style="text-align:center"
-				>{{(((currentHeihgt/totalHeight)?(currentHeihgt/totalHeight):0)*100).toFixed(2) +'%'}} (#{{currentHeihgt}} / #{{totalHeight}})</p>
+				>{{prograssPercentage +'%'}} (#{{currentHeihgt}} / #{{totalHeight}})</p>
 				<p class="ft12 dark-grey bold text-center mt20 user-no-select">
 					<span :class="{'ft30 ml10 mr10':loopFontIndex === 0}">Synchronizing</span>
 					<span :class="{'ft30 ml10 mr10':loopFontIndex === 1}">blocks</span>
@@ -238,6 +238,19 @@ export default {
 		};
 	},
 	computed: {
+		prograssPercentage: function() {
+			return (
+				(this.currentHeihgt / this.totalHeight
+					? this.currentHeihgt / this.totalHeight
+					: 0) * 100
+			).toFixed(2) === "100.00"
+				? "99.999"
+				: (
+						(this.currentHeihgt / this.totalHeight
+							? this.currentHeihgt / this.totalHeight
+							: 0) * 100
+				  ).toFixed(2);
+		},
 		initChannelProgress: function() {
 			if (
 				this.$store.state.Home.initChannelProgress &&

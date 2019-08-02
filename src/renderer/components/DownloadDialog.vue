@@ -21,7 +21,7 @@
 			</div>
 			<div class="tl">
 				<p class="theme-font-blue new-download-left">Size:</p>
-				<p class="theme-font-blue-70 new-download-right">{{downloadInfo.Size? util.bytesToSize(downloadInfo.Size) : '0'}}</p>
+				<p class="theme-font-blue-70 new-download-right">{{downloadInfo.Size? util.bytesToSize(downloadInfo.Size*1024) : '0'}}</p>
 			</div>
 			<div class="tl">
 				<p class="theme-font-blue new-download-left">Cost:</p>

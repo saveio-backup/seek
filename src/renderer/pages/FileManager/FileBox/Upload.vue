@@ -191,7 +191,7 @@
 						</div>
 					</el-form-item>
 					<el-form-item
-						class-name="whitelist-form-item"
+						class="whitelist-form-item"
 						v-show="advancedData.Privilege === 2"
 					>
 						<div class="whitelist">
@@ -314,6 +314,7 @@
 <script>
 import { ipcRenderer } from "electron";
 import util from "../../../assets/config/util";
+import { connect } from 'net';
 const DEFAULT_UPLOAD_PRICE = 0.03;
 export default {
 	data() {
@@ -665,7 +666,7 @@ export default {
 			this.advancedDataInit();
 			this.switchToggle.advanced = false;
 			this.setDataInterval();
-		}
+		},
 	},
 	computed: {
 		mainCount() {

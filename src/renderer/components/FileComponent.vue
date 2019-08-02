@@ -135,7 +135,7 @@
 								>Task Pause</span>
 							</div>
 							<div v-else-if="scope.row.Status === 4">
-								<span class="light-error">{{scope.row.ErrMsg || transferType === 0 ? 'Upload failed':transferType === 1?'Download failed':''}}</span>
+								<span class="light-error">{{scope.row.ErrMsg || (transferType === 1? 'Upload failed':transferType === 2?'Download failed':'')}}</span>
 								<!-- <span
 								class="light-error"
 								v-if="!scope.row.IsUploadAction"
@@ -175,24 +175,24 @@
 					min-width="100px"
 				>
 					<template slot-scope="scope">
-						<div class="action ft18">
+						<div class="action ft18" :class="'transferOpeation'+scope.row.Id">
 							<!-- <span v-if="scope.row.status === 0">continue</span>
 							<span v-if="scope.row.status === 2">pause</span> -->
 							<!-- <span v-if="!scope.row.IsUploadAction"><i class="el-icon-tickets"></i></span> -->
 							<span
 								title="Open folder"
 								v-if="scope.row.Path"
-								class="cursor-click active-blue cursor-pointer"
+								class="active-blue cursor-pointer"
 								@click="showInFolder(scope.row.Path)"
 							><i class="ofont ofont-wenjianxiangqing ft14"></i></span>
 							<span
 								title="Decrypt"
-								class="cursor-click active-blue cursor-pointer"
+								class="active-blue cursor-pointer"
 								@click="setFileSelected(scope.row)"
 								v-if="(!scope.row.IsUploadAction) && scope.row.Path"
 							><i class="el-icon-lock"></i></span>
 							<span
-								class="cursor-click active-blue cursor-pointer"
+								class="active-blue cursor-pointer"
 								:title="scope.row.IsUploadAction ? 'start to upload':'start to download'"
 								v-show="scope.row.Status === 4"
 								@click="uploadOrDownloadAgain(scope.row, transferType)"
@@ -223,19 +223,19 @@
 								@click="uploadOrDownloadPause(scope.row, transferType)"
 							><i class="ofont ofont-zanting"></i></span>
 							<span
-								class="cursor-click active-blue cursor-pointer"
+								class="active-blue cursor-pointer"
 								:title="scope.row.IsUploadAction ? 'cancel to upload':'cancel to download'"
 								v-show="scope.row.Status !== 3 && show"
 								@click="uploadOrDownloadCancel(scope.row, transferType)"
 							><i class="ofont ofont-guanbi"></i></span>
 							<span
-								class="cursor-click active-blue cursor-pointer"
+								class="active-blue cursor-pointer"
 								title="look detail"
 								@click="openDetailDialog(scope.row)"
 								v-show="((scope.row.Nodes && scope.row.Nodes.length > 0) || scope.row.Status === 3) && scope.row.IsUploadAction"
 							><i class="ofont ofont-xiangqing"></i></span>
 							<span
-								class="cursor-click active-blue cursor-pointer"
+								class="active-blue cursor-pointer"
 								title="delete record"
 								@click="deleteRecord(scope.row)"
 								v-show="scope.row.Status === 3 && show"
@@ -336,7 +336,7 @@
 								:stroke-width="14"
 								class="file-progress"
 								:percentage="parseInt(((item.UploadSize?item.UploadSize:item.DownloadSize)/fileObjByHash[detailId].FileSize)*100)"
-								:class="{'more-than-5': (((item.UploadSize?item.UploadSize:item.DownloadSize)/fileObjByHash[detailId].FileSize) < 0.05),'progressAnimate': fileObjByHash[detailId].Status != 4}"
+								:class="{'more-than-5': (((item.UploadSize?item.UploadSize:item.DownloadSize)/fileObjByHash[detailId].FileSize) < 0.05),'progressAnimate': fileObjByHash[detailId].Status != 4 || fileObjByHash[detailId].Status != 0}"
 							></el-progress>
 						</div>
 					</li>
@@ -572,7 +572,8 @@ export default {
 					Privilege: 1,
 					DetailStatus: 2
 				}
-			]
+			],
+			loadinginstace: {}
 		};
 	},
 	computed: {
@@ -600,7 +601,7 @@ export default {
 			if (!this.detailId) return [];
 			let arr =
 				(this.fileObjByHash[this.detailId] &&
-					this.fileObjByHash[this.detailId]["Nodes"]) ||
+					JSON.parse(JSON.stringify(this.fileObjByHash[this.detailId]["Nodes"]))) ||
 				[];
 			arr.sort((a, b) => {
 				return a.HostAddr.localeCompare(b.HostAddr);
@@ -806,7 +807,8 @@ export default {
 							: `error code is ${res.Error}`
 					);
 				}
-			});
+			}).catch(e => {
+			})
 		},
 		/**
 		 * params
@@ -883,7 +885,15 @@ export default {
 					Ids: [row.Id]
 				};
 			}
+			// for(let value of params.Ids) {
+			// 	this.loadinginstace[value] = this.$loading({
+			// 		target: `.transferOpeation${value}`
+			// 	})
+			// }
 			this.$axios.post(url, params).then(res => {
+				// for(let value of params.Ids) {
+				// 	this.loadinginstace[value] && this.loadinginstace[value].close()
+				// }
 				if (res.Error === 0) {
 					// get transfer list info update status
 					if(type === 1) {
@@ -912,7 +922,11 @@ export default {
 							: `error code is ${res.Error}`
 					);
 				}
-			});
+			}).catch(e => {
+				// for(let value of params.Ids) {
+				// 	this.loadinginstace[value] && this.loadinginstace[value].close()
+				// }
+			})
 		},
 		/**
 		 * params

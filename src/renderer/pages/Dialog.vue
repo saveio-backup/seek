@@ -133,7 +133,9 @@ export default {
 			});
 		},
 		getChannel() {
-			this.$axios.get(this.$api.channel).then(res => {
+			this.$axios.get(this.$api.channel, {
+				timeout: 20000
+			}).then(res => {
 				if (res.Error === 0) {
 					if (
 						res.Result &&

@@ -182,7 +182,9 @@ function rebackToCreateAccount(commit, progress) {
 
 function requestChannelBalanceTotal(commit) {
   axios
-    .get(api.channel)
+    .get(api.channel, {
+      timeout: 20000
+    })
     .then(res => {
       if (res.Error === 0) {
         commit('SET_BALANCE_TOTAL', res.Result)

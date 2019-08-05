@@ -207,7 +207,18 @@
 				</el-form>
 				<div class="flex price-div">
 					<div class="price-div-bg">SA</div>
-					<p class="price-gas-fee">Gas fee: {{uploadPrice}} SAVE</p>
+					<p class="price-gas-fee">Gas fee: {{uploadPrice}} SAVE
+						<el-popover
+							placement="bottom"
+							title="Fee Detail"
+							trigger="hover"
+						>
+							<p>Contract Fee: {{uploadPriceInfo && uploadPriceInfo.TxFeeFormat || 0.03}} SAVE</p>
+							<p>Storage Fee: {{uploadPriceInfo && uploadPriceInfo.StorageFeeFormat || 0}} SAVE</p>
+							<p>Validate Fee: {{uploadPriceInfo && uploadPriceInfo.ValidFeeFormat || 0}} SAVE</p>
+							<span slot="reference"><i class="el-icon-question"></i></span>
+						</el-popover>
+					</p>
 					<p class="price-balance">Available: {{mainCount}} SAVE</p>
 				</div>
 				<div class="flex jc-center submit-foot mb10">
@@ -314,7 +325,7 @@
 <script>
 import { ipcRenderer } from "electron";
 import util from "../../../assets/config/util";
-import { connect } from 'net';
+import { connect } from "net";
 const DEFAULT_UPLOAD_PRICE = 0.03;
 export default {
 	data() {
@@ -328,7 +339,7 @@ export default {
 				callback(new Error("Please fill encryption passcode "));
 			}
 		};
-		let validateWhiteListRex = (rule, value, callback) => {			
+		let validateWhiteListRex = (rule, value, callback) => {
 			const vm = this;
 			const whiteListRex = /^A[1-9A-HJ-NP-Za-km-z]{33}$/;
 			if (
@@ -418,7 +429,8 @@ export default {
 			},
 			noStorageDialog: {
 				show: false
-			}
+			},
+			uploadPriceInfo: null
 		};
 	},
 	mounted() {
@@ -459,6 +471,7 @@ export default {
 			if (!this.remindToggle.noAllowRemind) this.remindToggle.show = true;
 		},
 		advancedDataInit() {
+			this.uploadPriceInfo = null;
 			// save config
 			/* this.advancedData = {
         Duration: 0,
@@ -649,7 +662,13 @@ export default {
 				.then(res => {
 					if (res.Error === 0) {
 						console.log(res);
-						this.uploadPrice = res.Result.FeeFormat;
+						// this.uploadPrice = res.Result.FeeFormat;
+						let uploadPriceResult =
+							(parseFloat(res.Result.TxFeeFormat) || 0) +
+							(parseFloat(res.Result.StorageFeeFormat) || 0) +
+							(parseFloat(res.Result.ValidFeeFormat) || 0);
+						this.uploadPrice = parseFloat(uploadPriceResult.toFixed(9)); // format
+						this.uploadPriceInfo = res.Result;
 					} else {
 						this.$message.error(
 							this.$i18n.error[res.Error]
@@ -666,7 +685,7 @@ export default {
 			this.advancedDataInit();
 			this.switchToggle.advanced = false;
 			this.setDataInterval();
-		},
+		}
 	},
 	computed: {
 		mainCount() {

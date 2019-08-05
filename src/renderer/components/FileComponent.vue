@@ -19,8 +19,14 @@
 					:percentage="Math.ceil(totalProgress * 100)"
 				></el-progress>
 			</div>
+			<!-- upload cancel -->
 			<el-button
-				v-if="transferType !== 0 && show"
+				v-if="transferType === 1"
+				@click="openPassword()"
+			>Cancel All</el-button>
+			<!-- download cancel -->
+			<el-button
+				v-if="transferType === 2"
 				@click="cancelAll"
 			>Cancel All</el-button>
 			<el-button
@@ -43,8 +49,8 @@
 		>
 			<p class="theme-font-blue ft14 user-no-select flex1">Finished {{fileList.length}} Files</p>
 			<el-button
-				v-if="transferType === 0 && show"
-				@click="switchToggle.newTaskDialog=true"
+				v-if="transferType === 0"
+				@click="deleteAll"
 			>Delete All</el-button>
 		</div>
 		<div class="file-list">
@@ -101,7 +107,7 @@
 					<template slot-scope="scope">
 						<el-progress
 							class="file-progress"
-							:class="{'progressAnimate': scope.row.Status != 4}"
+							:class="{'progressAnimate': scope.row.Status != 4 && scope.row.Status != 0}"
 							v-if="(scope.row.Type === 2) || (scope.row.Type === 1)"
 							:percentage="parseInt((scope.row.Progress||0)*100)"
 						></el-progress>
@@ -136,26 +142,10 @@
 							</div>
 							<div v-else-if="scope.row.Status === 4">
 								<span class="light-error">{{scope.row.ErrMsg || (transferType === 1? 'Upload failed':transferType === 2?'Download failed':'')}}</span>
-								<!-- <span
-								class="light-error"
-								v-if="!scope.row.IsUploadAction"
-								>Download Failed</span>
-								<span
-								v-else
-								class="light-error"
-								>Upload Failed</span> -->
 							</div>
 							<div class="light-blue" v-else>
 								{{ getDetailStatus(scope.row.Type, scope.row.DetailStatus) }}
 							</div>
-							<!-- <div v-else-if='scope.row.Progress > 0'>
-								<span v-if="scope.row.Type === 1">Uploading</span>
-								<span v-if="scope.row.Type === 2">Downloading</span>
-							</div>
-							<div v-else>
-								<span v-if="scope.row.Type === 1">Sharding</span>
-								<span v-if="scope.row.Type === 2">Searching</span>
-							</div> -->
 						</div>
 					</template>
 				</el-table-column>
@@ -172,13 +162,10 @@
 				</el-table-column>
 				<el-table-column
 					align="center"
-					min-width="100px"
+					width="210px"
 				>
 					<template slot-scope="scope">
 						<div class="action ft18" :class="'transferOpeation'+scope.row.Id">
-							<!-- <span v-if="scope.row.status === 0">continue</span>
-							<span v-if="scope.row.status === 2">pause</span> -->
-							<!-- <span v-if="!scope.row.IsUploadAction"><i class="el-icon-tickets"></i></span> -->
 							<span
 								title="Open folder"
 								v-if="scope.row.Path"
@@ -200,16 +187,6 @@
 									class="ofont"
 									:class="{'ofont-zhongxin': (!scope.row.IsUploadAction && scope.row.Status === 3 && show),'ofont-jixu': scope.row.Status === 4}"
 								></i></span>
-							<!-- complete page download again -->
-							<!-- <span
-								class="cursor-click active-blue cursor-pointer"
-								title="download again'"
-								v-show="!scope.row.IsUploadAction && scope.row.Status === 3"
-								@click="uploadOrDownloadAgain(scope.row, 2)"
-							><i
-									class="ofont"
-									:class="{'ofont-zhongxin': (!scope.row.IsUploadAction && scope.row.Status === 3),'ofont-jixu': scope.row.Status === 4}"
-							></i></span> -->
 							<span
 								class="active-blue cursor-pointer"
 								:title="scope.row.IsUploadAction ? 'start to upload':'start to download'"
@@ -225,7 +202,13 @@
 							<span
 								class="active-blue cursor-pointer"
 								:title="scope.row.IsUploadAction ? 'cancel to upload':'cancel to download'"
-								v-show="scope.row.Status !== 3 && show"
+								v-show="transferType === 1"
+								@click="openPassword(scope.row)"
+							><i class="ofont ofont-guanbi"></i></span>
+							<span
+								class="active-blue cursor-pointer"
+								:title="scope.row.IsUploadAction ? 'cancel to upload':'cancel to download'"
+								v-show="transferType === 2"
 								@click="uploadOrDownloadCancel(scope.row, transferType)"
 							><i class="ofont ofont-guanbi"></i></span>
 							<span
@@ -238,7 +221,7 @@
 								class="active-blue cursor-pointer"
 								title="delete record"
 								@click="deleteRecord(scope.row)"
-								v-show="scope.row.Status === 3 && show"
+								v-show="scope.row.Status === 3"
 							><i class="ofont ofont-shanchu"></i></span>
 						</div>
 					</template>
@@ -259,6 +242,42 @@
 				v-if="switchToggle.newTaskDialog"
 				v-on:closedialog='hideTaskDialog'
 			></download-dialog>
+		</el-dialog>
+		<el-dialog
+			width='600px'
+			center
+			:close-on-click-modal='false'
+			:visible.sync="switchToggle.passwordDialog"
+		>
+			<div slot="title">
+				<h2>Confirm</h2>
+				<div class="dialog-title-border"></div>
+			</div>
+			<div class="loading-content password-cancel-dialog">
+				<el-form
+					ref="passwordCancel"
+					:model="passwordCancel"
+					:rules="passwordCancelRules"
+				>
+					<el-form-item label="Password:" prop="Password">
+						<el-input
+							v-model="passwordCancel.Password"
+							show-password
+							type="password"
+							@keyup.native.enter='toCancel'
+							placeholder="Input Password"
+							class="grey-theme mb10"
+						></el-input>
+					</el-form-item>
+				</el-form>
+				<div slot="footer">
+					<el-button
+						class="primary"
+						type="primary"
+						@click="toCancel"
+					>Confirm</el-button>
+				</div>
+			</div>
 		</el-dialog>
 		<el-dialog
 			width="600px"
@@ -336,7 +355,7 @@
 								:stroke-width="14"
 								class="file-progress"
 								:percentage="parseInt(((item.UploadSize?item.UploadSize:item.DownloadSize)/fileObjByHash[detailId].FileSize)*100)"
-								:class="{'more-than-5': (((item.UploadSize?item.UploadSize:item.DownloadSize)/fileObjByHash[detailId].FileSize) < 0.05),'progressAnimate': fileObjByHash[detailId].Status != 4 || fileObjByHash[detailId].Status != 0}"
+								:class="{'more-than-5': (((item.UploadSize?item.UploadSize:item.DownloadSize)/fileObjByHash[detailId].FileSize) < 0.05),'progressAnimate': fileObjByHash[detailId].Status != 4 && fileObjByHash[detailId].Status != 0}"
 							></el-progress>
 						</div>
 					</li>
@@ -382,7 +401,8 @@ export default {
 				transferItemDialog: false,
 				deleteDialog: false,
 				decryptDialog: false,
-				detailDialog: false
+				detailDialog: false,
+				passwordDialog: false
 			},
 			TransferConfig: [
 				"completeTransferList",
@@ -396,6 +416,20 @@ export default {
 			fileSelected: {
 				Path: "",
 				Password: ""
+			},
+			passwordCancel: {
+				Password: "",
+				File: null, // if file is null is cancel all else cancel file
+				loadingObj: null
+			},
+			passwordCancelRules: {
+				Password: [
+					{
+						required: true,
+						message: "Please fill password",
+						trigger: "blur"
+					}
+				]
 			},
 			executedFile: {}, // a file be opera
 			mockFileList: [
@@ -573,7 +607,13 @@ export default {
 					DetailStatus: 2
 				}
 			],
-			loadinginstace: {}
+			loadinginstace: {},
+			waitForing: {
+				start: [],
+				pause: [],
+				delete: [],
+				cancel: []
+			}
 		};
 	},
 	computed: {
@@ -626,9 +666,32 @@ export default {
 		}
 	},
 	methods: {
+		// cancel task
+		toCancel() {
+			// add loading
+			this.passwordCancel.loadingObj = this.$loading({
+				target:'.password-cancel-dialog.loading-content',
+				text: 'Loading...',
+				lock: true
+			})
+			if(this.passwordCancel.File === null) { // cancel all when File is null
+				this.cancelAll();
+			} else { // cancel task when file is object
+				this.uploadOrDownloadCancel(this.passwordCancel.File, this.transferType);
+			}
+		},
+		// upload file open cancel task dialog to input password
+		openPassword(file=null) {
+			this.switchToggle.passwordDialog = true;
+			this.$nextTick(() => {
+				this.$refs.passwordCancel.resetFields();
+				this.passwordCancel.File = file;
+			})
+		},
 		toCloseUploadFileDetail() {
 			this.uploadDetailHash = "";
 		},
+		// open detail dialog
 		openDetailDialog(row) {
 			if (row.Status === 3) {
 				this.uploadDetailHash = row.FileHash;
@@ -637,6 +700,7 @@ export default {
 				this.switchToggle.detailDialog = true;
 			}
 		},
+		// cancel all task
 		cancelAll() {
 			const type = this.transferType;
 			const arr = this.getTask(type, 0, 1, 2, 4);
@@ -646,35 +710,9 @@ export default {
 				});
 				return;
 			}
-			this.$axios.post(this.$api.cancelAll, params).then(res => {
-				if (res.Error === 0) {
-					// get transfer list info update status
-					if(type === 1) {
-						this.$store.dispatch("setUpload");
-					} else {
-						this.$store.dispatch("setDownload");
-					}
-					//get error list
-					let errorArr = [];
-					for (let value of res.Result.Tasks) {
-						if (value && value.Code) {
-							errorArr.push(value);
-						}
-					}
-					//if no err
-					this.$message({
-						message: "Opeation Success",
-						type: "Success"
-					});
-				} else {
-					this.$message.error(
-						this.$i18n.error[res.Error]
-							? this.$i18n.error[res.Error][this.$language]
-							: `error code is ${res.Error}`
-					);
-				}
-			});
+			this.uploadOrDownloadCancel(arr, type);
 		},
+		// continue all task
 		continueAll() {
 			const type = this.transferType;
 			let flag = false;
@@ -697,6 +735,7 @@ export default {
 				});
 			}
 		},
+		// pause all task
 		pauseAll() {
 			const type = this.transferType;
 			const arr = this.getTask(type, 1, 2);
@@ -708,8 +747,25 @@ export default {
 			}
 			this.uploadOrDownloadPause(arr, type);
 		},
+		// delete complete all task record
+		deleteAll() {
+			const type = this.transferType;
+			const arr = this.getTask(type, 3);
+			if (arr.length === 0) {
+				this.$message({
+					message: "There are no record to delete"
+				});
+				return;
+			}
+			this.deleteRecord(arr);
+		},
+		/**
+		 * get filter task list
+		 * params
+		 * type: 1: upload、 2: download、 0: complete
+		 * status： file status
+		 */
 		getTask(type, ...status) {
-			// console.log(status);
 			let filterArr = this.fileList.filter(item => {
 				if (type === 2 && item.IsUploadAction) {
 					return false;
@@ -722,11 +778,25 @@ export default {
 			});
 			return filterArr;
 		},
-		// to do!!!!!
+		// delete complete record!!!!!
 		deleteRecord(row) {
-			let params = {
-				Ids: [row.Id]
-			};
+			// get params
+			let isArray = this.isArray(row);
+			let params;
+			if (isArray) {
+				let arr = [];
+				for (let value of row) {
+					arr.push(value.Id);
+				}
+				params = {
+					Ids: arr
+				};
+			} else {
+				params = {
+					Ids: [row.Id]
+				};
+			}
+
 			this.$axios.post(this.$api.deleteRecord, params).then(res => {
 				if (res.Error === 0) {
 					this.$store.dispatch("setComplete");
@@ -762,7 +832,10 @@ export default {
 		 * type: 0:upload    1:download
 		 */
 		uploadOrDownloadCancel(row, type) {
+			// get http url
 			let url = type === 1 ? this.$api.uploadCancel : this.$api.downloadCancel;
+
+			// get params
 			let isArray = this.isArray(row);
 			let params;
 			if (isArray) {
@@ -778,13 +851,33 @@ export default {
 					Ids: [row.Id]
 				};
 			}
+			if(type === 1) {
+				params.Password = this.passwordCancel.Password;
+			}
+
+			// add wait for data
+			this.waitForing.start = Array.from(new Set(this.waitForing.start.concat(params.Ids)));
+			
+			// add password when current mode is upload
 			this.$axios.post(url, params).then(res => {
+				this.passwordCancel.loadingObj && this.passwordCancel.loadingObj.close();
+				// delete wait for data
+				for(let value of params.Ids) {
+					let index = this.waitForing.start.indexOf(value);
+					if(index > -1) {
+						this.waitForing.start.splice(index, 1);
+					}
+				}
+				// get transfer list info update status
+				if(type === 1) {
+					this.$store.dispatch("setUpload");
+				} else {
+					this.$store.dispatch("setDownload");
+				}
+
 				if (res.Error === 0) {
-					// get transfer list info update status
-					if(type === 0) {
-						this.$store.dispatch("setUpload");
-					} else {
-						this.$store.dispatch("setDownload");
+					if(type === 1) {
+						this.switchToggle.passwordDialog = false;
 					}
 					//get error list
 					let errorArr = [];
@@ -808,6 +901,13 @@ export default {
 					);
 				}
 			}).catch(e => {
+				this.passwordCancel.loadingObj && this.passwordCancel.loadingObj.close();
+				for(let value of params.Ids) {
+					let index = this.waitForing.start.indexOf(value);
+					if(index > -1) {
+						this.waitForing.start.splice(index, 1);
+					}
+				}
 			})
 		},
 		/**
@@ -816,7 +916,10 @@ export default {
 		 * type: 0:upload    1:download
 		 */
 		uploadOrDownloadAgain(row, type) {
+			// get http url
 			let url = type === 1 ? this.$api.uploadRetry : this.$api.downloadRetry;
+			
+			// get params
 			let isArray = this.isArray(row);
 			let params;
 			if (isArray) {
@@ -832,14 +935,16 @@ export default {
 					Ids: [row.Id]
 				};
 			}
+
 			this.$axios.post(url, params).then(res => {
+				// get transfer list info update status
+				if(type === 1) {
+					this.$store.dispatch("setUpload");
+				} else {
+					this.$store.dispatch("setDownload");
+				}
+
 				if (res.Error === 0) {
-					// get transfer list info update status
-					if(type === 1) {
-						this.$store.dispatch("setUpload");
-					} else {
-						this.$store.dispatch("setDownload");
-					}
 					//get error list
 					let errorArr = [];
 					for (let value of res.Result.Tasks) {
@@ -870,6 +975,7 @@ export default {
 		 */
 		uploadOrDownloadContinue(row, type) {
 			let url = type === 1 ? this.$api.uploadResume : this.$api.downloadResume;
+			
 			let isArray = this.isArray(row);
 			let params;
 			if (isArray) {
@@ -885,22 +991,16 @@ export default {
 					Ids: [row.Id]
 				};
 			}
-			// for(let value of params.Ids) {
-			// 	this.loadinginstace[value] = this.$loading({
-			// 		target: `.transferOpeation${value}`
-			// 	})
-			// }
+
 			this.$axios.post(url, params).then(res => {
-				// for(let value of params.Ids) {
-				// 	this.loadinginstace[value] && this.loadinginstace[value].close()
-				// }
+				// get transfer list info update status
+				if(type === 1) {
+					this.$store.dispatch("setUpload");
+				} else {
+					this.$store.dispatch("setDownload");
+				}
+
 				if (res.Error === 0) {
-					// get transfer list info update status
-					if(type === 1) {
-						this.$store.dispatch("setUpload");
-					} else {
-						this.$store.dispatch("setDownload");
-					}
 					//get error list
 					let errorArr = [];
 					for (let value of res.Result.Tasks) {
@@ -922,10 +1022,6 @@ export default {
 							: `error code is ${res.Error}`
 					);
 				}
-			}).catch(e => {
-				// for(let value of params.Ids) {
-				// 	this.loadinginstace[value] && this.loadinginstace[value].close()
-				// }
 			})
 		},
 		/**
@@ -934,7 +1030,10 @@ export default {
 		 * type: 0:upload    1:download
 		 */
 		uploadOrDownloadPause(row, type) {
+			// get http url
 			let url = type === 1 ? this.$api.uploadPause : this.$api.downloadPause;
+			
+			// get params
 			let isArray = this.isArray(row);
 			let params;
 			if (isArray) {
@@ -950,14 +1049,16 @@ export default {
 					Ids: [row.Id]
 				};
 			}
+
 			this.$axios.post(url, params).then(res => {
+				// get transfer list info update status
+				if(type === 1) {
+					this.$store.dispatch("setUpload");
+				} else {
+					this.$store.dispatch("setDownload");
+				}
+
 				if (res.Error === 0) {
-					// get transfer list info update status
-					if(type === 1) {
-						this.$store.dispatch("setUpload");
-					} else {
-						this.$store.dispatch("setDownload");
-					}
 					//get error list
 					let errorArr = [];
 					for (let value of res.Result.Tasks) {

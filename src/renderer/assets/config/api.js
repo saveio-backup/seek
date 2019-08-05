@@ -49,6 +49,7 @@ const API = {
   downloadPause: HOST + VERSION + 'dsp/file/download/pause',
   uploadCancel: HOST + VERSION + 'dsp/file/upload/cancel',
   downloadCancel: HOST + VERSION + 'dsp/file/download/cancel',
+  deleteRecord: HOST + VERSION + 'dsp/file/transferlist/delete',
   withdrawChannel: HOST + VERSION + 'channel/withdraw',
   depositChannel: HOST + VERSION + 'channel/deposit',
   exportPrivateKey: HOST + VERSION + 'account/export/privatekey',

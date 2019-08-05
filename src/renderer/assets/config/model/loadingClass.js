@@ -11,7 +11,7 @@ class LoadingClass {
       request['id'] = id;
       this.loadinginstace[id] = Loading.service({
         target: request.loading.target || ".loading-content",
-        text: request.loading.text || "Loading",
+        text: request.loading.text || "Loading...",
         lock: true
       })
     }

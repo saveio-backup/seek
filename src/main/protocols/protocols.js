@@ -4,6 +4,24 @@
 } from 'electron'
 import fs from 'fs';
 import path from 'path';
+const handler = require('serve-handler');
+const http = require('http');
+const server = http.createServer((req, res) => {
+  return handler(req, res, {
+    // "rewrites": [{
+    //   "source": "/",
+    //   "destination": `http://localhost:9080`
+    // }]
+    "redirects": [{
+      "source": "/",
+      "destination": "http://localhost:9080"
+    }]
+  })
+});
+server.listen(50001, () => {
+  console.log('Running at http://localhost:50001');
+})
+const domain = 'http://localhost:8080/webpath';
 protocol.registerSchemesAsPrivileged([{
   scheme: 'seek',
   privileges: {
@@ -39,11 +57,11 @@ app.on('ready', () => {
 
 function seekHttpProtocol(request, callback) {
   console.log('seekProtocol!!!!');
-  console.log(request);
-  const url = request.url.replace('seek://', `${host}`);
-  console.log('url now is : ', url);
+  // console.log(request);
+  // const url = request.url.replace('seek://', `${host}`);
+  // console.log('url now is : ', url);
   callback({
-    url: url,
+    url: domain,
     method: 'GET',
     uploadData: {
       contentType: 'text/html'

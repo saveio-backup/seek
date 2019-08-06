@@ -650,18 +650,7 @@ export default {
 		},
 		getDetailStatus() {
 			return function(type, detailStatus) {
-				switch (detailStatus) {
-					case 18:
-						return `Start ${type === 2 ? "Downloading" : "Uploading"} Files`;
-					case 19:
-						return `File  ${type === 2 ? "Downloading" : "Uploading"}`;
-					case 20:
-						return `File  ${
-							type === 2 ? "downloading" : "uploading"
-						} completed, submit sharing information to DNS node`;
-					default:
-						return this.$i18n.error[detailStatus][this.$language];
-				}
+				return this.$i18n.error[detailStatus][this.$language];
 			};
 		}
 	},
@@ -797,7 +786,9 @@ export default {
 				};
 			}
 
-			this.$axios.post(this.$api.deleteRecord, params).then(res => {
+			this.$axios.post(this.$api.deleteRecord, params, {
+				timeout: (10000 * params.Ids.length)
+			}).then(res => {
 				if (res.Error === 0) {
 					this.$store.dispatch("setComplete");
 					//get error list
@@ -859,7 +850,9 @@ export default {
 			this.waitForing.start = Array.from(new Set(this.waitForing.start.concat(params.Ids)));
 			
 			// add password when current mode is upload
-			this.$axios.post(url, params).then(res => {
+			this.$axios.post(url, params, {
+				timeout: (10000 * params.Ids.length)
+			}).then(res => {
 				this.passwordCancel.loadingObj && this.passwordCancel.loadingObj.close();
 				// delete wait for data
 				for(let value of params.Ids) {
@@ -936,7 +929,9 @@ export default {
 				};
 			}
 
-			this.$axios.post(url, params).then(res => {
+			this.$axios.post(url, params, {
+				timeout: (10000 * params.Ids.length)
+			}).then(res => {
 				// get transfer list info update status
 				if(type === 1) {
 					this.$store.dispatch("setUpload");
@@ -992,7 +987,9 @@ export default {
 				};
 			}
 
-			this.$axios.post(url, params).then(res => {
+			this.$axios.post(url, params, {
+				timeout: (10000 * params.Ids.length)
+			}).then(res => {
 				// get transfer list info update status
 				if(type === 1) {
 					this.$store.dispatch("setUpload");
@@ -1050,7 +1047,9 @@ export default {
 				};
 			}
 
-			this.$axios.post(url, params).then(res => {
+			this.$axios.post(url, params, {
+				timeout: (10000 * params.Ids.length)
+			}).then(res => {
 				// get transfer list info update status
 				if(type === 1) {
 					this.$store.dispatch("setUpload");

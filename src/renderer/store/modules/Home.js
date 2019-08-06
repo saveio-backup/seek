@@ -9,7 +9,9 @@ const state = {
   revenue: 0,
   revenueFormat: 0,
   loginStatus: -1,
-  initChannelProgress: 0
+  initChannelProgress: 0,
+  totalHeight: 0,
+  currentHeight: 0
 }
 // Confirm login status
 

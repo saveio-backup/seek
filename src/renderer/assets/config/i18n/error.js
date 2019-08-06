@@ -90,6 +90,12 @@ const result = {
   '40008': {
     'en': 'Account already exists'
   },
+  '40009': {
+    'en': 'There are connected DNS nodes'
+  },
+  '40010': {
+    'en': 'Illegal wallet address'
+  },
   '50000': {
     'en': 'Internal error in the chain'
   },
@@ -240,6 +246,18 @@ const result = {
   '54008': {
     'en': 'No permission to update'
   },
+  '54009': {
+    'en': 'File upload path error'
+  },
+  '54010': {
+    'en': 'The validation period for calculating file charges for uploading is too small'
+  },
+  '54011': {
+    'en': 'Failed to calculate file cost to get file size'
+  },
+  '54012': {
+    'en': 'Failed to calculate file cost'
+  },
   '55000': {
     'en': 'DSP initialization failed'
   },
@@ -306,6 +324,9 @@ const result = {
   '55028': {
     'en': 'Retry download failed'
   },
+  '55029': {
+    'en': 'Failed to cancel task'
+  },
   '55030': {
     'en': 'Node registration failed'
   },
@@ -365,6 +386,9 @@ const result = {
   },
   '55062': {
     'en': 'There is not enough time in user space'
+  },
+  '55063': {
+    'en': 'Insufficient storage time for upload Settings'
   },
   '55100': {
     'en': 'No file information found on the chain'
@@ -432,5 +456,8 @@ const result = {
   '59003': {
     'en': 'Database added adjustment space record failed'
   },
+  '59004': {
+    'en': 'Failed to retrieve file information'
+  }
 }
 module.exports = result;

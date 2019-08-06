@@ -262,14 +262,14 @@ export default {
 			return this.$store.state.Home.initChannelProgress;
 		},
 		currentHeihgt: function() {
-			if (this.$store.state.Home.initChannelProgress) {
+			// if (this.$store.state.Home.initChannelProgress) {
 				return this.$store.state.Home.currentHeight || 0;
-			}
+			// }
 		},
 		totalHeight: function() {
-			if (this.$store.state.Home.initChannelProgress) {
+			// if (this.$store.state.Home.initChannelProgress) {
 				return this.$store.state.Home.totalHeight || 0;
-			}
+			// }
 		}
 	},
 	watch: {

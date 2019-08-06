@@ -100,7 +100,7 @@ const actions = {
                     .get(api.channelSync)
                     .then(res2 => {
                       if (res2.Result.Syncing === true) {
-                        console.log('progress:',progress);
+                        console.log('progress:', progress);
                         rebackToCreateAccount(commit, progress.Result.Progress); // back to create account
                         this.dispatch('getChannelInitProgress'); // Loop loading progress
                       } else { // both Wallet and Channel exist
@@ -113,7 +113,7 @@ const actions = {
                         this.dispatch("setChannelBalanceTotal"); // getAllChannels
                         this.dispatch("setRevenue");
                       }
-                  })
+                    })
                 } else if (progress.Error === 0) { // both Wallet and Channel exist
                   const result = res.Result;
                   for (let key in result) {
@@ -124,9 +124,9 @@ const actions = {
                   this.dispatch("setChannelBalanceTotal"); // getAllChannels
                   this.dispatch("setRevenue");
                 }
-							} else {
+              } else {
                 commit('SET_CURRENT_ACCOUNT', 0) // login fail
-							}
+              }
             } catch (error) {
               console.error(error)
             }
@@ -163,7 +163,7 @@ const actions = {
           commit('SET_CHANNEL_PROGRESS', res.Result.Progress)
           commit('SET_CURRENT_HEIGHT', res.Result.Now)
           commit('SET_TOTAL_HEIGHT', res.Result.End)
-        }  
+        }
       });
     }, timer.COUNT_INTERVAL);
   },

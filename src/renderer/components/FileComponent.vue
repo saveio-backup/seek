@@ -119,7 +119,16 @@
 					min-width="120px"
 				>
 					<template slot-scope="scope">
-						<div class="flex ai-center">
+						<div
+							class="flex ai-center break-word"
+							v-if="waitForing[scope.row.Id]"
+						>
+							waiting for {{waitForing[scope.row.Id].waitFor}}
+						</div>
+						<div
+							class="flex ai-center break-word"
+							v-else
+						>
 							<i
 								v-if="transferType === 0"
 								class="ofont mr20 ft16 active-blue"
@@ -136,14 +145,15 @@
 								>Upload Completed</span>
 							</div>
 							<div v-else-if="scope.row.Status === 0">
-								<span
-									class="light-blue"
-								>Task Pause</span>
+								<span class="light-blue">Task Pause</span>
 							</div>
 							<div v-else-if="scope.row.Status === 4">
 								<span class="light-error">{{scope.row.ErrMsg || (transferType === 1? 'Upload failed':transferType === 2?'Download failed':'')}}</span>
 							</div>
-							<div class="light-blue" v-else>
+							<div
+								class="light-blue"
+								v-else
+							>
 								{{ getDetailStatus(scope.row.Type, scope.row.DetailStatus) }}
 							</div>
 						</div>
@@ -165,7 +175,7 @@
 					width="210px"
 				>
 					<template slot-scope="scope">
-						<div class="action ft18" :class="'transferOpeation'+scope.row.Id">
+						<div class="action ft18 opera">
 							<span
 								title="Open folder"
 								v-if="scope.row.Path"
@@ -259,7 +269,10 @@
 					:model="passwordCancel"
 					:rules="passwordCancelRules"
 				>
-					<el-form-item label="Password:" prop="Password">
+					<el-form-item
+						label="Password:"
+						prop="Password"
+					>
 						<el-input
 							v-model="passwordCancel.Password"
 							show-password
@@ -608,12 +621,7 @@ export default {
 				}
 			],
 			loadinginstace: {},
-			waitForing: {
-				start: [],
-				pause: [],
-				delete: [],
-				cancel: []
-			}
+			waitForing: {}
 		};
 	},
 	computed: {
@@ -626,9 +634,20 @@ export default {
 		},
 		fileList: function() {
 			// return this.mockFileList;
-			return (
-				this.$store.state.Transfer[this.TransferConfig[this.transferType]] || []
-			);
+			let arr =
+				this.$store.state.Transfer[this.TransferConfig[this.transferType]] ||
+				[];
+			if (Object.keys(this.waitForing).length) return arr;
+			for (let value of arr) {
+				if (
+					this.waitForing[value.Id] &&
+					this.waitForing[value.Id].Status != value.Staus
+				) {
+					this.$delete(this.waitForing, value.Id);
+					if (Object.keys(this.waitForing).length === 0) return arr;
+				}
+			}
+			return arr;
 		},
 		fileObjByHash() {
 			let obj = {};
@@ -641,7 +660,9 @@ export default {
 			if (!this.detailId) return [];
 			let arr =
 				(this.fileObjByHash[this.detailId] &&
-					JSON.parse(JSON.stringify(this.fileObjByHash[this.detailId]["Nodes"]))) ||
+					JSON.parse(
+						JSON.stringify(this.fileObjByHash[this.detailId]["Nodes"])
+					)) ||
 				[];
 			arr.sort((a, b) => {
 				return a.HostAddr.localeCompare(b.HostAddr);
@@ -659,23 +680,28 @@ export default {
 		toCancel() {
 			// add loading
 			this.passwordCancel.loadingObj = this.$loading({
-				target:'.password-cancel-dialog.loading-content',
-				text: 'Loading...',
+				target: ".password-cancel-dialog.loading-content",
+				text: "Loading...",
 				lock: true
-			})
-			if(this.passwordCancel.File === null) { // cancel all when File is null
+			});
+			if (this.passwordCancel.File === null) {
+				// cancel all when File is null
 				this.cancelAll();
-			} else { // cancel task when file is object
-				this.uploadOrDownloadCancel(this.passwordCancel.File, this.transferType);
+			} else {
+				// cancel task when file is object
+				this.uploadOrDownloadCancel(
+					this.passwordCancel.File,
+					this.transferType
+				);
 			}
 		},
 		// upload file open cancel task dialog to input password
-		openPassword(file=null) {
+		openPassword(file = null) {
 			this.switchToggle.passwordDialog = true;
 			this.$nextTick(() => {
 				this.$refs.passwordCancel.resetFields();
 				this.passwordCancel.File = file;
-			})
+			});
 		},
 		toCloseUploadFileDetail() {
 			this.uploadDetailHash = "";
@@ -718,7 +744,7 @@ export default {
 				this.uploadOrDownloadAgain(arr2, type);
 			}
 			//if no task message
-			if(!flag) {
+			if (!flag) {
 				this.$message({
 					message: "There are no tasks to start"
 				});
@@ -786,33 +812,33 @@ export default {
 				};
 			}
 
-			this.$axios.post(this.$api.deleteRecord, params, {
-				timeout: (10000 * params.Ids.length)
-			}).then(res => {
-				if (res.Error === 0) {
-					this.$store.dispatch("setComplete");
-					//get error list
-					let errorArr = [];
-					for (let value of res.Result.Tasks) {
-						if (value && value.Code) {
-							errorArr.push(value);
-						}
-					}
-					//if no err
-					if (errorArr.length === 0) {
-						this.$message({
-							message: "Opeation Success",
-							type: "success"
-						});
-					}
-				} else {
-					this.$message.error(
-						this.$i18n.error[res.Error]
-							? this.$i18n.error[res.Error][this.$language]
-							: `error code is ${res.Error}`
-					);
-				}
+			// add wait for task and get have wait for task
+			const haveWaitFor = this.addWaitFor({
+				row: row,
+				waitFor: "delete record"
 			});
+			if (!haveWaitFor) return;
+
+			this.$axios
+				.post(this.$api.deleteRecord, params, {
+					timeout: 10000 * params.Ids.length
+				})
+				.then(res => {
+					this.$store.dispatch("setComplete");
+					this.removeWaitFor({ Ids: params.Ids });
+
+					if (res.Error === 0) {
+					} else {
+						this.$message.error(
+							this.$i18n.error[res.Error]
+								? this.$i18n.error[res.Error][this.$language]
+								: `error code is ${res.Error}`
+						);
+					}
+				})
+				.catch(e => {
+					this.removeWaitFor({ Ids: params.Ids });
+				});
 		},
 		isArray(arg) {
 			return Object.prototype.toString.call(arg) === "[object Array]";
@@ -842,66 +868,41 @@ export default {
 					Ids: [row.Id]
 				};
 			}
-			if(type === 1) {
+			if (type === 1) {
 				params.Password = this.passwordCancel.Password;
 			}
 
-			// add wait for data
-			this.waitForing.start = Array.from(new Set(this.waitForing.start.concat(params.Ids)));
-			
 			// add password when current mode is upload
-			this.$axios.post(url, params, {
-				timeout: (10000 * params.Ids.length)
-			}).then(res => {
-				this.passwordCancel.loadingObj && this.passwordCancel.loadingObj.close();
-				// delete wait for data
-				for(let value of params.Ids) {
-					let index = this.waitForing.start.indexOf(value);
-					if(index > -1) {
-						this.waitForing.start.splice(index, 1);
+			this.$axios
+				.post(url, params, {
+					timeout: 10000 * params.Ids.length
+				})
+				.then(res => {
+					this.passwordCancel.loadingObj &&
+						this.passwordCancel.loadingObj.close();
+					// get transfer list info update status
+					if (type === 1) {
+						this.$store.dispatch("setUpload");
+					} else {
+						this.$store.dispatch("setDownload");
 					}
-				}
-				// get transfer list info update status
-				if(type === 1) {
-					this.$store.dispatch("setUpload");
-				} else {
-					this.$store.dispatch("setDownload");
-				}
 
-				if (res.Error === 0) {
-					if(type === 1) {
-						this.switchToggle.passwordDialog = false;
-					}
-					//get error list
-					let errorArr = [];
-					for (let value of res.Result.Tasks) {
-						if (value && value.Code) {
-							errorArr.push(value);
+					if (res.Error === 0) {
+						if (type === 1) {
+							this.switchToggle.passwordDialog = false;
 						}
+					} else {
+						this.$message.error(
+							this.$i18n.error[res.Error]
+								? this.$i18n.error[res.Error][this.$language]
+								: `error code is ${res.Error}`
+						);
 					}
-					//if no err
-					if (errorArr.length === 0) {
-						this.$message({
-							message: "Opeation Success",
-							type: "success"
-						});
-					}
-				} else {
-					this.$message.error(
-						this.$i18n.error[res.Error]
-							? this.$i18n.error[res.Error][this.$language]
-							: `error code is ${res.Error}`
-					);
-				}
-			}).catch(e => {
-				this.passwordCancel.loadingObj && this.passwordCancel.loadingObj.close();
-				for(let value of params.Ids) {
-					let index = this.waitForing.start.indexOf(value);
-					if(index > -1) {
-						this.waitForing.start.splice(index, 1);
-					}
-				}
-			})
+				})
+				.catch(e => {
+					this.passwordCancel.loadingObj &&
+						this.passwordCancel.loadingObj.close();
+				});
 		},
 		/**
 		 * params
@@ -911,7 +912,7 @@ export default {
 		uploadOrDownloadAgain(row, type) {
 			// get http url
 			let url = type === 1 ? this.$api.uploadRetry : this.$api.downloadRetry;
-			
+
 			// get params
 			let isArray = this.isArray(row);
 			let params;
@@ -928,40 +929,36 @@ export default {
 					Ids: [row.Id]
 				};
 			}
+			// add wait for task and get have wait for task
+			const haveWaitFor = this.addWaitFor({ row: row, waitFor: "start" });
+			if (!haveWaitFor) return;
 
-			this.$axios.post(url, params, {
-				timeout: (10000 * params.Ids.length)
-			}).then(res => {
-				// get transfer list info update status
-				if(type === 1) {
-					this.$store.dispatch("setUpload");
-				} else {
-					this.$store.dispatch("setDownload");
-				}
+			this.$axios
+				.post(url, params, {
+					timeout: 10000 * params.Ids.length
+				})
+				.then(res => {
+					// get transfer list info update status
+					if (type === 1) {
+						this.$store.dispatch("setUpload");
+					} else {
+						this.$store.dispatch("setDownload");
+					}
+					// remove wait for task
+					this.removeWaitFor({ Ids: params.Ids });
 
-				if (res.Error === 0) {
-					//get error list
-					let errorArr = [];
-					for (let value of res.Result.Tasks) {
-						if (value && value.Code) {
-							errorArr.push(value);
-						}
+					if (res.Error === 0) {
+					} else {
+						this.$message.error(
+							this.$i18n.error[res.Error]
+								? this.$i18n.error[res.Error][this.$language]
+								: `error code is ${res.Error}`
+						);
 					}
-					//if no err
-					if (errorArr.length === 0) {
-						this.$message({
-							message: "Opeation Success",
-							type: "success"
-						});
-					}
-				} else {
-					this.$message.error(
-						this.$i18n.error[res.Error]
-							? this.$i18n.error[res.Error][this.$language]
-							: `error code is ${res.Error}`
-					);
-				}
-			});
+				})
+				.catch(e => {
+					this.removeWaitFor({ Ids: params.Ids });
+				});
 		},
 		/**
 		 * params
@@ -970,7 +967,7 @@ export default {
 		 */
 		uploadOrDownloadContinue(row, type) {
 			let url = type === 1 ? this.$api.uploadResume : this.$api.downloadResume;
-			
+
 			let isArray = this.isArray(row);
 			let params;
 			if (isArray) {
@@ -986,40 +983,68 @@ export default {
 					Ids: [row.Id]
 				};
 			}
+			// add wait for task and get have wait for task
+			const haveWaitFor = this.addWaitFor({ row: row, waitFor: "start" });
+			if (!haveWaitFor) return;
 
-			this.$axios.post(url, params, {
-				timeout: (10000 * params.Ids.length)
-			}).then(res => {
-				// get transfer list info update status
-				if(type === 1) {
-					this.$store.dispatch("setUpload");
-				} else {
-					this.$store.dispatch("setDownload");
-				}
+			this.$axios
+				.post(url, params, {
+					timeout: 10000 * params.Ids.length
+				})
+				.then(res => {
+					// get transfer list info update status
+					if (type === 1) {
+						this.$store.dispatch("setUpload");
+					} else {
+						this.$store.dispatch("setDownload");
+					}
+					// remove wait for task
+					this.removeWaitFor({ Ids: params.Ids });
 
-				if (res.Error === 0) {
-					//get error list
-					let errorArr = [];
-					for (let value of res.Result.Tasks) {
-						if (value && value.Code) {
-							errorArr.push(value);
-						}
+					if (res.Error === 0) {
+					} else {
+						this.$message.error(
+							this.$i18n.error[res.Error]
+								? this.$i18n.error[res.Error][this.$language]
+								: `error code is ${res.Error}`
+						);
 					}
-					//if no err
-					if (errorArr.length === 0) {
-						this.$message({
-							message: "Opeation Success",
-							type: "success"
-						});
-					}
-				} else {
-					this.$message.error(
-						this.$i18n.error[res.Error]
-							? this.$i18n.error[res.Error][this.$language]
-							: `error code is ${res.Error}`
-					);
+				})
+				.catch(e => {
+					this.removeWaitFor({ Ids: params.Ids });
+				});
+		},
+		/**
+		 * add wait for task
+		 * params
+		 * row: transfer item or list
+		 */
+		addWaitFor({ row, waitFor }) {
+			let isArray = this.isArray(row);
+			let arr = row;
+			let falg = false; // have task need wait for
+			if (!isArray) {
+				arr = [row];
+			}
+			for (let item of arr) {
+				if (!this.waitForing[item.Id]) {
+					this.$set(this.waitForing, item.Id, {
+						Status: item.Status,
+						waitFor: waitFor
+					});
+					falg = true;
 				}
-			})
+			}
+			this.$forceUpdate();
+			return falg;
+		},
+		removeWaitFor({ Ids }) {
+			for (let Id of Ids) {
+				if (this.waitForing[Id]) {
+					delete this.waitForing[Id];
+					this.$delete(this.waitForing, Id);
+				}
+			}
 		},
 		/**
 		 * params
@@ -1029,7 +1054,7 @@ export default {
 		uploadOrDownloadPause(row, type) {
 			// get http url
 			let url = type === 1 ? this.$api.uploadPause : this.$api.downloadPause;
-			
+
 			// get params
 			let isArray = this.isArray(row);
 			let params;
@@ -1047,39 +1072,50 @@ export default {
 				};
 			}
 
-			this.$axios.post(url, params, {
-				timeout: (10000 * params.Ids.length)
-			}).then(res => {
-				// get transfer list info update status
-				if(type === 1) {
-					this.$store.dispatch("setUpload");
-				} else {
-					this.$store.dispatch("setDownload");
-				}
+			// add wait for task and get have wait for task
+			const haveWaitFor = this.addWaitFor({ row: row, waitFor: "pause" });
+			if (!haveWaitFor) return;
 
-				if (res.Error === 0) {
-					//get error list
-					let errorArr = [];
-					for (let value of res.Result.Tasks) {
-						if (value && value.Code) {
-							errorArr.push(value);
-						}
+			this.$axios
+				.post(url, params, {
+					timeout: 10000 * params.Ids.length
+				})
+				.then(res => {
+					// get transfer list info update status
+					if (type === 1) {
+						this.$store.dispatch("setUpload");
+					} else {
+						this.$store.dispatch("setDownload");
 					}
-					//if no err
-					if (errorArr.length === 0) {
-						this.$message({
-							message: "Opeation Success",
-							type: "success"
-						});
+					// remove wait for task
+					this.removeWaitFor({ Ids: params.Ids });
+
+					if (res.Error === 0) {
+						//get error list
+						// let errorArr = [];
+						// for (let value of res.Result.Tasks) {
+						// 	if (value && value.Code) {
+						// 		errorArr.push(value);
+						// 	}
+						// }
+						// //if no err
+						// if (errorArr.length === 0) {
+						// 	this.$message({
+						// 		message: "Opeation Success",
+						// 		type: "success"
+						// 	});
+						// }
+					} else {
+						this.$message.error(
+							this.$i18n.error[res.Error]
+								? this.$i18n.error[res.Error][this.$language]
+								: `error code is ${res.Error}`
+						);
 					}
-				} else {
-					this.$message.error(
-						this.$i18n.error[res.Error]
-							? this.$i18n.error[res.Error][this.$language]
-							: `error code is ${res.Error}`
-					);
-				}
-			});
+				})
+				.catch(e => {
+					this.removeWaitFor({ Ids: params.Ids });
+				});
 		},
 		hideTaskDialog() {
 			this.switchToggle.newTaskDialog = false;
@@ -1183,40 +1219,17 @@ $light-grey: #f9f9fb;
 				color: #1b1e2f;
 				// font-weight: bold;
 			}
-			// .rowName {
-			// 	.opera {
-			// 		display: none;
-			// 		color: rgba(32, 32, 32, 0.4);
-			// 		font-weight: bold;
-			// 		.ofont {
-			// 			margin: 0px 4px;
-			// 			font-size: 18px;
-			// 			cursor: pointer;
-			// 			&.ofont-zhongxinshangchuan {
-			// 				font-size: 14px;
-			// 			}
-			// 			&.ofont-jixu {
-			// 				font-size: 15px;
-			// 			}
-			// 			&.ofont-zanting {
-			// 				font-size: 13px;
-			// 			}
-			// 			&:hover {
-			// 				color: $light-blue;
-			// 			}
-			// 			&:active {
-			// 				opacity: 0.7;
-			// 			}
-			// 		}
-			// 	}
-			// 	&:hover {
-			// 		.opera {
-			// 			display: flex;
-			// 			justify-content: center;
-			// 			align-items: center;
-			// 		}
-			// 	}
-			// }
+			.opera {
+				.ofont {
+					&.ofont-jixu {
+						position: relative;
+						left: 2px;
+					}
+					&.ofont-guanbi {
+						font-size: 15px;
+					}
+				}
+			}
 		}
 	}
 	.action > span {
@@ -1230,11 +1243,11 @@ $light-grey: #f9f9fb;
 		line-height: 32px;
 
 		&:hover {
-			background: #DFE2E9;
+			background: #dfe2e9;
 		}
 
 		&:active {
-			opacity: .7;
+			opacity: 0.7;
 		}
 	}
 	.file-progress {

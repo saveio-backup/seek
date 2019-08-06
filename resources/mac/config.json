@@ -23,7 +23,7 @@
 		"PpBootstrap": null,
 		"ChainRestAddr": "http://221.179.156.57:10334",
 		"ChainRpcAddr": "http://221.179.156.57:10336",
-		"NATProxyServerAddr": "tcp://40.73.100.114:6007",
+		"NATProxyServerAddr": "tcp://40.73.103.72:6007",
 		"DspProtocol": "tcp",
 		"DspPortOffset": 4024,
 		"AutoSetupDNSEnable": true,

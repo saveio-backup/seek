@@ -244,7 +244,7 @@ export default {
 					? this.currentHeihgt / this.totalHeight
 					: 0) * 100
 			).toFixed(2) === "100.00"
-				? "99.999"
+				? "99.99"
 				: (
 						(this.currentHeihgt / this.totalHeight
 							? this.currentHeihgt / this.totalHeight

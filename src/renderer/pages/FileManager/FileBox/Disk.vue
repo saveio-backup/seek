@@ -779,11 +779,11 @@ export default {
 			this.switchToggle.deleteDialog = true;
 		},
 		toDeleteFileNew(deleteFiles) {
-			// this.switchToggle.loading = this.$loading({
-			//   lock: true,
-			//   text: "Deleting....",
-			//   target: ".loading-content.disk-delete-loading"
-			// });
+			this.switchToggle.loading = this.$loading({
+			  lock: true,
+			  text: "Deleting....",
+			  target: ".loading-content.disk-delete-loading"
+			});
 			const length = deleteFiles.length;
 			const commitAll = [];
 			for (let i = 0; i < length; i++) {

@@ -95,6 +95,10 @@ $theme-color: #1b1e2f;
   text-align: right;
 }
 
+.break-word {
+  word-break: break-word;
+}
+
 /* Element UI */
 .common-el-input {
   $height: 35px;

@@ -5,6 +5,7 @@ build/*
 !build/icons
 resources/win/edge.exe
 resources/mac/edge
+resources/mac/edge-darwin-amd64
 resources/seek_releases
 coverage
 package-lock.json

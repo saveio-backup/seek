@@ -21,7 +21,7 @@
 							class="nav-button"
 							@click="remoteOpenComponent('FileManager')"
 							active-class="slidebar-active"
-							:class="{'theme-color-yellow':activeView.displayURL.indexOf('seek://FileManager')>=0}"
+							:class="{'theme-color-yellow':activeView.displayURL.toLowerCase().indexOf('seek://filemanager')>=0}"
 						>
 							<i class="ofont ofont-wenjianjia-"></i>
 						</div>
@@ -31,7 +31,7 @@
 							title="Wallet"
 							class="nav-button"
 							@click="remoteOpenComponent('Wallet')"
-							:class="{'theme-color-yellow':activeView.displayURL.indexOf('seek://Wallet')>=0}"
+							:class="{'theme-color-yellow':activeView.displayURL.toLowerCase().indexOf('seek://wallet')>=0}"
 						>
 							<i class="ofont ofont-qianbao"></i>
 						</div>
@@ -42,7 +42,7 @@
 							class="nav-button"
 							@click="remoteOpenComponent('Miner')"
 							active-class="slidebar-active"
-							:class="{'theme-color-yellow':activeView.displayURL.indexOf('seek://Miner')>=0}"
+							:class="{'theme-color-yellow':activeView.displayURL.toLowerCase().indexOf('seek://miner')>=0}"
 						>
 							<i class="ofont ofont-kuanggong"></i>
 							<!-- <img

@@ -13,9 +13,10 @@ import {
   URL
 } from 'url';
 
-import  frontCfgObj from './frontCfgObj'
+import frontCfgObj from './frontCfgObj'
 
 export const windows = {}; // map of {[parentWindow.id] => BrowserWindow}
+export let getCurrentView = null;
 export let dialogViewObj = null;
 // global.windows = windows;
 class View {
@@ -88,12 +89,13 @@ class View {
     if (url.host === 'localhost:9080') {
       const urlReg = new RegExp(url.origin + url.pathname + '(#/)?');
       this.displayURL = url.href.replace(urlReg, DEFAULT_PROTOCOL + '://')
-    } else if (url.protocol === 'file:') {
+    } else if (url.href.indexOf(DEFAULT_URL) >= 0) {
       const urlReg = new RegExp('file://' + url.pathname + '(#/)?');
       this.displayURL = url.href.replace(urlReg, DEFAULT_PROTOCOL + '://')
     } else {
       this.displayURL = this.url
     }
+
   }
   updateEvent() {
     this.webContents.on('did-start-loading', () => {
@@ -132,8 +134,7 @@ class View {
     this.webContents.on('will-navigate', (e, url) => {
       this.onNewUrl(url, e)
     })
-    this.webContents.on('did-start-navigation', (e, url) => {
-    })
+    this.webContents.on('did-start-navigation', (e, url) => {})
     // handler hashchange
     this.webContents.on('did-navigate-in-page', (e, url) => {
       this.forceUpdate()
@@ -150,12 +151,15 @@ class View {
   }
   onNewUrl(url, event) {
     const win = this.browserWindow;
+    getCurrentView = getActive(win);
     win.setBrowserView(this.browserView); //if have dialog browserView
     let newIsSave = null;
     const urlFormat = this.formatURL(url);
+    console.log('urlFormat is');
+    console.log(urlFormat);
     if (urlFormat.protocol === DEFAULT_PROTOCOL + ':') { // is ours custom 'seek://' html page?
       newIsSave = true;
-    } else if (urlFormat.host === 'localhost:9080' || urlFormat.protocol === 'file:') {
+    } else if (urlFormat.host === 'localhost:9080') {
       newIsSave = true;
     } else {
       newIsSave = false;
@@ -180,10 +184,10 @@ class View {
   openComponent(path) {
     const views = this.browserWindow.views;
     const view = views.find(item => {
-      if(process.env.NODE_ENV !== 'development') {
-        return item.url.replace(/(\\|\/)/g, '').indexOf('index.html#'+path) >= 0;
+      if (process.env.NODE_ENV !== 'development') {
+        return item.url.replace(/(\\|\/)/g, '').toLowerCase().indexOf(('index.html#' + path.replace(/(\\|\/)/g, '')).toLowerCase()) >= 0;
       }
-      return item.url.replace(/(\\|\/)/g, '').indexOf(DEFAULT_URL.replace(/(\\|\/)/g, '') + '#' + path) >= 0
+      return item.url.replace(/(\\|\/)/g, '').toLowerCase().indexOf((DEFAULT_URL.replace(/(\\|\/)/g, '') + '#' + path.replace(/(\\|\/)/g, '')).toLowerCase()) >= 0
     })
     this.browserWindow.findView = view;
     this.browserWindow.defaultUrl = DEFAULT_URL;
@@ -208,13 +212,14 @@ class View {
     this.browserView.webContents.loadURL(newURLFormat.href)
   }
   formatURL(newURL) {
+
     let newURLFormat = null;
+
+    // dev-> href: http://localhost:9080/#/navigation;
+    // production-> href:
     let browserWindowURLFomat = new URL(this.browserWindow.url);
     try {
       newURLFormat = new URL(newURL)
-      // if (newURLFormat.pathname.indexOf('/') !== 0) {
-      //   newURLFormat.href = 'http://' + newURLFormat.href;
-      // }
       if ((newURLFormat.href === browserWindowURLFomat.href) || (newURLFormat.href === (browserWindowURLFomat.origin + '/'))) {
         newURLFormat.href = DEFAULT_URL + '#/Home';
       }
@@ -316,7 +321,7 @@ export function createWindow(url) {
     }
   }
 
-  if (process.env.NODE_ENV === 'development' ||  frontCfgObj().console) {
+  if (process.env.NODE_ENV === 'development' || frontCfgObj().console) {
     mainWindow.webContents.openDevTools();
   }
 
@@ -370,7 +375,7 @@ function getTopWindow(win) {
   return win
 }
 
-function getActive(win) {
+export function getActive(win) {
   win = getTopWindow(win);
   return win.views.find(view => view.isActive)
 }

@@ -12,6 +12,25 @@
 			@closeDialog="closeDialog"
 			v-if="menuSelector === 'createChannel'"
 		></is-create-channel>
+		<div
+			class="downloadDialog"
+			v-if="menuSelector === 'downloadDialog'"
+		>
+			<el-dialog
+				width='550px'
+				:before-close="closeDialog"
+				:close-on-click-modal='false'
+				:visible.sync="switchToggle.downloadDialog"
+				center
+			>
+				<div slot="title">
+					<h2>New Download</h2>
+					<div class="dialog-title-border"></div>
+				</div>
+				<download-dialog @closeDialog="closeDialog">
+				</download-dialog>
+			</el-dialog>
+		</div>
 	</div>
 </template>
 
@@ -20,16 +39,21 @@ import { ipcRenderer } from "electron";
 import exportPrivateKey from "./Dialog/ExportPrivateKey.vue";
 import logout from "./Dialog/Logout.vue";
 import isCreateChannel from "./Dialog/IsCreateChannel.vue";
+import downloadDialog from "../components/DownloadDialog.vue";
 export default {
 	name: "Dialog",
 	components: {
 		exportPrivateKey,
 		logout,
-		isCreateChannel
+		isCreateChannel,
+		downloadDialog
 	},
 	data() {
 		const COUNT_INTERVAL = 10000;
 		return {
+			switchToggle: {
+				downloadDialog: true
+			},
 			menuSelector: "",
 			channelNum: null,
 			Balance: null,
@@ -133,23 +157,25 @@ export default {
 			});
 		},
 		getChannel() {
-			this.$axios.get(this.$api.channel, {
-				timeout: 20000
-			}).then(res => {
-				if (res.Error === 0) {
-					if (
-						res.Result &&
-						res.Result.Channels &&
-						res.Result.Channels.length > 0
-					) {
-						this.channelNum = res.Result.Channels.length;
-						clearInterval(this.setTimeObj);
-						return;
+			this.$axios
+				.get(this.$api.channel, {
+					timeout: 20000
+				})
+				.then(res => {
+					if (res.Error === 0) {
+						if (
+							res.Result &&
+							res.Result.Channels &&
+							res.Result.Channels.length > 0
+						) {
+							this.channelNum = res.Result.Channels.length;
+							clearInterval(this.setTimeObj);
+							return;
+						}
+						this.channelNum =
+							res.Result && res.Result.Channels && res.Result.Channels.length;
 					}
-					this.channelNum =
-						res.Result && res.Result.Channels && res.Result.Channels.length;
-				}
-			});
+				});
 		},
 		// check have channel and wallet money
 		checkCanNotAddChannel() {
@@ -167,6 +193,10 @@ export default {
 
 <style scoped>
 .dialogWrapper {
+	width: 100%;
+	height: 100%;
+}
+.downloadDialog {
 	width: 100%;
 	height: 100%;
 }

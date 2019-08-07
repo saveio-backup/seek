@@ -1,6 +1,6 @@
 <template>
 	<div id="download-dialog">
-		<el-form>
+		<el-form @submit.native.prevent>
 			<el-form-item
 				class="theme-font-blue-bold"
 				label="Download URL:"
@@ -37,7 +37,7 @@
 </template>
 <script>
 let timer = null;
-import { ipcRenderer } from "electron";
+import { ipcRenderer, remote } from "electron";
 import util from "../assets/config/util";
 export default {
 	data() {
@@ -45,10 +45,14 @@ export default {
 			util,
 			formatUrl: "save://share/",
 			downloadUrl: "",
-			downloadInfo: {}
+			downloadInfo: {},
+			win: remote.getCurrentWindow()
 		};
 	},
 	methods: {
+		closeDialog() {
+			this.$emit("closeDialog", { timeout: 0 });
+		},
 		toGetFileInfo() {
 			if (this.downloadUrl.indexOf(this.formatUrl) != 0) return;
 			const path = ipcRenderer.sendSync("string-to-hex", this.downloadUrl);
@@ -76,18 +80,17 @@ export default {
 					MaxPeerNum: 20
 				})
 				.then(res => {
-					if(res.Error === 0) {
+					if (res.Error === 0) {
 						this.$emit("closedialog");
 						this.$store.dispatch("setDownload");
-						this.$router.push({
-							name: "transfer",
-							query: {
-								transferType: 2
-							}
-						});
+						this.win.views
+							.find(view => view.isActive)
+							.openComponent("FileManager/transfer");
 					} else {
-						if(res.Error === 50028) {
-							this.$message.error('Sorry, there are no valid files found, the file may have been deleted.');
+						if (res.Error === 50028) {
+							this.$message.error(
+								"Sorry, there are no valid files found, the file may have been deleted."
+							);
 						} else {
 							this.$message.error(
 								this.$i18n.error[res.Error]

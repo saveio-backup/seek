@@ -173,9 +173,28 @@ const setupConfig = async (appDataPath, appName) => {
     }
     cfgObj.Base.AutoSetupDNSEnable = false;
     cfgObj.Base.NetworkId = 1564141146;
+    cfgObj.Base.ChainRestAddrs = [
+        "http://221.179.156.57:10334",
+        "http://221.179.156.57:11334",
+        "http://221.179.156.57:12334",
+        "http://221.179.156.57:13334",
+        "http://221.179.156.57:14334",
+        "http://221.179.156.57:15334",
+        "http://221.179.156.57:16334"
+    ];
+    cfgObj.Base.ChainRpcAddrs = [
+        "http://221.179.156.57:10336",
+        "http://221.179.156.57:11336",
+        "http://221.179.156.57:12336",
+        "http://221.179.156.57:13336",
+        "http://221.179.156.57:14336",
+        "http://221.179.156.57:15336",
+        "http://221.179.156.57:16336"
+    ];
+    cfgObj.Base.NATProxyServerAddrs = "tcp://40.73.103.72:6007";
     cfgObj.Base.ChannelRevealTimeout = "200";
     cfgObj.Base.ChannelSettleTimeout = "500";
-    cfgObj.Base.edgeIsRestart = true;
+    cfgObj.Base.edgeIsRestart = false;
     try {
         await fs.writeFileSync(cfgPath, JSON.stringify(cfgObj))
     } catch (err) {
@@ -197,7 +216,7 @@ const run = (appDataPath, appName) => {
     } else {
         cfgDir = `${appDataPath}/${appName}`
         // cmdStr = `./edge --config='${cfgDir}'`
-        cmdStr = `./edge`
+        cmdStr = `./edge-darwin-amd64`
     }
     log.debug("[run] run node")
     log.debug("[run] appDataPath", appDataPath)
@@ -235,7 +254,7 @@ const run = (appDataPath, appName) => {
         // console.log('child process exited with code ' + code);
     });
     ipcMain.on('watchEdge', (event) => {
-        cacheRestartObj.edgeCloseRestartFailed = event;//cache event
+        cacheRestartObj.edgeCloseRestartFailed = event; //cache event
     })
     workerProcess.on('close', function (code) {
         log.error('workerProcess close with code' + code);
@@ -244,40 +263,41 @@ const run = (appDataPath, appName) => {
         let setIntervalObj = setInterval(() => {
             // try catch not init cache object
             try {
-                if(cacheRestartObj.cfgObj && cacheRestartObj.cfgObj.Base && cacheRestartObj.appDataPathCache && cacheRestartObj.appNameCache) {
-                    if(!cacheRestartObj.cfgObj.Base.edgeIsRestart) {
+                if (cacheRestartObj.cfgObj && cacheRestartObj.cfgObj.Base && cacheRestartObj.appDataPathCache && cacheRestartObj.appNameCache) {
+                    if (!cacheRestartObj.cfgObj.Base.edgeIsRestart) {
                         cacheRestartObj.edgeCloseRestartFailed.reply('edgeClose', '0');
                         clearInterval(setIntervalObj)
                         return;
                     }
-                    if(i >= 60) {
+                    if (i >= 60) {
                         clearInterval(setIntervalObj)
                         log.error('main/node.js watchEdge event be executed')
-                    } if(!cacheRestartObj.edgeCloseRestartFailed) {
-                        i ++
+                    }
+                    if (!cacheRestartObj.edgeCloseRestartFailed) {
+                        i++
                         return;
                     } else {
                         clearInterval(setIntervalObj)
                     }
                     try {
-                        cacheRestartObj.restartNum ++;
-                        if(cacheRestartObj.restartNum >= 5) {
+                        cacheRestartObj.restartNum++;
+                        if (cacheRestartObj.restartNum >= 5) {
                             cacheRestartObj.edgeCloseRestartFailed.reply('edgeClose', '0');
                             log.error('edge restart failed' + e);
                             return;
                         }
                         setTimeout(() => {
-                            cacheRestartObj.restartNum --;
+                            cacheRestartObj.restartNum--;
                         }, 12000);
                         run(cacheRestartObj.appDataPathCache, cacheRestartObj.appNameCache);
                         cacheRestartObj.edgeCloseRestartFailed.reply('edgeClose', '1');
-                    } catch(e) {
+                    } catch (e) {
                         cacheRestartObj.edgeCloseRestartFailed.reply('edgeClose', '0');
                         log.error('edge restart failed' + e)
                     }
                 }
-            } catch(e) {
-                console.log('22222222222',e)
+            } catch (e) {
+                console.log('22222222222', e)
             }
         }, 1000)
     })

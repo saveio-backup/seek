@@ -7,7 +7,7 @@ import {
   X_POSITION,
   DEFAULT_URL
 } from './defaultOption'
-import  frontCfgObj from './frontCfgObj'
+import frontCfgObj from './frontCfgObj'
 
 class dialogView {
   constructor(win) {

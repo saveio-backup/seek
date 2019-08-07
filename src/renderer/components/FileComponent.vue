@@ -828,6 +828,20 @@ export default {
 					this.removeWaitFor({ Ids: params.Ids });
 
 					if (res.Error === 0) {
+						//get error list
+						let errorArr = [];
+						for (let value of res.Result.Tasks) {
+							if (value && value.Code) {
+								errorArr.push(value);
+							}
+						}
+						//if no err
+						if (errorArr.length === 0) {
+							this.$message({
+								message: "Opeation Success",
+								type: "success"
+							});
+						}
 					} else {
 						this.$message.error(
 							this.$i18n.error[res.Error]
@@ -890,6 +904,20 @@ export default {
 					if (res.Error === 0) {
 						if (type === 1) {
 							this.switchToggle.passwordDialog = false;
+						}
+						//get error list
+						let errorArr = [];
+						for (let value of res.Result.Tasks) {
+							if (value && value.Code) {
+								errorArr.push(value);
+							}
+						}
+						//if no err
+						if (errorArr.length === 0) {
+							this.$message({
+								message: "Opeation Success",
+								type: "success"
+							});
 						}
 					} else {
 						this.$message.error(

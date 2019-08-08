@@ -145,30 +145,30 @@ select {
     display: none;
   }
 
-  &.el-table--border {
-    border: none !important;
+  // &.el-table--border {
+  //   border: none !important;
 
-    tr {
-      border: none !important;
-    }
+  //   tr {
+  //     border: none !important;
+  //   }
 
-    th {
-      border: none !important;
+  //   th {
+  //     border: none !important;
 
-      .cell {
-        border-right: 1px solid #EBEEF5;
-      }
-    }
-  }
+  //     .cell {
+  //       border-right: 1px solid #EBEEF5;
+  //     }
+  //   }
+  // }
 
   thead th {
     background: #F9F9FB;
     color: $theme-color;
-    border-bottom: none !important;
+    // border-bottom: none !important;
   }
 
   td {
-    border: none !important;
+    // border: none !important;
     background: #F9F9FB;
     color: rgba(32, 32, 32, .7);
     font-weight: 500;

@@ -16,9 +16,9 @@
 			</div>
 			<p class="theme-font-blue bold mt40 mb10 ft14 user-no-select">Space Adjust Record</p>
 			<div class="space-record">
+				<!-- border -->
 				<el-table
 					:data='Records'
-					border
 					ref='recordTable'
 					empty-text='No Data'
 					height='100%'

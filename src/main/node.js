@@ -297,7 +297,7 @@ const run = (appDataPath, appName) => {
                     }
                 }
             } catch (e) {
-                console.log('22222222222', e)
+                console.log('edge restart catch---->', e)
             }
         }, 1000)
     })

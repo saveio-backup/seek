@@ -175,7 +175,8 @@ export default {
 								loading: {
 									target: ".loading-content.loading-channel",
 									text: "Transaction processing...."
-								}
+								},
+								timeout: 60000
 							}
 						)
 						.then(res => {

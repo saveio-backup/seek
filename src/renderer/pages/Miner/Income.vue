@@ -16,9 +16,9 @@
 			<div class="total-income ft14">Total Profit: <span>{{filterFloat(result.TotalIncomeFormat).toLocaleString('en-US') || 0}} SAVE</span></div>
 		</div>
 
+		<!-- border -->
 		<el-table
 			class="flex1 incomeTable"
-			border
 			ref="incomeTable"
 			:data="result.Incomes"
 			empty-text="No Data"

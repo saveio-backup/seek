@@ -313,7 +313,7 @@ export default {
 				.get(
 					this.$api.balancehistory + "/" + this.user.address + "/" + DAY_NUM,
 					{
-						timeout: 120000
+						timeout: 20000
 					}
 				)
 				.then(res => {

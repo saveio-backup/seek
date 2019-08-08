@@ -15,37 +15,37 @@
 					<div class="adjust-item">
 						<p class="adjust-title theme-font-blue ft14">File Hash:</p>
 						<div class="adjust-info">
-							<p class="theme-font-blue ft14 mr20">{{fileDetail && fileDetail.FileHash || ''}}</p>
+							<p class="ft14 mr20">{{fileDetail && fileDetail.FileHash || ''}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
 						<p class="adjust-title theme-font-blue ft14">Create Date:</p>
 						<div class="adjust-info">
-							<p class="theme-font-blue ft14 mr20">{{fileDetail && $dateFormat.formatTimeByTimestamp(fileDetail.CreatedAt*1000) || ''}}</p>
+							<p class="ft14 mr20">{{fileDetail && $dateFormat.formatTimeByTimestamp(fileDetail.CreatedAt*1000) || ''}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
 						<p class="adjust-title theme-font-blue ft14">Node Number:</p>
 						<div class="adjust-info">
-							<p class="theme-font-blue ft14 mr20">{{fileDetail && (fileDetail.CopyNum + 1) || ''}}</p>
+							<p class="ft14 mr20">{{fileDetail && (fileDetail.CopyNum + 1) || ''}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
 						<p class="adjust-title theme-font-blue ft14">Verification Cycle:</p>
 						<div class="adjust-info">
-							<p class="theme-font-blue ft14 mr20">{{fileDetail && timeTofilter(fileDetail.Interval)}}</p>
+							<p class="ft14 mr20">{{fileDetail && timeTofilter(fileDetail.Interval)}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
 						<p class="adjust-title theme-font-blue ft14">Expire Time:</p>
 						<div class="adjust-info">
-							<p class="theme-font-blue ft14 mr20">{{fileDetail && $dateFormat.formatTimeByTimestamp(fileDetail.ExpiredAt*1000) || ''}}</p>
+							<p class="ft14 mr20">{{fileDetail && $dateFormat.formatTimeByTimestamp(fileDetail.ExpiredAt*1000) || ''}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
 						<p class="adjust-title theme-font-blue ft14">Authority:</p>
 						<div class="adjust-info">
-							<p class="theme-font-blue ft14 mr20">{{fileDetail && (fileDetail.Privilege===0?'private':fileDetail.Privilege===1?'public':fileDetail.Privilege===2?'whitelist':'') || ''}}</p>
+							<p class="ft14 mr20">{{fileDetail && (fileDetail.Privilege===0?'private':fileDetail.Privilege===1?'public':fileDetail.Privilege===2?'whitelist':'') || ''}}</p>
 						</div>
 					</div>
 					<div
@@ -112,17 +112,17 @@ export default {
 	computed: {
 		timeTofilter() {
 			return function(value) {
-				if(!value) {
-					return ''
+				if (!value) {
+					return "";
 				}
-				if(value/BASE['Month'] >= 1) {
-					return `${parseFloat((value/BASE['Month']).toFixed(3))} Month`
-				} else if(value/BASE['Day'] >= 1) {
-					return `${parseFloat((value/BASE['Day']).toFixed(3))} Day`
+				if (value / BASE["Month"] >= 1) {
+					return `${parseFloat((value / BASE["Month"]).toFixed(3))} Month`;
+				} else if (value / BASE["Day"] >= 1) {
+					return `${parseFloat((value / BASE["Day"]).toFixed(3))} Day`;
 				} else {
-					return `${value/BASE['Second']} Second`
+					return `${value / BASE["Second"]} Second`;
 				}
-			}
+			};
 		}
 	},
 	methods: {
@@ -188,13 +188,13 @@ export default {
 			width: 160px;
 			padding-right: 30px;
 			text-align: right;
-			color: rgba(32, 32, 32, 0.4);
 		}
 		.adjust-info {
 			flex: 1;
 			width: 200px;
 			display: flex;
 			text-align: left;
+			color: rgba(32, 32, 32, 0.4);
 			.sizeunit {
 				width: 100px;
 				margin: 0 20px;

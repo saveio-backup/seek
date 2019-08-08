@@ -3,6 +3,7 @@ $theme-font-blue: #202020;
 $light-blue: #2F8FF0;
 $light-error:#e9546b;
 $theme-color: #1b1e2f;
+$sub-light-color: #8BD179;
 
 .bold {
   font-weight: bold;
@@ -21,6 +22,9 @@ $theme-color: #1b1e2f;
   color: $light-error;
 }
 
+.sub-light-color {
+  color:  $sub-light-color;
+}
 .dark-grey {
   color: #9B9FB0;
 }

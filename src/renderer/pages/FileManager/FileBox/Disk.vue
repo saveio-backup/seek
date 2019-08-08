@@ -53,8 +53,8 @@
 		</div>
 		<div class="content">
 			<div class="table-element">
+				<!-- border -->
 				<el-table
-					border
 					ref='table'
 					@row-click="clickRow"
 					:data="filterListData"
@@ -83,7 +83,7 @@
 										@click.stop="shareFile(scope.row)"
 										title="Share"
 										v-if="scope.row.Privilege != 0"
-                    class="active-blue cursor-pointer"
+										class="active-blue cursor-pointer"
 									>
 										<i class="el-icon-share ft18"></i>
 									</span>
@@ -275,20 +275,20 @@
 					<div class="adjust-item">
 						<p class="adjust-title theme-font-blue ft14">Save Path:</p>
 						<div class="adjust-info">
-							<p class="theme-font-blue ft14 mr20">{{fileDownloadInfo.DownloadDir || ''}}</p>
+							<p class="ft14 mr20">{{fileDownloadInfo.DownloadDir || ''}}</p>
 						</div>
 					</div>
 					<div class="dialog-title-border"></div>
 					<div class="adjust-item">
-						<p class="adjust-title theme-font-blue ft14">Cost:</p>
+						<p class="adjust-title ft14">Cost:</p>
 						<div class="adjust-info">
-							<p class="theme-font-blue ft14 mr20">{{fileDownloadInfo.Fee}}</p>
+							<p class="ft14 mr20">{{fileDownloadInfo.Fee}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
 						<p class="adjust-title theme-font-blue ft14">Channel balance:</p>
 						<div class="adjust-info">
-							<p class="theme-font-blue ft14 mr20">{{channelBind.BalanceFormat}}</p>
+							<p class="ft14 mr20">{{channelBind.BalanceFormat}}</p>
 						</div>
 					</div>
 				</div>
@@ -422,7 +422,8 @@ export default {
 				{
 					Hash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
 					Path: "asdfsd/sdfaf",
-					Name: "no1gasdfasdfasdfaweqwerwqerwfasdfadsfasdfasdfadsfasdfasdfasdfsafd111111.txt",
+					Name:
+						"no1gasdfasdfasdfaweqwerwqerwfasdfadsfasdfasdfadsfasdfasdfasdfsafd111111.txt",
 					Size: 1536,
 					DownloadCount: 0,
 					ExpiredAt: 1555051356,
@@ -780,9 +781,9 @@ export default {
 		},
 		toDeleteFileNew(deleteFiles) {
 			this.switchToggle.loading = this.$loading({
-			  lock: true,
-			  text: "Deleting....",
-			  target: ".loading-content.disk-delete-loading"
+				lock: true,
+				text: "Deleting....",
+				target: ".loading-content.disk-delete-loading"
 			});
 			const length = deleteFiles.length;
 			const commitAll = [];
@@ -1065,12 +1066,12 @@ $theme-font-blue: #040f39;
 			height: 100%;
 			overflow-y: hidden;
 			.rowName {
-        .row-name {
-          min-height: 32px;
-          line-height: 32px;
-        }
+				.row-name {
+					min-height: 32px;
+					line-height: 32px;
+				}
 				.opera {
-          color: rgba(32, 32, 32, 0.4);
+					color: rgba(32, 32, 32, 0.4);
 					font-weight: bold;
 					display: none;
 					span {
@@ -1083,10 +1084,10 @@ $theme-font-blue: #040f39;
 						margin: 0px 4px;
 						cursor: pointer;
 						&:hover {
-							background: #DFE2E9;
-            }
-            &:active {
-              opacity: .7;
+							background: #dfe2e9;
+						}
+						&:active {
+							opacity: 0.7;
 						}
 						& > .el-icon-share {
 							position: relative;
@@ -1137,13 +1138,13 @@ $theme-font-blue: #040f39;
 			width: 160px;
 			padding-right: 30px;
 			text-align: right;
-			color: rgba(32, 32, 32, 0.4);
 		}
 		.adjust-info {
 			flex: 1;
 			width: 200px;
 			display: flex;
 			text-align: left;
+			color: rgba(32, 32, 32, 0.4);
 			.sizeunit {
 				width: 100px;
 				margin: 0 20px;

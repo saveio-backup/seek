@@ -5,8 +5,8 @@
 			v-if="showRadio?channelsDns:channels"
 		>
 			<!-- :data="mockChannels" -->
+			<!-- border -->
 			<el-table
-				border
 				:data="showRadio?channelsDns:channels"
 				ref="singleTable"
 				empty-text='No Data'
@@ -520,7 +520,7 @@ export default {
 						text: "Processing...",
 						target: ".loading-content-2"
 					},
-					timeout: 20000
+					timeout: 60000
 				})
 				.then(res => {
 					if (res.Error === 0) {
@@ -545,7 +545,8 @@ export default {
 					loading: {
 						text: "Processing...",
 						target: ".loading-content-2"
-					}
+					},
+					timeout: 60000
 				})
 				.then(res => {
 					if (res.Error === 0) {
@@ -678,11 +679,11 @@ $theme-color: #202020;
 		line-height: 32px;
 
 		&:hover {
-			background: #DFE2E9;
+			background: #dfe2e9;
 		}
 
 		&:active {
-			opacity: .7;
+			opacity: 0.7;
 		}
 	}
 }

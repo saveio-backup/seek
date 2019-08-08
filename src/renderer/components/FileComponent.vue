@@ -1,23 +1,30 @@
 <template>
 	<div class="file-component">
 		<div
-			class="top-progress"
+			class="top-progress is-not-compelete-top-progress mr50 ml20"
 			v-if="transferType != 0"
 		>
-			<div class="flex1">
+			<div class="flex1 mr50">
 				<p
-					class="grey-xs bold"
+					class="ft20 mb10"
 					v-if="fileList.length>0"
 				>{{transferTypeConfig[transferType]}} Progress</p>
 				<p
-					class="grey-xs bold user-no-select"
+					class="grey-xs user-no-select"
 					v-else
 				>No task</p>
 				<el-progress
 					v-if="fileList.length>0"
 					class="progress"
 					:percentage="Math.ceil(totalProgress * 100)"
+					:show-text="false"
 				></el-progress>
+				<p
+					class="ft14 mt10"
+					v-if="fileList.length>0"
+				>complete {{Math.ceil(totalProgress * 100)}}%,
+					<span class="ml10 light-blue">{{util.bytesToSize(getAllTaskSpeedTotal*1024)}}/s</span>
+				</p>
 			</div>
 			<!-- upload cancel -->
 			<el-button
@@ -45,7 +52,7 @@
 		</div>
 		<div
 			v-else
-			class="top-progress"
+			class="top-progress mr50 ml20"
 		>
 			<p class="theme-font-blue ft14 user-no-select flex1">Finished {{fileList.length}} Files</p>
 			<el-button
@@ -53,12 +60,16 @@
 				@click="deleteAll"
 			>Delete All</el-button>
 		</div>
-		<div class="file-list">
+		<div
+			class="file-list mr50 ml20"
+			:class="{'is-not-compelete-top-progress':transferType != 0}"
+		>
+			<!-- border -->
 			<el-table
 				:data="fileList"
-				border
 				empty-text='No Data'
 				height="100%"
+				:show-header="false"
 			>
 				<!-- :data="fileList" -->
 				<el-table-column
@@ -67,84 +78,60 @@
 					class-name="rowName"
 				>
 					<template slot-scope="scope">
-						<div>
-							<span>{{scope.row.FileName}}</span>
+						<div class="ft14">
+							<p class="theme-font-blue">{{scope.row.FileName}}</p>
+							<p class="theme-font-blue-40"><span v-if="transferType != 0">{{util.bytesToSize(((scope.row.IsUploadAction ? scope.row.UploadSize : scope.row.DownloadSize))/(scope.row.IsUploadAction ? (scope.row.CopyNum + 1) : 1) * 1024)}}/</span>{{util.bytesToSize(scope.row.FileSize * 1024)}}</p>
 						</div>
 					</template>
 				</el-table-column>
 				<el-table-column
-					label="Model"
-					min-width="100"
-					v-if="transferType === 1"
-				>
-					<template slot-scope="scope">
-						<div>
-							{{scope.row.StoreType === 1 ? 'Advance' : scope.row.StoreType === 0 ? 'Primary' : ''}}
-						</div>
-					</template>
-				</el-table-column>
-				<el-table-column
-					label="File Hash"
-					prop="FileHash"
+					label="Status"
+					v-if="transferType === 0"
 					min-width="150"
-				></el-table-column>
-				<el-table-column
-					label="File Size"
-					prop="FileSize"
 				>
 					<template slot-scope="scope">
-						<!-- api return 'KB' unit -->
-						<span>
-							{{util.bytesToSize(scope.row.FileSize * 1024)}}
-						</span>
+						<div
+							v-if="scope.row.Status === 3"
+							class="light-blue"
+						>
+							<i
+								class="ofont mr10 ft16"
+								:class="scope.row.IsUploadAction ? 'ofont-shangchuan':'ofont-xiazai2'"
+							></i>
+							<span v-if="!scope.row.IsUploadAction">Download Completed</span>
+							<span v-else>Upload Completed</span>
+						</div>
 					</template>
 				</el-table-column>
 				<el-table-column
 					label="Progress"
 					v-if="transferType !== 0"
-					min-width="100"
+					min-width="250"
 				>
 					<template slot-scope="scope">
-						<el-progress
-							class="file-progress"
-							:class="{'progressAnimate': scope.row.Status != 4 && scope.row.Status != 0}"
-							v-if="(scope.row.Type === 2) || (scope.row.Type === 1)"
-							:percentage="parseInt((scope.row.Progress||0)*100)"
-						></el-progress>
-					</template>
-				</el-table-column>
-				<el-table-column
-					label="Status"
-					prop="Status"
-					min-width="120px"
-				>
-					<template slot-scope="scope">
+						<div class="flex ai-center mr20">
+							<el-progress
+								class="file-progress flex1 ai-center mr10"
+								:class="{'progressAnimate': scope.row.Status != 4 && scope.row.Status != 0}"
+								v-if="(scope.row.Type === 2) || (scope.row.Type === 1)"
+								:percentage="parseInt((scope.row.Progress||0)*100)"
+								:show-text="false"
+							></el-progress>
+							<span>
+								{{parseInt((scope.row.Progress||0)*100)}}% ({{taskSpeed[scope.row.Id] && util.bytesToSize((taskSpeed[scope.row.Id].speed * 1024)) || '0 Byte'}})/s
+							</span>
+						</div>
 						<div
-							class="flex ai-center break-word"
+							class="flex break-word mr20"
 							v-if="waitForing[scope.row.Id]"
 						>
 							waiting for {{waitForing[scope.row.Id].waitFor}}
 						</div>
 						<div
-							class="flex ai-center break-word"
+							class="flex ai-center break-word mr20"
 							v-else
 						>
-							<i
-								v-if="transferType === 0"
-								class="ofont mr20 ft16 active-blue"
-								:class="scope.row.IsUploadAction ? 'ofont-shangchuan':'ofont-xiazai2'"
-							></i>
-							<div v-if="scope.row.Status === 3">
-								<span
-									class="light-blue"
-									v-if="!scope.row.IsUploadAction"
-								>Download Completed</span>
-								<span
-									v-else
-									class="light-blue"
-								>Upload Completed</span>
-							</div>
-							<div v-else-if="scope.row.Status === 0">
+							<div v-if="scope.row.Status === 0">
 								<span class="light-blue">Task Pause</span>
 							</div>
 							<div v-else-if="scope.row.Status === 4">
@@ -162,7 +149,7 @@
 				<el-table-column
 					label="Date"
 					v-if="transferType === 0"
-					min-width="100"
+					min-width="150"
 				>
 					<template slot-scope="scope">
 						<span>
@@ -172,7 +159,7 @@
 				</el-table-column>
 				<el-table-column
 					align="center"
-					width="210px"
+					width="250px"
 				>
 					<template slot-scope="scope">
 						<div class="action ft18 opera">
@@ -186,7 +173,7 @@
 								title="Decrypt"
 								class="active-blue cursor-pointer"
 								@click="setFileSelected(scope.row)"
-								v-if="(!scope.row.IsUploadAction) && scope.row.Path"
+								v-if="(!scope.row.IsUploadAction) && scope.row.Path && scope.row.Status === 3"
 							><i class="el-icon-lock"></i></span>
 							<span
 								class="active-blue cursor-pointer"
@@ -225,8 +212,8 @@
 								class="active-blue cursor-pointer"
 								title="look detail"
 								@click="openDetailDialog(scope.row)"
-								v-show="((scope.row.Nodes && scope.row.Nodes.length > 0) || scope.row.Status === 3) && scope.row.IsUploadAction"
 							><i class="ofont ofont-xiangqing"></i></span>
+							<!-- v-show="(scope.row.Nodes && scope.row.Nodes.length > 0) || scope.row.Status === 3" -->
 							<span
 								class="active-blue cursor-pointer"
 								title="delete record"
@@ -238,6 +225,7 @@
 				</el-table-column>
 			</el-table>
 		</div>
+		<!-- new download dialog -->
 		<el-dialog
 			width='600px'
 			center
@@ -254,6 +242,7 @@
 				v-on:closedialog='hideTaskDialog'
 			></download-dialog>
 		</el-dialog>
+		<!-- cancel task input password dialog -->
 		<el-dialog
 			width='600px'
 			center
@@ -293,6 +282,7 @@
 				</div>
 			</div>
 		</el-dialog>
+		<!-- Decryption input password dialog -->
 		<el-dialog
 			width="600px"
 			:close-on-click-modal='false'
@@ -323,6 +313,7 @@
 				</div>
 			</div>
 		</el-dialog>
+		<!-- notice is not delete file dialog -->
 		<el-dialog
 			width='600px'
 			:close-on-click-modal='false'
@@ -343,6 +334,7 @@
 				>Delete</el-button>
 			</div>
 		</el-dialog>
+		<!-- upload page upload dialog -->
 		<el-dialog
 			width="600px"
 			:close-on-click-modal='false'
@@ -350,29 +342,60 @@
 			center
 		>
 			<div slot="title">
-				<h2>Upload Detail</h2>
+				<h2>{{transferType === 1?'Upload Detail':'Download Detail'}}</h2>
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content node-wrapper">
-				<div class="node-count mt10"><span>Node:</span> {{fileDetailNodes.length}}</div>
-				<ul class="mb20">
+				<ul
+					class="mb20"
+					:class="{'max1': transferType === 1 && fileDetailNodes.length === 0,'max2': transferType === 2 && fileDetailNodes.length === 0}"
+				>
 					<li
-						class="flex between"
-						v-for="(item,index) in fileDetailNodes"
-						:key="item.HostAddr"
+						v-if="transferType === 1"
+						class="flex tr no-border pb0"
 					>
-						<div class="node-name">Node {{index+1}}</div>
-						<!-- more-than-5 class: gt text color is white lt text color is #202020-->
-						<div class="node-process">
-							<el-progress
-								:text-inside="true"
-								:stroke-width="14"
-								class="file-progress"
-								:percentage="parseInt(((item.UploadSize?item.UploadSize:item.DownloadSize)/fileObjByHash[detailId].FileSize)*100)"
-								:class="{'more-than-5': (((item.UploadSize?item.UploadSize:item.DownloadSize)/fileObjByHash[detailId].FileSize) < 0.05),'progressAnimate': fileObjByHash[detailId].Status != 4 && fileObjByHash[detailId].Status != 0}"
-							></el-progress>
+						<div class="node-name pr30">Upload Model:</div>
+						<div
+							class="theme-font-blue-40 node-value"
+							v-if="fileObjById[detailId]"
+						>
+							{{fileObjById[detailId].StoreType === 1 ? 'Advance' : fileObjById[detailId].StoreType === 0 ? 'Primary' : ''}}
 						</div>
 					</li>
+					<li
+						class="flex tr"
+						:class="{'no-border': fileDetailNodes.length === 0 || transferType !== 1}"
+					>
+						<div class="node-name pr30">File Hash:</div>
+						<div
+							class="theme-font-blue-40 node-value"
+							v-if="fileObjById[detailId]"
+						>{{fileObjById[detailId].FileHash}}</div>
+					</li>
+					<template v-if="transferType === 1">
+						<li
+							class="flex tr"
+							v-for="(item,index) in fileDetailNodes"
+							:key="item.HostAddr"
+						>
+							<div class="node-name pr30">Node {{index+1}}:</div>
+							<!-- more-than-5 class: gt text color is white lt text color is #202020-->
+							<div class="node-process">
+								<el-progress
+									:text-inside="true"
+									:stroke-width="14"
+									class="file-progress"
+									:percentage="parseInt(((item.UploadSize?item.UploadSize:item.DownloadSize)/fileObjById[detailId].FileSize)*100)"
+									:class="{'more-than-5': (((item.UploadSize?item.UploadSize:item.DownloadSize)/fileObjById[detailId].FileSize) < 0.05),'progressAnimate': fileObjById[detailId].Status != 4 && fileObjById[detailId].Status != 0}"
+								></el-progress>
+							</div>
+							<div class="ml10 tl node-speed ft14 theme-font-blue-40">{{nodeSpeed[item.HostAddr] && util.bytesToSize(nodeSpeed[item.HostAddr].speed*1024) || '0 Byte'}}/s</div>
+							<div
+								class="file-size tr theme-font-blue-40"
+								v-if="fileObjById[detailId]"
+							>{{util.bytesToSize(item.UploadSize*1024 || item.DownloadSize*1024)}}/{{util.bytesToSize(fileObjById[detailId].FileSize * 1024)}}</div>
+						</li>
+					</template>
 				</ul>
 				<div slot="footer">
 					<el-button
@@ -382,11 +405,51 @@
 				</div>
 			</div>
 		</el-dialog>
+		<!-- complete page upload dialog-->
 		<upload-file-detail-dialog
 			@closeUploadFileDetail="toCloseUploadFileDetail"
 			:hash="uploadDetailHash"
 			v-if="transferType === 0"
 		></upload-file-detail-dialog>
+		<!-- complete page download dialog-->
+		<el-dialog
+			width="600px"
+			:close-on-click-modal='false'
+			:visible.sync="switchToggle.downloadDetailDialog"
+			class="download-file-detail"
+			center
+		>
+			<div slot="title">
+				<h2>File Detail</h2>
+				<div class="dialog-title-border"></div>
+			</div>
+			<div class="loading-content download-file-detail-loading">
+				<div
+					class="adjust"
+					v-if="fileObjById[detailId]"
+				>
+					<div class="adjust-item">
+						<p class="adjust-title theme-font-blue ft14">File Hash:</p>
+						<div class="adjust-info">
+							<p class="theme-font-blue ft14 mr20">{{fileObjById[detailId].FileHash || ''}}</p>
+						</div>
+					</div>
+					<div class="adjust-item">
+						<p class="adjust-title theme-font-blue ft14">Download Date:</p>
+						<div class="adjust-info">
+							<p class="theme-font-blue ft14 mr20">{{$dateFormat.formatTimeByTimestamp(fileObjById[detailId].UpdatedAt*1000) || ''}}</p>
+						</div>
+					</div>
+				</div>
+				<div slot="footer">
+					<el-button
+						class="primary"
+						type="primary"
+						@click="switchToggle.downloadDetailDialog=false"
+					>Close</el-button>
+				</div>
+			</div>
+		</el-dialog>
 	</div>
 </template>
 <script>
@@ -394,6 +457,7 @@ import util from "../assets/config/util";
 import downloadDialog from "./DownloadDialog.vue";
 import uploadFileDetailDialog from "./UploadFileDetailDialog.vue";
 import { shell } from "electron";
+import { setInterval, clearInterval } from "timers";
 export default {
 	props: {
 		transferType: {
@@ -416,7 +480,8 @@ export default {
 				deleteDialog: false,
 				decryptDialog: false,
 				detailDialog: false,
-				passwordDialog: false
+				passwordDialog: false,
+				downloadDetailDialog: false
 			},
 			TransferConfig: [
 				"completeTransferList",
@@ -448,181 +513,87 @@ export default {
 			executedFile: {}, // a file be opera
 			mockFileList: [
 				{
-					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
-					FileName: "hahat.txt",
-					Status: 2,
+					Id: "c3c94084-b8bf-11e9-837c-74e5f93a476b",
+					FileHash: "QmdUW37NcoT4YdkjgPinNFFT6CGHLRRcXQ5SNzrLqT123123JVpd",
+					FileName: "传输管理.png",
+					Type: 1,
+					Status: 3,
+					DetailStatus: 1,
+					CopyNum: 2,
+					Path:
+						"C:\\Users\\qwews\\Desktop\\Seeker交互图\\交互原型图PNG版\\传输管理.png",
 					IsUploadAction: false,
-					Type: 2,
-					Current: 500,
-					FileSize: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 1555051356,
-					UpdatedAt: 0,
-					Profit: 0,
-					Privilege: 1,
-					Path: "123",
+					UploadSize: 3072,
+					DownloadSize: 0,
+					FileSize: 1024,
 					Nodes: [
 						{
-							HostAddr: "tcp://127.0.0.1:14001",
-							UploadSize: 188,
-							DownloadSize: 188
+							HostAddr: "tcp://40.73.103.72:33516",
+							UploadSize: 1024,
+							DownloadSize: 0
 						},
 						{
-							HostAddr: "tcp://127.0.0.1:14002",
-							UploadSize: 188,
-							DownloadSize: 1406
+							HostAddr: "tcp://40.73.103.72:35269",
+							UploadSize: 1024,
+							DownloadSize: 0
 						},
 						{
-							HostAddr: "tcp://127.0.0.1:14002",
-							UploadSize: 188,
-							DownloadSize: 16
-						},
-						{
-							HostAddr: "tcp://127.0.0.1:14002",
-							UploadSize: 188,
-							DownloadSize: 140
-						},
-						{
-							HostAddr: "tcp://127.0.0.1:14002",
-							UploadSize: 188,
-							DownloadSize: 1406
-						},
-						{
-							HostAddr: "tcp://127.0.0.1:14002",
-							UploadSize: 1406,
-							DownloadSize: 1406
+							HostAddr: "tcp://40.73.103.72:37559",
+							UploadSize: 1024,
+							DownloadSize: 0
 						}
 					],
-					DetailStatus: 2
+					Progress: 1,
+					CreatedAt: 1565146937,
+					UpdatedAt: 1565150221,
+					ErrorCode: 0,
+					StoreType: 0
 				},
 				{
-					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsY11",
-					FileName: "hahat.txt",
-					Current: 500,
-					FileSize: 1536,
-					Status: 1,
-					DownloadCount: 0,
-					ExpiredAt: 1555051356,
-					UpdatedAt: 0,
-					Profit: 0,
-					Privilege: 1,
-					DetailStatus: 2
-				},
-				{
-					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYw10",
-					FileName: "hahat.txt",
-					Current: 500,
+					Id: "c3c94084-b8bf-11e9-837c-74e5f93a4762",
+					FileHash: "QmdUW37NcoT4YdkjgPinNFFT6CGHLR2cXQ5SqTJVpd",
+					FileName: "传输管理2.png",
+					Type: 1,
 					Status: 3,
-					FileSize: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 1555051356,
-					UpdatedAt: 0,
-					Profit: 0,
-					Privilege: 1,
-					DetailStatus: 2
-				},
-				{
-					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYw9",
-					FileName: "hahat.txt",
-					Current: 500,
-					FileSize: 1536,
-					Status: 4,
-					DownloadCount: 0,
-					ErrMsg: "this file error",
-					ExpiredAt: 1555051356,
-					UpdatedAt: 0,
-					Profit: 0,
-					Privilege: 1,
-					DetailStatus: 2
-				},
-				{
-					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYw8",
-					FileName: "hahat.txt",
-					Current: 500,
-					FileSize: 1536,
-					DownloadCount: 0,
-					Status: 0,
-					ExpiredAt: 1555051356,
-					UpdatedAt: 0,
-					Profit: 0,
-					Privilege: 1,
-					DetailStatus: 2
-				},
-				{
-					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYw7",
-					FileName: "hahat.txt",
-					Current: 500,
-					FileSize: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 1555051356,
-					UpdatedAt: 0,
-					Profit: 0,
-					Privilege: 1,
-					DetailStatus: 2
-				},
-				{
-					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYw6",
-					FileName: "hahat.txt",
-					Current: 500,
-					FileSize: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 1555051356,
-					UpdatedAt: 0,
-					Profit: 0,
-					Privilege: 1,
-					DetailStatus: 2
-				},
-				{
-					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYw5",
-					FileName: "hahat.txt",
-					Current: 500,
-					FileSize: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 1555051356,
-					UpdatedAt: 0,
-					Profit: 0,
-					Privilege: 1,
-					DetailStatus: 2
-				},
-				{
-					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYw4",
-					FileName: "hahat.txt",
-					Current: 500,
-					FileSize: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 1555051356,
-					UpdatedAt: 0,
-					Profit: 0,
-					Privilege: 1,
-					DetailStatus: 2
-				},
-				{
-					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYw3",
-					FileName: "hahat.txt",
-					Current: 500,
-					FileSize: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 1555051356,
-					UpdatedAt: 0,
-					Profit: 0,
-					Privilege: 1,
-					DetailStatus: 2
-				},
-				{
-					FileHash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYw2",
-					FileName: "hahat.txt",
-					Current: 500,
-					FileSize: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 1555051356,
-					UpdatedAt: 0,
-					Profit: 0,
-					Privilege: 1,
-					DetailStatus: 2
+					DetailStatus: 10,
+					CopyNum: 2,
+					Path:
+						"C:\\Users\\qwews\\Desktop\\Seeker交互图\\交互原型图PNG版\\传输管理.png",
+					IsUploadAction: true,
+					UploadSize: 2072,
+					DownloadSize: 0,
+					FileSize: 1024,
+					Nodes: [
+						{
+							HostAddr: "tcp://40.73.103.72:33516",
+							UploadSize: 1024,
+							DownloadSize: 0
+						},
+						{
+							HostAddr: "tcp://40.73.103.72:35269",
+							UploadSize: 1024,
+							DownloadSize: 0
+						},
+						{
+							HostAddr: "tcp://40.73.103.72:37559",
+							UploadSize: 1024,
+							DownloadSize: 0
+						}
+					],
+					Progress: 1,
+					CreatedAt: 1565146937,
+					UpdatedAt: 1565150221,
+					ErrorCode: 0,
+					StoreType: 0
 				}
 			],
-			loadinginstace: {},
-			waitForing: {}
+			waitForing: {},
+			// speed association attributes
+			taskSpeed: {},
+			nodeSpeed: {},
+			speedIntervalObj: null,
+			passHowLongTimeGetFileList: 0, //computed how long time get file list
+			taskSpeedNum: 1 // computed fileList change max time（3s）
 		};
 	},
 	computed: {
@@ -638,19 +609,24 @@ export default {
 			let arr =
 				this.$store.state.Transfer[this.TransferConfig[this.transferType]] ||
 				[];
-			if (Object.keys(this.waitForing).length) return arr;
+			this.taskSpeedNum = 0;			
+			if (Object.keys(this.waitForing).length) {
+				return arr;
+			} 
 			for (let value of arr) {
 				if (
 					this.waitForing[value.Id] &&
-					this.waitForing[value.Id].Status != value.Staus
+					this.waitForing[value.Id].Status != value.Status
 				) {
 					this.$delete(this.waitForing, value.Id);
-					if (Object.keys(this.waitForing).length === 0) return arr;
+					if (Object.keys(this.waitForing).length === 0) {
+						return arr;
+					}
 				}
 			}
 			return arr;
 		},
-		fileObjByHash() {
+		fileObjById() {
 			let obj = {};
 			for (let value of this.fileList) {
 				obj[value.Id] = value;
@@ -660,9 +636,9 @@ export default {
 		fileDetailNodes() {
 			if (!this.detailId) return [];
 			let arr =
-				(this.fileObjByHash[this.detailId] &&
+				(this.fileObjById[this.detailId] &&
 					JSON.parse(
-						JSON.stringify(this.fileObjByHash[this.detailId]["Nodes"])
+						JSON.stringify(this.fileObjById[this.detailId]["Nodes"])
 					)) ||
 				[];
 			arr.sort((a, b) => {
@@ -674,6 +650,13 @@ export default {
 			return function(type, detailStatus) {
 				return this.$i18n.error[detailStatus][this.$language];
 			};
+		},
+		getAllTaskSpeedTotal() {
+			let speedTotal = 0;
+			for (let value of Object.keys(this.taskSpeed)) {
+				speedTotal += this.taskSpeed[value].speed;
+			}
+			return speedTotal;
 		}
 	},
 	methods: {
@@ -709,8 +692,13 @@ export default {
 		},
 		// open detail dialog
 		openDetailDialog(row) {
-			if (row.Status === 3) {
-				this.uploadDetailHash = row.FileHash;
+			if (this.transferType === 0) {
+				if (row.IsUploadAction) {
+					this.uploadDetailHash = row.FileHash;
+				} else {
+					this.detailId = row.Id;
+					this.switchToggle.downloadDetailDialog = true;
+				}
 			} else {
 				this.detailId = row.Id;
 				this.switchToggle.detailDialog = true;
@@ -1206,7 +1194,59 @@ export default {
 				.catch(err => {
 					console.log(err);
 				});
+		},
+		getTaskSpeed() {
+			let oldTaskSpeed = this.taskSpeed;
+			let newTaskSpeed = {};
+			this.taskSpeedNum++;
+			if (this.taskSpeedNum !== 1) {
+				this.passHowLongTimeGetFileList = this.taskSpeedNum;
+				return;
+			}
+			for (let value of this.fileList) {
+				let uploadOrDownloadSize = value.UploadSize || value.DownloadSize;
+				let speed =
+					uploadOrDownloadSize -
+					(oldTaskSpeed[value.Id]
+						? oldTaskSpeed[value.Id].FileSize
+						: uploadOrDownloadSize);
+				newTaskSpeed[value.Id] = {
+					speed: speed / (this.passHowLongTimeGetFileList + 1),
+					FileSize: uploadOrDownloadSize
+				};
+			}
+			this.passHowLongTimeGetFileList++;
+			this.taskSpeed = newTaskSpeed;
+		},
+		getNodeSpeed() {
+			if (this.fileDetailNodes.length > 0 && this.taskSpeedNum === 1) {
+				let oldNodeSpeed = this.nodeSpeed;
+				let newNodeSpeed = {};
+				for (let value of this.fileDetailNodes) {
+					let uploadOrDownloadSize = value.UploadSize || value.DownloadSize;
+					let speed =
+						uploadOrDownloadSize -
+						(oldNodeSpeed[value.HostAddr]
+							? oldNodeSpeed[value.HostAddr].FileSize
+							: uploadOrDownloadSize);
+					newNodeSpeed[value.HostAddr] = {
+						speed: speed / this.passHowLongTimeGetFileList,
+						FileSize: uploadOrDownloadSize
+					};
+				}
+				this.nodeSpeed = newNodeSpeed;
+			}
 		}
+	},
+	mounted() {
+		const INTERVAL_TIME = 1000;
+		this.speedIntervalObj = setInterval(() => {
+			this.getTaskSpeed();
+			this.getNodeSpeed();
+		}, INTERVAL_TIME);
+	},
+	beforeDestroy() {
+		clearInterval(this.speedIntervalObj);
 	}
 };
 </script>
@@ -1226,7 +1266,7 @@ $light-grey: #f9f9fb;
 	}
 	.top-progress {
 		display: flex;
-		height: 80px;
+		height: 140px;
 		padding: 0 20px;
 		background: $light-grey;
 		align-items: center;
@@ -1237,9 +1277,16 @@ $light-grey: #f9f9fb;
 			position: relative;
 			top: 5px;
 		}
+		&.is-not-compelete-top-progress {
+			height: 140px;
+		}
 	}
 	.file-list {
 		height: calc(100% - 80px);
+		border-top: 1px solid #ebeef5;
+		&.is-not-compelete-top-progress {
+			height: calc(100% - 140px);
+		}
 		.el-table {
 			color: $theme-font-blue;
 			font-weight: bold;
@@ -1309,26 +1356,51 @@ $light-grey: #f9f9fb;
 	.node-wrapper {
 		ul {
 			max-height: 300px;
-			min-height: 100px;
+			min-height: 70px;
 			overflow: auto;
+			&.max1 {
+				li {
+					.node-name {
+						width: 135px;
+					}
+				}
+			}
 			li {
 				// margin: 15px 0;
 				padding: 15px 0;
 				border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 				.node-name {
-					width: 10%;
+					// width: 10%;
+					width: 140px;
 					color: #202020;
-					text-overflow: ellipsis;
-					overflow: hidden;
-					white-space: nowrap;
+					// text-overflow: ellipsis;
+					// overflow: hidden;
+					// white-space: nowrap;
+					height: 100%;
+				}
+				.node-value {
+					text-align: left;
+					width: calc(100% - 140px);
 				}
 				.node-process {
-					width: 88%;
+					width: calc(100% - 370px);
 					.more-than-5 {
 						.el-progress-bar__innerText {
 							color: #202020;
 						}
 					}
+				}
+				.node-speed {
+					width: 100px;
+				}
+				.file-size {
+					width: 180px;
+				}
+				&.no-border {
+					border: 0;
+				}
+				&.pb0 {
+					padding-bottom: 0;
 				}
 			}
 		}
@@ -1337,6 +1409,46 @@ $light-grey: #f9f9fb;
 			color: #2f8ff0;
 			span {
 				margin-right: 5px;
+			}
+		}
+	}
+}
+.download-file-detail {
+	.adjust {
+		// border-bottom: solid 1px #ebecef;
+		padding-bottom: 20px;
+		.el-input-number__increase,
+		.el-input-number__decrease {
+			display: none;
+		}
+	}
+	.adjust-item {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		margin: 15px 0;
+		.adjust-title {
+			font-size: 14px;
+			width: 160px;
+			padding-right: 30px;
+			text-align: right;
+			color: rgba(32, 32, 32, 0.4);
+		}
+		.adjust-info {
+			flex: 1;
+			width: 200px;
+			display: flex;
+			text-align: left;
+			.sizeunit {
+				width: 100px;
+				margin: 0 20px;
+			}
+			ul {
+				max-height: 150px;
+				overflow: auto;
+				li {
+					margin-bottom: 10px;
+				}
 			}
 		}
 	}

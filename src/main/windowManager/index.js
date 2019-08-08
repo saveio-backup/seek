@@ -12,7 +12,7 @@ import {
 import {
   URL
 } from 'url';
-
+import log from 'electron-log'
 import frontCfgObj from './frontCfgObj'
 
 export const windows = {}; // map of {[parentWindow.id] => BrowserWindow}
@@ -86,16 +86,17 @@ class View {
   }
   updateDisplayURL() {
     let url = this.url ? new URL(this.url) : new URL('about:blank');
+    const hrefFormated = decodeURIComponent(url.href).replace(/(\\|\/)/g, '') // format eg file://abc/def/#gh => file:abcdef#gh
+    const defaultURLFormated = decodeURIComponent(DEFAULT_URL).replace(/(\\|\/)/g, '')
     if (url.host === 'localhost:9080') {
       const urlReg = new RegExp(url.origin + url.pathname + '(#/)?');
       this.displayURL = url.href.replace(urlReg, DEFAULT_PROTOCOL + '://')
-    } else if (url.href.indexOf(DEFAULT_URL) >= 0) {
-      const urlReg = new RegExp('file://' + url.pathname + '(#/)?');
-      this.displayURL = url.href.replace(urlReg, DEFAULT_PROTOCOL + '://')
+    } else if (hrefFormated.indexOf(defaultURLFormated) >= 0) {
+      const urlReg = new RegExp(/(file:.+#)(\/?.*$)/);
+      this.displayURL = hrefFormated.replace((hrefFormated.match(urlReg) || [])[1], DEFAULT_PROTOCOL + '://')
     } else {
       this.displayURL = this.url
     }
-
   }
   updateEvent() {
     this.webContents.on('did-start-loading', () => {
@@ -157,9 +158,14 @@ class View {
     const urlFormat = this.formatURL(url);
     console.log('urlFormat is');
     console.log(urlFormat);
+    log.info('urlFormat is');
+    log.info(urlFormat);
+    log.info(`DEFAULT_URL is ${DEFAULT_URL}`)
     if (urlFormat.protocol === DEFAULT_PROTOCOL + ':') { // is ours custom 'seek://' html page?
       newIsSave = true;
     } else if (urlFormat.host === 'localhost:9080') {
+      newIsSave = true;
+    } else if (decodeURIComponent(urlFormat.href).replace(/(\\|\/)/g, '').toLowerCase().indexOf(DEFAULT_URL.replace(/(\\|\/)/g, '').toLowerCase()) >= 0) {
       newIsSave = true;
     } else {
       newIsSave = false;

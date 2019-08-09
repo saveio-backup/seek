@@ -138,6 +138,7 @@ export default {
 	},
 	mounted() {
 		document.title = "Home";
+		this.chartInit();
 		this.$store.dispatch("setCurrentAccount"); // get login status
 		// open channel callback form createChannel of browserView dialog
 		if (this.dnsAdress && this.dnsAdress != "done") {
@@ -638,12 +639,12 @@ export default {
 			} catch (e) {
 				console.log(e);
 			}
-		},
-		loginStatus(newVal, oldVal) {
-			if (newVal === 1) {
-				this.chartInit();
-			}
 		}
+		// loginStatus(newVal, oldVal) {
+		// 	if (newVal === 1) {
+		// 		this.chartInit();
+		// 	}
+		// }
 	},
 	computed: {
 		loginStatus: function() {

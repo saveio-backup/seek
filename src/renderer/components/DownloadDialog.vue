@@ -83,12 +83,6 @@ export default {
 		},
 		toDownload() {
 			if (this.downloadUrl.indexOf(this.formatUrl) != 0) return;
-			this.$emit("closedialog");
-			this.$store.dispatch("setDownload");
-			this.win.views
-				.find(view => view.isActive)
-				.openComponent("FileManager/transfer");
-			return;
 			this.$axios
 				.post(this.$api.download, {
 					Url: this.downloadUrl,

@@ -172,7 +172,7 @@ const setupConfig = async (appDataPath, appName) => {
         fs.mkdirSync(baseDir)
     }
     cfgObj.Base.AutoSetupDNSEnable = false;
-    cfgObj.Base.NetworkId = 1564141146;
+    cfgObj.Base.NetworkId = 1565267317;
     cfgObj.Base.ChainRestAddrs = [
         "http://221.179.156.57:10334",
         "http://221.179.156.57:11334",

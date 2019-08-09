@@ -1,5 +1,6 @@
 <template>
 	<div class="file-component">
+		<!-- opeation all btn -->
 		<div
 			class="top-progress is-not-compelete-top-progress mr50 ml20"
 			v-if="transferType != 0"
@@ -26,22 +27,30 @@
 					<span class="ml10 light-blue">{{util.bytesToSize(getAllTaskSpeedTotal*1024)}}/s</span>
 				</p>
 			</div>
-			<!-- upload cancel -->
+			<!-- upload cancel btn -->
 			<el-button
 				v-if="transferType === 1"
+				:class="{'not-allow-opeation':!show}"
+				title="Comming Soon..."
 				@click="openPassword()"
 			>Cancel All</el-button>
 			<!-- download cancel -->
 			<el-button
 				v-if="transferType === 2"
+				title="Comming Soon..."
+				:class="{'not-allow-opeation':!show}"
 				@click="cancelAll"
 			>Cancel All</el-button>
 			<el-button
 				v-if="transferType !== 0"
+				title="Comming Soon..."
+				:class="{'not-allow-opeation':!show}"
 				@click="continueAll"
 			>Start All</el-button>
 			<el-button
 				v-if="transferType !== 0"
+				title="Comming Soon..."
+				:class="{'not-allow-opeation':!show}"
 				@click="pauseAll"
 			>Pause All</el-button>
 			<el-button
@@ -50,6 +59,7 @@
 				@click="switchToggle.newTaskDialog=true"
 			>New Task</el-button>
 		</div>
+		<!-- delete all -->
 		<div
 			v-else
 			class="top-progress mr50 ml20"
@@ -60,6 +70,7 @@
 				@click="deleteAll"
 			>Delete All</el-button>
 		</div>
+		<!-- table -->
 		<div
 			class="file-list mr50 ml20"
 			:class="{'is-not-compelete-top-progress':transferType != 0}"
@@ -177,7 +188,8 @@
 							><i class="el-icon-lock"></i></span>
 							<span
 								class="active-blue cursor-pointer"
-								:title="scope.row.IsUploadAction ? 'start to upload':'start to download'"
+								:class="{'not-allow-opeation':!show}"
+								:title="!show ? 'Comming Soon...' : scope.row.IsUploadAction ? 'start to upload':'start to download'"
 								v-show="scope.row.Status === 4"
 								@click="uploadOrDownloadAgain(scope.row, transferType)"
 							><i
@@ -186,25 +198,29 @@
 								></i></span>
 							<span
 								class="active-blue cursor-pointer"
-								:title="scope.row.IsUploadAction ? 'start to upload':'start to download'"
+								:title="!show ? 'Comming Soon...' : scope.row.IsUploadAction ? 'start to upload':'start to download'"
+								:class="{'not-allow-opeation':!show}"
 								v-show="scope.row.Status === 0"
 								@click="uploadOrDownloadContinue(scope.row, transferType)"
 							><i class="ofont ofont-jixu"></i></span>
 							<span
 								class="active-blue cursor-pointer"
-								:title="scope.row.IsUploadAction ? 'pause to upload':'pause to download'"
+								:class="{'not-allow-opeation':!show}"
+								:title="!show ? 'Comming Soon...' : scope.row.IsUploadAction ? 'pause to upload':'pause to download'"
 								v-show="(scope.row.Status === 1 || scope.row.Status === 2 )"
 								@click="uploadOrDownloadPause(scope.row, transferType)"
 							><i class="ofont ofont-zanting"></i></span>
 							<span
 								class="active-blue cursor-pointer"
-								:title="scope.row.IsUploadAction ? 'cancel to upload':'cancel to download'"
+								:class="{'not-allow-opeation':!show}"
+								:title="!show ? 'Comming Soon...' : scope.row.IsUploadAction ? 'cancel to upload':'cancel to download'"
 								v-show="transferType === 1"
 								@click="openPassword(scope.row)"
 							><i class="ofont ofont-guanbi"></i></span>
 							<span
 								class="active-blue cursor-pointer"
-								:title="scope.row.IsUploadAction ? 'cancel to upload':'cancel to download'"
+								:class="{'not-allow-opeation':!show}"
+								:title="!show ? 'Comming Soon...' : scope.row.IsUploadAction ? 'cancel to upload':'cancel to download'"
 								v-show="transferType === 2"
 								@click="uploadOrDownloadCancel(scope.row, transferType)"
 							><i class="ofont ofont-guanbi"></i></span>
@@ -517,7 +533,7 @@ export default {
 					FileHash: "QmdUW37NcoT4YdkjgPinNFFT6CGHLRRcXQ5SNzrLqT123123JVpd",
 					FileName: "传输管理.png",
 					Type: 1,
-					Status: 3,
+					Status: 4,
 					DetailStatus: 1,
 					CopyNum: 2,
 					Path:
@@ -609,10 +625,10 @@ export default {
 			let arr =
 				this.$store.state.Transfer[this.TransferConfig[this.transferType]] ||
 				[];
-			this.taskSpeedNum = 0;			
+			this.taskSpeedNum = 0;
 			if (Object.keys(this.waitForing).length) {
 				return arr;
-			} 
+			}
 			for (let value of arr) {
 				if (
 					this.waitForing[value.Id] &&
@@ -662,6 +678,8 @@ export default {
 	methods: {
 		// cancel task
 		toCancel() {
+			// to do!!!!!
+			if (!this.show) return;
 			// add loading
 			this.passwordCancel.loadingObj = this.$loading({
 				target: ".password-cancel-dialog.loading-content",
@@ -681,6 +699,8 @@ export default {
 		},
 		// upload file open cancel task dialog to input password
 		openPassword(file = null) {
+			// to do!!!!!
+			if (!this.show) return;
 			this.switchToggle.passwordDialog = true;
 			this.$nextTick(() => {
 				this.$refs.passwordCancel.resetFields();
@@ -706,6 +726,8 @@ export default {
 		},
 		// cancel all task
 		cancelAll() {
+			// to do!!!!!
+			if (!this.show) return;
 			const type = this.transferType;
 			const arr = this.getTask(type, 0, 1, 2, 4);
 			if (arr.length === 0) {
@@ -718,6 +740,8 @@ export default {
 		},
 		// continue all task
 		continueAll() {
+			// to do!!!!!
+			if (!this.show) return;
 			const type = this.transferType;
 			let flag = false;
 			//get pause task to continue
@@ -741,6 +765,8 @@ export default {
 		},
 		// pause all task
 		pauseAll() {
+			// to do!!!!!
+			if (!this.show) return;
 			const type = this.transferType;
 			const arr = this.getTask(type, 1, 2);
 			if (arr.length === 0) {
@@ -852,6 +878,8 @@ export default {
 		 * type: 0:upload    1:download
 		 */
 		uploadOrDownloadCancel(row, type) {
+			// to do!!!!!
+			if (!this.show) return;
 			// get http url
 			let url = type === 1 ? this.$api.uploadCancel : this.$api.downloadCancel;
 
@@ -927,6 +955,8 @@ export default {
 		 * type: 0:upload    1:download
 		 */
 		uploadOrDownloadAgain(row, type) {
+			// to do!!!!!
+			if (!this.show) return;
 			// get http url
 			let url = type === 1 ? this.$api.uploadRetry : this.$api.downloadRetry;
 
@@ -983,6 +1013,8 @@ export default {
 		 * type: 0:upload    1:download
 		 */
 		uploadOrDownloadContinue(row, type) {
+			// to do!!!!!
+			if (!this.show) return;
 			let url = type === 1 ? this.$api.uploadResume : this.$api.downloadResume;
 
 			let isArray = this.isArray(row);
@@ -1069,6 +1101,8 @@ export default {
 		 * type: 0:upload    1:download
 		 */
 		uploadOrDownloadPause(row, type) {
+			// to do!!!!!
+			if (!this.show) return;
 			// get http url
 			let url = type === 1 ? this.$api.uploadPause : this.$api.downloadPause;
 
@@ -1410,6 +1444,22 @@ $light-grey: #f9f9fb;
 			span {
 				margin-right: 5px;
 			}
+		}
+	}
+	.not-allow-opeation {
+		border-color: #a6a6a6 !important;
+		color: #a6a6a6 !important;
+		cursor: not-allowed !important;
+		box-shadow: none !important;
+		&:hover {
+			opacity: 1 !important;
+			background: none !important;
+		}
+		&:active {
+			opacity: 1 !important;
+		}
+		&:focus {
+			opacity: 1 !important;
 		}
 	}
 }

@@ -27,7 +27,7 @@
 					<h2>New Download</h2>
 					<div class="dialog-title-border"></div>
 				</div>
-				<download-dialog @closeDialog="closeDialog">
+				<download-dialog :downloadUrl='downloadUrl' @closeDialog="closeDialog">
 				</download-dialog>
 			</el-dialog>
 		</div>
@@ -62,7 +62,8 @@ export default {
 			setTimeAddressObj: null,
 			setTimeProcessObj: null,
 			Address: "",
-			Progress: 0
+			Progress: 0,
+			downloadUrl: "" // downloadDialog url
 		};
 	},
 	mounted() {
@@ -70,6 +71,9 @@ export default {
 		ipcRenderer.on("setSelector", (e, selector) => {
 			this.menuSelector = selector;
 			this.$forceUpdate();
+		});
+		ipcRenderer.on("setDownloadUrl", (e, url) => {
+			this.downloadUrl = url;
 		});
 		localStorage.setItem("DNSAdress", "");
 		this.isNeedCreateChannel();

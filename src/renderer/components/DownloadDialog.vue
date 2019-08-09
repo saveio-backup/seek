@@ -40,14 +40,24 @@ let timer = null;
 import { ipcRenderer, remote } from "electron";
 import util from "../assets/config/util";
 export default {
+	props: {
+		downloadUrl: {
+			required: false,
+			default: ""
+		}
+	},
 	data() {
 		return {
 			util,
 			formatUrl: "save://share/",
-			downloadUrl: "",
 			downloadInfo: {},
 			win: remote.getCurrentWindow()
 		};
+	},
+	mounted() {
+		if (this.downloadUrl) {
+			this.toGetFileInfo();
+		}
 	},
 	methods: {
 		closeDialog() {
@@ -73,6 +83,12 @@ export default {
 		},
 		toDownload() {
 			if (this.downloadUrl.indexOf(this.formatUrl) != 0) return;
+			this.$emit("closedialog");
+			this.$store.dispatch("setDownload");
+			this.win.views
+				.find(view => view.isActive)
+				.openComponent("FileManager/transfer");
+			return;
 			this.$axios
 				.post(this.$api.download, {
 					Url: this.downloadUrl,

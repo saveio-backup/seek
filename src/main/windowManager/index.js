@@ -133,6 +133,7 @@ class View {
       this.forceUpdate()
     });
     this.webContents.on('will-navigate', (e, url) => {
+      console.log('will-navigate, url is ', url);
       this.onNewUrl(url, e)
     })
     this.webContents.on('did-start-navigation', (e, url) => {})
@@ -151,16 +152,19 @@ class View {
     })
   }
   onNewUrl(url, event) {
+    console.log('on new Url')
     const win = this.browserWindow;
     getCurrentView = getActive(win);
     win.setBrowserView(this.browserView); //if have dialog browserView
     let newIsSave = null;
     const urlFormat = this.formatURL(url);
-    console.log('urlFormat is');
-    console.log(urlFormat);
-    log.info('urlFormat is');
-    log.info(urlFormat);
-    log.info(`DEFAULT_URL is ${DEFAULT_URL}`)
+    if (url.toLowerCase().indexOf('save://share/') >= 0) {
+      console.log('share URL!!!!')
+      dialogViewObj.browserView.webContents.send('setDownloadUrl', url);
+      dialogViewObj.setMenuSelector('downloadDialog');
+      dialogViewObj.addBrowserView();
+      return;
+    }
     if (urlFormat.protocol === DEFAULT_PROTOCOL + ':') { // is ours custom 'seek://' html page?
       newIsSave = true;
     } else if (urlFormat.host === 'localhost:9080') {

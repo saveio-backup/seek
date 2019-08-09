@@ -21,7 +21,7 @@
 				<i
 					class="ofont ofont-huazhuan ft20 user-no-select"
 					:class="{'ex-change': channelSelected.Connected,'theme-font-blue-40 cursor-not-allowed':!channelSelected.Connected}"
-					:title="channelSelected.Connected?'switchover':'Sorry, you cannot withdraw in offline status'"
+					:title="channelSelected.Connected?'Switchover':'Sorry, you cannot withdraw in offline status'"
 					@click="exWithDraw()"
 				></i></div>
 			<div

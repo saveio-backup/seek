@@ -28,7 +28,7 @@
 				>
 					<template slot-scope="scope">
 						<div
-							:title="scope.row.Connected ? 'online' : 'offline'"
+							:title="scope.row.Connected ? 'Online' : 'Offline'"
 							:class="{'theme-font-blue-40':!scope.row.Connected}"
 						>{{scope.row.Connected ? 'online' : 'offline'}}</div>
 					</template>
@@ -79,7 +79,7 @@
 							v-show="scope.row.Participant1State !== 0"
 							class="opeation-icon light-blue user-no-select"
 							@click="openTransfer(scope.row)"
-							title="transfer"
+							title="Transfer"
 						>
 							<!-- Transfer -->
 							<i class="ofont ofont-huazhuan"></i>
@@ -88,7 +88,7 @@
 							v-show="scope.row.Participant1State !== 0"
 							class="opeation-icon light-blue ml20 user-no-select"
 							@click="openClose(scope.row)"
-							title="close channel"
+							title="Close Channel"
 						>
 							<i class="ofont ofont-guanbi ft12"></i>
 							<!-- Close -->

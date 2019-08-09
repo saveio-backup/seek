@@ -115,7 +115,7 @@
 									</span>
 									<span
 										v-if="page === 'filebox'"
-										title="look detail"
+										title="Look Detail"
 										@click.stop="openDetailDialog(scope.row)"
 										class="active-blue cursor-pointer"
 									>

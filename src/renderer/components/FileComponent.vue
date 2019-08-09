@@ -189,7 +189,7 @@
 							<span
 								class="active-blue cursor-pointer"
 								:class="{'not-allow-opeation':!show}"
-								:title="!show ? 'Comming Soon...' : scope.row.IsUploadAction ? 'start to upload':'start to download'"
+								:title="!show ? 'Comming Soon...' : scope.row.IsUploadAction ? 'Start to Upload':'Start to Download'"
 								v-show="scope.row.Status === 4"
 								@click="uploadOrDownloadAgain(scope.row, transferType)"
 							><i
@@ -198,7 +198,7 @@
 								></i></span>
 							<span
 								class="active-blue cursor-pointer"
-								:title="!show ? 'Comming Soon...' : scope.row.IsUploadAction ? 'start to upload':'start to download'"
+								:title="!show ? 'Comming Soon...' : scope.row.IsUploadAction ? 'Start to Upload':'Start to Download'"
 								:class="{'not-allow-opeation':!show}"
 								v-show="scope.row.Status === 0"
 								@click="uploadOrDownloadContinue(scope.row, transferType)"
@@ -206,33 +206,33 @@
 							<span
 								class="active-blue cursor-pointer"
 								:class="{'not-allow-opeation':!show}"
-								:title="!show ? 'Comming Soon...' : scope.row.IsUploadAction ? 'pause to upload':'pause to download'"
+								:title="!show ? 'Comming Soon...' : scope.row.IsUploadAction ? 'Pause to Upload':'Pause to Download'"
 								v-show="(scope.row.Status === 1 || scope.row.Status === 2 )"
 								@click="uploadOrDownloadPause(scope.row, transferType)"
 							><i class="ofont ofont-zanting"></i></span>
 							<span
 								class="active-blue cursor-pointer"
 								:class="{'not-allow-opeation':!show}"
-								:title="!show ? 'Comming Soon...' : scope.row.IsUploadAction ? 'cancel to upload':'cancel to download'"
+								:title="!show ? 'Comming Soon...' : scope.row.IsUploadAction ? 'Cancel to Upload':'Cancel to Download'"
 								v-show="transferType === 1"
 								@click="openPassword(scope.row)"
 							><i class="ofont ofont-guanbi"></i></span>
 							<span
 								class="active-blue cursor-pointer"
 								:class="{'not-allow-opeation':!show}"
-								:title="!show ? 'Comming Soon...' : scope.row.IsUploadAction ? 'cancel to upload':'cancel to download'"
+								:title="!show ? 'Comming Soon...' : scope.row.IsUploadAction ? 'Cancel to Upload':'Cancel to Download'"
 								v-show="transferType === 2"
 								@click="uploadOrDownloadCancel(scope.row, transferType)"
 							><i class="ofont ofont-guanbi"></i></span>
 							<span
 								class="active-blue cursor-pointer"
-								title="look detail"
+								title="Look Detail"
 								@click="openDetailDialog(scope.row)"
 							><i class="ofont ofont-xiangqing"></i></span>
 							<!-- v-show="(scope.row.Nodes && scope.row.Nodes.length > 0) || scope.row.Status === 3" -->
 							<span
 								class="active-blue cursor-pointer"
-								title="delete record"
+								title="Delete Record"
 								@click="deleteRecord(scope.row)"
 								v-show="scope.row.Status === 3"
 							><i class="ofont ofont-shanchu"></i></span>

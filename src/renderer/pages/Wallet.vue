@@ -138,18 +138,15 @@
 							v-if="balanceLists.length>0"
 						>
 							<div class="item-addr">
-								<!-- <i
-									class="ofont"
-									:class="item.Type ==1 ? 'ofont-send':'ofont-jieshou'"
-								></i> -->
 								<span class="transfer-is-done">
 									<i class="ofont ofont-wancheng"></i>
 								</span>
+								<p
+									class='from-or-to-hash'
+									:title="item.Type ==1?item.To:item.From"
+								>{{item.Type ==1 ? item.To : item.From}}</p>
 								<div class="addr-info">
-									<p
-										class='from-or-to'
-										:title="item.Type ==1?item.To:item.From"
-									>{{item.Type ==1 ? item.To.replace(item.To.slice(5,-5),'...'): item.From.replace(item.From.slice(5,-5),'...')}}</p>
+									<p class='from-or-to'></p>
 									<p class="tx-date grey-xs">{{date.formatTimeByTimestamp(item.Timestamp * 1000)}}</p>
 								</div>
 							</div>
@@ -169,18 +166,18 @@
 							<div class="txid grey-xs user-no-select">ID: {{item.Txid || ''}} <i
 									class="ofont ofont-fuzhi tx-copy"
 									@click="clipText(item.Txid || '')"
-									title="click to copy"
+									title="Click to Copy"
 								></i></div>
 							<div class="towards">
 								<p class='from user-no-select'>{{item.From}} <i
 										class="ofont ofont-fuzhi tx-copy"
-										title="click to copy"
+										title="Click to Copy"
 										@click="clipText(item.From)"
 									></i></p>
 								<i class="ofont ofont-fasong arrow ft12"></i>
 								<p class="to user-no-select">{{item.To}} <i
 										class="ofont ofont-fuzhi tx-copy"
-										title="click to copy"
+										title="Lick to Copy"
 										@click="clipText(item.To)"
 									></i></p>
 							</div>
@@ -1100,6 +1097,12 @@ $light-grey: #f7f7f7;
 						font-size: 16px;
 						padding: 10px 10px 10px 0;
 						border-top: 1px solid rgba(204, 204, 204, 0.3);
+						position: relative;
+						.from-or-to-hash {
+							position: absolute;
+							top: 12px;
+							left: 45px;
+						}
 						// width: calc(100% - 20px);
 						// margin: 0 auto;
 						// &:first-child {
@@ -1121,7 +1124,7 @@ $light-grey: #f7f7f7;
 									}
 								}
 							}
-							width: 160px;
+							width: 190px;
 							display: flex;
 							align-items: center;
 							font-size: 12px;

@@ -141,6 +141,11 @@ class View {
     this.webContents.on('did-navigate-in-page', (e, url) => {
       this.forceUpdate()
     });
+    // handler hashchange
+    this.webContents.on('did-get-response-details', (details) => {
+      // this.forceUpdate()
+      console.log('details------->',details)
+    });
   }
   onNewWindow(e, url, framename, disposition) {
     console.log('create window');

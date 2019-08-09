@@ -63,7 +63,7 @@
 							<div
 								@click="remoteGoBack"
 								:class="{'disable': !activeView.canGoBack}"
-								title="go back"
+								title="Go Back"
 							>
 								<i
 									class="el-icon-arrow-left"
@@ -72,7 +72,7 @@
 							<div
 								@click="remoteGoForward"
 								:class="{'disable': !activeView.canGoForward}"
-								title="go forward"
+								title="Go Forward"
 							>
 								<i 
 									class="el-icon-arrow-right"
@@ -80,7 +80,7 @@
 							</div>
 							<div
 								@click="remoteReload"
-								title="refresh"
+								title="Refresh"
 							>
 								<i class="el-icon-refresh"></i>
 							</div>

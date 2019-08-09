@@ -13,22 +13,22 @@
 						<div class="user-name-left">
 							<div class="user-name-first-wrapper">
 								<i
-									v-if="!user.name"
+									v-if="!localStorage.getItem('Label')"
 									class="ofont ofont-yonghu user user-first"
 								></i>
 								<i
 									v-else
 									class="user-first"
-								>{{user.name | firstString}}</i>
+								>{{localStorage.getItem('Label') | firstString}}</i>
 							</div>
 							<div class="user-name-content">
-								<p class="user-name-name ft24">{{userName}}</p>
+								<p class="user-name-name ft24">{{localStorage.getItem('Label') || ''}}</p>
 								<p class="ft12">
 									<span
 										class="address"
-										:title="user.address"
+										:title="localStorage.getItem('Address') || ''"
 									>
-										{{user.address}}
+										{{localStorage.getItem("Address")||''}}
 									</span>
 									<i
 										class="ofont ofont-fuzhi"
@@ -159,17 +159,8 @@ export default {
 	},
 	data() {
 		return {
-			// switchToggle: {
-			// 	loading: null,
-			// logoutDialog: false
-			// },
 			filterFloat,
-			// balanceValue: "",
-			// loginStatus: 0, // 1: login 0: not login
-			user: {
-				name: localStorage.getItem("Label") || "",
-				address: localStorage.getItem("Address") || ""
-			},
+			localStorage,
 			// open add channel dialog(param)
 			dnsAdress: localStorage.getItem("DNSAdress") || "",
 			// balanceSelected: 0,
@@ -312,7 +303,11 @@ export default {
 			const DAY_NUM = 7;
 			this.$axios
 				.get(
-					this.$api.balancehistory + "/" + this.user.address + "/" + DAY_NUM,
+					this.$api.balancehistory +
+						"/" +
+						(localStorage.getItem("Address") || "") +
+						"/" +
+						DAY_NUM,
 					{
 						timeout: 20000
 					}
@@ -553,7 +548,7 @@ export default {
 		},
 		clipText(el) {
 			console.log("clip");
-			clipboard.writeText(this.user.address);
+			clipboard.writeText(localStorage.getItem("Address") || "");
 			this.$message({
 				message: "Copied",
 				duration: 1200,
@@ -649,9 +644,6 @@ export default {
 	computed: {
 		loginStatus: function() {
 			return this.$store.state.Home.loginStatus;
-		},
-		userName: function() {
-			return localStorage.getItem("Label") || "";
 		},
 		balanceLists: function() {
 			return this.$store.state.Wallet.balanceLists;

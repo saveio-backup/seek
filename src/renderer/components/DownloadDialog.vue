@@ -109,6 +109,10 @@ export default {
 							);
 						}
 					}
+				}).catch(e => {
+					if(!e.message.includes('timeout')) {
+						this.$message.error('Network Error. Download Failed!');
+					}
 				});
 		}
 	}

@@ -24,14 +24,14 @@ axios.interceptors.response.use(
   },
   error => {
     loadingClass.removeLoading(error);
-    if(typeof error !== Object) {
-      if(error.message.includes('timeout')){
+    if (typeof error !== Object) {
+      if (error.message.includes('timeout')) {
         Message.error({
           message: 'Request Timeout!'
         })
       }
     }
-    return Promise.reject(error.response)
+    return Promise.reject(error)
   }
 );
 

@@ -263,12 +263,12 @@ export default {
 		},
 		currentHeihgt: function() {
 			// if (this.$store.state.Home.initChannelProgress) {
-				return this.$store.state.Home.currentHeight || 0;
+			return this.$store.state.Home.currentHeight || 0;
 			// }
 		},
 		totalHeight: function() {
 			// if (this.$store.state.Home.initChannelProgress) {
-				return this.$store.state.Home.totalHeight || 0;
+			return this.$store.state.Home.totalHeight || 0;
 			// }
 		}
 	},
@@ -359,6 +359,11 @@ export default {
 										: `error code is ${res.Error}`
 								);
 							}
+						})
+						.catch(e => {
+							if (!e.message.includes("timeout")) {
+								this.$message.error("Network Error. Create Failed!");
+							}
 						});
 				}
 			});
@@ -397,6 +402,11 @@ export default {
 								: `error code is ${res.Error}`
 						);
 						this.switchToggle.submitSwitch = true;
+					}
+				})
+				.catch(e => {
+					if (!e.message.includes("timeout")) {
+						this.$message.error("Network Error. Import Private Key Failed!");
 					}
 				});
 		}

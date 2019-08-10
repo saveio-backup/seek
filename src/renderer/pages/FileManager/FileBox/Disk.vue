@@ -756,8 +756,10 @@ export default {
 						});
 					})
 				)
-				.catch(() => {
-					this.$message.error("Network Error. Download Failed!");
+				.catch(e => {
+					if (!e.message.includes("timeout")) {
+						this.$message.error("Network Error. Download Failed!");
+					}
 				})
 				.finally(() => {
 					this.switchToggle.loading.close();
@@ -826,8 +828,11 @@ export default {
 						this.switchToggle.deleteDialog = false;
 					})
 				)
-				.catch(err => {
-					this.$message.error("Network Error. Delete Failed.");
+				.catch(e => {
+					if (!e.message.includes("timeout")) {
+						// this.$message.error('Network Error!');
+						this.$message.error("Network Error. Delete Failed.");
+					}
 				})
 				.finally(() => {
 					this.switchToggle.loading.close();

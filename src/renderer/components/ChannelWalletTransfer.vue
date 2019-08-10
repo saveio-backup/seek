@@ -198,8 +198,10 @@ export default {
 								);
 							}
 						})
-						.catch(err => {
-							console.error(err);
+						.catch(e => {
+							if (!e.message.includes("timeout")) {
+								this.$message.error("Network Error. Transfer Failed!");
+							}
 						});
 				}
 			});
@@ -235,7 +237,7 @@ $theme-font-blue: #202020;
 			color: #2f8ff0;
 			cursor: pointer;
 			&:hover {
-				background: #EDEFF4;
+				background: #edeff4;
 			}
 			&:active {
 				opacity: 0.7;

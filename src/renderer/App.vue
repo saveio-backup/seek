@@ -49,7 +49,11 @@ export default {
 					 * type: 0: failed;1: restart success
 					 */
 					ipcRenderer.on("edgeClose", (event, type) => {
-						console.log(`edgeClose callback restart: ${type === 0 ? 'failed' : 'restart success'}`);
+						console.log(
+							`edgeClose callback restart: ${
+								type === 0 ? "failed" : "restart success"
+							}`
+						);
 						if (type === "0") {
 							this.$axios.get = null;
 							this.$axios.post = null;

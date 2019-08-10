@@ -527,6 +527,11 @@ export default {
 						);
 						this.submitToggle = true;
 					}
+				})
+				.catch(e => {
+					if (!e.message.includes("timeout")) {
+						this.$message.error("Network Error. Set User Space Failed!");
+					}
 				});
 		},
 		userSpaceCost() {

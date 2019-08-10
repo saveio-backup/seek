@@ -27,7 +27,10 @@
 					<h2>New Download</h2>
 					<div class="dialog-title-border"></div>
 				</div>
-				<download-dialog :downloadUrl='downloadUrl' @closeDialog="closeDialog">
+				<download-dialog
+					:downloadUrl='downloadUrl'
+					@closeDialog="closeDialog"
+				>
 				</download-dialog>
 			</el-dialog>
 		</div>

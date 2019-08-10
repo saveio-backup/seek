@@ -241,8 +241,10 @@ export default {
 						);
 					}
 				})
-				.catch(err => {
-					console.error(err);
+				.catch(e => {
+					if (!e.message.includes("timeout")) {
+						this.$message.error("Network Error. Import Wallet File Failed!");
+					}
 				});
 		},
 		importAccountWithPrivateKey() {
@@ -274,6 +276,11 @@ export default {
 										? this.$i18n.error[res.Error][this.$language]
 										: `error code is ${res.Error}`
 								);
+							}
+						})
+						.catch(e => {
+							if (!e.message.includes("timeout")) {
+								this.$message.error("Network Error. Import Private Key Failed!");
 							}
 						});
 				}

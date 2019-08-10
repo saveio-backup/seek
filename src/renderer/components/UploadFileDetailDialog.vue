@@ -155,8 +155,10 @@ export default {
 						);
 					}
 				})
-				.catch(err => {
-					console.log(err);
+				.catch(e => {
+					if (!e.message.includes("timeout")) {
+						this.$message.error("Network Error. Get File Detail Failed!");
+					}
 				});
 		},
 		toClose() {

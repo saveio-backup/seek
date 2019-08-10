@@ -309,7 +309,7 @@ export default {
 						"/" +
 						DAY_NUM,
 					{
-						timeout: 20000
+						timeout: 120000
 					}
 				)
 				.then(res => {

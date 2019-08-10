@@ -537,6 +537,11 @@ export default {
 								: `error code is ${res.Error}`
 						);
 					}
+				})
+				.catch(e => {
+					if (!e.message.includes("timeout")) {
+						this.$message.error("Network Error. Open Channel Failed!");
+					}
 				});
 		},
 		toChannelClose(params) {
@@ -563,6 +568,11 @@ export default {
 								? this.$i18n.error[res.Error][this.$language]
 								: `error code is ${res.Error}`
 						);
+					}
+				})
+				.catch(e => {
+					if (!e.message.includes("timeout")) {
+						this.$message.error("Network Error. Close Channel Failed!");
 					}
 				});
 		}

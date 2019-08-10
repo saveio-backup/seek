@@ -150,7 +150,10 @@
 									<p class="tx-date grey-xs">{{date.formatTimeByTimestamp(item.Timestamp * 1000)}}</p>
 								</div>
 							</div>
-							<div class="item-amount" :class="{'send-item-amount':item.Type ==1}">{{item.Type ==1 ? '-':'+'}} {{parseFloat(parseFloat(item.AmountFormat).toFixed(9)).toLocaleString('en-US')}} {{item.Asset.toUpperCase()}}</div>
+							<div
+								class="item-amount"
+								:class="{'send-item-amount':item.Type ==1}"
+							>{{item.Type ==1 ? '-':'+'}} {{parseFloat(parseFloat(item.AmountFormat).toFixed(9)).toLocaleString('en-US')}} {{item.Asset.toUpperCase()}}</div>
 							<div
 								class="item-more"
 								v-if="item.BlockHeight>0"
@@ -192,8 +195,8 @@
 						v-show="switchToggle.showLoading"
 						class="loading text-center theme-font-blue transparent mt20 mb20"
 					>
-            <i class="el-icon-loading"></i>
-          </li>
+						<i class="el-icon-loading"></i>
+					</li>
 				</ul>
 			</div>
 		</div>
@@ -723,6 +726,11 @@ export default {
 										: `error code is ${res.Error}`
 								);
 							}
+						})
+						.catch(e => {
+							if (!e.message.includes("timeout")) {
+								this.$message.error("Network Error. Transfer Failed!");
+							}
 						});
 				}
 			});
@@ -876,8 +884,12 @@ $light-grey: #f7f7f7;
 			.person-info {
 				width: 100%;
 				height: 119px;
-				background:linear-gradient(90deg,rgba(19,176,250,1) 0%,rgba(62,126,235,1) 100%);
-				box-shadow:0px 2px 8px 0px rgba(196,196,196,0.24);
+				background: linear-gradient(
+					90deg,
+					rgba(19, 176, 250, 1) 0%,
+					rgba(62, 126, 235, 1) 100%
+				);
+				box-shadow: 0px 2px 8px 0px rgba(196, 196, 196, 0.24);
 				border-radius: 6px;
 				color: #fff;
 				display: flex;
@@ -897,7 +909,7 @@ $light-grey: #f7f7f7;
 						top: -2px;
 						cursor: pointer;
 						&:hover {
-							opacity: .7;
+							opacity: 0.7;
 						}
 						&:active {
 							opacity: 1;
@@ -1112,7 +1124,7 @@ $light-grey: #f7f7f7;
 							& > .transfer-is-done {
 								width: 30px;
 								height: 30px;
-								background: #EDEFF4;
+								background: #edeff4;
 								border-radius: 50%;
 								line-height: 30px;
 								text-align: center;
@@ -1142,13 +1154,13 @@ $light-grey: #f7f7f7;
 						.item-amount {
 							flex: 1;
 							font-size: 14px;
-							color: #8BD179;
+							color: #8bd179;
 							width: 100%;
 							max-width: 400px;
 							margin: 0 auto;
 							text-align: center;
 							&.send-item-amount {
-								color: #EB8B7E
+								color: #eb8b7e;
 							}
 						}
 						.item-more {
@@ -1165,7 +1177,7 @@ $light-grey: #f7f7f7;
 						}
 					}
 					.tx-li-item-detail {
-						background: #F8F9FA;
+						background: #f8f9fa;
 						padding: 10px 45px;
 						.towards {
 							display: flex;
@@ -1174,7 +1186,7 @@ $light-grey: #f7f7f7;
 							.to {
 								width: 400px;
 								font-size: 12px;
-								word-break:break-all;
+								word-break: break-all;
 							}
 							.arrow {
 								flex: 1;

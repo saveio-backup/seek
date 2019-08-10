@@ -120,7 +120,7 @@
 					min-width="250"
 				>
 					<template slot-scope="scope">
-						<div class="flex ai-center mr20">
+						<div class="flex ai-center">
 							<el-progress
 								class="file-progress flex1 ai-center mr10"
 								:class="{'progressAnimate': scope.row.Status != 4 && scope.row.Status != 0}"
@@ -128,8 +128,13 @@
 								:percentage="parseInt((scope.row.Progress||0)*100)"
 								:show-text="false"
 							></el-progress>
-							<span>
-								{{parseInt((scope.row.Progress||0)*100)}}% ({{taskSpeed[scope.row.Id] && util.bytesToSize((taskSpeed[scope.row.Id].speed * 1024)) || '0 Byte'}})/s
+							<span class="tr speed-content">
+								<span>
+									{{parseInt((scope.row.Progress||0)*100)}}%
+								</span>
+								<span class="theme-font-blue-40">
+									({{taskSpeed[scope.row.Id] && util.bytesToSize((taskSpeed[scope.row.Id].speed * 1024)) || '0 Byte'}}/s)
+								</span>
 							</span>
 						</div>
 						<div
@@ -622,10 +627,10 @@ export default {
 		},
 		fileList: function() {
 			// return this.mockFileList;
+			this.taskSpeedNum = 0;
 			let arr =
 				this.$store.state.Transfer[this.TransferConfig[this.transferType]] ||
 				[];
-			this.taskSpeedNum = 0;
 			if (Object.keys(this.waitForing).length) {
 				return arr;
 			}
@@ -721,6 +726,8 @@ export default {
 				}
 			} else {
 				this.detailId = row.Id;
+				this.nodeSpeed = {};
+				this.getNodeSpeed(true);
 				this.switchToggle.detailDialog = true;
 			}
 		},
@@ -867,6 +874,9 @@ export default {
 				})
 				.catch(e => {
 					this.removeWaitFor({ Ids: params.Ids });
+					if (!e.message.includes("timeout")) {
+						this.$message.error("Network Error. Delete Record Failed!");
+					}
 				});
 		},
 		isArray(arg) {
@@ -947,6 +957,9 @@ export default {
 				.catch(e => {
 					this.passwordCancel.loadingObj &&
 						this.passwordCancel.loadingObj.close();
+					if (!e.message.includes("timeout")) {
+						this.$message.error("Network Error. Cancel Task Failed!");
+					}
 				});
 		},
 		/**
@@ -1005,6 +1018,9 @@ export default {
 				})
 				.catch(e => {
 					this.removeWaitFor({ Ids: params.Ids });
+					if (!e.message.includes("timeout")) {
+						this.$message.error("Network Error. Start Task Failed!");
+					}
 				});
 		},
 		/**
@@ -1061,6 +1077,9 @@ export default {
 				})
 				.catch(e => {
 					this.removeWaitFor({ Ids: params.Ids });
+					if (!e.message.includes("timeout")) {
+						this.$message.error("Network Error. Start Task Failed!");
+					}
 				});
 		},
 		/**
@@ -1166,6 +1185,9 @@ export default {
 				})
 				.catch(e => {
 					this.removeWaitFor({ Ids: params.Ids });
+					if (!e.message.includes("timeout")) {
+						this.$message.error("Network Error. Pause Task Failed!");
+					}
 				});
 		},
 		hideTaskDialog() {
@@ -1184,20 +1206,27 @@ export default {
 		},
 		toDeleteFile(hash) {
 			this.switchToggle.deleteDialog = false;
-			this.$axios.post(this.$api.delete, { Hash: hash }).then(res => {
-				if (res.Error === 0) {
-					this.$message({
-						message: "Delete Completed",
-						type: "success"
-					});
-				} else {
-					this.$message.error(
-						this.$i18n.error[res.Error]
-							? this.$i18n.error[res.Error][this.$language]
-							: `error code is ${res.Error}`
-					);
-				}
-			});
+			this.$axios
+				.post(this.$api.delete, { Hash: hash })
+				.then(res => {
+					if (res.Error === 0) {
+						this.$message({
+							message: "Delete Completed",
+							type: "success"
+						});
+					} else {
+						this.$message.error(
+							this.$i18n.error[res.Error]
+								? this.$i18n.error[res.Error][this.$language]
+								: `error code is ${res.Error}`
+						);
+					}
+				})
+				.catch(e => {
+					if (!e.message.includes("timeout")) {
+						this.$message.error("Network Error. Delete File Failed!");
+					}
+				});
 		},
 		toDecrypt() {
 			if (this.switchToggle.loading) return;
@@ -1225,8 +1254,10 @@ export default {
 						);
 					}
 				})
-				.catch(err => {
-					console.log(err);
+				.catch(e => {
+					if (!e.message.includes("timeout")) {
+						this.$message.error("Network Error. Decrypt Failed!");
+					}
 				});
 		},
 		getTaskSpeed() {
@@ -1252,17 +1283,22 @@ export default {
 			this.passHowLongTimeGetFileList++;
 			this.taskSpeed = newTaskSpeed;
 		},
-		getNodeSpeed() {
-			if (this.fileDetailNodes.length > 0 && this.taskSpeedNum === 1) {
+		/**
+		 * params
+		 * isF: is not force run
+		 *  */
+		getNodeSpeed(isF=false) {
+			if (this.fileDetailNodes.length > 0 && this.taskSpeedNum === 1 || isF) {
 				let oldNodeSpeed = this.nodeSpeed;
 				let newNodeSpeed = {};
 				for (let value of this.fileDetailNodes) {
-					let uploadOrDownloadSize = value.UploadSize || value.DownloadSize;
-					let speed =
-						uploadOrDownloadSize -
-						(oldNodeSpeed[value.HostAddr]
-							? oldNodeSpeed[value.HostAddr].FileSize
-							: uploadOrDownloadSize);
+					let uploadOrDownloadSize = value.UploadSize === undefined ? value.DownloadSize : value.UploadSize;
+					// let speed =
+					// 	uploadOrDownloadSize -
+					// 	(oldNodeSpeed[value.HostAddr] !== undefined
+					// 		? oldNodeSpeed[value.HostAddr].FileSize
+					// 		: 0);
+					let speed = oldNodeSpeed[value.HostAddr] !== undefined ? (uploadOrDownloadSize - (oldNodeSpeed[value.HostAddr].FileSize || 0)) : 0
 					newNodeSpeed[value.HostAddr] = {
 						speed: speed / this.passHowLongTimeGetFileList,
 						FileSize: uploadOrDownloadSize
@@ -1386,6 +1422,9 @@ $light-grey: #f9f9fb;
 				background-position: 0 0;
 			}
 		}
+	}
+	.speed-content {
+		width: 130px;
 	}
 	.node-wrapper {
 		ul {

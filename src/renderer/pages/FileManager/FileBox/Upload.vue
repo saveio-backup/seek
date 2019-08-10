@@ -633,6 +633,11 @@ export default {
 							);
 							this.switchToggle.upload = true;
 						}
+					})
+					.catch(e => {
+						if (!e.message.includes("timeout")) {
+							this.$message.error("Network Error. Upload File Failed!");
+						}
 					});
 			});
 		},

@@ -6,6 +6,7 @@ import {
 } from 'electron'
 import './ipcManager'
 import './protocols/protocols' // custom protocol
+import './dbs/index';
 import frontCfgObj from './windowManager/frontCfgObj'
 import {
   windows,

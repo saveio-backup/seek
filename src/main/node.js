@@ -173,7 +173,7 @@ const setupConfig = async (appDataPath, appName) => {
     }
     cfgObj.Base.AutoSetupDNSEnable = false;
     cfgObj.Base.NetworkId = 1565267317;
-    cfgObj.Base.DNSWalletAddrs = "AXUhmdzcAJwaFW91q6UYuPGGJY3fimoTAj";
+    cfgObj.Base.DNSWalletAddrs = ["AXUhmdzcAJwaFW91q6UYuPGGJY3fimoTAj"];
     cfgObj.Base.ChainRestAddrs = [
         "http://221.179.156.57:10334",
         "http://221.179.156.57:11334",
@@ -217,7 +217,7 @@ const run = (appDataPath, appName) => {
     } else {
         cfgDir = `${appDataPath}/${appName}`
         // cmdStr = `./edge --config='${cfgDir}'`
-        cmdStr = `./edge-darwin-amd64`
+        cmdStr = `./edge`
     }
     log.debug("[run] run node")
     log.debug("[run] appDataPath", appDataPath)

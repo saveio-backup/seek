@@ -38,7 +38,7 @@
 						class="form-vertical"
 						label="File Size:"
 					>
-						<p class="light-blue">{{fileSize || '0.00 GB'}}</p>
+						<p class="light-blue">{{util.bytesToSize(fileSize) || '0.00 GB'}}</p>
 					</el-form-item>
 					<el-form-item label="Encryption:">
 						<el-select
@@ -361,6 +361,7 @@ export default {
 		const DEFAULT_KEY = "Year";
 		const DEFAULT_STORAGE_CYCLE = BASE[DEFAULT_KEY];
 		return {
+			util,
 			baseKeys,
 			BASE,
 			verificationCycleSelected: baseKeys[0], // default Second
@@ -506,7 +507,7 @@ export default {
 		selectUpload() {
 			ipcRenderer.send("upload-file-dialog");
 			ipcRenderer.once("selected-upload", (event, content) => {
-				this.fileSize = util.bytesToSize(content.fileBytes);
+				this.fileSize = content.fileBytes;
 				this.uploadFormData.Path = content.filePath;
 				this.uploadFormData.Desc = content.fileName;
 				this.toGetPrice();
@@ -593,6 +594,11 @@ export default {
 			this.$refs["passwordForm"].validate(valid => {
 				if (!valid) return;
 				this.switchToggle.upload = false; // set toggle
+				const MAX_STORAGE = 1024 * 1024 * 1024 * 4;
+				if (this.fileSize > MAX_STORAGE) {
+					this.$message.error("A single file cannot be larger than 4GB");
+					return;
+				}
 				// this.switchToggle.loading = this.$loading({
 				//   lock: true,
 				//   text: "Uploading..",

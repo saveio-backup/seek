@@ -27,18 +27,22 @@
 					<span class="ml10 light-blue">{{util.bytesToSize(getAllTaskSpeedTotal*1024)}}/s</span>
 				</p>
 			</div>
+
 			<!-- upload cancel btn -->
+
+			<!-- :class="{'not-allow-opeation':!show}"
+				title="Comming Soon..." -->
 			<el-button
 				v-if="transferType === 1"
-				:class="{'not-allow-opeation':!show}"
-				title="Comming Soon..."
 				@click="openPassword()"
 			>Cancel All</el-button>
+
 			<!-- download cancel -->
+
+			<!-- title="Comming Soon..."
+				:class="{'not-allow-opeation':!show}" -->
 			<el-button
 				v-if="transferType === 2"
-				title="Comming Soon..."
-				:class="{'not-allow-opeation':!show}"
 				@click="cancelAll"
 			>Cancel All</el-button>
 			<el-button
@@ -217,15 +221,15 @@
 							><i class="ofont ofont-zanting"></i></span>
 							<span
 								class="active-blue cursor-pointer"
-								:class="{'not-allow-opeation':!show}"
-								:title="!show ? 'Comming Soon...' : scope.row.IsUploadAction ? 'Cancel to Upload':'Cancel to Download'"
+								:class="{'not-allow-opeation':show}"
+								:title="show ? 'Comming Soon...' : scope.row.IsUploadAction ? 'Cancel to Upload':'Cancel to Download'"
 								v-show="transferType === 1"
 								@click="openPassword(scope.row)"
 							><i class="ofont ofont-guanbi"></i></span>
 							<span
 								class="active-blue cursor-pointer"
-								:class="{'not-allow-opeation':!show}"
-								:title="!show ? 'Comming Soon...' : scope.row.IsUploadAction ? 'Cancel to Upload':'Cancel to Download'"
+								:class="{'not-allow-opeation':show}"
+								:title="show ? 'Comming Soon...' : scope.row.IsUploadAction ? 'Cancel to Upload':'Cancel to Download'"
 								v-show="transferType === 2"
 								@click="uploadOrDownloadCancel(scope.row, transferType)"
 							><i class="ofont ofont-guanbi"></i></span>
@@ -239,7 +243,7 @@
 								class="active-blue cursor-pointer"
 								title="Delete Record"
 								@click="deleteRecord(scope.row)"
-								v-show="scope.row.Status === 3"
+								v-show="transferType === 0"
 							><i class="ofont ofont-shanchu"></i></span>
 						</div>
 					</template>
@@ -684,7 +688,7 @@ export default {
 		// cancel task
 		toCancel() {
 			// to do!!!!!
-			if (!this.show) return;
+			// if (!this.show) return;
 			// add loading
 			this.passwordCancel.loadingObj = this.$loading({
 				target: ".password-cancel-dialog.loading-content",
@@ -705,7 +709,7 @@ export default {
 		// upload file open cancel task dialog to input password
 		openPassword(file = null) {
 			// to do!!!!!
-			if (!this.show) return;
+			// if (!this.show) return;
 			this.switchToggle.passwordDialog = true;
 			this.$nextTick(() => {
 				this.$refs.passwordCancel.resetFields();
@@ -734,7 +738,7 @@ export default {
 		// cancel all task
 		cancelAll() {
 			// to do!!!!!
-			if (!this.show) return;
+			// if (!this.show) return;
 			const type = this.transferType;
 			const arr = this.getTask(type, 0, 1, 2, 4);
 			if (arr.length === 0) {
@@ -889,7 +893,7 @@ export default {
 		 */
 		uploadOrDownloadCancel(row, type) {
 			// to do!!!!!
-			if (!this.show) return;
+			// if (!this.show) return;
 			// get http url
 			let url = type === 1 ? this.$api.uploadCancel : this.$api.downloadCancel;
 
@@ -1287,18 +1291,25 @@ export default {
 		 * params
 		 * isF: is not force run
 		 *  */
-		getNodeSpeed(isF=false) {
-			if (this.fileDetailNodes.length > 0 && this.taskSpeedNum === 1 || isF) {
+		getNodeSpeed(isF = false) {
+			if ((this.fileDetailNodes.length > 0 && this.taskSpeedNum === 1) || isF) {
 				let oldNodeSpeed = this.nodeSpeed;
 				let newNodeSpeed = {};
 				for (let value of this.fileDetailNodes) {
-					let uploadOrDownloadSize = value.UploadSize === undefined ? value.DownloadSize : value.UploadSize;
+					let uploadOrDownloadSize =
+						value.UploadSize === undefined
+							? value.DownloadSize
+							: value.UploadSize;
 					// let speed =
 					// 	uploadOrDownloadSize -
 					// 	(oldNodeSpeed[value.HostAddr] !== undefined
 					// 		? oldNodeSpeed[value.HostAddr].FileSize
 					// 		: 0);
-					let speed = oldNodeSpeed[value.HostAddr] !== undefined ? (uploadOrDownloadSize - (oldNodeSpeed[value.HostAddr].FileSize || 0)) : 0
+					let speed =
+						oldNodeSpeed[value.HostAddr] !== undefined
+							? uploadOrDownloadSize -
+							  (oldNodeSpeed[value.HostAddr].FileSize || 0)
+							: 0;
 					newNodeSpeed[value.HostAddr] = {
 						speed: speed / this.passHowLongTimeGetFileList,
 						FileSize: uploadOrDownloadSize

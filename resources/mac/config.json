@@ -39,6 +39,7 @@
 			"http://221.179.156.57:15336",
 			"http://221.179.156.57:16336"
 		],
+		"DNSWalletAddrs": "AXUhmdzcAJwaFW91q6UYuPGGJY3fimoTAj",
 		"NATProxyServerAddrs": "tcp://40.73.103.72:6007",
 		"DspProtocol": "tcp",
 		"DspPortOffset": 4024,

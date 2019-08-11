@@ -118,6 +118,7 @@ class View {
       console.error('load Error!!!!!!!!')
       console.error(errorDescription)
       console.log(validatedURL)
+      // this.webContents.executeJavaScript('document.documentElement.innerHTML = \'' + hello + '\'')
     })
     this.webContents.on('new-window', this.onNewWindow.bind(this))
     this.webContents.on('dom-ready', () => {

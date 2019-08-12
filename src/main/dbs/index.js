@@ -1,34 +1,81 @@
-/* import {
-  verbose as sqlite3
-} from 'sqlite3'
+// import {
+//   app
+// } from 'electron'
+// import log from 'electron-log'
+// import path from 'path'
+// import fs from 'fs';
 // const sqlite3 = require('sqlite3').verbose();
-import {
-  app
-} from 'electron'
-import path from 'path'
-console.log('verbose is');
-console.log(new sqlite3().Database('fff'))
-const profile = path.join(app.getAppPath, 'Profile');
-const db = new sqlite3.verbose().Database('Profile');
-db.serialize(() => {
-  db.run('CREATE TABLE seekTest')
-  // add('ridesky', 'thisnote')
-})
+// const DEFAULT_CONFIG = {
+//   dbName: 'userData',
+// }
+// let db;
+// let seekDB;
 
+// function createDB() {
+//   const profile = path.join(seekDB, "Profile");
+//   db = new sqlite3.Database(profile, createTable);
+// }
 
-function add(author, note, callback) {
-  db.run("INSERT INTO notes (ts, author, note) " +
-    "VALUES (?, ?, ?);",
-    [new Date(), author, note],
-    function (error) {
-      if (error) {
-        util.log('FAIL on add ' + error);
-        callback(error);
-      } else {
-        callback(null);
-      }
-    });
-}
-module.exports = {
-  add
-} */
+// function createTable() {
+//   db.run(`CREATE TABLE IF NOT EXISTS student (
+//     name varchar(32),
+//     sex boolean
+//     )`, (err) => {
+//     if (err) return;
+//   })
+// }
+// const dbContainer = [];
+// initDir();
+// // create dirctory if not exist
+// function initDir() {
+//   seekDB = path.join(app.getPath("appData"), app.getName(), "seekDB");
+//   fs.mkdirSync(seekDB, {
+//     recursive: true
+//   }, err => {
+//     log.error(err);
+//   });
+//   createDB();
+// }
+// class DBStore {
+//   constructor(filename = 'userData') {
+//     this.db = null;
+//     this.createDB(filename);
+//   }
+//   createDB(filename) {
+//     const dbPath = path.join(seekDB, filename);
+//     this.db = new sqlite3.Database(dbPath, this.createTable, (err) => {
+//       if (err) {
+//         log.error(err)
+//       }
+//     })
+//   }
+
+// }
+// export function queryRows(table, column, value) {
+//   db.get(`SELECT ? FROM ? WHERE column == ?`, [column, table, value], (err, row) => {
+//     if (err) {
+//       console.error('queryRows!!');
+//       console.error(err);
+//     } else {
+//       console.log('queryRows is ');
+//       console.log(row);
+//     }
+//   })
+// }
+
+// function alterColumn(table, column, value) {
+//   db.run(`ALTER TABLE ? ADD ? varchar(32)`, [table, column], (err) => {
+//     if (err) return;
+//     insertRows(table, column, value)
+//   });
+// }
+// export function insertRows(table, column, value) {
+//   db.run(`INSERT INTO ? 
+//   (?) 
+//   VALUES(?)`, [table, column, value], (err) => {});
+//   closeDb();
+// }
+
+// export function closeDb() {
+//   db.close();
+// }

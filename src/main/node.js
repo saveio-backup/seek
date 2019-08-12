@@ -78,8 +78,8 @@ const frontcfgFilePath = (appDataPath, appName) => {
 const setFrontConfig = async (appDataPath, appName) => {
 
     let cfgPath = frontcfgFilePath(appDataPath, appName)
-    console.log('!!!!!front-CfgPath: ', cfgPath);
-    console.log('!!!!appDataPath: ', appDataPath);
+    // console.log('!!!!!front-CfgPath: ', cfgPath);
+    // console.log('!!!!appDataPath: ', appDataPath);
     log.debug("[setFrontConfig] setup frontCfg")
     log.debug("[setFrontConfig] appDataPath", appDataPath)
     log.debug("[setFrontConfig] appname", cfgPath)
@@ -135,8 +135,8 @@ let cfgObj = null;
 
 const setupConfig = async (appDataPath, appName) => {
     let cfgPath = cfgFilePath(appDataPath, appName)
-    console.log('!!!!!cfgPath: ', cfgPath);
-    console.log('!!!!appDataPath: ', appDataPath);
+    // console.log('!!!!!cfgPath: ', cfgPath);
+    // console.log('!!!!appDataPath: ', appDataPath);
     log.debug("[setupconfig] setup cfg")
     log.debug("[setupconfig] appDataPath", appDataPath)
     log.debug("[setupconfig] appname", cfgPath)

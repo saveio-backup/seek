@@ -9,7 +9,6 @@ function cfgValue() {
   console.log('userDataPathc is');
   console.log(userDataPath);
   const exist = fs.existsSync(`${userDataPath}/front-config.json`)
-  console.log(exist);
   if (exist) {
     const cfg = fs.readFileSync(`${userDataPath}/front-config.json`)
     if (cfg) {

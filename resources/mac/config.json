@@ -18,6 +18,7 @@
 		"ChannelProtocol": "tcp",
 		"ChannelClientType": "rpc",
 		"ChannelRevealTimeout": "200",
+		"ChannelSettleTimeout": "500",
 		"DBPath": "./DB",
 		"PpListenAddr": "",
 		"PpBootstrap": null,

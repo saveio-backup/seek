@@ -13,6 +13,7 @@ import {
   URL
 } from 'url';
 import log from 'electron-log'
+import errorPage from '../../../static/html/failed.js'
 import frontCfgObj from './frontCfgObj'
 
 export const windows = {}; // map of {[parentWindow.id] => BrowserWindow}
@@ -118,7 +119,7 @@ class View {
       console.error('load Error!!!!!!!!')
       console.error(errorDescription)
       console.log(validatedURL)
-      // this.webContents.executeJavaScript('document.documentElement.innerHTML = \'' + hello + '\'')
+      this.webContents.executeJavaScript(`document.documentElement.innerHTML = '${errorPage}' `)
     })
     this.webContents.on('new-window', this.onNewWindow.bind(this))
     this.webContents.on('dom-ready', () => {

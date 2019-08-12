@@ -48,16 +48,22 @@ ipcMain.on('export-file-dialog', (event, contents, defaultName) => {
 })
 ipcMain.on('upload-file-dialog', (event) => {
   dialog.showOpenDialog({
-    properties: ['openFile','treatPackageAsDirectory']
+    properties: ['openFile','treatPackageAsDirectory','multiSelections']
   }, (files) => {
     if (files) {
-      const fileName = path.basename(files[0])
-      const filePath = files[0];
-      let fileBytes = fs.statSync(filePath).size;
+      let arr = [];
+      for(let value of files) {
+        const fileName = path.basename(value)
+        const filePath = value;
+        let fileBytes = fs.statSync(filePath).size;
+        arr.push({
+          fileName,
+          filePath,
+          fileBytes
+        })
+      }
       event.sender.send('selected-upload', {
-        fileBytes,
-        fileName,
-        filePath
+        files: arr
       })
     }
   })

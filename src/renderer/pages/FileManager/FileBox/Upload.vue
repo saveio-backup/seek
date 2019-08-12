@@ -25,14 +25,30 @@
 				>
 					<el-form-item
 						label="Select File:"
-						class="form-vertical"
-						prop="Path"
+						class="form-vertical select-file-wrapper"
 					>
-						<p class="path-input">{{uploadFormData.Path}}</p>
+						<!-- prop="Path" -->
+						<!-- <p class="path-input">{{uploadFormData.Path}}</p> -->
 						<el-button
-							class="form-right"
+							class="form-right browser-layout"
 							@click="selectUpload"
 						>Browser</el-button>
+						<div class="path-wrapper">
+							<ul>
+								<el-tag
+									:key="file.filePath"
+									:disable-transitions="false"
+									:title="file.filePath"
+									v-for="file in uploadFormData.Files"
+									closable
+									@close='handleCloseByFile(file)'
+									:name="file.fileName"
+								>{{file.fileName}}</el-tag>
+								<!-- <li v-for="" :key="" >
+									{{file.fileName}}
+								</li> -->
+							</ul>
+						</div>
 					</el-form-item>
 					<el-form-item
 						class="form-vertical"
@@ -214,7 +230,7 @@
 							title="Fee Detail"
 							trigger="hover"
 						>
-							<p>Contract Fee: {{uploadPriceInfo && uploadPriceInfo.TxFeeFormat || 0.03}} SAVE</p>
+							<p>Contract Fee: {{uploadPriceInfo && uploadPriceInfo.TxFeeFormat || parseFloat((0.03 * (this.uploadFormData.Files.length || 1)).toFixed(2))}} SAVE</p>
 							<p>Storage Fee: {{uploadPriceInfo && uploadPriceInfo.StorageFeeFormat || 0}} SAVE</p>
 							<p>Validate Fee: {{uploadPriceInfo && uploadPriceInfo.ValidFeeFormat || 0}} SAVE</p>
 							<span slot="reference"><i class="el-icon-question"></i></span>
@@ -399,8 +415,8 @@ export default {
 			encryptionToggle: false,
 			uploadFormData: {
 				Path: "",
-				Desc: "",
-				FileSize: 0,
+				Files: [],
+				// Desc: "",
 				EncryptPassword: "" // Encryption
 			},
 			rules: {
@@ -456,6 +472,7 @@ export default {
 		this.getfscontractsetting();
 	},
 	methods: {
+		// get space is not zero go expand page 
 		getSpaceIsZero() {
 			this.$axios
 				.get(this.$api.userspace + window.localStorage.getItem("Address"))
@@ -471,6 +488,7 @@ export default {
 					}
 				});
 		},
+		// link to expand page
 		goStorage() {
 			this.$router.push({ name: "expand" });
 		},
@@ -490,23 +508,14 @@ export default {
 		},
 		advancedDataInit() {
 			this.uploadPriceInfo = null;
-			// save config
-			/* this.advancedData = {
-        Duration: 0,
-        Interval: 0,
-        Privilege: 1,
-        CopyNum: this.DefaultCopyNum,
-        WhiteList: []
-      };
-      this.verificationCycleSelected = this.baseKeys[0];
-      this.verificationCycleNumber = 300;
-      this.setDuration(); */
 		},
+		// set EncryptPassword init value when encryption select change
 		setEncryptPassword() {
 			if (!this.encryptionToggle) {
 				this.uploadFormData.EncryptPassword = "";
 			}
 		},
+		// get contract setting init value
 		getfscontractsetting() {
 			this.$axios.get(this.$api.getfscontractsetting).then(res => {
 				if (res.Error === 0) {
@@ -521,23 +530,46 @@ export default {
 				}
 			});
 		},
+		// to select file for upload
 		selectUpload() {
 			ipcRenderer.send("upload-file-dialog");
 			ipcRenderer.once("selected-upload", (event, content) => {
-				this.fileSize = content.fileBytes;
-				this.uploadFormData.FileSize = content.fileBytes;
-				this.$refs.uploadForm.validateField('FileSize');
-				this.uploadFormData.Path = content.filePath;
-				this.uploadFormData.Desc = content.fileName;
+				// get current select not have file list
+				let arr = [];
+				let currentFilePathList = [];
+				for(let value of this.uploadFormData.Files) {
+					currentFilePathList.push(value.filePath)
+				}
+				for(let value of content.files) {
+					if(currentFilePathList.indexOf(value.filePath) === -1) {
+						arr.push(value);
+					}
+				}
+				this.uploadFormData.Files = this.uploadFormData.Files.concat(arr);
+				this.toGetFileSize();
+				// this.fileSize = content.fileBytes;
+				// this.uploadFormData.Path = content.filePath;
+				// this.uploadFormData.Desc = content.fileName;
 				this.toGetPrice();
+				this.$refs.uploadForm.validateField('FileSize');
 			});
 		},
+		handleCloseByFile(file) {
+			this.uploadFormData.Files.splice(
+				this.uploadFormData.Files.indexOf(file),
+				1
+			);
+			this.toGetFileSize();
+			this.toGetPrice();
+		},
+		// close while list item
 		handleClose(tag) {
 			this.advancedData.WhiteList.splice(
 				this.advancedData.WhiteList.indexOf(tag),
 				1
 			);
 		},
+		// add while list item
 		setWhiteList() {
 			// let array = this.wihteListString.replace(/[\s\r\n]/g, "").split(";");
 			// this.advancedData.WhiteList = array;
@@ -558,18 +590,21 @@ export default {
 			this.advancedData.wihteListString = "";
 			this.toGetPrice();
 		},
+		// open while list input for add while list item
 		showWhitelistInput() {
 			this.switchToggle.whiteListInput = true;
 			this.$nextTick(() => {
 				this.$refs.saveTagInput.$refs.input.focus();
 			});
 		},
+		// get price when storageCycleNumber and storageCycleSelected be changed
 		setDuration() {
 			this.advancedData.Duration =
 				this.storageCycleNumber * this.BASE[this.storageCycleSelected];
 			this.formatVerificationCycleNumber();
 			this.toGetPrice();
 		},
+		// get price when verificationCycleNumber and verificationCycleSelected be changed
 		setDataInterval() {
 			this.formatVerificationCycleNumber();
 			console.log("verificationCycleNumber is: ");
@@ -579,6 +614,7 @@ export default {
 				this.BASE[this.verificationCycleSelected];
 			this.toGetPrice();
 		},
+		// format verificationCycleNumber value
 		formatVerificationCycleNumber() {
 			console.log("before foramt verificationCycleNumber is ");
 			console.log(this.verificationCycleNumber);
@@ -589,9 +625,10 @@ export default {
 				)
 			);
 		},
+		// go filebox page
 		toEmptyUpload() {
-			this.uploadFormData.Path = "";
-			this.uploadFormData.Desc = "";
+			// this.uploadFormData.Path = "";
+			// this.uploadFormData.Desc = "";
 			this.uploadFormData.EncryptPassword = "";
 			this.fileSize = 0;
 			this.switchToggle.advanced = false;
@@ -599,6 +636,7 @@ export default {
 				name: "filebox"
 			});
 		},
+		// open password dialog
 		OpenPasswordDialog() {
 			if (!this.switchToggle.upload) return;
 			this.$refs.uploadForm.validate(valid => {
@@ -609,73 +647,147 @@ export default {
 				});
 			});
 		},
+		// to upload file
 		toUploadFile() {
 			this.$refs["passwordForm"].validate(valid => {
+				// checkout
 				if (!valid) return;
 				this.switchToggle.upload = false; // set toggle
-				// const MAX_STORAGE = 1024 * 1024 * 1024 * 4;
+				let commitAll = [];
+				let data = null;
+				for(let file of this.uploadFormData.Files) {
+					let params = {
+						Path: file.filePath,
+						Desc: file.fileName,
+						EncryptPassword: this.uploadFormData.EncryptPassword,
+						StoreType: this.switchToggle.advanced ? 1 : 0,
+						Password: this.passwordForm.Password
+					}
+					params = this.switchToggle.advanced
+					? Object.assign({}, params, this.advancedData)
+					: params;
+					delete params.wihteListString;
+					commitAll.push(this.getToUploadFilePromise(params));
+				}
 				// if (this.fileSize > MAX_STORAGE) {
 				// 	this.$message.error("A single file cannot be larger than 4GB");
 				// 	return;
 				// }
-				// this.switchToggle.loading = this.$loading({
-				//   lock: true,
-				//   text: "Uploading..",
-				//   target: ".loading-content.upload-loading"
-				// });
-				let data = null;
-				data = this.switchToggle.advanced
-					? Object.assign({}, this.uploadFormData, this.advancedData)
-					: this.uploadFormData;
-				data.Password = this.passwordForm.Password;
-				data.StoreType = this.switchToggle.advanced ? 1 : 0;
-				delete data.wihteListString;
-				delete data.FileSize;
-				this.$axios
-					.post(this.$api.upload, data, {
-						loading: {
-							text: "Uploading..",
-							target: ".loading-content.upload-loading"
+				
+				// format params
+				// let data = null;
+				// data = this.switchToggle.advanced
+				// 	? Object.assign({}, this.uploadFormData, this.advancedData)
+				// 	: this.uploadFormData;
+				// data.Password = this.passwordForm.Password;
+				// data.StoreType = this.switchToggle.advanced ? 1 : 0;
+				// delete data.wihteListString;
+				this.switchToggle.loading = this.$loading({
+					text: "Uploading..",
+					target: ".loading-content.upload-loading"
+				});
+				this.$axios.all(commitAll).then((resArr) => {
+					this.switchToggle.loading && this.switchToggle.loading.close();
+					console.log(resArr);
+					// is not have success task
+					let flag = false;
+					// error task list
+					let error = [];
+					this.switchToggle.upload = true;
+					for(let res of resArr) {
+						if(res.Error === 0) {
+							flag = true;
+						} else {
+							error.push(res);
 						}
-					})
-					.then(res => {
-						if (res.Error === 0) {
-							this.switchToggle.upload = true;
-							this.passwordForm.show = false;
-							this.$store.dispatch("setUpload");
-							this.$router.push({
-								name: "transfer",
-								query: { transferType: 1 }
-							});
+					}
+					// if have success link transfer 
+					if(flag) {
+						this.passwordForm.show = false;
+						this.$store.dispatch("setUpload");
+						this.$router.push({
+							name: "transfer",
+							query: { transferType: 1 }
+						});
+						// is not all task success
+						if(error.length === 0) {
 							this.$message({
 								type: "success",
 								message: "Start Upload"
 							});
-						} else {
-							this.$message.error(
-								this.$i18n.error[res.Error]
-									? this.$i18n.error[res.Error][this.$language]
-									: `error code is ${res.Error}`
-							);
-							this.switchToggle.upload = true;
 						}
-					})
-					.catch(e => {
-						if (!e.message.includes("timeout")) {
-							this.$message.error("Network Error. Upload File Failed!");
+					}
+					// if have error show message
+					if(error.length != 0) {
+						let errorMsg = '';
+						for(let value of error) {
+							errorMsg += `<p>`
+							errorMsg += `${value.FileName || ''}` 
+							errorMsg += this.$i18n.error[value.Error]
+								? this.$i18n.error[value.Error][this.$language]
+								: `error code is ${value.Error}`
+							errorMsg += `</p>`;
 						}
-					});
+						this.$message.error({
+							dangerouslyUseHTMLString: true,
+							message: errorMsg
+						});
+					}
+				}).catch(e => {
+					this.switchToggle.loading && this.switchToggle.loading.close();
+				})
+				// this.$axios
+				// 	.post(this.$api.upload, data, {
+				// 		loading: {
+				// 			text: "Uploading..",
+				// 			target: ".loading-content.upload-loading"
+				// 		}
+				// 	})
+				// 	.then(res => {
+				// 		if (res.Error === 0) {
+				// 			this.switchToggle.upload = true;
+				// 			this.passwordForm.show = false;
+				// 			this.$store.dispatch("setUpload");
+				// 			this.$router.push({
+				// 				name: "transfer",
+				// 				query: { transferType: 1 }
+				// 			});
+				// 			this.$message({
+				// 				type: "success",
+				// 				message: "Start Upload"
+				// 			});
+				// 		} else {
+				// 			this.$message.error(
+				// 				this.$i18n.error[res.Error]
+				// 					? this.$i18n.error[res.Error][this.$language]
+				// 					: `error code is ${res.Error}`
+				// 			);
+				// 			this.switchToggle.upload = true;
+				// 		}
+				// 	})
+				// 	.catch(e => {
+				// 		if (!e.message.includes("timeout")) {
+				// 			this.$message.error("Network Error. Upload File Failed!");
+				// 		}
+				// 	});
 			});
 		},
-		toGetPrice() {
-			if (!this.switchToggle.advanced) {
-				this.uploadPrice = DEFAULT_UPLOAD_PRICE;
-				return;
+		getToUploadFilePromise(data) {
+			return this.$axios
+				.post(this.$api.upload, data)
+		},
+		toGetFileSize() {
+			let fileSize = 0;
+			for(let value of this.uploadFormData.Files) {
+				fileSize += value.fileBytes
 			}
-			// let Path = encodeURIComponent(this.uploadFormData.Path);
+			this.fileSize = fileSize;
+		},
+		toGetPricePromise({filePath}) {
 			const path = ipcRenderer.sendSync(
 				"string-to-hex",
-				this.uploadFormData.Path
+				filePath
+				// this.uploadFormData.Path
 			);
 			const duration = this.advancedData.Duration;
 			const interval = this.advancedData.Interval;
@@ -685,29 +797,60 @@ export default {
 					? this.advancedData.WhiteList.length
 					: 0;
 			const storeType = this.switchToggle.advanced ? 1 : 0;
-			if (!path) return;
-			this.$axios
+			// if (!path) return;
+			return this.$axios
 				.get(this.$api.uploadfee + path, {
 					params: { duration, interval, copyNum, whitelistCount, storeType }
 				})
-				.then(res => {
+		},
+		// get price
+		toGetPrice() {
+			if (!this.switchToggle.advanced) {
+				this.uploadPrice = parseFloat((DEFAULT_UPLOAD_PRICE * (this.uploadFormData.Files.length || 1)).toFixed(2));
+				return;
+			}
+			const commitAll = [];
+			if (this.uploadFormData.Files.length === 0) {
+				this.uploadPrice = DEFAULT_UPLOAD_PRICE;
+				return;
+			};
+			for(let file of this.uploadFormData.Files) {
+				commitAll.push(this.toGetPricePromise(file));
+			}
+			this.$axios.all(commitAll).then((resArr) => {
+				let storageFee = 0;
+				let validateFee = 0;
+				let contractFee = 0;
+				for(let res of resArr) {
 					if (res.Error === 0) {
-						console.log(res);
-						// this.uploadPrice = res.Result.FeeFormat;
-						let uploadPriceResult =
-							(parseFloat(res.Result.TxFeeFormat) || 0) +
-							(parseFloat(res.Result.StorageFeeFormat) || 0) +
-							(parseFloat(res.Result.ValidFeeFormat) || 0);
-						this.uploadPrice = parseFloat(uploadPriceResult.toFixed(9)); // format
-						this.uploadPriceInfo = res.Result;
+						storageFee += res.Result.StorageFee;
+						validateFee += res.Result.ValidFee;
+						contractFee += res.Result.TxFee;
 					} else {
 						this.$message.error(
 							this.$i18n.error[res.Error]
 								? this.$i18n.error[res.Error][this.$language]
 								: `error code is ${res.Error}`
 						);
+						return;
 					}
-				});
+				};
+
+				let uploadPriceResult =
+					(parseFloat(contractFee) || 0) +
+					(parseFloat(storageFee) || 0) +
+					(parseFloat(validateFee) || 0);
+				this.uploadPrice = parseFloat(uploadPriceResult.toFixed(9)/Math.pow(10,9)); // format
+				this.uploadPriceInfo = {
+					TxFeeFormat: (contractFee/Math.pow(10,9)),
+					StorageFeeFormat: (storageFee/Math.pow(10,9)),
+					ValidFeeFormat: (validateFee/Math.pow(10,9))
+				};
+			}).catch(e => {
+				this.$message.error(
+					'Get Price Failes'
+				)
+			})
 		},
 		hiddenAdvanced() {
 			if (!this.space || (this.space.Used === 0 && this.space.Remain === 0)) {
@@ -849,6 +992,10 @@ $inputFocusBg: #dee2ea;
 		}
 		.form-vertical {
 			position: relative;
+			&.select-file-wrapper {
+				border-bottom: 0;
+				padding-bottom: 0;
+			}
 			label {
 				font-size: 14px;
 				color: #202020;
@@ -868,6 +1015,21 @@ $inputFocusBg: #dee2ea;
 				}
 				.light-blue {
 					color: #409ef7;
+				}
+				.path-wrapper {
+					width: 100%;
+					height: 100px;
+					margin-top: 45px;
+					clear: both;
+					border: 1px dashed rgba(4, 15, 57, 0.2);
+					padding: 10px 15px;
+					overflow: auto; 
+					.el-tag {
+						margin-right: 20px;
+					}
+				}
+				.browser-layout {
+					top: 10px;
 				}
 			}
 		}
@@ -919,7 +1081,7 @@ $inputFocusBg: #dee2ea;
 				width: 100%;
 				height: 110px;
 				margin-bottom: 15px;
-				overflow: auto;
+				overflow: auto; 
 				.el-tag {
 					margin-right: 20px;
 				}

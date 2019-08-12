@@ -124,7 +124,7 @@
 						prop="Interval"
 					>
 						<p class="dark-grey tootips">Integrity Verification Cycle cannot be longer than Storage Cycle</p>
-						<el-input-number
+						<el-input
 							:precision='0'
 							v-model="verificationCycleNumber"
 							:min='0'
@@ -132,7 +132,7 @@
 							@change="setDataInterval"
 							class="form-right-second-inside"
 							type="number"
-						></el-input-number>
+						></el-input>
 						<el-select
 							class="form-right"
 							v-model="verificationCycleSelected"

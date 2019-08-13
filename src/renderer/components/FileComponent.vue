@@ -129,12 +129,12 @@
 								class="file-progress flex1 ai-center mr10"
 								:class="{'progressAnimate': scope.row.Status != 4 && scope.row.Status != 0}"
 								v-if="(scope.row.Type === 2) || (scope.row.Type === 1)"
-								:percentage="parseInt((scope.row.Progress||0)*100)"
+								:percentage="Math.ceil((scope.row.Progress||0)*100)"
 								:show-text="false"
 							></el-progress>
 							<span class="tr speed-content">
 								<span>
-									{{parseInt((scope.row.Progress||0)*100)}}%
+									{{Math.ceil((scope.row.Progress||0)*100)}}%
 								</span>
 								<span class="theme-font-blue-40">
 									({{taskSpeed[scope.row.Id] && util.bytesToSize((taskSpeed[scope.row.Id].speed * 1024)) || '0 Byte'}}/s)
@@ -400,17 +400,17 @@
 					<template v-if="transferType === 1">
 						<li
 							class="flex tr"
-							v-for="(item,index) in fileDetailNodes"
+							v-for="(item, index) in fileDetailNodes"
 							:key="item.HostAddr"
 						>
-							<div class="node-name pr30">Node {{index+1}}:</div>
+							<div class="node-name pr30">Node{{index+1}}:</div>
 							<!-- more-than-5 class: gt text color is white lt text color is #202020-->
 							<div class="node-process">
 								<el-progress
 									:text-inside="true"
 									:stroke-width="14"
 									class="file-progress"
-									:percentage="parseInt(((item.UploadSize?item.UploadSize:item.DownloadSize)/fileObjById[detailId].FileSize)*100)"
+									:percentage="Math.ceil(((item.UploadSize?item.UploadSize:item.DownloadSize)/fileObjById[detailId].FileSize)*100)"
 									:class="{'more-than-5': (((item.UploadSize?item.UploadSize:item.DownloadSize)/fileObjById[detailId].FileSize) < 0.05),'progressAnimate': fileObjById[detailId].Status != 4 && fileObjById[detailId].Status != 0}"
 								></el-progress>
 							</div>
@@ -419,6 +419,28 @@
 								class="file-size tr theme-font-blue-40"
 								v-if="fileObjById[detailId]"
 							>{{util.bytesToSize(item.UploadSize*1024 || item.DownloadSize*1024)}}/{{util.bytesToSize(fileObjById[detailId].FileSize * 1024)}}</div>
+						</li>
+					</template>
+					<template v-else-if="transferType === 2">
+						<li class="flex tr no-border">
+							<div class="node-name pr30">Source Node:</div>
+							<div>
+								<div
+									class="tl flex mb10"
+									v-for="(item, index) in fileDetailNodes"
+									:key="item.HostAddr"
+								>
+									<div class="node-content-first theme-font-blue-70">
+										Node{{index+1}}
+									</div>
+									<div class="node-content-second theme-font-blue-40">
+										{{util.bytesToSize(item.UploadSize*1024 || item.DownloadSize*1024)}}
+									</div>
+									<div class="node-content-third theme-font-blue-40">
+										{{nodeSpeed[item.HostAddr] && util.bytesToSize(nodeSpeed[item.HostAddr].speed*1024) || '0 Byte'}}/s
+									</div>
+								</div>
+							</div>
 						</li>
 					</template>
 				</ul>
@@ -542,7 +564,7 @@ export default {
 					FileHash: "QmdUW37NcoT4YdkjgPinNFFT6CGHLRRcXQ5SNzrLqT123123JVpd",
 					FileName: "传输管理.png",
 					Type: 1,
-					Status: 4,
+					Status: 3,
 					DetailStatus: 1,
 					CopyNum: 2,
 					Path:
@@ -623,11 +645,22 @@ export default {
 	},
 	computed: {
 		totalProgress: function() {
-			let progress = 0;
+			// let progress = 0;
+			// let fileList = 0;
+			let transferSize = 0;
+			let transferTotal = 0;
 			this.fileList.map(file => {
-				progress += file.Progress;
+				if (file.Status !== 0 && file.Status !== 4) {
+					if (this.transferType === 1) {
+						transferSize += file.UploadSize;
+						transferTotal += file.FileSize * (file.CopyNum + 1);
+					} else {
+						transferSize += file.DownloadSize;
+						transferTotal += file.FileSize;
+					}
+				}
 			});
-			return parseFloat((progress / this.fileList.length).toFixed(2)) || 0;
+			return transferSize / transferTotal || 0;
 		},
 		fileList: function() {
 			// return this.mockFileList;
@@ -1296,10 +1329,7 @@ export default {
 				let oldNodeSpeed = this.nodeSpeed;
 				let newNodeSpeed = {};
 				for (let value of this.fileDetailNodes) {
-					let uploadOrDownloadSize =
-						value.UploadSize === undefined
-							? value.DownloadSize
-							: value.UploadSize;
+					let uploadOrDownloadSize = value.UploadSize || value.DownloadSize;
 					// let speed =
 					// 	uploadOrDownloadSize -
 					// 	(oldNodeSpeed[value.HostAddr] !== undefined
@@ -1485,6 +1515,18 @@ $light-grey: #f9f9fb;
 				}
 				&.pb0 {
 					padding-bottom: 0;
+				}
+				.node-content-first {
+					width: 129px;
+					text-align: left;
+				}
+				.node-content-second {
+					width: 129px;
+					text-align: center;
+				}
+				.node-content-third {
+					width: 129px;
+					text-align: right;
 				}
 			}
 		}

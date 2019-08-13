@@ -53,6 +53,7 @@
 				<el-input
 					class="transfer-input grey-theme"
 					type="number"
+					ref="transferAmount"
 					min='0'
 					v-model="transferInfo.Amount"
 					placeholder="Input Amount"
@@ -145,6 +146,13 @@ export default {
 				return;
 			}
 			this.withDraw = !this.withDraw;
+			const INIT_AMOUNT = "";
+			if (this.transferInfo.Amount !== INIT_AMOUNT) {
+				this.$refs.transferAmount.$refs.input.focus();
+				this.$nextTick(() => {
+					this.$refs.transferAmount.$refs.input.blur();
+				});
+			}
 		},
 		setFixed() {
 			this.transferInfo.Amount = this.transferInfo.Amount

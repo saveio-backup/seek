@@ -172,6 +172,28 @@
 					</div>
 				</div>
 			</el-dialog>
+			<el-dialog
+				center
+				width="600px"
+				:close-on-click-modal='false'
+				:visible.sync="linkUploadDialogVisible"
+			>
+				<div slot="title">
+					<h2>Go Upload</h2>
+					<div class="dialog-title-border"></div>
+				</div>
+				<div class="loading-content">
+					<p class="mt10 mb30 ft14">You can now upload files via Primary mode.</p>
+					<div slot="footer">
+						<el-button @click="linkUploadDialogVisible = false">Cancel</el-button>
+						<el-button
+							type="primary"
+							class="primary"
+							@click="linkUpload"
+						>Update</el-button>
+					</div>
+				</div>
+			</el-dialog>
 		</div>
 	</div>
 </template>
@@ -235,6 +257,7 @@ export default {
 			},
 			cost: {},
 			expandDialogVisible: false,
+			linkUploadDialogVisible: false,
 			Records: [],
 			limit: 20,
 			mockRecords: [
@@ -477,6 +500,11 @@ export default {
 			}
 			return true;
 		},
+		linkUpload() {
+			this.$router.push({
+				name: "upload"
+			});
+		},
 		setUserSpace() {
 			if (!this.submitToggle) return;
 			const checkRes = this.setUserSpaceCheckRes();
@@ -510,15 +538,22 @@ export default {
 				.then(res => {
 					if (res.Error === 0) {
 						this.expandDialogVisible = false;
-						this.$message({
-							message: "Get storage successed.",
-							type: "success"
-						});
-						this.$store.dispatch("setSpace");
-						this.getUserSpaceRecords(this.Records.length + 1);
-						this.setDateValue(); // no param  rest date.Type = 0
-						this.cost = {};
-						this.submitToggle = true;
+						if (this.space.Remain + this.space.Used === 0) {
+							this.linkUploadDialogVisible = true;
+						}
+						setTimeout(() => {
+							this.$nextTick(() => {
+								this.$message({
+									message: "Get storage successed.",
+									type: "success"
+								});
+								this.$store.dispatch("setSpace");
+								this.getUserSpaceRecords(this.Records.length + 1);
+								this.setDateValue(); // no param  rest date.Type = 0
+								this.cost = {};
+								this.submitToggle = true;
+							});
+						}, 50);
 					} else {
 						this.$message.error(
 							this.$i18n.error[res.Error]

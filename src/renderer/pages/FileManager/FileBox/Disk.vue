@@ -91,11 +91,9 @@
 										v-if="page === 'filebox'"
 										class="active-blue cursor-pointer"
 										title="Download"
+										@click.stop="downloadFile(scope.row)"
 									>
-										<i
-											@click.stop="downloadFile(scope.row)"
-											class="el-icon-download ft18"
-										></i>
+										<i class="el-icon-download ft18"></i>
 									</span>
 									<span
 										v-if="page === 'filebox'"

@@ -88,7 +88,7 @@
 				center
 			>
 				<div slot="title">
-					<h2>Channel Select</h2>
+					<h2>Channel Switch</h2>
 					<div class="dialog-title-border"></div>
 				</div>
 				<div class="loading-content">

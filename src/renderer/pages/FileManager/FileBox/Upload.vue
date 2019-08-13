@@ -37,8 +37,9 @@
 					<el-form-item
 						class="form-vertical"
 						label="File Size:"
+						prop="FileSize"
 					>
-						<p class="light-blue">{{util.bytesToSize(fileSize) || '0.00 GB'}}</p>
+						<p class="light-blue">{{util.bytesToSize(uploadFormData.FileSize) || '0.00 GB'}}</p>
 					</el-form-item>
 					<el-form-item label="Encryption:">
 						<el-select
@@ -329,6 +330,14 @@ import { connect } from "net";
 const DEFAULT_UPLOAD_PRICE = 0.03;
 export default {
 	data() {
+		let validateEncryptFileSize = (rule, value, callback) => {
+			if (!this.switchToggle.advanced && (!this.space || (this.space.Remain*1024 < value))) {
+				callback(new Error(`Insufficient remaining storage space, currently ${this.util.bytesToSize(this.space.Remain * 1024)} remaining.`));				
+			} else if (value > 4 * 1024 * 1024 * 1024) {
+				callback(new Error(`A single file cannot be larger than 4GB`));				
+			}
+			callback();
+		}
 		let validateEncryptPassword = (rule, value, callback) => {
 			// encryptionToggle
 			if (!this.encryptionToggle) {
@@ -391,11 +400,18 @@ export default {
 			uploadFormData: {
 				Path: "",
 				Desc: "",
+				FileSize: 0,
 				EncryptPassword: "" // Encryption
 			},
 			rules: {
 				Path: [
 					{ required: true, message: "Please select a file", trigger: "blur" }
+				],
+				FileSize: [
+					{
+						validator: validateEncryptFileSize,
+						trigger: "change"
+					}
 				],
 				EncryptPassword: [
 					{
@@ -470,6 +486,7 @@ export default {
 			this.switchToggle.advanced = true;
 			this.setDataInterval();
 			if (!this.remindToggle.noAllowRemind) this.remindToggle.show = true;
+			this.$refs.uploadForm.validateField('FileSize');
 		},
 		advancedDataInit() {
 			this.uploadPriceInfo = null;
@@ -508,6 +525,8 @@ export default {
 			ipcRenderer.send("upload-file-dialog");
 			ipcRenderer.once("selected-upload", (event, content) => {
 				this.fileSize = content.fileBytes;
+				this.uploadFormData.FileSize = content.fileBytes;
+				this.$refs.uploadForm.validateField('FileSize');
 				this.uploadFormData.Path = content.filePath;
 				this.uploadFormData.Desc = content.fileName;
 				this.toGetPrice();
@@ -594,11 +613,11 @@ export default {
 			this.$refs["passwordForm"].validate(valid => {
 				if (!valid) return;
 				this.switchToggle.upload = false; // set toggle
-				const MAX_STORAGE = 1024 * 1024 * 1024 * 4;
-				if (this.fileSize > MAX_STORAGE) {
-					this.$message.error("A single file cannot be larger than 4GB");
-					return;
-				}
+				// const MAX_STORAGE = 1024 * 1024 * 1024 * 4;
+				// if (this.fileSize > MAX_STORAGE) {
+				// 	this.$message.error("A single file cannot be larger than 4GB");
+				// 	return;
+				// }
 				// this.switchToggle.loading = this.$loading({
 				//   lock: true,
 				//   text: "Uploading..",
@@ -611,6 +630,7 @@ export default {
 				data.Password = this.passwordForm.Password;
 				data.StoreType = this.switchToggle.advanced ? 1 : 0;
 				delete data.wihteListString;
+				delete data.FileSize;
 				this.$axios
 					.post(this.$api.upload, data, {
 						loading: {
@@ -696,6 +716,7 @@ export default {
 			this.advancedDataInit();
 			this.switchToggle.advanced = false;
 			this.setDataInterval();
+			this.$refs.uploadForm.validateField('FileSize');
 		}
 	},
 	computed: {

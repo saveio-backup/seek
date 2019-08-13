@@ -30,20 +30,15 @@
 
 			<!-- upload cancel btn -->
 
-			<!-- :class="{'not-allow-opeation':!show}"
-				title="Comming Soon..." -->
 			<el-button
 				v-if="transferType === 1"
 				@click="openPassword()"
 			>Cancel All</el-button>
 
 			<!-- download cancel -->
-
-			<!-- title="Comming Soon..."
-				:class="{'not-allow-opeation':!show}" -->
 			<el-button
 				v-if="transferType === 2"
-				@click="cancelAll"
+				@click="openConfirmCancelDownload('all')"
 			>Cancel All</el-button>
 			<el-button
 				v-if="transferType !== 0"
@@ -231,7 +226,7 @@
 								:class="{'not-allow-opeation':show}"
 								:title="show ? 'Comming Soon...' : scope.row.IsUploadAction ? 'Cancel to Upload':'Cancel to Download'"
 								v-show="transferType === 2"
-								@click="uploadOrDownloadCancel(scope.row, transferType)"
+								@click="openConfirmCancelDownload(scope.row)"
 							><i class="ofont ofont-guanbi"></i></span>
 							<span
 								class="active-blue cursor-pointer"
@@ -397,6 +392,16 @@
 							v-if="fileObjById[detailId]"
 						>{{fileObjById[detailId].FileHash}}</div>
 					</li>
+					<li
+						v-if="transferType !== 1"
+						class="flex tr no-border"
+					>
+						<div class="node-name pr30">Consumption:</div>
+						<div
+							class="theme-font-blue-40 node-value"
+							v-if="fileObjById[detailId]"
+						>{{fileObjById[detailId].DownloadSize / Math.pow(10, 9)}} SAVE</div>
+					</li>
 					<template v-if="transferType === 1">
 						<li
 							class="flex tr"
@@ -452,6 +457,35 @@
 				</div>
 			</div>
 		</el-dialog>
+		<!-- confirm cancel download task dialog -->
+		<el-dialog
+			width="600px"
+			:close-on-click-modal='false'
+			:visible.sync="switchToggle.confirmCancelDownloadDialog"
+			class="download-file-detail"
+			center
+		>
+			<div slot="title">
+				<h2>Task Delete</h2>
+				<div class="dialog-title-border"></div>
+			</div>
+			<div class="loading-content">
+				<p class="mb20 mt10">
+					Are you sure you want to delete the selected task?
+				</p>
+				<div slot="footer">
+					<el-button
+						type="primary"
+						@click="switchToggle.confirmCancelDownloadDialog=false"
+					>Cancel</el-button>
+					<el-button
+						class="primary"
+						type="primary"
+						@click="cancelDownload"
+					>Confirm</el-button>
+				</div>
+			</div>
+		</el-dialog>
 		<!-- complete page upload dialog-->
 		<upload-file-detail-dialog
 			@closeUploadFileDetail="toCloseUploadFileDetail"
@@ -504,7 +538,6 @@ import util from "../assets/config/util";
 import downloadDialog from "./DownloadDialog.vue";
 import uploadFileDetailDialog from "./UploadFileDetailDialog.vue";
 import { shell } from "electron";
-import { setInterval, clearInterval } from "timers";
 export default {
 	props: {
 		transferType: {
@@ -528,13 +561,15 @@ export default {
 				decryptDialog: false,
 				detailDialog: false,
 				passwordDialog: false,
-				downloadDetailDialog: false
+				downloadDetailDialog: false,
+				confirmCancelDownloadDialog: false
 			},
 			TransferConfig: [
 				"completeTransferList",
 				"uploadTransferList",
 				"downloadTransferList"
 			],
+			confirmCancelTask: null,
 			detailId: "",
 			uploadDetailHash: "",
 			transferItem: {},
@@ -608,7 +643,7 @@ export default {
 						"C:\\Users\\qwews\\Desktop\\Seeker交互图\\交互原型图PNG版\\传输管理.png",
 					IsUploadAction: true,
 					UploadSize: 2072,
-					DownloadSize: 0,
+					DownloadSize: 3678121520,
 					FileSize: 1024,
 					Nodes: [
 						{
@@ -718,6 +753,36 @@ export default {
 		}
 	},
 	methods: {
+		// dialog confirm cancel download
+		cancelDownload() {
+			this.switchToggle.confirmCancelDownloadDialog = false;
+			if(this.confirmCancelTask && this.confirmCancelTask.Id) {
+				this.uploadOrDownloadCancel(this.confirmCancelTask, this.transferType);
+			} else if(this.confirmCancelTask === 'all') {
+				this.cancelAll();
+			}
+		},
+		/**
+		 * open confirm cancel download dialog
+		 * params
+		 * task 'all':cancel all task  task: cancel the task
+		 */
+		openConfirmCancelDownload(task) {
+			const type = this.transferType;
+			if(task === 'all') {
+				const arr = this.getTask(type, 0, 1, 2, 4);
+				if (arr.length === 0) {
+					this.$message({
+						message: "There are no tasks to cancel"
+					});
+					return;
+				}
+				this.confirmCancelTask = task;
+			} else {
+				this.confirmCancelTask = Object.assign({}, task);
+			}
+			this.switchToggle.confirmCancelDownloadDialog = true;
+		},
 		// cancel task
 		toCancel() {
 			// to do!!!!!
@@ -970,17 +1035,27 @@ export default {
 							this.switchToggle.passwordDialog = false;
 						}
 						//get error list
-						let errorArr = [];
+						let errorMsg = ''
 						for (let value of res.Result.Tasks) {
 							if (value && value.Code) {
-								errorArr.push(value);
+								errorMsg += `<p>`
+								errorMsg += `${value.FileName || ''}` 
+								errorMsg += this.$i18n.error[value.Error]
+									? this.$i18n.error[value.Error][this.$language]
+									: `error code is ${value.Error}`
+								errorMsg += `</p>`;
 							}
 						}
 						//if no err
-						if (errorArr.length === 0) {
+						if (errorMsg.length === 0) {
 							this.$message({
 								message: "Opeation Success",
 								type: "success"
+							});
+						} else {
+							this.$message.error({
+								dangerouslyUseHTMLString: true,
+								message: errorMsg
 							});
 						}
 					} else {

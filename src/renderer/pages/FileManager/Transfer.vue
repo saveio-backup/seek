@@ -2,7 +2,28 @@
 	<div id="transfer">
 		<div class="aside">
 			<div class="aside-link">
-				<p
+				<router-link
+					class="transform-link"
+					:to="{name:'transfer',query:{transferType:1}}"
+					:class="{'theme-font-blue-bold hover-link': transferType == 1}"
+				><span><i class="ofont ofont-shangchuan"></i>Upload</span> <span
+						class="badge"
+						v-show="uploadLength>0"
+					>{{uploadLength}}</span></router-link>
+				<router-link
+					class="transform-link"
+					:to="{name:'transfer',query:{transferType:2}}"
+					:class="{'theme-font-blue-bold hover-link': transferType == 2}"
+				><i class="ofont ofont-xiazai2"></i>Download <span
+						class="badge"
+						v-show="downloadLength>0"
+					>{{downloadLength}}</span></router-link>
+				<router-link
+					class="transform-link"
+					:to="{name:'transfer',query:{transferType:0}}"
+					:class="{'theme-font-blue-bold hover-link': transferType == 0}"
+				><i class="ofont ofont-wancheng"></i>Complete</router-link>
+				<!-- <p
 					class="transform-link"
 					:class="{'theme-font-blue-bold hover-link': transferType == 1}"
 					@click="transferType = 1"
@@ -22,7 +43,7 @@
 					class="transform-link"
 					:class="{'theme-font-blue-bold hover-link': transferType == 0}"
 					@click="transferType = 0"
-				><i class="ofont ofont-wancheng"></i>Complete</p>
+				><i class="ofont ofont-wancheng"></i>Complete</p> -->
 			</div>
 		</div>
 		<div class="layout-main">
@@ -43,6 +64,7 @@
 </template>
 <script>
 import fileComponent from "../../components/FileComponent.vue";
+import { ipcRenderer } from "electron";
 export default {
 	components: {
 		fileComponent
@@ -51,6 +73,13 @@ export default {
 		return {
 			transferType: 2
 		};
+	},
+	mounted() {
+		ipcRenderer.on("queryto", (sender, query) => {
+			console.log("query is ");
+			console.log(query);
+			this.$router.push({ name: "transfer", query: query });
+		});
 	},
 	computed: {
 		downloadLength: function() {
@@ -69,10 +98,12 @@ export default {
 	},
 	beforeRouteUpdate(to, from, next) {
 		console.log("router update!!!!");
-		next(() => {
-			this.transferType =
-				to.query.transferType >= 0 ? to.query.transferType : 2;
-		});
+		console.log("to is");
+		console.log(to);
+		this.transferType = to.query.transferType >= 0 ? to.query.transferType : 2;
+		next();
+		console.log("transferType is");
+		console.log(this.transferType);
 	}
 };
 </script>

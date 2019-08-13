@@ -115,11 +115,11 @@ class View {
       this.favicon = favicons && favicons[0] ? favicons[0] : null
       this.browserWindow.webContents.send('forceUpdate');
     })
-    this.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL) => {
-      console.error('load Error!!!!!!!!')
-      console.error(errorDescription)
-      console.log(validatedURL)
-      this.webContents.executeJavaScript(`document.documentElement.innerHTML = '${errorPage}' `)
+    this.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL, isMainFrame) => {
+      if (!isMainFrame) return;
+      if (errorDescription == 'ERR_ABORTED' || errorCode == -3) return;
+      if (errorCode == 0) return;
+      this.webContents.executeJavaScript(`document.documentElement.innerHTML = '${errorPage(validatedURL)}' `)
     })
     this.webContents.on('new-window', this.onNewWindow.bind(this))
     this.webContents.on('dom-ready', () => {
@@ -193,7 +193,7 @@ class View {
       this.loadURL(url);
     }
   }
-  openComponent(path) {
+  openComponent(path, option) {
     const views = this.browserWindow.views;
     const view = views.find(item => {
       if (process.env.NODE_ENV !== 'development') {
@@ -205,6 +205,9 @@ class View {
     this.browserWindow.defaultUrl = DEFAULT_URL;
     this.browserWindow.addPath = path;
     if (view) {
+      if (option.vueRouter) {
+        view.webContents.send('queryto', option.query)
+      }
       view.setActive();
       // view.resize();
     } else {
@@ -214,14 +217,13 @@ class View {
     }
   }
   loadURL(newURL) {
-    console.log('loadURL!!!!');
     let newURLFormat = null;
     if (newURL) {
       newURLFormat = this.formatURL(newURL);
     } else {
       newURLFormat = this.formatURL(this.realURL);
     }
-    this.browserView.webContents.loadURL(newURLFormat.href)
+    this.browserView.webContents.loadURL(newURLFormat.href);
   }
   formatURL(newURL) {
 

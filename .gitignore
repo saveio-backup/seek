@@ -4,6 +4,7 @@ dist/web/*
 build/*
 !build/icons
 resources/win/edge.exe
+resources/win/edge-windows-amd64.exe
 resources/mac/edge
 resources/mac/edge-darwin-amd64
 resources/seek_releases

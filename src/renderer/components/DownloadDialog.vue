@@ -41,7 +41,7 @@ import { ipcRenderer, remote } from "electron";
 import util from "../assets/config/util";
 export default {
 	props: {
-		downloadUrl: {
+		parentDownloadUrl: {
 			required: false,
 			default: ""
 		}
@@ -49,13 +49,16 @@ export default {
 	data() {
 		return {
 			util,
+			downloadUrl: this.parentDownloadUrl,
 			formatUrl: "save://share/",
 			downloadInfo: {},
 			win: remote.getCurrentWindow()
 		};
 	},
 	mounted() {
+		console.log("exec mounted");
 		if (this.downloadUrl) {
+			console.log("download alive");
 			this.toGetFileInfo();
 		}
 	},
@@ -91,11 +94,17 @@ export default {
 				})
 				.then(res => {
 					if (res.Error === 0) {
-						this.$emit("closedialog");
+						this.$emit("closeDialog", { timeout: 0 });
 						this.$store.dispatch("setDownload");
+						this.downloadInfo = {};
 						this.win.views
 							.find(view => view.isActive)
-							.openComponent("FileManager/transfer");
+							.openComponent("FileManager/transfer", {
+								vueRouter: true,
+								query: {
+									transferType: 2
+								}
+							});
 					} else {
 						if (res.Error === 50028) {
 							this.$message.error(
@@ -109,9 +118,10 @@ export default {
 							);
 						}
 					}
-				}).catch(e => {
-					if(!e.message.includes('timeout')) {
-						this.$message.error('Network Error. Download Failed!');
+				})
+				.catch(e => {
+					if (!e.message.includes("timeout")) {
+						this.$message.error("Network Error. Download Failed!");
 					}
 				});
 		}

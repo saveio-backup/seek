@@ -28,7 +28,7 @@
 					<div class="dialog-title-border"></div>
 				</div>
 				<download-dialog
-					:downloadUrl='downloadUrl'
+					:parentDownloadUrl='downloadUrl'
 					@closeDialog="closeDialog"
 				>
 				</download-dialog>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,25 +8,40 @@
 </head>
 <style>
   body {
-    color:gray;
+    color: gray;
     text-align: center;
     display: flex;
     justify-content: center;
     margin: 14vh auto 0;
     max-width: 600px;
     width: 100%;
-  } 
-  h2{
-      color:#000;
-    }
+  }
+
+  h2 {
+    color: #000;
+  }
+
+  .primary {
+    display: inline-block;
+    color: #fff;
+    background: #2F8FF0;
+    border: none;
+    padding: 0 25px;
+    min-width: 80px;
+    height: 33px;
+    background: linear-gradient(90deg, rgba(19, 175, 250, 1) 0%, rgba(62, 126, 235, 1) 100%);
+    box-shadow: 0px 4px 6px 0px rgba(111, 139, 173, 0.21);
+    border-radius: 16px;
+  }
 </style>
+
 <body>
   <div>
     <i class="ofont ofont-yemiandiushi"></i>
     <img src="../images/load_failed.svg" alt="">
     <h2>Oops, the page you visited does not exist.</h2>
     <p>Could not find DNS address from </p>
-    <a onclick="location.reload()">Reload</a>
+    <a class="primary" onclick="location.reload()">Reload</a>
   </div>
 </body>
 

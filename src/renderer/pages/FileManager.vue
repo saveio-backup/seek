@@ -36,7 +36,7 @@
 					 active-class="active-blue"
 					>Discovery</router-link> -->
 					<router-link
-						:to="{name:'transfer'}"
+						:to="{name:'transfer',query:{transferType:2}}"
 						class="user-no-select"
 						active-class="active-blue"
 					>Transfer <span

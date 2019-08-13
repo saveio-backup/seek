@@ -102,12 +102,12 @@
 				<el-table-column
 					label="Status"
 					v-if="transferType === 0"
-					min-width="150"
+					min-width="180"
 				>
 					<template slot-scope="scope">
 						<div
 							v-if="scope.row.Status === 3"
-							class="light-blue"
+							class="light-blue break-word"
 						>
 							<i
 								class="ofont mr10 ft16"
@@ -172,7 +172,7 @@
 					min-width="150"
 				>
 					<template slot-scope="scope">
-						<span>
+						<span class="break-word">
 							{{$dateFormat.formatTimeByTimestamp(scope.row.UpdatedAt*1000)}}
 						</span>
 					</template>
@@ -563,9 +563,9 @@ export default {
 					Id: "c3c94084-b8bf-11e9-837c-74e5f93a476b",
 					FileHash: "QmdUW37NcoT4YdkjgPinNFFT6CGHLRRcXQ5SNzrLqT123123JVpd",
 					FileName: "传输管理.png",
-					Type: 1,
+					Type: 2,
 					Status: 3,
-					DetailStatus: 1,
+					DetailStatus: 20,
 					CopyNum: 2,
 					Path:
 						"C:\\Users\\qwews\\Desktop\\Seeker交互图\\交互原型图PNG版\\传输管理.png",

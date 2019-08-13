@@ -69,10 +69,11 @@
 					></el-table-column>
 
 					<!-- prop="Name" -->
+						<!-- min-width="350" -->
 					<el-table-column
 						label="File Name"
-						width="500"
 						class-name="rowName"
+						min-width="150"
 					>
 						<template slot-scope="scope">
 							<div class="flex between">
@@ -127,7 +128,7 @@
 					</el-table-column>
 					<el-table-column
 						label="Model"
-						min-width="100"
+						width="100"
 						v-if="page === 'filebox'"
 					>
 						<template slot-scope="scope">
@@ -139,6 +140,7 @@
 					<el-table-column
 						label="Owner"
 						v-if="page ==='miner'"
+						min-width="120"
 					>
 						<template slot-scope="scope">
 							<span class="td-grey">{{scope.row.OwnerAddress || 'Nameless'}}</span>
@@ -148,9 +150,10 @@
 					<el-table-column
 						label="Size"
 						column-key="Size"
+						min-width="70"
 					>
 						<template slot-scope="scope">
-							<span class="td-grey">
+							<span class="td-grey break-word">
 								{{util.bytesToSize(scope.row.Size * 1024)}}
 							</span>
 						</template>
@@ -158,9 +161,10 @@
 					<el-table-column
 						v-if="true"
 						label="Date"
+						width="170"
 					>
 						<template slot-scope="scope">
-							<div class="td-grey">
+							<div class="td-grey break-word">
 								{{date.formatTime(new Date( (scope.row.DownloadAt||scope.row.UpdatedAt) * 1000))}}
 							</div>
 						</template>
@@ -172,9 +176,10 @@
 					<el-table-column
 						v-if="page ==='miner'"
 						label="Profit"
+						min-width="70"
 					>
 						<template slot-scope="scope">
-							<div class="light-blue">
+							<div class="light-blue break-word">
 								{{parseFloat(scope.row.Profit / 1000000000).toFixed(9)}} SAVE
 							</div>
 						</template>
@@ -183,20 +188,14 @@
 						v-if="page ==='miner'"
 						label="Contributions"
 						prop="DownloadCount"
+						width="150"
 					>
 
 					</el-table-column>
-					<!-- <el-table-column
-      label="Last Share"
-      v-if="page ==='miner'"
-     >
-      <template slot-scope="scope">
-       <span class="td-grey">{{date.formatTime(new Date(scope.row.LastShareAt * 1000))}}</span>
-      </template>
-     </el-table-column> -->
 					<el-table-column
 						label="Type"
 						v-if="page === 'filebox'"
+						width="150"
 					>
 						<template slot-scope="scope">
 							<span class="td-grey">

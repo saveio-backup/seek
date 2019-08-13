@@ -213,11 +213,11 @@ const run = (appDataPath, appName) => {
     if (getPlatform() == "win") {
         cfgDir = `${appDataPath}\\${appName}`
         // cmdStr = `.\\edge.exe --config='${cfgDir}'`
-        cmdStr = `.\\edge.exe`
+        cmdStr = `.\\edge-windows-amd64.exe`
     } else {
         cfgDir = `${appDataPath}/${appName}`
         // cmdStr = `./edge --config='${cfgDir}'`
-        cmdStr = `./edge`
+        cmdStr = `./edge-darwin-amd64`
     }
     log.debug("[run] run node")
     log.debug("[run] appDataPath", appDataPath)

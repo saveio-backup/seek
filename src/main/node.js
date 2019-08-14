@@ -246,8 +246,19 @@ const run = (appDataPath, appName) => {
     workerProcess.stdout.on('data', function (data) {
         // console.log('stdout: ' + data);
     });
-
     workerProcess.stderr.on('data', function (data) {
+        var now = new Date()
+        if (getPlatform() == "win") {
+            if (!fs.existsSync(`${cfgDir}\\PanicLogs`)) {
+                fs.mkdirSync(`${cfgDir}\\PanicLogs`)
+            }
+            fs.writeFileSync(`${cfgDir}\\PanicLogs\\${now.toJSON()}_log`, data)
+        } else {
+            if (!fs.existsSync(`${cfgDir}/PanicLogs`)) {
+                fs.mkdirSync(`${cfgDir}/PanicLogs`)
+            }
+            fs.writeFileSync(`${cfgDir}/PanicLogs/${now.toJSON()}_log`, data)
+        }
         // console.log('stderr: ' + data);
     });
 

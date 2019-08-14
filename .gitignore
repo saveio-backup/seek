@@ -4,11 +4,7 @@ dist/web/*
 build/*
 !build/icons
 resources/win/edge.exe
-<<<<<<< HEAD
 resources/win/edge-windows-amd64.exe
-=======
-resources/win/edge-winidows-amd64.exe
->>>>>>> upload page add drag file to upload
 resources/mac/edge
 resources/mac/edge-darwin-amd64
 resources/seek_releases

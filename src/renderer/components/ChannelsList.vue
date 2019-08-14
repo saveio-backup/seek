@@ -16,7 +16,8 @@
 			>
 				<el-table-column
 					label='Channel'
-					:min-with="120"
+					min-width="80px"
+					max-width="120px"
 				>
 					<template slot-scope="scope">
 						<div class="bold">{{scope.row.ChannelId}}</div>
@@ -24,7 +25,8 @@
 				</el-table-column>
 				<el-table-column
 					label='Status'
-					:min-with="120"
+					min-width="80px"
+					max-width="120px"
 				>
 					<template slot-scope="scope">
 						<div
@@ -40,7 +42,7 @@
 						</div>
 					</template>
 				</el-table-column>
-				<el-table-column label='Address'>
+				<el-table-column label='Address' :max-width="600">
 					<template slot-scope="scope">
 						<div class="grey-xs ft14">
 							{{scope.row.Address}}

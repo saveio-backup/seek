@@ -166,19 +166,31 @@
 							class="tx-li-item-detail"
 							v-show="index === txDetailIndex"
 						>
-							<div class="txid grey-xs user-no-select">ID: {{item.Txid || ''}} <i
+							<div class="txid grey-xs user-no-select">ID:
+								<span :title="item.Txid || ''">
+									{{item.Txid || ''}} 
+								</span>
+								<i
 									class="ofont ofont-fuzhi tx-copy"
 									@click="clipText(item.Txid || '')"
 									title="Click to Copy"
 								></i></div>
 							<div class="towards">
-								<p class='from user-no-select'>{{item.From}} <i
+								<p class='from user-no-select'>
+									<span :title="item.From">
+										{{item.From}} 
+									</span>
+									<i
 										class="ofont ofont-fuzhi tx-copy"
 										title="Click to Copy"
 										@click="clipText(item.From)"
 									></i></p>
 								<i class="ofont ofont-fasong arrow ft12"></i>
-								<p class="to user-no-select">{{item.To}} <i
+								<p class="to user-no-select">
+									<span :title="item.To">
+										{{item.To}}
+									</span>
+									<i
 										class="ofont ofont-fuzhi tx-copy"
 										title="Lick to Copy"
 										@click="clipText(item.To)"
@@ -1179,14 +1191,37 @@ $light-grey: #f7f7f7;
 					.tx-li-item-detail {
 						background: #f8f9fa;
 						padding: 10px 45px;
+						& >.txid {
+							& > span {
+								display: inline-block;
+								max-width: calc(100% - 60px);
+								overflow: hidden;
+								text-overflow:ellipsis;
+								white-space: nowrap;
+								position: relative;
+								top: 3px;
+							}
+							& > i {
+								position: relative;
+								top: 2px;
+							}
+						}
 						.towards {
 							display: flex;
 							padding: 10px 0;
 							.from,
 							.to {
 								width: 400px;
+								max-width: 50%; 
 								font-size: 12px;
 								word-break: break-all;
+								& > span {
+									display: inline-block;
+									max-width: calc(100% - 60px);
+									overflow: hidden;
+									text-overflow:ellipsis;
+									white-space: nowrap;	
+								}
 							}
 							.arrow {
 								flex: 1;
@@ -1202,7 +1237,6 @@ $light-grey: #f7f7f7;
 						}
 						.tx-copy {
 							position: relative;
-							top: 2px;
 							margin-left: 8px;
 							&:hover {
 								opacity: 0.7;

@@ -28,27 +28,41 @@
 						class="form-vertical select-file-wrapper"
 					>
 						<!-- prop="Path" -->
-						<!-- <p class="path-input">{{uploadFormData.Path}}</p> -->
 						<el-button
 							class="form-right browser-layout"
 							@click="selectUpload"
 						>Browser</el-button>
-						<div class="path-wrapper">
-							<ul>
-								<el-tag
-									:key="file.filePath"
-									:disable-transitions="false"
-									:title="file.filePath"
-									v-for="file in uploadFormData.Files"
-									closable
-									@close='handleCloseByFile(file)'
-									:name="file.fileName"
-								>{{file.fileName}}</el-tag>
-								<!-- <li v-for="" :key="" >
-									{{file.fileName}}
-								</li> -->
-							</ul>
-						</div>
+						<el-upload
+							class="path-wrapper"
+							ref="upload"
+							drag
+							action="#"
+							:multiple="true"
+							:show-file-list="false"
+							:auto-upload="false"
+							:on-change="handleChange"
+						>
+							<div class="path-content" @click.stop="">
+								<template  v-if="uploadFormData.Files.length === 0">
+									<p class="text-center mt40 theme-font-blue-40">Drag your file here or browse</p>
+									<p class="text-center mt10 theme-font-blue-40">A single file cannot be larger than 4GB</p>
+								</template>
+								<ul>
+									<el-tag
+										:key="file.filePath"
+										:disable-transitions="false"
+										:title="file.filePath"
+										v-for="file in uploadFormData.Files"
+										closable
+										@close='handleCloseByFile(file)'
+										:name="file.fileName"
+									>{{file.fileName}}</el-tag>
+									<!-- <li v-for="" :key="" >
+										{{file.fileName}}
+									</li> -->
+								</ul>
+							</div>
+						</el-upload>
 					</el-form-item>
 					<el-form-item
 						class="form-vertical"
@@ -343,6 +357,7 @@
 import { ipcRenderer } from "electron";
 import util from "../../../assets/config/util";
 import { connect } from "net";
+import fs from "fs";
 const DEFAULT_UPLOAD_PRICE = 0.03;
 export default {
 	data() {
@@ -472,6 +487,30 @@ export default {
 		this.getfscontractsetting();
 	},
 	methods: {
+		handleChange(file, fileList) {
+			console.log(file);
+			console.log(fileList);
+			fs.stat(file.raw.path, (err, stats) => {
+				if(err) {
+					console.log('err', err)
+				}
+				if(stats.isDirectory()) return;
+
+				for(let value of this.uploadFormData.Files) {
+					if(value.filePath === file.raw.path) {
+						return;
+					}
+				}
+				this.uploadFormData.Files.push({
+					fileName: file.raw.name,
+					filePath: file.raw.path,
+					fileBytes: file.size
+				});
+				this.toGetFileSize();
+				this.toGetPrice();
+				this.$refs.upload.clearFiles();
+			})
+		},
 		// get space is not zero go expand page 
 		getSpaceIsZero() {
 			this.$axios
@@ -1018,14 +1057,37 @@ $inputFocusBg: #dee2ea;
 				}
 				.path-wrapper {
 					width: 100%;
-					height: 100px;
+					height: 180px;
 					margin-top: 45px;
 					clear: both;
-					border: 1px dashed rgba(4, 15, 57, 0.2);
-					padding: 10px 15px;
-					overflow: auto; 
-					.el-tag {
-						margin-right: 20px;
+					background: #F9F9FB;
+
+					& > .el-upload {
+						width: 100%;
+						height: 100%;
+						& > .el-upload-dragger {
+							width: 100%;
+							height: 100%;
+							border-color: rgba(4,15,57,0.2);
+							&.is-dragover {
+								border-color: #409EFF;
+							}
+						}
+					}
+
+					.path-content {
+						padding: 10px 15px;
+						width: 100%;
+						height: 100%;
+						overflow: auto;
+						text-align: left;
+						background: #F9F9FB;
+						.el-tag {
+							margin-right: 20px;
+						}
+						& > p {
+							width: 100%;
+						}
 					}
 				}
 				.browser-layout {

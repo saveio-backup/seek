@@ -380,7 +380,7 @@
 import date from "../../../assets/tool/date";
 import util from "../../../assets/config/util";
 import { clipboard, shell, ipcRenderer } from "electron";
-import { constants } from "fs";
+import fs from "fs";
 import uploadFileDetailDialog from "./../../../components/UploadFileDetailDialog";
 let tableElement;
 export default {

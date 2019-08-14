@@ -72,7 +72,6 @@ function seekHttpProtocol(request, callback) {
 
 function seekStreamProtocol(request, callback) {
   console.log('seek stream!!!!');
-  log.error('seek steam!!');
   const headers = {
     'Cache-Control': 'no-cache',
     'Content-Type': 'text/html; charset=utf-8',
@@ -82,8 +81,6 @@ function seekStreamProtocol(request, callback) {
   // const url = path.join(__dirname, 'helloworld/hello.html');
   getCurrentView.webContents.reload();
   getCurrentView.loadURL(url)
-  log.error('url is');
-  log.error(url);
   // callback({
   //   statusCode: '200',
   //   headers,

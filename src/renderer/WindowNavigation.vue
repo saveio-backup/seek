@@ -65,18 +65,14 @@
 								:class="{'disable': !activeView.canGoBack}"
 								title="Go Back"
 							>
-								<i
-									class="el-icon-arrow-left"
-								></i>
+								<i class="el-icon-arrow-left"></i>
 							</div>
 							<div
 								@click="remoteGoForward"
 								:class="{'disable': !activeView.canGoForward}"
 								title="Go Forward"
 							>
-								<i 
-									class="el-icon-arrow-right"
-								></i>
+								<i class="el-icon-arrow-right"></i>
 							</div>
 							<div
 								@click="remoteReload"
@@ -142,6 +138,9 @@ export default {
 		ipcRenderer.on("forceUpdate", () => {
 			this.$forceUpdate();
 			this.views = remote.getCurrentWindow().views;
+		});
+		ipcRenderer.on("focus", () => {
+			this.$refs.inputUrl.select();
 		});
 		this.setIsMaximized();
 		window.addEventListener("resize", this.setIsMaximized);
@@ -222,7 +221,7 @@ export default {
 			this.activeView.openComponent(path);
 		},
 		remoteCreate() {
-			this.activeView.create();
+			this.activeView.create({ isActive: true, focus: true });
 		},
 		remoteGoBack() {
 			this.activeView.webContents.goBack();
@@ -475,12 +474,12 @@ $tabs-height: 62px;
 
 				&:not(.disable) {
 					&:hover {
-						background: #DFE2E9;
+						background: #dfe2e9;
 						cursor: pointer;
 					}
 
 					&:active {
-						opacity: .7;
+						opacity: 0.7;
 					}
 				}
 			}

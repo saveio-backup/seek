@@ -32,6 +32,7 @@ class View {
     this.isSave = new URL(this.displayURL).protocol === DEFAULT_PROTOCOL + ':'
     this.initBrowserView();
     this.isActive = Boolean(option.isActive)
+    this.option = option;
 
     // event
     this.updateEvent();
@@ -87,14 +88,14 @@ class View {
   }
   updateDisplayURL() {
     let url = this.url ? new URL(this.url) : new URL('about:blank');
-    const hrefFormated = decodeURIComponent(url.href).replace(/(\\|\/)/g, '') // format eg file://abc/def/#gh => file:abcdef#gh
-    const defaultURLFormated = decodeURIComponent(DEFAULT_URL).replace(/(\\|\/)/g, '')
+    const hrefFormated = decodeURIComponent(url.href).replace(/(\\|\/)/g, '/').replace('\/\/\/', '\/\/');
+    const defaultURLFormated = decodeURIComponent(DEFAULT_URL).replace(/(\\|\/)/g, '/').replace('\/\/\/', '\/\/');
     if (url.host === 'localhost:9080') {
       const urlReg = new RegExp(url.origin + url.pathname + '(#/)?');
       this.displayURL = url.href.replace(urlReg, DEFAULT_PROTOCOL + '://')
     } else if (hrefFormated.indexOf(defaultURLFormated) >= 0) {
       const urlReg = new RegExp(/(file:.+#)(\/?.*$)/);
-      this.displayURL = hrefFormated.replace((hrefFormated.match(urlReg) || [])[1], DEFAULT_PROTOCOL + '://')
+      this.displayURL = hrefFormated.replace((hrefFormated.match(urlReg) || [])[1], DEFAULT_PROTOCOL + '://').replace('\/\/\/', '\/\/')
     } else {
       this.displayURL = this.url
     }
@@ -125,6 +126,9 @@ class View {
     this.webContents.on('dom-ready', () => {
       // console.log('dom-ready, forceUpdate')
       this.forceUpdate()
+      if (this.option.focus) {
+        this.browserWindow.webContents.send('focus');
+      }
     });
     this.webContents.on('did-navigate', (e, url) => {
       // console.log('did navigate, forceUpdate')
@@ -285,8 +289,8 @@ class View {
   destroy(index) {
     removeView(this.browserWindow, this, index)
   }
-  create() {
-    createView(this.browserWindow)
+  create(option) {
+    createView(this.browserWindow,undefined,option)
   }
 }
 export function createWindow(url) {
@@ -367,11 +371,11 @@ const handlerView = {
     return true;
   }
 }
-export function createView(win, url = DEFAULT_URL + '#/') {
+export function createView(win, url = DEFAULT_URL + '#/', option) {
   console.log('createView');
   console.log(url);
   win = getTopWindow(win);
-  let view = new Proxy(new View(win, url), handlerView)
+  let view = new Proxy(new View(win, url, option), handlerView)
   url = new URL(url)
   view.loadURL();
   win.views.push(view);

@@ -1,5 +1,5 @@
 GOFMT=gofmt
-GC=go build 
+GC=go build --tags "json1"
 VERSION := $(shell git describe --abbrev=4 --always --tags)
 BUILD_DSP_SERVER_PAR =
 BUILD_DSP_CLIENT_PAR =

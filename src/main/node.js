@@ -246,18 +246,24 @@ const run = (appDataPath, appName) => {
     workerProcess.stdout.on('data', function (data) {
         // console.log('stdout: ' + data);
     });
+    var now = new Date()
+    var panicLogFileName = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}_${now.getHours()}_${now.getMinutes()}_${now.getSeconds()}.log`
+    if (getPlatform() == "win") {
+        var panicLogDir = `${cfgDir}\\PanicLogs`
+        if (!fs.existsSync(panicLogDir)) {
+            fs.mkdirSync(panicLogDir)
+        }
+    } else {
+        var panicLogDir = `${cfgDir}/PanicLogs`
+        if (!fs.existsSync(panicLogDir)) {
+            fs.mkdirSync(panicLogDir)
+        }
+    }
     workerProcess.stderr.on('data', function (data) {
-        var now = new Date()
         if (getPlatform() == "win") {
-            if (!fs.existsSync(`${cfgDir}\\PanicLogs`)) {
-                fs.mkdirSync(`${cfgDir}\\PanicLogs`)
-            }
-            fs.writeFileSync(`${cfgDir}\\PanicLogs\\${now.toJSON()}_log`, data)
+            fs.appendFileSync(`${panicLogDir}\\${panicLogFileName}`, data)
         } else {
-            if (!fs.existsSync(`${cfgDir}/PanicLogs`)) {
-                fs.mkdirSync(`${cfgDir}/PanicLogs`)
-            }
-            fs.writeFileSync(`${cfgDir}/PanicLogs/${now.toJSON()}_log`, data)
+            fs.appendFileSync(`${panicLogDir}/${panicLogFileName}`, data)
         }
         // console.log('stderr: ' + data);
     });

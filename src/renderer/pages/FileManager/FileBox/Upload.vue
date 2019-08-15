@@ -69,7 +69,7 @@
 						label="File Size:"
 						prop="FileSize"
 					>
-						<p class="light-blue">{{util.bytesToSize(uploadFormData.FileSize) || '0.00 GB'}}</p>
+						<p class="light-blue">{{util.bytesToSize(fileSize) || '0.00 GB'}}</p>
 					</el-form-item>
 					<el-form-item label="Encryption:">
 						<el-select
@@ -362,10 +362,15 @@ const DEFAULT_UPLOAD_PRICE = 0.03;
 export default {
 	data() {
 		let validateEncryptFileSize = (rule, value, callback) => {
-			if (!this.switchToggle.advanced && (!this.space || (this.space.Remain*1024 < value))) {
-				callback(new Error(`Insufficient remaining storage space, currently ${this.util.bytesToSize(this.space.Remain * 1024)} remaining.`));				
-			} else if (value > 4 * 1024 * 1024 * 1024) {
-				callback(new Error(`A single file cannot be larger than 4GB`));				
+			if (!this.switchToggle.advanced && (!this.space || (this.space.Remain*1024 < this.fileSize))) {
+				callback(new Error(`Insufficient remaining storage space, currently ${this.util.bytesToSize(this.space.Remain * 1024)} remaining.`));
+			} else {
+				for(let file of this.uploadFormData.Files) {
+					if (file.fileBytes > 4 * 1024 * 1024 * 1024) {
+					 callback(new Error(`A single file cannot be larger than 4GB`));				
+					}
+					return;
+				}
 			}
 			callback();
 		}

@@ -14,6 +14,7 @@
 					v-show="switchToggle.advanced"
 				><i class="ofont ofont-jiandan"></i> Primary</el-button>
 			</div>
+			<!-- <span @click="resetFileList">asda</span> -->
 			<div class="upload-params">
 				<el-form
 					ref="uploadForm"
@@ -43,25 +44,29 @@
 							:auto-upload="false"
 							:on-change="handleChange"
 						>
-							<div class="path-content" @click.stop="">
-								<template  v-if="uploadFormData.Files.length === 0">
-									<p class="text-center mt40 theme-font-blue-40">Drag your file here or browse</p>
-									<p class="text-center mt10 theme-font-blue-40">A single file cannot be larger than 4GB</p>
-								</template>
-								<ul>
-									<el-tag
-										:key="file.filePath"
-										:disable-transitions="false"
-										:title="file.filePath"
-										v-for="file in uploadFormData.Files"
-										closable
-										@close='handleCloseByFile(file)'
-										:name="file.fileName"
-									>{{file.fileName}}</el-tag>
-									<!-- <li v-for="" :key="" >
-										{{file.fileName}}
-									</li> -->
-								</ul>
+							<div slot="trigger">
+								<!-- <el-button class="browser-layout" type="primary">Browser</el-button> -->
+								<div class="path-content" @click.stop="">
+									<ul>
+										<el-tag
+											:type="(file.fileBytes > (4 * 1024 * 1024 * 1024 )) ?'danger':''"
+											:key="file.filePath"
+											:disable-transitions="false"
+											:title="file.filePath"
+											v-for="file in uploadFormData.Files"
+											closable
+											@close='handleCloseByFile(file)'
+											:name="file.fileName"
+										>{{file.fileName}}<span v-if="file.fileBytes > (4 * 1024 * 1024 * 1024 )">({{util.bytesToSize(file.fileBytes)}})</span></el-tag>
+										<!-- <li v-for="" :key="" >
+											{{file.fileName}}
+										</li> -->
+									</ul>
+									<div class="path-no-data-title" v-if="uploadFormData.Files.length === 0">
+										<p class="text-center mt60 user-no-select">Drag your file here or browse</p>
+										<p class="text-center mt10 user-no-select">A single file cannot be larger than 4GB</p>
+									</div>
+								</div>
 							</div>
 						</el-upload>
 					</el-form-item>
@@ -362,7 +367,9 @@ const DEFAULT_UPLOAD_PRICE = 0.03;
 export default {
 	data() {
 		let validateEncryptFileSize = (rule, value, callback) => {
-			if (!this.switchToggle.advanced && (!this.space || (this.space.Remain*1024 < this.fileSize))) {
+			if(this.uploadFormData.Files.length === 0) {
+				callback(new Error(`Please select a file.`));
+			} else if (!this.switchToggle.advanced && (!this.space || (this.space.Remain*1024 < this.fileSize))) {
 				callback(new Error(`Insufficient remaining storage space, currently ${this.util.bytesToSize(this.space.Remain * 1024)} remaining.`));
 			} else {
 				for(let file of this.uploadFormData.Files) {
@@ -493,10 +500,18 @@ export default {
 		this.getfscontractsetting();
 	},
 	methods: {
+		resetFileList() {
+			this.uploadFormData.Files = [];
+			this.toGetPrice();
+			this.toGetFileSize();
+			this.$refs.uploadForm.validateField('FileSize');
+		},
 		handleChange(file, fileList) {
 			console.log(file);
 			console.log(fileList);
+			// console.log(fs.readFileSync(file.raw.path, 'utf8'));
 			fs.stat(file.raw.path, (err, stats) => {
+				console.log(stats)
 				if(err) {
 					console.log('err', err)
 				}
@@ -1074,9 +1089,13 @@ $inputFocusBg: #dee2ea;
 						width: 100%;
 						height: 100%;
 						& > .el-upload-dragger {
+							& > div {
+								height: 100%;
+							}
 							width: 100%;
 							height: 100%;
 							border-color: rgba(4,15,57,0.2);
+							overflow: visible;
 							&.is-dragover {
 								border-color: #409EFF;
 							}
@@ -1090,16 +1109,28 @@ $inputFocusBg: #dee2ea;
 						overflow: auto;
 						text-align: left;
 						background: #F9F9FB;
+						position: relative;
 						.el-tag {
 							margin-right: 20px;
 						}
-						& > p {
+						& > .path-no-data-title {
 							width: 100%;
+							height: 100%;
+							position: absolute;
+							top: 0;
+							left: 0;
+							& > p {
+								width: 100%;
+								color: rgba(32, 32, 32, 0.4);
+							}
 						}
 					}
 				}
 				.browser-layout {
 					top: 10px;
+					// top: 0;
+					position: absolute;
+					// right: 0;
 				}
 			}
 		}

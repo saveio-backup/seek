@@ -11,17 +11,18 @@ const state = {
   loginStatus: -1,
   initChannelProgress: 0,
   totalHeight: 0,
-  currentHeight: 0
+  currentHeight: 0,
+  dns: []
 }
 // Confirm login status
 
 
 const mutations = {
   'SET_BALANCE_TOTAL'(state, result) {
-    state.balanceTotal = result.BalanceFormat;
-    if (result.Channels && (result.Channels.length > 0)) {
-      state.balanceAddress = result.Channels[0].Address;
-    }
+    // state.balanceTotal = result.BalanceFormat;
+    // if (result.Channels && (result.Channels.length > 0)) {
+    //   state.balanceAddress = result.Channels[0].Address;
+    // }
     state.channels = result.Channels;
     this.dispatch('setChannelBind', localStorage.getItem('channelBindId') || '')
   },
@@ -37,7 +38,13 @@ const mutations = {
       }
     })
     if (!result) {
-      state.channelBind = state.channels[0] || {};
+      // state.channelBind = state.channels[0] || {};
+      for (let value of state.channels) {
+        if (state.dns.indexOf(value.HostAddr) >= 0) {
+          state.channelBind = Object.assign({}, value);
+          return;
+        }
+      }
     }
   },
   'SET_CHANNEL_PROGRESS'(state, progress) {
@@ -55,13 +62,17 @@ const mutations = {
   },
   'SET_CURRENT_ACCOUNT'(state, result) {
     state.loginStatus = result;
+  },
+  'SET_DNS'(state, result) {
+    state.dns = result;
   }
 }
 const timer = {
   COUNT_INTERVAL: 5000,
   channelBalanceTotalTimer: null,
   revenueTimer: null,
-  channelInitProgress: null
+  channelInitProgress: null,
+  dns: null
 };
 const actions = {
   setChannelBalanceTotal({
@@ -171,7 +182,26 @@ const actions = {
     commit
   }, Id) {
     commit('SET_CHANNEL_BIND', Id)
+  },
+  getDns({ commit }) {
+    getAllDns(commit);
+    clearInterval(timer.dns);
+    timer.dns = setInterval(() => {
+      getAllDns(commit);
+    }, timer.COUNT_INTERVAL)
   }
+}
+
+function getAllDns(commit) {
+  axios.get(api.getAllDns).then(res => {
+    if (res.Error === 0) {
+      let arr = [];
+      for (let value of res.Result) {
+        arr.push(value.HostAddr);
+      }
+      commit('SET_DNS', arr);
+    }
+  });
 }
 
 function rebackToCreateAccount(commit, progress) {

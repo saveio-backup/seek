@@ -42,7 +42,10 @@
 						</div>
 					</template>
 				</el-table-column>
-				<el-table-column label='Address' :max-width="600">
+				<el-table-column
+					label='Address'
+					:max-width="600"
+				>
 					<template slot-scope="scope">
 						<div class="grey-xs ft14">
 							{{scope.row.Address}}
@@ -584,10 +587,18 @@ export default {
 			// return this.mockChannels;
 			return this.$store.state.Home.channels;
 		},
+		allDns: function() {
+			return this.$store.state.Home.dns || [];
+		},
 		channelsDns: function() {
 			if (!this.channels) return [];
 			const channelsDns = this.channels.filter(item => {
-				return item.IsDNS;
+				if (this.allDns.indexOf(item.HostAddr) >= 0) {
+					return true;
+				} else {
+					false;
+				}
+				// return item.IsDNS;
 			});
 			return channelsDns;
 		},

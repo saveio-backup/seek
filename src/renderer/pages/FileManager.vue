@@ -123,6 +123,7 @@ export default {
 	mounted() {
 		document.title = "File Manager";
 		this.$store.dispatch("setCurrentAccount"); // get login status
+		this.$store.dispatch("getDns"); // get login status
 		this.initBalanceRequest();
 	},
 	components: {
@@ -250,18 +251,18 @@ export default {
 		mainCount: function() {
 			return this.$store.state.Wallet.mainCount;
 		},
-		balanceAddress: function() {
-			return this.$store.state.Home.balanceAddress;
-		},
+		// balanceAddress: function() {
+		// 	return this.$store.state.Home.balanceAddress;
+		// },
 		channels: function() {
 			return this.$store.state.Home.channels;
 		},
 		channelBind: function() {
 			return this.$store.state.Home.channelBind;
 		},
-		balanceTotal: function() {
-			return this.$store.state.Home.balanceTotal;
-		},
+		// balanceTotal: function() {
+		// 	return this.$store.state.Home.balanceTotal;
+		// },
 		transferLength: function() {
 			return (
 				this.$store.state.Transfer.downloadLength +

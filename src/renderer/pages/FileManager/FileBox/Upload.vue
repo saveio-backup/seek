@@ -30,6 +30,7 @@
 						prop="FileSize"
 					>
 						<!-- prop="Path" -->
+						<span class="form-right browser-layout-reset light-blue" @click="resetFileList" title="clear all add file" v-if="uploadFormData.Files && uploadFormData.Files.length !== 0">Clear</span>
 						<el-button
 							class="form-right browser-layout"
 							@click="selectUpload"
@@ -1128,9 +1129,20 @@ $inputFocusBg: #dee2ea;
 				}
 				.browser-layout {
 					top: 10px;
-					// top: 0;
 					position: absolute;
-					// right: 0;
+				}
+				.browser-layout-reset{
+					right: 150px;
+					top: 10px;
+					position: absolute;
+					cursor: pointer;
+					&:hover {
+						// text-decoration: underline;
+						opacity: .7;
+					}
+					&:active {
+						opacity: 1;
+					}
 				}
 			}
 		}

@@ -26,6 +26,7 @@
 					<el-form-item
 						label="Select File:"
 						class="form-vertical select-file-wrapper"
+						prop="FileSize"
 					>
 						<!-- prop="Path" -->
 						<el-button
@@ -67,7 +68,6 @@
 					<el-form-item
 						class="form-vertical"
 						label="File Size:"
-						prop="FileSize"
 					>
 						<p class="light-blue">{{util.bytesToSize(fileSize) || '0.00 GB'}}</p>
 					</el-form-item>
@@ -368,8 +368,8 @@ export default {
 				for(let file of this.uploadFormData.Files) {
 					if (file.fileBytes > 4 * 1024 * 1024 * 1024) {
 					 callback(new Error(`A single file cannot be larger than 4GB`));				
+						return;
 					}
-					return;
 				}
 			}
 			callback();
@@ -435,6 +435,7 @@ export default {
 			encryptionToggle: false,
 			uploadFormData: {
 				Path: "",
+				FileSize: "",
 				Files: [],
 				// Desc: "",
 				EncryptPassword: "" // Encryption
@@ -513,7 +514,8 @@ export default {
 				});
 				this.toGetFileSize();
 				this.toGetPrice();
-				this.$refs.upload.clearFiles();
+				// this.$refs.upload.clearFiles();
+				this.$refs.uploadForm.validateField('FileSize');
 			})
 		},
 		// get space is not zero go expand page 
@@ -605,6 +607,7 @@ export default {
 			);
 			this.toGetFileSize();
 			this.toGetPrice();
+			this.$refs.uploadForm.validateField('FileSize');
 		},
 		// close while list item
 		handleClose(tag) {

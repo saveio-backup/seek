@@ -952,7 +952,7 @@ export default {
 		filterListData() {
 			const fileListData = this.fileListData;
 			return fileListData.filter(item => {
-				return item.Name.indexOf(this.filterInput) >= 0 && item.Url;
+				return item.Name.indexOf(this.filterInput) >= 0;
 			});
 		}
 	},

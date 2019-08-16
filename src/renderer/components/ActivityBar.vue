@@ -89,6 +89,8 @@
 						class="ofont ofont-caidan user-no-select cursor-pointer cursor-click"
 						@click="toPopCustomControlMenu"
 					></i>
+					<i class="process-status" :class="{'process-all-error': status === 0, 'process-some-error': status === 2}">
+					</i>
 				</div>
 			</div>
 		</div>
@@ -104,6 +106,7 @@ export default {
 			this.$forceUpdate();
 			this.views = remote.getCurrentWindow().views;
 		});
+		this.init()
 	},
 	data() {
 		return {
@@ -113,7 +116,14 @@ export default {
 			views: remote.getCurrentWindow().views,
 			user: {
 				name: localStorage.getItem("Label") || ""
-			}
+			},
+			statusList: {
+				ChainState: 0,
+				DNSState: 0,
+				DspProxyState: 0,
+				ChannelProxyState: 0
+			},
+			statusIntervalObj: null
 		};
 	},
 	computed: {
@@ -122,9 +132,45 @@ export default {
 		},
 		currentWindow: function() {
 			return remote.getCurrentWindow();
+		},
+		// return 0 all offline,1 all online,2 some online some offline
+		status: function() {
+			let online = false;
+			let offline = false;
+			let statusKey = ['ChainState','DNSState','DspProxyState','ChannelProxyState']
+			for(let value of statusKey) {
+				if(this.statusList && this.statusList[value] === 1) {
+					online = true;
+				} else {
+					offline = true;
+				}
+			}
+			if(online && !offline) {
+				return 1
+			} else if(!online && offline) {
+				return 0
+			} else {
+				return 2
+			}
 		}
 	},
 	methods: {
+		init() {
+			const INTERVAL_TIME = 5000
+			this.getStatus();
+			this.statusIntervalObj = setInterval(() => {
+				this.getStatus()
+			}, INTERVAL_TIME)
+		},
+		getStatus() {
+			this.$axios
+				.get(this.$api.networkStatus).then(res => {
+					if(res.Error === 0) {
+						this.statusList = res.Result;
+						console.log(res.Result);
+					}
+				});
+		},
 		toPopCustomControlMenu() {
 			const that = this;
 			const customControlMenuItems = [
@@ -327,6 +373,30 @@ $slidebar-active-color: linear-gradient(
 			.ofont-caidan {
 				color: rgba(32, 32, 32, 0.5);
 			}
+
+			.process-status {
+				width: 6px;
+				height: 6px;
+				border-radius: 50%;
+				display: block;
+				border: 2px solid white;
+				margin: 20px auto 0;
+				background:linear-gradient(180deg,rgba(217,231,51,1) 0%,rgba(178,202,23,1) 100%);
+				box-shadow:0px 0px 3px 0px rgba(0,0,0,0.3);
+				border:1px solid rgba(237,237,237,1);
+				
+				&.process-some-error {
+					background:linear-gradient(180deg,rgba(235,181,126,1) 0%,rgba(223,147,79,1) 100%);
+					box-shadow:0px 0px 3px 0px rgba(0,0,0,0.3);
+					border:1px solid rgba(237,237,237,1);
+				}
+
+				&.process-all-error {
+					background:linear-gradient(180deg,rgba(247,144,115,1) 0%,rgba(194,70,43,1) 100%);
+					box-shadow:0px 0px 3px 0px rgba(0,0,0,0.3);
+					border:1px solid rgba(237,237,237,1);
+				}
+			}	
 		}
 	}
 	.el-button {

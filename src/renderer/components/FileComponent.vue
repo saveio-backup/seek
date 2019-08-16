@@ -399,7 +399,7 @@
 						<div
 							class="theme-font-blue-40 node-value"
 							v-if="fileObjById[detailId]"
-						>{{fileObjById[detailId].DownloadSize / Math.pow(10, 9)}} SAVE</div>
+						>{{fileObjById[detailId].DownloadSize * 1024 / Math.pow(10, 9)}} SAVE</div>
 					</li>
 					<template v-if="transferType === 1">
 						<li

@@ -21,6 +21,9 @@ export default {
 				type: type
 			});
 		});
+		ipcRenderer.on("get-data", (event, { result, type }) => {
+			this[type + "Update"](result);
+		});
 		this.$axios.get(this.$api.version).then(res => {
 			if (res.Error === 0) {
 				localStorage.setItem("edgeVersion", res.Result || "");
@@ -87,6 +90,16 @@ export default {
 					});
 				}
 			});
+		},
+		channelUpdate(result) {
+			// this.$store.home.commit
+			this.$store.commit("SET_BALANCE_TOTAL", result);
+		},
+		balanceUpdate(result) {
+			this.$store.commit("SET_BALANCE_LISTS", result);
+		},
+		revenceUpdate(result) {
+			this.$store.commit("SET_REVENUE", result);
 		}
 	}
 };

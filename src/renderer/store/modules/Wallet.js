@@ -53,10 +53,10 @@ const actions = {
     commit
   }) {
     requestBalanceLists(commit);
-    clearInterval(timer.balanceListsTimer);
-    timer.balanceListsTimer = setInterval(() => {
-      requestBalanceLists(commit)
-    }, timer.COUNT_INTERVAL);
+    // clearInterval(timer.balanceListsTimer);
+    // timer.balanceListsTimer = setInterval(() => {
+    // requestBalanceLists(commit)
+    // }, timer.COUNT_INTERVAL);
   },
   cancelTxRequest() {
     clearTimeout(timer.heart);

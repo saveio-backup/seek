@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import { ipcRenderer } from "electron";
+import { ipcRenderer, remote } from "electron";
 import exportPrivateKey from "./Dialog/ExportPrivateKey.vue";
 import logout from "./Dialog/Logout.vue";
 import isCreateChannel from "./Dialog/IsCreateChannel.vue";
@@ -58,12 +58,16 @@ export default {
 				downloadDialog: true
 			},
 			menuSelector: "",
+			win: null,
+
 			channelNum: null,
 			Balance: null,
-			COUNT_INTERVAL: COUNT_INTERVAL,
-			setTimeObj: null,
-			setTimeAddressObj: null,
-			setTimeProcessObj: null,
+			intervalObj: {
+				COUNT_INTERVAL: COUNT_INTERVAL,
+				setTimeObj: null,
+				setTimeAddressObj: null,
+				setTimeProcessObj: null
+			},
 			Address: "",
 			Progress: 0,
 			downloadUrl: "" // downloadDialog url
@@ -83,8 +87,6 @@ export default {
 	},
 	watch: {
 		Address(newVal, oldVal) {
-			console.log(`Address--->newVal:${newVal},oldVal:${oldVal}`);
-			// alert('Address change')
 			this.Balance = null;
 			this.channelNum = null;
 			localStorage.setItem("DNSAdress", "");
@@ -92,19 +94,11 @@ export default {
 		},
 		Balance(newVal, oldVal) {
 			if (!oldVal && newVal && this.channelNum === 0) {
-				// alert('Balance change');
-				console.log(
-					`Balance(new):${newVal},Balance(old):${oldVal},channelNum:${this.channelNum}`
-				);
 				ipcRenderer.send("dialog-open", "createChannel");
 			}
 		},
 		channelNum(newVal, oldVal) {
 			if (this.Balance && newVal === 0 && oldVal === null) {
-				// alert('channelNum change');
-				console.log(
-					`channelNum(new):${newVal},channelNum(old):${oldVal},Balance:${this.Balance}`
-				);
 				ipcRenderer.send("dialog-open", "createChannel");
 			}
 		}
@@ -120,13 +114,15 @@ export default {
 				}, timeout);
 			}
 		},
+		// is not need create channel
 		isNeedCreateChannel() {
-			clearInterval(this.setTimeAddressObj);
+			clearInterval(this.intervalObj.setTimeAddressObj);
 			this.getAddress();
-			this.setTimeAddressObj = setInterval(() => {
+			this.intervalObj.setTimeAddressObj = setInterval(() => {
 				this.getAddress();
-			}, this.COUNT_INTERVAL);
+			}, this.intervalObj.COUNT_INTERVAL);
 		},
+		// get wallet address
 		getAddress() {
 			this.$axios.get(this.$api.account).then(async res => {
 				if (res.Error === 0) {
@@ -136,23 +132,27 @@ export default {
 				}
 			});
 		},
+		// get current sync process
 		getProcess() {
-			clearInterval(this.setTimeProcessObj);
-			this.setTimeProcessObj = setInterval(() => {
+			clearInterval(this.intervalObj.setTimeProcessObj);
+			this.intervalObj.setTimeProcessObj = setInterval(() => {
 				this.$axios.get(this.$api.channelInitProgress).then(progressResult => {
 					if (progressResult.Error === 0) {
 						this.Progress = progressResult.Result.Progress;
 						if (progressResult.Result.Progress === 1) {
-							this.checkCanNotAddChannel();
+							// this.checkCanNotAddChannel();
+							this.getPollingData();
 						}
 					}
 				});
-			}, this.COUNT_INTERVAL);
+			}, this.intervalObj.COUNT_INTERVAL);
 		},
+		// get balance for show create channel dialog
 		getBalance() {
 			const vm = this;
 			this.$axios.get(this.$api.balance + "/" + this.Address).then(res => {
 				if (res.Error === 0) {
+					this.renderDateToBrowserView({ result: res.Result, type: "balance" });
 					for (let i = 0; i < res.Result.length; i++) {
 						const item = res.Result[i];
 						if (item.Symbol === "SAVE") {
@@ -163,6 +163,21 @@ export default {
 				}
 			});
 		},
+		getRevenue() {
+			this.$axios
+				.get(this.$api.revenue, {
+					timeout: 20000
+				})
+				.then(res => {
+					if (res.Error === 0) {
+						this.renderDateToBrowserView({
+							result: res.Result,
+							type: "revence"
+						});
+					}
+				});
+		},
+		// get channel
 		getChannel() {
 			this.$axios
 				.get(this.$api.channel, {
@@ -170,29 +185,57 @@ export default {
 				})
 				.then(res => {
 					if (res.Error === 0) {
+						this.renderDateToBrowserView({
+							result: res.Result,
+							type: "channel"
+						});
 						if (
 							res.Result &&
 							res.Result.Channels &&
 							res.Result.Channels.length > 0
 						) {
 							this.channelNum = res.Result.Channels.length;
-							clearInterval(this.setTimeObj);
-							return;
+							// clearInterval(this.intervalObj.setTimeObj);
+							// return;
 						}
 						this.channelNum =
 							res.Result && res.Result.Channels && res.Result.Channels.length;
 					}
 				});
 		},
-		// check have channel and wallet money
-		checkCanNotAddChannel() {
-			clearInterval(this.setTimeObj);
+		getArr() {
+			try {
+				let views = remote.BrowserWindow.getAllWindows()[0].views;
+				let arr = [];
+				for (let view of views) {
+					console.log(view.displayURL);
+					if (view.displayURL.indexOf("seek://") === 0) {
+						arr.push(view.browserView.webContents.id);
+					}
+				}
+				return arr;
+			} catch (e) {
+				return [];
+			}
+		},
+		renderDateToBrowserView({ result, type }) {
+			let arr = this.getArr();
+			// console.log(arr);
+			for (let value of arr) {
+				ipcRenderer.sendTo(value, "get-data", { result, type });
+			}
+		},
+		// get channel、balance、revenue list data and check have channel and wallet money
+		getPollingData() {
+			clearInterval(this.intervalObj.setTimeObj);
 			this.getChannel();
 			this.getBalance();
-			this.setTimeObj = setInterval(() => {
+			this.getRevenue();
+			this.intervalObj.setTimeObj = setInterval(() => {
 				this.getChannel();
 				this.getBalance();
-			}, this.COUNT_INTERVAL);
+				this.getRevenue();
+			}, this.intervalObj.COUNT_INTERVAL);
 		}
 	}
 };

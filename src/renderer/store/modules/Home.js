@@ -79,19 +79,19 @@ const actions = {
     commit
   }) {
     requestChannelBalanceTotal(commit);
-    clearInterval(timer.channelBalanceTotalTimer);
-    timer.channelBalanceTotalTimer = setInterval(() => {
-      requestChannelBalanceTotal(commit);
-    }, timer.COUNT_INTERVAL);
+    // clearInterval(timer.channelBalanceTotalTimer);
+    // timer.channelBalanceTotalTimer = setInterval(() => {
+    //   requestChannelBalanceTotal(commit);
+    // }, timer.COUNT_INTERVAL);
   },
   setRevenue({
     commit
   }) {
     requestRevenue(commit);
-    clearInterval(timer.revenueTimer);
-    timer.revenueTimer = setInterval(() => {
-      requestRevenue(commit);
-    }, timer.COUNT_INTERVAL);
+    // clearInterval(timer.revenueTimer);
+    // timer.revenueTimer = setInterval(() => {
+    //   requestRevenue(commit);
+    // }, timer.COUNT_INTERVAL);
   },
   setCurrentAccount({
     commit

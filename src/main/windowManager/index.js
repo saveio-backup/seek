@@ -142,7 +142,7 @@ class View {
       console.log('will-navigate, url is ', url);
       this.onNewUrl(url, e)
     })
-    this.webContents.on('did-start-navigation', (e, url) => {})
+    this.webContents.on('did-start-navigation', (e, url) => { })
     // handler hashchange
     this.webContents.on('did-navigate-in-page', (e, url) => {
       this.forceUpdate()
@@ -197,7 +197,7 @@ class View {
       this.loadURL(url);
     }
   }
-  openComponent(path, option) {
+  openComponent(path, option = { vueRouter: false }) {
     const views = this.browserWindow.views;
     const view = views.find(item => {
       if (process.env.NODE_ENV !== 'development') {
@@ -243,7 +243,7 @@ class View {
       }
     } catch (error) {
       newURLFormat = new URL('seek://' + newURL)
-    } finally {}
+    } finally { }
     return newURLFormat;
   }
   initView() {
@@ -290,7 +290,7 @@ class View {
     removeView(this.browserWindow, this, index)
   }
   create(option) {
-    createView(this.browserWindow,undefined,option)
+    createView(this.browserWindow, undefined, option)
   }
 }
 export function createWindow(url) {
@@ -364,8 +364,8 @@ const handlerView = {
     // console.log(prop, ' changed,', 'value', value, 'forceUpdate');
     view.forceUpdate();
     if (FIXED_KEYS.some(item => {
-        return item === prop
-      })) {
+      return item === prop
+    })) {
       view[prop] = value;
     }
     return true;

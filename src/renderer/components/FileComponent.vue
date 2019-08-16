@@ -257,9 +257,8 @@
 				<div class="dialog-title-border"></div>
 			</div>
 			<download-dialog
-				@closedialog='switchToggle.newTaskDialog = false'
+				@closeDialog='switchToggle.newTaskDialog = false'
 				v-if="switchToggle.newTaskDialog"
-				v-on:closedialog='hideTaskDialog'
 			></download-dialog>
 		</el-dialog>
 		<!-- cancel task input password dialog -->

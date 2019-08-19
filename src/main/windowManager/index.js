@@ -12,6 +12,7 @@ import {
 import {
   URL
 } from 'url';
+import MenuWindow from './menuWindow'
 import log from 'electron-log'
 import errorPage from '../../../static/html/failed.js'
 import frontCfgObj from './frontCfgObj'
@@ -142,7 +143,7 @@ class View {
       console.log('will-navigate, url is ', url);
       this.onNewUrl(url, e)
     })
-    this.webContents.on('did-start-navigation', (e, url) => { })
+    this.webContents.on('did-start-navigation', (e, url) => {})
     // handler hashchange
     this.webContents.on('did-navigate-in-page', (e, url) => {
       this.forceUpdate()
@@ -197,7 +198,9 @@ class View {
       this.loadURL(url);
     }
   }
-  openComponent(path, option = { vueRouter: false }) {
+  openComponent(path, option = {
+    vueRouter: false
+  }) {
     const views = this.browserWindow.views;
     const view = views.find(item => {
       if (process.env.NODE_ENV !== 'development') {
@@ -243,7 +246,7 @@ class View {
       }
     } catch (error) {
       newURLFormat = new URL('seek://' + newURL)
-    } finally { }
+    } finally {}
     return newURLFormat;
   }
   initView() {
@@ -320,6 +323,7 @@ export function createWindow(url) {
     }
   })
   windows[mainWindow.id] = mainWindow; // add BrowserWindow Instance to windows
+  mainWindow.menuWindow = new MenuWindow(mainWindow);
   mainWindow.url = url;
   mainWindow.loadURL(url)
   mainWindow.on('app-command', (e, cmd) => {
@@ -364,8 +368,8 @@ const handlerView = {
     // console.log(prop, ' changed,', 'value', value, 'forceUpdate');
     view.forceUpdate();
     if (FIXED_KEYS.some(item => {
-      return item === prop
-    })) {
+        return item === prop
+      })) {
       view[prop] = value;
     }
     return true;

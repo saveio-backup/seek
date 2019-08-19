@@ -8,19 +8,6 @@ import {
 import fs from 'fs';
 import path from 'path';
 const log = require('electron-log')
-// const handler = require('serve-handler');
-// const http = require('http');
-// const server = http.createServer((req, res) => {
-//   return handler(req, res, {
-//     "redirects": [{
-//       "source": "/",
-//       "destination": "http://localhost:9080"
-//     }]
-//   })
-// });
-// server.listen(50001, () => {
-//   console.log('Running at http://localhost:50001');
-// })
 protocol.registerSchemesAsPrivileged([{
   scheme: 'seek',
   privileges: {
@@ -31,12 +18,9 @@ protocol.registerSchemesAsPrivileged([{
     corsEnabled: true
   }
 }]);
-// const winURL = process.env.NODE_ENV === 'development' ?
-//   `http://localhost:9080/#/navigation` :
-//   `file://${__dirname}/index.html#/navigation`
-const host = process.env.NODE_ENV === 'development' ?
-  `http://localhost:9080/#/` :
-  `file://${__dirname}/index.html#/`
+// const host = process.env.NODE_ENV === 'development' ?
+//   `http://localhost:9080/#/` :
+//   `file://${__dirname}/index.html#/`
 app.on('ready', () => {
   if (process.env.NODE_ENV === 'development') {
     protocol.registerHttpProtocol('seek', seekHttpProtocol, err => {

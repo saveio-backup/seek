@@ -90,6 +90,7 @@
 							@keyup.enter.native='remoteLoadURL(activeView)'
 						></el-input>
 					</div>
+					<div @click="setDialog('netstate')">Syning...</div>
 				</div>
 				<div
 					v-if="platform === 'win32'"
@@ -248,6 +249,10 @@ export default {
 		},
 		closeWindow() {
 			remote.getCurrentWindow().close();
+		},
+		setDialog(menuid) {
+			this.currentWindow.menuWindow.openMenu(menuid);
+			this.currentWindow.menuWindow.win.on('blur',this.currentWindow.menuWindow.win.hide);
 		}
 	}
 };

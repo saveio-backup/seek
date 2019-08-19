@@ -145,6 +145,11 @@ export default new Router({
       ]
     },
     {
+      path: '/menuwindow',
+      name: 'menuWindow',
+      component: require('../pages/menuWindow.vue').default
+    },
+    {
       path: '*',
       redirect: '/Home',
       meta: {

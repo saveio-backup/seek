@@ -190,7 +190,7 @@
 							type="primary"
 							class="primary"
 							@click="linkUpload"
-						>Update</el-button>
+						>Upload</el-button>
 					</div>
 				</div>
 			</el-dialog>

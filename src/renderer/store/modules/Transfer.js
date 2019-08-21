@@ -60,6 +60,15 @@ const actions = {
     transferClear(completeTimer);
     completeTransferListRequest.bind(this, commit)();
     completeTimer = setInterval(completeTransferListRequest.bind(this, commit), TIME_COUNT)
+  },
+  clearIntervalSetUpload({commit}) {
+    transferClear(uploadTimer);
+  },
+  clearIntervalSetDownload({commit}) {
+    transferClear(downloadTimer);
+  },
+  clearIntervalSetComplete({commit}) {
+    transferClear(completeTimer);
   }
 }
 

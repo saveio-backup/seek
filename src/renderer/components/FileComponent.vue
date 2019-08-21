@@ -52,10 +52,11 @@
 				:class="{'not-allow-opeation':!show}"
 				@click="pauseAll"
 			>Pause All</el-button>
+				<!--@click="switchToggle.newTaskDialog=true"-->
 			<el-button
 				v-if="transferType === 2"
 				class="primary"
-				@click="switchToggle.newTaskDialog=true"
+				@click="openNewTaskDialog"
 			>New Task</el-button>
 		</div>
 		<!-- delete all -->
@@ -195,7 +196,7 @@
 								:class="{'not-allow-opeation':!show}"
 								:title="!show ? 'Comming Soon...' : scope.row.IsUploadAction ? 'Start to Upload':'Start to Download'"
 								v-show="scope.row.Status === 4"
-								@click="uploadOrDownloadAgain(scope.row, transferType)"
+								@click="toUploadOrDownloadAgain(scope.row, transferType)"
 							><i
 									class="ofont"
 									:class="{'ofont-zhongxin': (!scope.row.IsUploadAction && scope.row.Status === 3 && show),'ofont-jixu': scope.row.Status === 4}"
@@ -205,7 +206,7 @@
 								:title="!show ? 'Comming Soon...' : scope.row.IsUploadAction ? 'Start to Upload':'Start to Download'"
 								:class="{'not-allow-opeation':!show}"
 								v-show="scope.row.Status === 0"
-								@click="uploadOrDownloadContinue(scope.row, transferType)"
+								@click="toUploadOrDownloadContinue(scope.row, transferType)"
 							><i class="ofont ofont-jixu"></i></span>
 							<span
 								class="active-blue cursor-pointer"
@@ -718,14 +719,14 @@ export default {
 			}
 			return arr;
 		},
-		fileObjById() {
+		fileObjById: function() {
 			let obj = {};
 			for (let value of this.fileList) {
 				obj[value.Id] = value;
 			}
 			return obj;
 		},
-		fileDetailNodes() {
+		fileDetailNodes: function() {
 			if (!this.detailId) return [];
 			let arr =
 				(this.fileObjById[this.detailId] &&
@@ -738,20 +739,36 @@ export default {
 			});
 			return arr;
 		},
-		getDetailStatus() {
+		getDetailStatus: function() {
 			return function(type, detailStatus) {
 				return this.$i18n.error[detailStatus][this.$language];
 			};
 		},
-		getAllTaskSpeedTotal() {
+		getAllTaskSpeedTotal: function() {
 			let speedTotal = 0;
 			for (let value of Object.keys(this.taskSpeed)) {
 				speedTotal += this.taskSpeed[value].speed;
 			}
 			return speedTotal;
+		},
+		isSync: function() {
+			return this.$store.state.Home.isSync || false;
 		}
 	},
 	methods: {
+		openNewTaskDialog() {
+			if(this.isSync && this.transferType === 2) {
+				this.$confirm('The block is not synchronized. Are you sure to do this?', 'Notice', {
+					confirmButtonText: 'confirm',
+					cancelButtonText: 'cancel',
+				}).then(() => {
+					this.switchToggle.newTaskDialog = true;
+				}).catch(e => {
+				})
+			} else {
+				this.switchToggle.newTaskDialog = true;
+			}
+		},
 		// dialog confirm cancel download
 		cancelDownload() {
 			this.switchToggle.confirmCancelDownloadDialog = false;
@@ -846,10 +863,7 @@ export default {
 			}
 			this.uploadOrDownloadCancel(arr, type);
 		},
-		// continue all task
-		continueAll() {
-			// to do!!!!!
-			if (!this.show) return;
+		toContinueAll() {
 			const type = this.transferType;
 			let flag = false;
 			//get pause task to continue
@@ -869,6 +883,22 @@ export default {
 				this.$message({
 					message: "There are no tasks to start"
 				});
+			}
+		},
+		// continue all task
+		continueAll() {
+			// to do!!!!!
+			if (!this.show) return;
+			if(this.isSync && this.transferType === 2) {
+				this.$confirm('The block is not synchronized. Are you sure to do this?', 'Notice', {
+					confirmButtonText: 'confirm',
+					cancelButtonText: 'cancel',
+				}).then(() => {
+					this.toContinueAll();
+				}).catch(e => {
+				})
+			} else {
+				this.toContinueAll();
 			}
 		},
 		// pause all task
@@ -1073,14 +1103,28 @@ export default {
 					}
 				});
 		},
+		toUploadOrDownloadAgain(row, type) {
+			// to do!!!!!
+			if (!this.show) return;
+			if(this.isSync && this.transferType === 2) {
+				this.$confirm('The block is not synchronized. Are you sure to do this?', 'Notice', {
+					confirmButtonText: 'confirm',
+					cancelButtonText: 'cancel',
+				}).then(() => {
+					this.uploadOrDownloadAgain(row, type);
+				}).catch(e => {
+				})
+			} else {
+				this.uploadOrDownloadAgain(row, type);
+			}
+		},
 		/**
 		 * params
 		 * row: transfer item or list
 		 * type: 0:upload    1:download
 		 */
 		uploadOrDownloadAgain(row, type) {
-			// to do!!!!!
-			if (!this.show) return;
+			
 			// get http url
 			let url = type === 1 ? this.$api.uploadRetry : this.$api.downloadRetry;
 
@@ -1134,14 +1178,27 @@ export default {
 					}
 				});
 		},
+		toUploadOrDownloadContinue(row, type) {
+			// to do!!!!!
+			if (!this.show) return;
+			if(this.isSync && this.transferType === 2) {
+				this.$confirm('The block is not synchronized. Are you sure to do this?', 'Notice', {
+					confirmButtonText: 'confirm',
+					cancelButtonText: 'cancel',
+				}).then(() => {
+					this.uploadOrDownloadContinue(row, type);
+				}).catch(e => {
+				})
+			} else {
+				this.uploadOrDownloadContinue(row, type);
+			}
+		},
 		/**
 		 * params
 		 * row: transfer item or list
 		 * type: 0:upload    1:download
 		 */
 		uploadOrDownloadContinue(row, type) {
-			// to do!!!!!
-			if (!this.show) return;
 			let url = type === 1 ? this.$api.uploadResume : this.$api.downloadResume;
 
 			let isArray = this.isArray(row);

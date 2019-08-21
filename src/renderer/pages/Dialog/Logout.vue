@@ -46,7 +46,7 @@ export default {
 		},
 		logout() {
 			this.$axios
-				.post(this.$api.account + "/logout", {
+				.post(this.$api.account + "/logout", {}, {
 					loading: {
 						text: "logging out",
 						target: ".loading-content.logout-loading"

@@ -167,9 +167,15 @@ export default {
 				.get(this.$api.networkStatus).then(res => {
 					if(res.Error === 0) {
 						this.statusList = res.Result;
-						console.log(res.Result);
 					}
-				});
+				}).catch(e => {
+					this.statusList = {
+						ChainState: 0,
+						DNSState: 0,
+						DspProxyState: 0,
+						ChannelProxyState: 0
+					};
+				})
 		},
 		toPopCustomControlMenu() {
 			const that = this;

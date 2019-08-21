@@ -52,7 +52,7 @@ export default {
 		downloadDialog
 	},
 	data() {
-		const COUNT_INTERVAL = 10000;
+		const COUNT_INTERVAL = 5000;
 		return {
 			switchToggle: {
 				downloadDialog: true
@@ -69,12 +69,11 @@ export default {
 				setTimeProcessObj: null
 			},
 			Address: "",
-			Progress: 0,
+			// Progress: 0,
 			downloadUrl: "" // downloadDialog url
 		};
 	},
 	mounted() {
-		console.log("init Dialog.vue");
 		ipcRenderer.on("setSelector", (e, selector) => {
 			this.menuSelector = selector;
 			this.$forceUpdate();
@@ -90,7 +89,12 @@ export default {
 			this.Balance = null;
 			this.channelNum = null;
 			localStorage.setItem("DNSAdress", "");
-			this.getProcess();
+			// this.getProcess();
+			if(newVal != '') {
+				this.getPollingData();
+			} else {
+				clearInterval(this.intervalObj.setTimeObj);
+			}
 		},
 		Balance(newVal, oldVal) {
 			if (!oldVal && newVal && this.channelNum === 0) {
@@ -128,24 +132,29 @@ export default {
 				if (res.Error === 0) {
 					if (res.Result.Address) {
 						this.Address = res.Result.Address;
+						this.renderDateToBrowserView({ result: res.Result, type: "account", rendTo: 1 });
 					}
+				} else {
+					this.Address = '';
+					this.renderDateToBrowserView({ result: res.Result, type: "account", rendTo: 1 });
 				}
 			});
 		},
 		// get current sync process
 		getProcess() {
-			clearInterval(this.intervalObj.setTimeProcessObj);
-			this.intervalObj.setTimeProcessObj = setInterval(() => {
+			// clearInterval(this.intervalObj.setTimeProcessObj);
+			// this.intervalObj.setTimeProcessObj = setInterval(() => {
 				this.$axios.get(this.$api.channelInitProgress).then(progressResult => {
 					if (progressResult.Error === 0) {
-						this.Progress = progressResult.Result.Progress;
-						if (progressResult.Result.Progress === 1) {
-							// this.checkCanNotAddChannel();
-							this.getPollingData();
+						if(progressResult.Result.End - progressResult.Result.Now > 50) {
+							progressResult.Result.isSync = true;
+						} else {
+							progressResult.Result.isSync = false;
 						}
+						this.renderDateToBrowserView({ result: progressResult.Result, type: "progress", rendTo: 1 });
 					}
 				});
-			}, this.intervalObj.COUNT_INTERVAL);
+			// }, this.intervalObj.COUNT_INTERVAL);
 		},
 		// get balance for show create channel dialog
 		getBalance() {
@@ -203,35 +212,50 @@ export default {
 					}
 				});
 		},
+		/**
+		 * params:
+		 * rendTo: send to type 
+		 * 				description: 1: browserView and browserWindow 
+		 * 										 0: browserView
+		 */
 		getArr() {
-			try {
-				let views = remote.BrowserWindow.getAllWindows()[0].views;
-				let arr = [];
-				for (let view of views) {
-					console.log(view.displayURL);
-					if (view.displayURL.indexOf("seek://") === 0) {
-						arr.push(view.browserView.webContents.id);
-					}
+			let arr = [];
+			let views = remote.BrowserWindow.getAllWindows()[0].views;
+			for (let view of views) {
+				if (view.displayURL.indexOf("seek://") === 0) {
+					arr.push(view.browserView.webContents.id);
 				}
-				return arr;
-			} catch (e) {
-				return [];
 			}
+			return arr;
 		},
-		renderDateToBrowserView({ result, type }) {
-			let arr = this.getArr();
-			// console.log(arr);
+		/**
+		 * params:
+		 * result: send data
+		 * type: data type
+		 * rendTo: send to type 
+		 * 				description: 1: browserView and browserWindow 
+		 * 										 0: browserView
+		 */
+		renderDateToBrowserView({ result, type, rendTo = 0 }) {
+			let arr = this.getArr(rendTo);
 			for (let value of arr) {
 				ipcRenderer.sendTo(value, "get-data", { result, type });
+			}
+			if(rendTo === 1) {
+				let winRender = Object.assign({}, result, {type: 'windowRender'});//browserWindow render type is windowRender,browserView render type is browserView || undefined
+				let winContentId = remote.BrowserWindow.getAllWindows()[0].webContents.id;
+				ipcRenderer.sendTo(winContentId, "get-data", { result:winRender, type });
 			}
 		},
 		// get channel、balance、revenue list data and check have channel and wallet money
 		getPollingData() {
 			clearInterval(this.intervalObj.setTimeObj);
+			this.getProcess();
 			this.getChannel();
 			this.getBalance();
 			this.getRevenue();
 			this.intervalObj.setTimeObj = setInterval(() => {
+				this.getProcess();
 				this.getChannel();
 				this.getBalance();
 				this.getRevenue();

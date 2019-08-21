@@ -9,7 +9,6 @@
 
 <script>
 import { ipcRenderer } from "electron";
-import { chown } from "fs";
 export default {
 	name: "browser",
 	mounted() {
@@ -53,11 +52,9 @@ export default {
 					 */
 					ipcRenderer.on("edgeClose", (event, type) => {
 						console.log(
-							`edgeClose callback restart: ${
-								type === 0 ? "failed" : "restart success"
-							}`
+							`edgeClose callback restart: failed`
 						);
-						if (type === "0") {
+						// if (type === "0") {
 							this.$axios.get = null;
 							this.$axios.post = null;
 							this.$message({
@@ -66,33 +63,32 @@ export default {
 								duration: 0
 							});
 							this.$message.error = null;
-						} else {
-							vm.isSync();
-						}
+						// } else {
+						// 	vm.isSync();
+						// }
 					});
-					document.addEventListener("visibilitychange", () => {
-						console.log("document.visibilityState:", document.visibilityState);
-						this.isSync();
-					});
-					window.addEventListener("online", e => {
-						console.log("online");
-						this.isSync();
-					});
+					// document.addEventListener("visibilitychange", () => {
+					// 	console.log("document.visibilityState:", document.visibilityState);
+					// 	this.isSync();
+					// });
+					// window.addEventListener("online", e => {
+					// 	console.log("online");
+					// 	this.isSync();
+					// });
 					return true;
 				}
 			});
 		},
-		isSync() {
-			this.$axios.get(this.$api.channelSync).then(res => {
-				if (res.Result.Syncing === true) {
-					this.$router.replace({
-						name: "CreateAccount"
-					});
-				}
-			});
-		},
+		// isSync() {
+		// 	this.$axios.get(this.$api.channelSync).then(res => {
+		// 		if (res.Result.Syncing === true) {
+		// 			this.$router.replace({
+		// 				name: "CreateAccount"
+		// 			});
+		// 		}
+		// 	});
+		// },
 		channelUpdate(result) {
-			// this.$store.home.commit
 			this.$store.commit("SET_BALANCE_TOTAL", result);
 		},
 		balanceUpdate(result) {
@@ -100,6 +96,26 @@ export default {
 		},
 		revenceUpdate(result) {
 			this.$store.commit("SET_REVENUE", result);
+		},
+		progressUpdate(result) {
+			try {
+				this.$store.commit('SET_CURRENT_HEIGHT', result.Now);
+				this.$store.commit('SET_TOTAL_HEIGHT', result.End);
+				this.$store.commit('SET_IS_SYNC', result.isSync);
+			} catch(e) {
+				console.log(e)
+			}
+		},
+		accountUpdate(result) {
+			this.$store.commit('SET_ACCOUNT', result);
+			if(result && result.Address && result.type !== 'windowRender') {
+				if (location.href.indexOf('ImportAccount') > 0 || location.href.indexOf('CreateAccount') > 0) {
+					this.$router.replace({
+						name: 'Home'
+					})
+				}
+				this.$store.commit('SET_CURRENT_ACCOUNT', 1)
+			}
 		}
 	}
 };

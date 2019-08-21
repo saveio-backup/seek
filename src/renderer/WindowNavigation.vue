@@ -89,6 +89,15 @@
 							@keyup.esc.native='inputDisplayUrl=activeView.displayURL'
 							@keyup.enter.native='remoteLoadURL(activeView)'
 						></el-input>
+						<div class="sync-wrapper flex flex-center" v-if="address">
+							<el-progress class="sync-progress" type="circle" :width="20" :stroke-width="4" :show-text="false" :percentage="percentage" :color="colors"></el-progress>
+							<span class="ft12 theme-font-blue-70" v-if="isSync">
+								Syncing...
+							</span>
+							<span class="ft12 theme-font-blue-70 ml10">
+								(#{{currentHeihgt}}/#{{totalHeight}})
+							</span>
+						</div>
 					</div>
 					<div @click="setDialog('netstate')">Syning...</div>
 				</div>
@@ -147,6 +156,15 @@ export default {
 		window.addEventListener("resize", this.setIsMaximized);
 	},
 	computed: {
+		currentHeihgt: function() {
+			return this.$store.state.Home.currentHeight || 0;
+		},
+		totalHeight: function() {
+			return this.$store.state.Home.totalHeight || 0;
+		},
+		isSync: function() {
+			return this.$store.state.Home.isSync || false;
+		},
 		realUrl: function() {
 			return this.activeView.url;
 		},
@@ -155,6 +173,20 @@ export default {
 		},
 		currentWindow: function() {
 			return remote.getCurrentWindow();
+		},
+		percentage: function() {
+			if(this.currentHeihgt && this.totalHeight) {
+				return parseInt((this.currentHeihgt/this.totalHeight) * 100);
+			} else {
+				return 0;
+			}
+		},
+		address: function() {
+			if(this.$store.state.Home.account && this.$store.state.Home.account.Address) {
+				return this.$store.state.Home.account.Address;
+			} else {
+				return '';
+			}
 		}
 	},
 	filters: {
@@ -185,7 +217,15 @@ export default {
 			views: remote.getCurrentWindow().views || [],
 			user: {
 				name: localStorage.getItem("Label") || ""
-			}
+			},
+			colors: [
+				{color: '#f56c6c', percentage: 20},
+				{color: '#F46C6C', percentage: 40},
+				{color: '#CC7088', percentage: 60},
+				{color: '#AF739C', percentage: 80},
+				{color: '#757AC5', percentage: 99},
+				{color: '#3C80EC', percentage: 100},				
+			]
 		};
 	},
 	methods: {
@@ -512,6 +552,12 @@ $tabs-height: 62px;
 
 			.user-first {
 				font-size: 12px;
+			}
+		}
+		.sync-wrapper {
+			margin-left: 8px;
+			& > .sync-progress {
+				margin-right: 7px;
 			}
 		}
 	}

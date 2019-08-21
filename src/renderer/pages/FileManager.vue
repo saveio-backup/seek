@@ -301,6 +301,12 @@ export default {
 		} else {
 			next();
 		}
+	},
+	beforeDestroy() {
+		this.$store.dispatch("clearIntervalGetDns");
+		this.$store.dispatch("clearIntervalSetUpload");
+		this.$store.dispatch("clearIntervalSetDownload");
+		this.$store.dispatch("clearIntervalSetComplete");
 	}
 };
 </script>

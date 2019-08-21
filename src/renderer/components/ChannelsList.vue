@@ -469,8 +469,19 @@ export default {
 			);
 		},
 		openTransfer(channelSelected) {
-			this.channelSelected = channelSelected;
-			this.switchToggle.assetTransferDialog = true;
+			if(this.isSync) {
+				this.$confirm('The block is not synchronized. Are you sure to do this?', 'Notice', {
+					confirmButtonText: 'confirm',
+					cancelButtonText: 'cancel',
+				}).then(() => {
+					this.channelSelected = channelSelected;
+					this.switchToggle.assetTransferDialog = true;
+				}).catch(e => {
+				})
+			} else {
+				this.channelSelected = channelSelected;
+				this.switchToggle.assetTransferDialog = true;
+			}
 		},
 		toConfirm() {
 			this.$refs["channelwallettransfer"].toTransfer();
@@ -612,6 +623,9 @@ export default {
 				}
 				return false;
 			};
+		},
+		isSync: function() {
+			return this.$store.state.Home.isSync || false;
 		}
 	}
 };

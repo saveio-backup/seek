@@ -168,6 +168,8 @@ export default {
 			chartsChannelDom: "",
 			index: 0,
 			timeoutObj: null,
+			historyIntervalObj: null,
+			currentBalanceList: [0,0,0,0,0,0,0],
 			balanceListsMock: {
 				Action: "getbalancehistory",
 				Desc: "SUCCESS",
@@ -279,7 +281,7 @@ export default {
 				this.drawChannelView();
 				//this nexetTick is chart dom loading is done
 				this.$nextTick(() => {
-					this.getBalanceList();
+					this.getBalanceListInterval();
 					try {
 						this.chartsDom.resize();
 					} catch (e) {
@@ -297,6 +299,16 @@ export default {
 					}
 				});
 			});
+		},
+		getBalanceListInterval() {
+			const INTERVAL_TIME = 3000;
+			clearInterval(this.historyIntervalObj);
+			this.historyIntervalObj = setInterval(() => {
+				if(localStorage.getItem("Address")) {
+					clearInterval(this.historyIntervalObj);
+					this.getBalanceList()
+				}
+			}, INTERVAL_TIME)
 		},
 		//get history balance
 		getBalanceList() {
@@ -353,7 +365,17 @@ export default {
 			return timestamp;
 		},
 		openAddChannel() {
-			this.$refs.channelListObj.openOpen();
+			if(this.isSync) {
+				this.$confirm('The block is not synchronized. Are you sure to do this?', 'Notice', {
+					confirmButtonText: 'confirm',
+					cancelButtonText: 'cancel',
+				}).then(() => {
+					this.$refs.channelListObj.openOpen();
+				}).catch(e => {
+				});
+			} else {
+				this.$refs.channelListObj.openOpen();
+			}
 		},
 		// init channel chart
 		drawChannelView() {
@@ -715,6 +737,9 @@ export default {
 				return channel;
 			});
 			return arr;
+		},
+		isSync: function() {
+			return this.$store.state.Home.isSync || false;
 		}
 	}
 };

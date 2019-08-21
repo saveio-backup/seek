@@ -685,8 +685,19 @@ export default {
 			this.switchToggle.shareDialog = true;
 		},
 		downloadFile(file) {
-			this.fileToDownload = [file];
-			this.switchToggle.confrimDownloadDialog = true;
+			if(this.isSync) {
+				this.$confirm('The block is not synchronized. Are you sure to do this?', 'Notice', {
+					confirmButtonText: 'confirm',
+					cancelButtonText: 'cancel',
+				}).then(() => {
+					this.fileToDownload = [file];
+					this.switchToggle.confrimDownloadDialog = true;
+				}).catch(e => {
+				})
+			} else {
+				this.fileToDownload = [file];
+				this.switchToggle.confrimDownloadDialog = true;
+			}
 		},
 		batchDownload() {
 			const NO_DOWNLOAD_FILE_MSG =
@@ -697,8 +708,19 @@ export default {
 				});
 				return;
 			}
-			this.fileToDownload = this.fileSelected;
-			this.switchToggle.confrimDownloadDialog = true;
+			if(this.isSync) {
+				this.$confirm('The block is not synchronized. Are you sure to do this?', 'Notice', {
+					confirmButtonText: 'confirm',
+					cancelButtonText: 'cancel',
+				}).then(() => {
+					this.fileToDownload = this.fileSelected;
+					this.switchToggle.confrimDownloadDialog = true;
+				}).catch(e => {
+				})
+			} else {
+				this.fileToDownload = this.fileSelected;
+				this.switchToggle.confrimDownloadDialog = true;
+			}
 		},
 		toDownload(downloadFiles) {
 			if (this.fileDownloadInfo.Fee > this.channelBind.BalanceFormat * 1) {
@@ -954,6 +976,9 @@ export default {
 			return fileListData.filter(item => {
 				return item.Name.indexOf(this.filterInput) >= 0;
 			});
+		},
+		isSync: function() {
+			return this.$store.state.Home.isSync || false;
 		}
 	},
 	beforeRouteEnter(to, from, next) {

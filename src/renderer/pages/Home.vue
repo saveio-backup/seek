@@ -92,17 +92,13 @@
 				<!-- <h3 class="account-box-sub  mb50"><span>Welcome to</span></h3> -->
 				<div class="flex between column account-box-sub">
 					<div class="save-logo-wrap">
-						<!-- <img
-						 src="../assets/images/save_768x316.png"
-						 alt="SAVE"
-						 class="save-logo-image  user-no-select"
-						> -->
 						<div class="save-log-desc user-no-select">
 							<!-- Seeker -->
 							<img
 								src="./../assets/images/home_seeker.svg"
 								alt=""
 								srcset=""
+								width="240"
 							>
 						</div>
 					</div>
@@ -804,7 +800,7 @@ $input-color: rgba(203, 203, 203, 1);
 			.account-box-sub {
 				width: 60%;
 				// height: 70%;
-				height: 350px;
+				height: 480px;
 				max-width: 750px;
 				margin: 0 auto;
 				// margin-left: auto;

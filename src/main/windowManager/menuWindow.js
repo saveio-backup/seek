@@ -45,17 +45,17 @@ export default class MenuWindow {
         width: 200,
         height: 60
       })
-      this.win.show();
+      this.win.showInactive();
     } else if (params.id === 'state') {
       let parentBounds = this.parentWindow.getBounds();
       this.win.webContents.send('setMenuDialog', params);
       this.win.setBounds({
         x: parentBounds.x + 40,
         y: parentBounds.y - 150 + parentBounds.height,
-        width: 200,
+        width: 210,
         height: 140
       })
-      this.win.show();
+      this.win.showInactive();
     }
   }
 }

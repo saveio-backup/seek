@@ -257,7 +257,13 @@ export default {
 		 */
 		getArr() {
 			let arr = [];
-			let views = remote.BrowserWindow.getAllWindows()[0].views;
+			let views = {}
+			//  remote.BrowserWindow.getAllWindows()[0].views;
+			for(let win of remote.BrowserWindow.getAllWindows()) {
+				if(win.views) {
+					views = win.views;
+				}
+			}
 			for (let view of views) {
 				if (view.displayURL.indexOf("seek://") === 0) {
 					arr.push(view.browserView.webContents.id);

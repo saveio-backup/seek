@@ -1,23 +1,28 @@
 <template>
 	<div id="menu-window">
 		<div
-			class="netstate"
-			v-show="menuid === 'netstate'"
+			class="syncInfo"
+			v-if="menuid === 'syncInfo'"
 		>
-			Show Net State
+			<sync-info></sync-info>
 		</div>
 		<div
-			class="slidebar"
-			v-show="menuid === 'slidebar'"
+			class="state"
+			v-if="menuid === 'state'"
 		>
-			Show Slide Bar
+			<state-info></state-info>
 		</div>
 	</div>
 </template>
 <script>
 import { ipcRenderer } from "electron";
+import syncInfo from './MenuWindow/SyncInfo'
+import stateInfo from './MenuWindow/StateInfo'
 export default {
-	components: {},
+	components: {
+		syncInfo,
+		stateInfo
+	},
 	mounted() {
 		this.eventListener();
 	},
@@ -28,8 +33,8 @@ export default {
 	},
 	methods: {
 		eventListener() {
-			ipcRenderer.on("setMenuDialog", (event, param) => {
-				this.menuid = param
+			ipcRenderer.on("setMenuDialog", (event, {id}) => {
+				this.menuid = id;
 			});
 		}
 	}
@@ -37,11 +42,11 @@ export default {
 </script>
 <style lang="scss" scoped>
 #menu-window {
-	.netstate {
-		border: solid 1px red;
-	}
-	.slidebar {
-		border: solid 1px green;
+	width: 100%;
+	height: 100%;
+	& > div {
+		width: 100%;
+		height: 100%;
 	}
 }
 </style>

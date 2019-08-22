@@ -89,17 +89,34 @@
 							@keyup.esc.native='inputDisplayUrl=activeView.displayURL'
 							@keyup.enter.native='remoteLoadURL(activeView)'
 						></el-input>
-						<div class="sync-wrapper flex flex-center" v-if="address">
-							<el-progress class="sync-progress" type="circle" :width="20" :stroke-width="4" :show-text="false" :percentage="percentage" :color="colors"></el-progress>
-							<span class="ft12 theme-font-blue-70" v-if="isSync">
+						<div
+							@mouseenter="setDialog('syncInfo')"
+							@mouseleave="hiddenDialog"
+							class="sync-wrapper flex flex-center"
+							v-if="address"
+						>
+							<el-progress
+								class="sync-progress"
+								type="circle"
+								:width="16"
+								:stroke-width="3"
+								:show-text="false"
+								:percentage="percentage"
+								:color="colors"
+								v-if="isSync"
+							></el-progress>
+							<span
+								class="ft12 theme-font-blue-70"
+								v-if="isSync"
+							>
 								Syncing...
 							</span>
-							<span class="ft12 theme-font-blue-70 ml10">
-								(#{{currentHeihgt}}/#{{totalHeight}})
+							<span v-if="!isSync" class="ft12 theme-font-blue-70 ml10">
+								#{{currentHeihgt}}
 							</span>
 						</div>
 					</div>
-					<div @click="setDialog('netstate')">Syning...</div>
+					<!-- <div @click="setDialog('netstate')" v-if="true">Syning...</div> -->
 				</div>
 				<div
 					v-if="platform === 'win32'"
@@ -175,17 +192,20 @@ export default {
 			return remote.getCurrentWindow();
 		},
 		percentage: function() {
-			if(this.currentHeihgt && this.totalHeight) {
-				return parseInt((this.currentHeihgt/this.totalHeight) * 100);
+			if (this.currentHeihgt && this.totalHeight) {
+				return parseInt((this.currentHeihgt / this.totalHeight) * 100);
 			} else {
 				return 0;
 			}
 		},
 		address: function() {
-			if(this.$store.state.Home.account && this.$store.state.Home.account.Address) {
+			if (
+				this.$store.state.Home.account &&
+				this.$store.state.Home.account.Address
+			) {
 				return this.$store.state.Home.account.Address;
 			} else {
-				return '';
+				return "";
 			}
 		}
 	},
@@ -219,12 +239,7 @@ export default {
 				name: localStorage.getItem("Label") || ""
 			},
 			colors: [
-				{color: '#f56c6c', percentage: 20},
-				{color: '#F46C6C', percentage: 40},
-				{color: '#CC7088', percentage: 60},
-				{color: '#AF739C', percentage: 80},
-				{color: '#757AC5', percentage: 99},
-				{color: '#3C80EC', percentage: 100},				
+				{ color: "#3C80EC", percentage: 100 }
 			]
 		};
 	},
@@ -290,9 +305,18 @@ export default {
 		closeWindow() {
 			remote.getCurrentWindow().close();
 		},
+		hiddenDialog() {
+			this.currentWindow.menuWindow.hiddenMenu();
+		},
 		setDialog(menuid) {
-			this.currentWindow.menuWindow.openMenu(menuid);
-			this.currentWindow.menuWindow.win.on('blur',this.currentWindow.menuWindow.win.hide);
+			let params = { 
+				id: menuid
+			};
+			this.currentWindow.menuWindow.openMenu(params);
+			// this.currentWindow.menuWindow.win.on(
+			// 	"blur",
+			// 	this.currentWindow.menuWindow.win.hide
+			// );
 		}
 	}
 };

@@ -29,21 +29,33 @@ export default class MenuWindow {
     const url = DEFAULT_URL + '#' + 'menuWindow';
     this.win.loadURL(url);
     if (process.env.NODE_ENV === 'development' || frontCfgObj().console) {
-      this.win.webContents.openDevTools();
+      // this.win.webContents.openDevTools();
     }
   }
-  openMenu(menuid, opt) {
-    if (menuid === 'netstate') {
+  hiddenMenu() {
+    this.win.hide();
+  }
+  openMenu(params, opt) {
+    if (params.id === 'syncInfo') {
       let parentBounds = this.parentWindow.getBounds();
-      this.win.webContents.send('setMenuDialog', 'netstate');
+      this.win.webContents.send('setMenuDialog', params);
       this.win.setBounds({
-        x: parentBounds.x + parentBounds.width - 200,
+        x: parentBounds.x + parentBounds.width - 210,
         y: parentBounds.y + Y_POSITION,
         width: 200,
-        height: 200
+        height: 60
       })
       this.win.show();
-    } else if (menuid === 'xxx') {
+    } else if (params.id === 'state') {
+      let parentBounds = this.parentWindow.getBounds();
+      this.win.webContents.send('setMenuDialog', params);
+      this.win.setBounds({
+        x: parentBounds.x + 40,
+        y: parentBounds.y - 150 + parentBounds.height,
+        width: 200,
+        height: 140
+      })
+      this.win.show();
     }
   }
 }

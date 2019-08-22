@@ -52,7 +52,7 @@ export default {
 		downloadDialog
 	},
 	data() {
-		const COUNT_INTERVAL = 5000;
+		const COUNT_INTERVAL = 10000;
 		return {
 			switchToggle: {
 				downloadDialog: true
@@ -91,7 +91,7 @@ export default {
 			localStorage.setItem("DNSAdress", "");
 			// this.getProcess();
 			if(newVal != '') {
-				this.getPollingData();
+				// this.getPollingData();
 			} else {
 				clearInterval(this.intervalObj.setTimeObj);
 			}
@@ -212,6 +212,32 @@ export default {
 					}
 				});
 		},
+		getState() {
+			this.$axios
+				.get(this.$api.networkStatus)
+				.then(res => {
+					if (res.Error === 0) {
+						this.renderDateToBrowserView({
+							result: res.Result,
+							type: "state",
+							rendTo: 1
+						});
+					}
+				})
+				.catch(e => {
+					let result = {
+						ChainState: 0,
+						DNSState: 0,
+						DspProxyState: 0,
+						ChannelProxyState: 0
+					};
+					this.renderDateToBrowserView({
+						result: result,
+						type: "state",
+						rendTo: 1
+					});
+				})
+		},
 		/**
 		 * params:
 		 * rendTo: send to type 
@@ -241,10 +267,19 @@ export default {
 			for (let value of arr) {
 				ipcRenderer.sendTo(value, "get-data", { result, type });
 			}
-			if(rendTo === 1) {
-				let winRender = Object.assign({}, result, {type: 'windowRender'});//browserWindow render type is windowRender,browserView render type is browserView || undefined
-				let winContentId = remote.BrowserWindow.getAllWindows()[0].webContents.id;
-				ipcRenderer.sendTo(winContentId, "get-data", { result:winRender, type });
+			let arrWin = remote.BrowserWindow.getAllWindows();
+			for(let win of arrWin) {
+				if(win.webContents.getURL().indexOf("/#/navigation") > 0) {
+					if(rendTo === 1) {
+						let winRender = Object.assign({}, result, {type: 'windowRender'});//browserWindow render type is windowRender,browserView render type is browserView || undefined
+						let winContentId = win.webContents.id;
+						ipcRenderer.sendTo(winContentId, "get-data", { result:winRender, type });
+					}
+				} else {
+					let winRender = Object.assign({}, result, {type: 'windowRender'});//browserWindow render type is windowRender,browserView render type is browserView || undefined
+					let winContentId = win.webContents.id;
+					ipcRenderer.sendTo(winContentId, "get-data", { result:winRender, type });
+				}
 			}
 		},
 		// get channel、balance、revenue list data and check have channel and wallet money
@@ -254,11 +289,13 @@ export default {
 			this.getChannel();
 			this.getBalance();
 			this.getRevenue();
+			this.getState();
 			this.intervalObj.setTimeObj = setInterval(() => {
 				this.getProcess();
 				this.getChannel();
 				this.getBalance();
 				this.getRevenue();
+				this.getState();
 			}, this.intervalObj.COUNT_INTERVAL);
 		}
 	}

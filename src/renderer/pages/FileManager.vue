@@ -281,8 +281,6 @@ export default {
 	},
 	beforeRouteEnter(to, from, next) {
 		next(vm => {
-			vm.$store.dispatch("setUpload");
-			vm.$store.dispatch("setDownload");
 			// vm.$store.dispatch("setComplete");
 			if (to.name === "FileManager") {
 				vm.$router.push({
@@ -292,6 +290,8 @@ export default {
 					}
 				});
 			}
+			vm.$store.dispatch("setUpload");
+			vm.$store.dispatch("setDownload");
 		});
 	},
 	beforeRouteUpdate(to, from, next) {

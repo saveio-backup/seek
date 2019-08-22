@@ -758,7 +758,7 @@ export default {
 	methods: {
 		openNewTaskDialog() {
 			if(this.isSync && this.transferType === 2) {
-				this.$confirm('The block is not synchronized. Are you sure to do this?', 'Notice', {
+				this.$confirm('Block unsynchronized completion. Are you sure to do this?', 'Notice', {
 					confirmButtonText: 'confirm',
 					cancelButtonText: 'cancel',
 				}).then(() => {
@@ -890,7 +890,7 @@ export default {
 			// to do!!!!!
 			if (!this.show) return;
 			if(this.isSync && this.transferType === 2) {
-				this.$confirm('The block is not synchronized. Are you sure to do this?', 'Notice', {
+				this.$confirm('Block unsynchronized completion. Are you sure to do this?', 'Notice', {
 					confirmButtonText: 'confirm',
 					cancelButtonText: 'cancel',
 				}).then(() => {
@@ -1107,7 +1107,7 @@ export default {
 			// to do!!!!!
 			if (!this.show) return;
 			if(this.isSync && this.transferType === 2) {
-				this.$confirm('The block is not synchronized. Are you sure to do this?', 'Notice', {
+				this.$confirm('Block unsynchronized completion. Are you sure to do this?', 'Notice', {
 					confirmButtonText: 'confirm',
 					cancelButtonText: 'cancel',
 				}).then(() => {
@@ -1182,7 +1182,7 @@ export default {
 			// to do!!!!!
 			if (!this.show) return;
 			if(this.isSync && this.transferType === 2) {
-				this.$confirm('The block is not synchronized. Are you sure to do this?', 'Notice', {
+				this.$confirm('Block unsynchronized completion. Are you sure to do this?', 'Notice', {
 					confirmButtonText: 'confirm',
 					cancelButtonText: 'cancel',
 				}).then(() => {

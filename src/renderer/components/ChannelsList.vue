@@ -470,7 +470,7 @@ export default {
 		},
 		openTransfer(channelSelected) {
 			if(this.isSync) {
-				this.$confirm('The block is not synchronized. Are you sure to do this?', 'Notice', {
+				this.$confirm('Block unsynchronized completion. Are you sure to do this?', 'Notice', {
 					confirmButtonText: 'confirm',
 					cancelButtonText: 'cancel',
 				}).then(() => {

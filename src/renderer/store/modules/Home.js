@@ -10,16 +10,26 @@ const state = {
   revenueFormat: 0,
   loginStatus: -1,
   // initChannelProgress: 0,
+  dns: [],
+
   totalHeight: 0,
   currentHeight: 0,
   isSync: false,
-  dns: [],
-  account: null
+  account: null,
+  state: {
+    ChainState: 0,
+    DNSState: 0,
+    DspProxyState: 0,
+    ChannelProxyState: 0
+  }
 }
 // Confirm login status
 
 
 const mutations = {
+  'SET_STAET'(state, result) {
+    state.state = result;
+  },
   'SET_IS_SYNC'(state, result) {
     state.isSync = result;
   },
@@ -104,6 +114,7 @@ const actions = {
   setCurrentAccount({
     commit
   }) {
+    commit('SET_CURRENT_ACCOUNT', 1) // login success
     axios
       .get(api.account)
       .then(async (res) => {
@@ -123,14 +134,14 @@ const actions = {
             //             rebackToCreateAccount(commit, progress.Result.Progress); // back to create account
             //             this.dispatch('getChannelInitProgress'); // Loop loading progress
             //           } else { // both Wallet and Channel exist
-              const result = res.Result;
-              for (let key in result) {
-                window.localStorage.setItem(key, result[key]);
-              }
-              commit('SET_CURRENT_ACCOUNT', 1) // login success
-              this.dispatch("setBalanceLists"); // getBalance
-              this.dispatch("setChannelBalanceTotal"); // getAllChannels
-              this.dispatch("setRevenue");
+            const result = res.Result;
+            for (let key in result) {
+              window.localStorage.setItem(key, result[key]);
+            }
+            commit('SET_CURRENT_ACCOUNT', 1) // login success
+            this.dispatch("setBalanceLists"); // getBalance
+            this.dispatch("setChannelBalanceTotal"); // getAllChannels
+            this.dispatch("setRevenue");
                 //       }
                 //     })
                 // } else if (progress.Error === 0) { // both Wallet and Channel exist

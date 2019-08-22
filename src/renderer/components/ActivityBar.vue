@@ -89,8 +89,20 @@
 						class="ofont ofont-caidan user-no-select cursor-pointer cursor-click"
 						@click="toPopCustomControlMenu"
 					></i>
-					<i class="process-status" :class="{'process-all-error': status === 0, 'process-some-error': status === 2}">
-					</i>
+					<span
+						v-if="address"
+						@mouseenter="setDialog('state')"
+						@mouseleave="hiddenDialog"
+						class="process-status-wrapper"
+					>
+						<i
+							class="process-status"	
+							:class="{'process-all-error': status === 0, 'process-some-error': status === 2}"
+						>
+						</i>
+					</span>
+					<span class="process-status-wrapper" v-else>
+					</span>
 				</div>
 			</div>
 		</div>
@@ -106,7 +118,7 @@ export default {
 			this.$forceUpdate();
 			this.views = remote.getCurrentWindow().views;
 		});
-		this.init()
+		// this.init();
 	},
 	data() {
 		return {
@@ -117,66 +129,86 @@ export default {
 			user: {
 				name: localStorage.getItem("Label") || ""
 			},
-			statusList: {
-				ChainState: 0,
-				DNSState: 0,
-				DspProxyState: 0,
-				ChannelProxyState: 0
-			},
+			// statusList: {
+			// 	ChainState: 0,
+			// 	DNSState: 0,
+			// 	DspProxyState: 0,
+			// 	ChannelProxyState: 0
+			// },
 			statusIntervalObj: null
 		};
 	},
 	computed: {
+		statusList: function() {
+			return this.$store.state.Home.state;
+		},
 		activeView: function() {
 			return this.views.find(item => item.isActive);
 		},
 		currentWindow: function() {
 			return remote.getCurrentWindow();
 		},
+		address: function() {
+			if (
+				this.$store.state.Home.account &&
+				this.$store.state.Home.account.Address
+			) {
+				return this.$store.state.Home.account.Address;
+			} else {
+				return "";
+			}
+		},
 		// return 0 all offline,1 all online,2 some online some offline
 		status: function() {
 			let online = false;
 			let offline = false;
-			let statusKey = ['ChainState','DNSState','DspProxyState','ChannelProxyState']
-			for(let value of statusKey) {
-				if(this.statusList && this.statusList[value] === 1) {
+			let statusKey = [
+				"ChainState",
+				"DNSState",
+				"DspProxyState",
+				"ChannelProxyState"
+			];
+			for (let value of statusKey) {
+				if (this.statusList && this.statusList[value] === 1) {
 					online = true;
 				} else {
 					offline = true;
 				}
 			}
-			if(online && !offline) {
-				return 1
-			} else if(!online && offline) {
-				return 0
+			if (online && !offline) {
+				return 1;
+			} else if (!online && offline) {
+				return 0;
 			} else {
-				return 2
+				return 2;
 			}
 		}
 	},
 	methods: {
-		init() {
-			const INTERVAL_TIME = 5000
-			this.getStatus();
-			this.statusIntervalObj = setInterval(() => {
-				this.getStatus()
-			}, INTERVAL_TIME)
-		},
-		getStatus() {
-			this.$axios
-				.get(this.$api.networkStatus).then(res => {
-					if(res.Error === 0) {
-						this.statusList = res.Result;
-					}
-				}).catch(e => {
-					this.statusList = {
-						ChainState: 0,
-						DNSState: 0,
-						DspProxyState: 0,
-						ChannelProxyState: 0
-					};
-				})
-		},
+		// init() {
+		// 	const INTERVAL_TIME = 5000;
+		// 	this.getStatus();
+		// 	this.statusIntervalObj = setInterval(() => {
+		// 		this.getStatus();
+		// 	}, INTERVAL_TIME);
+		// },
+		// getStatus() {
+		// 	this.$axios
+		// 		.get(this.$api.networkStatus)
+		// 		.then(res => {
+		// 			if (res.Error === 0) {
+		// 				this.statusList = res.Result;
+		// 			}
+		// 		})
+		// 		.catch(e => {
+		// 			this.statusList = {
+		// 				ChainState: 0,
+		// 				DNSState: 0,
+		// 				DspProxyState: 0,
+		// 				ChannelProxyState: 0
+		// 			};
+		// 		});
+		// },
 		toPopCustomControlMenu() {
 			const that = this;
 			const customControlMenuItems = [
@@ -228,6 +260,15 @@ export default {
 				"showVersion",
 				localStorage.getItem("edgeVersion") || ""
 			);
+		},
+		hiddenDialog() {
+			this.currentWindow.menuWindow.hiddenMenu();
+		},
+		setDialog(menuid) {
+			let params = {
+				id: menuid
+			};
+			this.currentWindow.menuWindow.openMenu(params);
 		}
 	}
 };
@@ -380,29 +421,43 @@ $slidebar-active-color: linear-gradient(
 				color: rgba(32, 32, 32, 0.5);
 			}
 
-			.process-status {
-				width: 6px;
-				height: 6px;
-				border-radius: 50%;
+			.process-status-wrapper {
+				// padding: 5px;
+				height: 10px;
+				width: 10px;
 				display: block;
-				border: 2px solid white;
 				margin: 20px auto 0;
-				background:linear-gradient(180deg,rgba(217,231,51,1) 0%,rgba(178,202,23,1) 100%);
-				box-shadow:0px 0px 3px 0px rgba(0,0,0,0.3);
-				border:1px solid rgba(237,237,237,1);
-				
-				&.process-some-error {
-					background:linear-gradient(180deg,rgba(235,181,126,1) 0%,rgba(223,147,79,1) 100%);
-					box-shadow:0px 0px 3px 0px rgba(0,0,0,0.3);
-					border:1px solid rgba(237,237,237,1);
+				& > .process-status {
+					width: 6px;
+					height: 6px;
+					border-radius: 50%;
+					display: block;
+					border: 2px solid white;
+					background: linear-gradientlinear-gradient(180deg,rgba(61,227,86,1) 0%,rgba(23,173,44,1) 100%);;
+					box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.3);
+					border: 1px solid rgba(237, 237, 237, 1);
+	
+					&.process-some-error {
+						background: linear-gradient(
+							180deg,
+							rgba(235, 181, 126, 1) 0%,
+							rgba(223, 147, 79, 1) 100%
+						);
+						box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.3);
+						border: 1px solid rgba(237, 237, 237, 1);
+					}
+	
+					&.process-all-error {
+						background: linear-gradient(
+							180deg,
+							rgba(247, 144, 115, 1) 0%,
+							rgba(194, 70, 43, 1) 100%
+						);
+						box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.3);
+						border: 1px solid rgba(237, 237, 237, 1);
+					}
 				}
-
-				&.process-all-error {
-					background:linear-gradient(180deg,rgba(247,144,115,1) 0%,rgba(194,70,43,1) 100%);
-					box-shadow:0px 0px 3px 0px rgba(0,0,0,0.3);
-					border:1px solid rgba(237,237,237,1);
-				}
-			}	
+			}
 		}
 	}
 	.el-button {

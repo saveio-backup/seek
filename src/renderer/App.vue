@@ -12,7 +12,6 @@ import { ipcRenderer } from "electron";
 export default {
 	name: "browser",
 	mounted() {
-		// this.isSync();
 		this.activeListener();
 		ipcRenderer.on("current-active-show-message", (event, { info, type }) => {
 			this.$message({
@@ -28,7 +27,6 @@ export default {
 				localStorage.setItem("edgeVersion", res.Result || "");
 			}
 		});
-		// .catch(localStorage.setItem("edgeVersion", ""));
 	},
 	computed: {
 		routerName() {
@@ -51,43 +49,20 @@ export default {
 					 * type: 0: failed;1: restart success
 					 */
 					ipcRenderer.on("edgeClose", (event, type) => {
-						console.log(
-							`edgeClose callback restart: failed`
-						);
-						// if (type === "0") {
-							this.$axios.get = null;
-							this.$axios.post = null;
-							this.$message({
-								message: "Server has been closed, please restart seeker.",
-								type: "error",
-								duration: 0
-							});
-							this.$message.error = null;
-						// } else {
-						// 	vm.isSync();
-						// }
+						console.log(`edgeClose callback restart: failed`);
+						this.$axios.get = null;
+						this.$axios.post = null;
+						this.$message({
+							message: "Server has been closed, please restart seeker.",
+							type: "error",
+							duration: 0
+						});
+						this.$message.error = null;
 					});
-					// document.addEventListener("visibilitychange", () => {
-					// 	console.log("document.visibilityState:", document.visibilityState);
-					// 	this.isSync();
-					// });
-					// window.addEventListener("online", e => {
-					// 	console.log("online");
-					// 	this.isSync();
-					// });
 					return true;
 				}
 			});
 		},
-		// isSync() {
-		// 	this.$axios.get(this.$api.channelSync).then(res => {
-		// 		if (res.Result.Syncing === true) {
-		// 			this.$router.replace({
-		// 				name: "CreateAccount"
-		// 			});
-		// 		}
-		// 	});
-		// },
 		channelUpdate(result) {
 			this.$store.commit("SET_BALANCE_TOTAL", result);
 		},
@@ -99,23 +74,29 @@ export default {
 		},
 		progressUpdate(result) {
 			try {
-				this.$store.commit('SET_CURRENT_HEIGHT', result.Now);
-				this.$store.commit('SET_TOTAL_HEIGHT', result.End);
-				this.$store.commit('SET_IS_SYNC', result.isSync);
-			} catch(e) {
-				console.log(e)
+				this.$store.commit("SET_CURRENT_HEIGHT", result.Now);
+				this.$store.commit("SET_TOTAL_HEIGHT", result.End);
+				this.$store.commit("SET_IS_SYNC", result.isSync);
+			} catch (e) {
+				console.log(e);
 			}
 		},
 		accountUpdate(result) {
-			this.$store.commit('SET_ACCOUNT', result);
-			if(result && result.Address && result.type !== 'windowRender') {
-				if (location.href.indexOf('ImportAccount') > 0 || location.href.indexOf('CreateAccount') > 0) {
-					this.$router.replace({
-						name: 'Home'
-					})
-				}
-				this.$store.commit('SET_CURRENT_ACCOUNT', 1)
-			}
+			this.$store.commit("SET_ACCOUNT", result);
+			// if (result && result.Address && result.type !== "windowRender") {
+			// 	if (
+			// 		location.href.indexOf("ImportAccount") > 0 ||
+			// 		location.href.indexOf("CreateAccount") > 0
+			// 	) {
+			// 		this.$router.replace({
+			// 			name: "Home"
+			// 		});
+			// 	}
+			// 	this.$store.commit("SET_CURRENT_ACCOUNT", 1);
+			// }
+		},
+		stateUpdate(result) {
+			this.$store.commit("SET_STAET", result);
 		}
 	}
 };

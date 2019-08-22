@@ -27,15 +27,24 @@
 			<el-table-column
 				label="File Name"
 				prop="Name"
+				sortable
 			></el-table-column>
-			<el-table-column label="Profit(SAVE)">
+			<el-table-column
+				label="Profit(SAVE)"
+				sortable
+				prop="Profit"
+			>
 				<template slot-scope="scope">
 					<div>
 						{{scope.row.ProfitFormat}}
 					</div>
 				</template>
 			</el-table-column>
-			<el-table-column label="Time">
+			<el-table-column
+				label="Time"
+				sortable
+				prop="SharedAt"
+			>
 				<template slot-scope="scope">
 					<div>
 						{{$dateFormat.formatTimeByTimestamp(scope.row.SharedAt*1000)}}
@@ -57,69 +66,69 @@ export default {
 			dateRange: [start, now],
 			mockData: [
 				{
-					Name: "test",
-					Profit: 1000000000,
+					Name: "tet",
+					Profit: 1,
 					ProfitFormat: "1",
+					SharedAt: 155491126
+				},
+				{
+					Name: "te41st",
+					Profit: 1,
+					ProfitFormat: "1",
+					SharedAt: 15491126
+				},
+				{
+					Name: "fstest",
+					Profit: 1124,
+					ProfitFormat: "1124",
+					SharedAt: 15491126
+				},
+				{
+					Name: "tdsest",
+					Profit: 1362,
+					ProfitFormat: "1362",
+					SharedAt: 15591126
+				},
+				{
+					Name: "tes525235t",
+					Profit: 13535,
+					ProfitFormat: "13535",
+					SharedAt: 1555126
+				},
+				{
+					Name: "test",
+					Profit: 12,
+					ProfitFormat: "12",
 					SharedAt: 1555491126
 				},
 				{
 					Name: "test",
-					Profit: 1000000000,
-					ProfitFormat: "1",
+					Profit: 152,
+					ProfitFormat: "152",
 					SharedAt: 1555491126
 				},
 				{
 					Name: "test",
-					Profit: 1000000000,
-					ProfitFormat: "1",
+					Profit: 21,
+					ProfitFormat: "21",
 					SharedAt: 1555491126
 				},
 				{
 					Name: "test",
-					Profit: 1000000000,
-					ProfitFormat: "1",
+					Profit: 31,
+					ProfitFormat: "31",
 					SharedAt: 1555491126
 				},
 				{
 					Name: "test",
-					Profit: 1000000000,
-					ProfitFormat: "1",
+					Profit: 231,
+					ProfitFormat: "231",
 					SharedAt: 1555491126
 				},
 				{
 					Name: "test",
-					Profit: 1000000000,
-					ProfitFormat: "1",
-					SharedAt: 1555491126
-				},
-				{
-					Name: "test",
-					Profit: 1000000000,
-					ProfitFormat: "1",
-					SharedAt: 1555491126
-				},
-				{
-					Name: "test",
-					Profit: 1000000000,
-					ProfitFormat: "1",
-					SharedAt: 1555491126
-				},
-				{
-					Name: "test",
-					Profit: 1000000000,
-					ProfitFormat: "1",
-					SharedAt: 1555491126
-				},
-				{
-					Name: "test",
-					Profit: 1000000000,
-					ProfitFormat: "1",
-					SharedAt: 1555491126
-				},
-				{
-					Name: "test",
-					Profit: 1000000000,
-					ProfitFormat: "1",
+					Profit: 201,
+					ProfitFormat: "201",
 					SharedAt: 1555491126
 				}
 			],

@@ -18,6 +18,8 @@
 					label='Channel'
 					min-width="80px"
 					max-width="120px"
+					prop="ChannelId"
+					sortable
 				>
 					<template slot-scope="scope">
 						<div class="bold">{{scope.row.ChannelId}}</div>
@@ -27,6 +29,8 @@
 					label='Status'
 					min-width="80px"
 					max-width="120px"
+					prop="Connected"
+					sortable
 				>
 					<template slot-scope="scope">
 						<div
@@ -35,7 +39,10 @@
 						>{{scope.row.Connected ? 'online' : 'offline'}}</div>
 					</template>
 				</el-table-column>
-				<el-table-column label='Balance(SAVE)'>
+				<el-table-column label='Balance(SAVE)'
+					prop="Balance"
+					sortable
+				>
 					<template slot-scope="scope">
 						<div class="grey-xs ft14">
 							{{filterFloat(scope.row.BalanceFormat).toLocaleString('en-US', { maximumFractionDigits: 9 })}}
@@ -45,6 +52,8 @@
 				<el-table-column
 					label='Address'
 					:max-width="600"
+					prop="Address"
+					sortable
 				>
 					<template slot-scope="scope">
 						<div class="grey-xs ft14">
@@ -52,7 +61,10 @@
 						</div>
 					</template>
 				</el-table-column>
-				<el-table-column label='DNS'>
+				<el-table-column label='DNS'
+					prop="HostAddr"
+					sortable
+				>
 					<template slot-scope="scope">
 						<div class="grey-xs ft14">
 							{{scope.row.HostAddr}}

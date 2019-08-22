@@ -433,7 +433,7 @@ $slidebar-active-color: linear-gradient(
 					border-radius: 50%;
 					display: block;
 					border: 2px solid white;
-					background: linear-gradientlinear-gradient(180deg,rgba(61,227,86,1) 0%,rgba(23,173,44,1) 100%);;
+					background: linear-gradient(180deg,rgba(61,227,86,1) 0%,rgba(23,173,44,1) 100%);
 					box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.3);
 					border: 1px solid rgba(237, 237, 237, 1);
 	

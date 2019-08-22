@@ -56,8 +56,8 @@
 				<!-- border -->
 				<el-table
 					ref='table'
-					@row-click="clickRow"
 					:data="filterListData"
+					@row-click="clickRow"
 					height="100%"
 					@selection-change="selectFile"
 				>
@@ -73,6 +73,8 @@
 					<el-table-column
 						label="File Name"
 						class-name="rowName"
+						prop="Name"
+						sortable
 						min-width="150"
 					>
 						<template slot-scope="scope">
@@ -130,6 +132,8 @@
 						label="Model"
 						width="100"
 						v-if="page === 'filebox'"
+						prop="StoreTypeNum"
+						sortable
 					>
 						<template slot-scope="scope">
 							<div>
@@ -141,6 +145,8 @@
 						label="Owner"
 						v-if="page ==='miner'"
 						min-width="120"
+						prop="OwnerAddress"
+						sortable
 					>
 						<template slot-scope="scope">
 							<span class="td-grey">{{scope.row.OwnerAddress || 'Nameless'}}</span>
@@ -151,6 +157,8 @@
 						label="Size"
 						column-key="Size"
 						min-width="70"
+						prop="Size"
+						sortable
 					>
 						<template slot-scope="scope">
 							<span class="td-grey break-word">
@@ -162,6 +170,8 @@
 						v-if="true"
 						label="Date"
 						width="170"
+						:prop="page ==='filebox'?'UpdatedAt':'DownloadAt'"
+						sortable
 					>
 						<template slot-scope="scope">
 							<div class="td-grey break-word">
@@ -177,6 +187,8 @@
 						v-if="page ==='miner'"
 						label="Profit"
 						min-width="70"
+						prop="Profit"
+						sortable
 					>
 						<template slot-scope="scope">
 							<div class="light-blue break-word">
@@ -189,6 +201,7 @@
 						label="Contributions"
 						prop="DownloadCount"
 						width="150"
+						sortable
 					>
 
 					</el-table-column>
@@ -196,6 +209,8 @@
 						label="Type"
 						v-if="page === 'filebox'"
 						width="150"
+						sortable
+						prop="Privilege"
 					>
 						<template slot-scope="scope">
 							<span class="td-grey">
@@ -409,8 +424,8 @@ export default {
 					Name: "miner11111.txt",
 					Size: 1024,
 					DownloadCount: 10,
-					DownloadAt: 1555166657,
-					LastShareAt: 1555166657,
+					DownloadAt: 1555166,
+					LastShareAt: 15556657,
 					Privilege: 0,
 					Profit: 10
 				}
@@ -421,13 +436,15 @@ export default {
 					Path: "asdfsd/sdfaf",
 					Name:
 						"no1gasdfasdfasdfaweqwerwqerwfasdfadsfasdfasdfadsfasdfasdfasdfsafd111111.txt",
-					Size: 1536,
+					Size: 153,
 					DownloadCount: 0,
-					ExpiredAt: 1555051356,
+					ExpiredAt: 155505156,
 					UpdatedAt: 0,
+					DownloadAt: 0,
 					Profit: 0,
 					Privilege: 0,
-					Url: "xxxxxx"
+					Url: "xxxxxx",
+					StoreType: 1
 				},
 				{
 					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
@@ -435,21 +452,38 @@ export default {
 					Name: "no22222222.txt",
 					Size: 1536,
 					DownloadCount: 0,
-					ExpiredAt: 1555051257,
-					UpdatedAt: 0,
-					Profit: 0,
-					Privilege: 1
+					ExpiredAt: 15551257,
+					UpdatedAt: 1241241240,
+					DownloadAt: 1241241240,
+					Profit: 12534520,
+					Privilege: 1,
+					StoreType: 1
 				},
 				{
 					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
 					Name: "helloworld.txt",
 					Size: 1536,
 					DownloadCount: 0,
-					ExpiredAt: 1555051257,
-					UpdatedAt: 0,
-					Profit: 0,
+					ExpiredAt: 155051257,
+					UpdatedAt: 12412410,
+					DownloadAt: 12412412,
+					Profit: 532452340,
 					Privilege: 1,
-					Url: "asdfsdf"
+					Url: "asdfsdf",
+					StoreType: 0
+				},
+				{
+					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
+					Name: "hahat.txt",
+					Size: 1536,
+					DownloadCount: 0,
+					ExpiredAt: 155505125,
+					UpdatedAt: 124124041,
+					DownloadAt: 11241240,				
+					Profit: 513452345234523450,
+					Privilege: 1,
+					Url: "aasfewfwa",
+					StoreType: 0
 				},
 				{
 					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
@@ -457,71 +491,72 @@ export default {
 					Size: 1536,
 					DownloadCount: 0,
 					ExpiredAt: 1555051257,
-					UpdatedAt: 0,
-					Profit: 0,
+					UpdatedAt: 1240,
+					DownloadAt: 1140,				
+					Profit: 23512312340,
 					Privilege: 1,
-					Url: "aasfewfwa"
-				},
-				{
-					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-					Name: "hahat.txt",
-					Size: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 1555051257,
-					UpdatedAt: 0,
-					Profit: 0,
-					Privilege: 1
+					StoreType: 1
 				},
 				{
 					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
 					Name: "hahat.txt",
 					Size: 1536,
 					DownloadCount: 1536,
-					ExpiredAt: 1555051257,
-					UpdatedAt: 0,
+					ExpiredAt: 555051257,
+					UpdatedAt: 1241241240,
+					DownloadAt: 1140124124,				
 					Profit: 1,
-					Privilege: 1
-				},
-				{
-					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-					Name: "hahat.txt",
-					Size: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 1555051257,
-					UpdatedAt: 0,
-					Profit: 0,
-					Privilege: 1
-				},
-				{
-					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-					Name: "hahat.txt",
-					Size: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 1555051257,
-					UpdatedAt: 0,
-					Profit: 0,
-					Privilege: 1
-				},
-				{
-					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-					Name: "hahat.txt",
-					Size: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 1555051257,
-					UpdatedAt: 0,
-					Profit: 0,
-					Privilege: 1
-				},
-				{
-					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-					Name: "hahat.txt",
-					Size: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 1555051257,
-					UpdatedAt: 0,
-					Profit: 0,
 					Privilege: 1,
-					Path: "123123"
+					StoreType: 0
+				},
+				{
+					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
+					Name: "hahat.txt",
+					Size: 1536,
+					DownloadCount: 0,
+					ExpiredAt: 15585051257,
+					UpdatedAt: 1241240,
+					DownloadAt: 11404134,				
+					Profit: 6456120,
+					Privilege: 1,
+					StoreType: 0
+				},
+				{
+					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
+					Name: "hahat.txt",
+					Size: 1536,
+					DownloadCount: 0,
+					ExpiredAt: 1555051257,
+					UpdatedAt: 12412410,
+					DownloadAt: 12412410,
+					Profit: 646240,
+					Privilege: 1,
+					StoreType: 1
+				},
+				{
+					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
+					Name: "hahat.txt",
+					Size: 1536,
+					DownloadCount: 0,
+					ExpiredAt: 1555051257,
+					UpdatedAt: 51250,
+					DownloadAt: 51250,
+					Profit: 540,
+					Privilege: 1,
+					StoreType: 1
+				},
+				{
+					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
+					Name: "hahat.txt",
+					Size: 1536,
+					DownloadCount: 0,
+					ExpiredAt: 1555051257,
+					UpdatedAt: 5213410,
+					DownloadAt: 5213410,
+					Profit: 41241240,
+					Privilege: 1,
+					Path: "123123",
+					StoreType: 0
 				}
 			],
 			extraParams: {
@@ -974,6 +1009,7 @@ export default {
 		filterListData() {
 			const fileListData = this.fileListData;
 			return fileListData.filter(item => {
+				item.StoreTypeNum = - item.StoreType;
 				return item.Name.indexOf(this.filterInput) >= 0;
 			});
 		},

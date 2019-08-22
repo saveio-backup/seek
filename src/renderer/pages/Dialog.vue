@@ -91,23 +91,34 @@ export default {
 			localStorage.setItem("DNSAdress", "");
 			// this.getProcess();
 			if(newVal != '') {
-				// this.getPollingData();
+				this.getPollingData();
 			} else {
 				clearInterval(this.intervalObj.setTimeObj);
 			}
 		},
 		Balance(newVal, oldVal) {
 			if (!oldVal && newVal && this.channelNum === 0) {
-				ipcRenderer.send("dialog-open", "createChannel");
+				this.toGetDns()
 			}
 		},
 		channelNum(newVal, oldVal) {
 			if (this.Balance && newVal === 0 && oldVal === null) {
-				ipcRenderer.send("dialog-open", "createChannel");
+				this.toGetDns()
 			}
 		}
 	},
 	methods: {
+		toGetDns() {
+			this.$axios
+				.get(this.$api.getAllDns)
+				.then(res => {
+					if (res.Error === 0) {
+						if(res.Result.length > 0) {
+							ipcRenderer.send("dialog-open", "createChannel");
+						}
+					}
+				});
+		},
 		closeDialog({ timeout = 0 }) {
 			this.menuSelector = "";
 			if (timeout === 0) {

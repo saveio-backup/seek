@@ -23,21 +23,35 @@
 					empty-text='No Data'
 					height='100%'
 				>
-					<el-table-column label='Size'>
+					<el-table-column
+						label='Size'
+						prop="Size"
+						sortable
+					>
 						<template slot-scope="scope">
 							<div>
 								{{util.bytesToSize(scope.row.Size * 1024)}}
 							</div>
 						</template>
 					</el-table-column>
-					<el-table-column label='Expired Time'>
+					<el-table-column
+						label='Expired Time'
+						prop="ExpiredAt"
+						sortable
+					>
+						<!-- prop="ExpiredAt"
+						sortable -->
 						<template slot-scope="scope">
 							<div>
 								{{ $dateFormat.formatTimeByTimestamp(scope.row.ExpiredAt * 1000)}}
 							</div>
 						</template>
 					</el-table-column>
-					<el-table-column label='Cost'>
+					<el-table-column
+						label='Cost'
+						prop="Cost"
+						sortable
+					>
 						<template slot-scope="scope">
 							<div>
 								<div>

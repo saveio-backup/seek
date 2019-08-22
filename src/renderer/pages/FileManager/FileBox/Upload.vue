@@ -114,7 +114,7 @@
 					:v-model="advancedData"
 					:rules="advancedRulus"
 					label-position="left"
-					label-width="200px"
+					label-width="210px"
 				>
 					<el-form-item label="Storage Cycle:">
 						<p class="dark-grey tootips">Expired Time: {{expiredDate}} </p>
@@ -140,7 +140,7 @@
 						</el-select>
 					</el-form-item>
 					<el-form-item
-						label="Integrity verification cycle:"
+						label="Integrity Verification Cycle:"
 						prop="Interval"
 					>
 						<p class="dark-grey tootips">Integrity Verification Cycle cannot be longer than Storage Cycle</p>
@@ -243,8 +243,8 @@
 					</el-form-item>
 				</el-form>
 				<div class="flex price-div">
-					<div class="price-div-bg">SA</div>
-					<p class="price-gas-fee">Gas fee: {{uploadPrice}} SAVE
+					<div class="price-div-bg user-no-select">SA</div>
+					<p class="price-gas-fee">Gas Fee: {{uploadPrice}} SAVE
 						<el-popover
 							placement="bottom"
 							title="Fee Detail"

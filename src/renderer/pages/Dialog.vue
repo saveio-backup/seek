@@ -52,7 +52,7 @@ export default {
 		downloadDialog
 	},
 	data() {
-		const COUNT_INTERVAL = 10000;
+		const COUNT_INTERVAL = 5000;
 		return {
 			switchToggle: {
 				downloadDialog: true

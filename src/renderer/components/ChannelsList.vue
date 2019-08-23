@@ -479,6 +479,14 @@ export default {
 				"setChannelBind",
 				localStorage.getItem("channelBindId") || ""
 			);
+			if(this.currentRow.ChannelId) {
+				this.$emit('toCloseDialog');
+			} else {
+				this.$message({
+					type: "error",
+					message: "No Channel Switches are Available"
+				});
+			}
 		},
 		openTransfer(channelSelected) {
 			if(this.isSync) {

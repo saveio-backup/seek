@@ -60,6 +60,8 @@
 					@row-click="clickRow"
 					height="100%"
 					@selection-change="selectFile"
+					@select="toSelectFile"
+					@select-all="selectAll"
 				>
 					<!-- :data="mockData" -->
 					<el-table-column
@@ -79,9 +81,9 @@
 					>
 						<template slot-scope="scope">
 							<div class="flex between">
-								<span class="row-name">{{ scope.row.Name }}</span>
+								<span class="row-name"  :class="scope.row.Undone?'theme-font-blue-40':''">{{ scope.row.Name }}</span>
 								<!-- @click="executedFile = scope.row" -->
-								<div class="opera">
+								<div class="opera" v-if="!scope.row.Undone">
 									<span
 										@click.stop="shareFile(scope.row)"
 										title="Share"
@@ -136,7 +138,7 @@
 						sortable
 					>
 						<template slot-scope="scope">
-							<div>
+							<div :class="scope.row.Undone?'theme-font-blue-40':''">
 								{{scope.row.StoreType === 1 ? 'Advance' : scope.row.StoreType === 0 ? 'Primary' : ''}}
 							</div>
 						</template>
@@ -161,7 +163,7 @@
 						sortable
 					>
 						<template slot-scope="scope">
-							<span class="td-grey break-word">
+							<span class="td-grey break-word"  :class="scope.row.Undone?'theme-font-blue-40':''">
 								{{util.bytesToSize(scope.row.Size * 1024)}}
 							</span>
 						</template>
@@ -174,7 +176,7 @@
 						sortable
 					>
 						<template slot-scope="scope">
-							<div class="td-grey break-word">
+							<div class="td-grey break-word"  :class="scope.row.Undone?'theme-font-blue-40':''">
 								{{date.formatTime(new Date( (scope.row.DownloadAt||scope.row.UpdatedAt) * 1000))}}
 							</div>
 						</template>
@@ -443,7 +445,7 @@ export default {
 					DownloadAt: 0,
 					Profit: 0,
 					Privilege: 0,
-					Url: "xxxxxx",
+					Url: "",
 					StoreType: 1
 				},
 				{
@@ -654,8 +656,10 @@ export default {
 			shell.showItemInFolder(path);
 		},
 		clickRow(row) {
-			this.$refs.table.clearSelection();
-			this.$refs.table.toggleRowSelection(row);
+			if(row.Url) {
+				this.$refs.table.clearSelection();
+				this.$refs.table.toggleRowSelection(row);
+			}
 		},
 		addListenScroll() {
 			const that = this;
@@ -673,9 +677,20 @@ export default {
 				}
 			});
 		},
+		selectAll(selection){
+			for(let i = selection.length - 1;i >= 0;i --) {
+				if(selection[i].Undone) {
+					selection.splice(i, 1);
+				}
+			}
+			this.fileSelected = selection;
+		},
+		toSelectFile(selection,row) {
+			if(!row.Url) {
+				this.$refs.table.toggleRowSelection(row, false);
+			}
+		},
 		selectFile(file) {
-			console.log("file Select!!!");
-			console.log(file);
 			this.fileSelected = file;
 		},
 		getFileLists() {
@@ -692,8 +707,13 @@ export default {
 				.get(addr)
 				.then(res => {
 					if (res.Error === 0) {
-						const result = res.Result;
+						let result = res.Result;
+						// result = this.mockData;
 						if (result.length) {
+							result.map(item => {
+								item.Undone = (item.Url !== "" && item.Url !== undefined)?false:true;
+								return item;
+							});
 							// do sth
 							this.fileListData = this.fileListData.concat(result);
 						} else {

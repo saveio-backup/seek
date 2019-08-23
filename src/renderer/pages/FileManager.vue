@@ -97,6 +97,7 @@
 						<channel-list
 							ref="channellist"
 							:showRadio='true'
+							@toCloseDialog="toCloseDialog"
 						></channel-list>
 					</div>
 					<div slot="footer">
@@ -172,15 +173,6 @@ export default {
 	methods: {
 		openAssetTransferDialog() {
 			this.switchToggle.assetTransferDialog = true;
-			if (!this.channelBind.Connected) {
-				setTimeout(() => {
-					this.$nextTick(() => {
-						this.$message({
-							message: "Sorry, you cannot withdraw in offline status"
-						});
-					});
-				}, 50);
-			}
 		},
 		hideAssetSettingDialog() {
 			console.log("hideAsset");
@@ -191,6 +183,8 @@ export default {
 		},
 		toApplyChange() {
 			this.$refs.channellist.applyChange();
+		},
+		toCloseDialog() {
 			this.switchToggle.channelListDialog = false;
 			this.$message({
 				type: "success",

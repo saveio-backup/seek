@@ -62,7 +62,7 @@ export default {
     getTime() {
       if((this.totalHeight - this.currentHeihgt) > 50) {
         if(this.secondSpeed <= 1) {
-          return 'indefinite duration'
+          return 0;
         } 
         let _t = (this.totalHeight - this.currentHeihgt)/(this.secondSpeed - 1);
         let _d = parseInt(_t / 86400);

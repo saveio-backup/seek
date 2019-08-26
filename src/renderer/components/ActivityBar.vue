@@ -227,6 +227,12 @@ export default {
 					}
 				},
 				{
+					label: "Help Document",
+					click() {
+						that.showHelpDocument();
+					}
+				},
+				{
 					label: "Log Out",
 					// visible: new Boolean(user.name),
 					click() {
@@ -242,6 +248,9 @@ export default {
 			];
 			let menu = Menu.buildFromTemplate(customControlMenuItems);
 			menu.popup({});
+		},
+		showHelpDocument() {
+			this.activeView.createPDF({ isActive: true, focus: true });
 		},
 		remoteOpenComponent(path) {
 			this.activeView.openComponent(path);

@@ -14,7 +14,7 @@ import {
 } from 'url';
 import MenuWindow from './menuWindow'
 import log from 'electron-log'
-import errorPage from '../../../static/html/failed.js'
+import errorPage from '../../../static/html/failed/failed.js'
 import frontCfgObj from './frontCfgObj'
 
 export const windows = {}; // map of {[parentWindow.id] => BrowserWindow}
@@ -97,6 +97,10 @@ class View {
     } else if (hrefFormated.indexOf(defaultURLFormated) >= 0) {
       const urlReg = new RegExp(/(file:.+#)(\/?.*$)/);
       this.displayURL = hrefFormated.replace((hrefFormated.match(urlReg) || [])[1], DEFAULT_PROTOCOL + '://').replace('\/\/\/', '\/\/')
+    } else if(this.url.endsWith('.pdf')) {
+      // if is pdf file change displayURL
+      let index = this.url.indexOf('?file=');
+      this.displayURL = this.url.slice(index+6);
     } else {
       this.displayURL = this.url
     }
@@ -160,11 +164,11 @@ class View {
   }
   onNewUrl(url, event) {
     console.log('on new Url')
+    console.log(url)
     const win = this.browserWindow;
     getCurrentView = getActive(win);
     win.setBrowserView(this.browserView); //if have dialog browserView
     let newIsSave = null;
-    const urlFormat = this.formatURL(url);
     if (url.toLowerCase().indexOf('save://share/') >= 0) {
       console.log('share URL!!!!')
       dialogViewObj.browserView.webContents.send('setDownloadUrl', url);
@@ -172,6 +176,16 @@ class View {
       dialogViewObj.addBrowserView();
       return;
     }
+
+    if (url.toLowerCase().endsWith('.pdf')) {
+      console.log('open pdf page!!!!')
+      this.resize();
+      this.loadURL(`${__static}\\html\\pdf\\web\\viewer.html?file=${url}`);
+      this.setBroserView();
+      return;
+    }
+
+    const urlFormat = this.formatURL(url);
     if (urlFormat.protocol === DEFAULT_PROTOCOL + ':') { // is ours custom 'seek://' html page?
       newIsSave = true;
     } else if (urlFormat.host === 'localhost:9080') {
@@ -294,6 +308,9 @@ class View {
   }
   create(option) {
     createView(this.browserWindow, undefined, option)
+  }
+  createPDF(option) {
+    createView(this.browserWindow, `${__static}\\html\\pdf\\web\\viewer.html?file=${__static}\\html\\pdf\\Seeker.pdf`, option)
   }
 }
 export function createWindow(url) {

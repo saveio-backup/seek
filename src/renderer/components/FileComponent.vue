@@ -189,7 +189,7 @@
 								title="Decrypt"
 								class="active-blue cursor-pointer"
 								@click="setFileSelected(scope.row)"
-								v-if="(!scope.row.IsUploadAction) && scope.row.Path && scope.row.Status === 3"
+								v-if="(!scope.row.IsUploadAction) && scope.row.Path && scope.row.Status === 3 && scope.row.Encrypted"
 							><i class="el-icon-lock"></i></span>
 							<span
 								class="active-blue cursor-pointer"

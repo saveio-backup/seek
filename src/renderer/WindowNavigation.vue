@@ -271,6 +271,7 @@ export default {
 		remoteLoadURL(view) {
 			// this.$refs["inputUrl" + index][0].blur();
 			view.url = this.inputDisplayUrl;
+			console.log(this.inputDisplayUrl);
 			view.onNewUrl(this.inputDisplayUrl);
 		},
 		remoteOpenComponent(path) {

@@ -62,7 +62,6 @@ class View {
   initBrowserView(webOpt = {
     sandbox: !this.isSave
   }) {
-    console.log('initBrowserView');
     this.browserView = new BrowserView({
       webPreferences: {
         webviewTag: false,
@@ -401,7 +400,6 @@ const handlerView = {
   }
 }
 export function createView(win, url = DEFAULT_URL + '#/', option) {
-  console.log('createView');
   console.log(url);
   win = getTopWindow(win);
   let view = new Proxy(new View(win, url, option), handlerView)

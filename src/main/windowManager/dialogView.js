@@ -81,7 +81,6 @@ class dialogView {
 
   resize() {
     const win = this.browserWindow;
-    console.log('resize');
     var {
       width,
       height

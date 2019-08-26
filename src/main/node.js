@@ -78,12 +78,6 @@ const frontcfgFilePath = (appDataPath, appName) => {
 const setFrontConfig = async (appDataPath, appName) => {
 
     let cfgPath = frontcfgFilePath(appDataPath, appName)
-    // console.log('!!!!!front-CfgPath: ', cfgPath);
-    // console.log('!!!!appDataPath: ', appDataPath);
-    log.debug("[setFrontConfig] setup frontCfg")
-    log.debug("[setFrontConfig] appDataPath", appDataPath)
-    log.debug("[setFrontConfig] appname", cfgPath)
-    log.debug("[setFrontConfig] cfgPath", cfgPath)
     const hasConfig = fs.existsSync(cfgPath)
     const resourcesPath = (process.env.NODE_ENV === 'production') ?
         path.join(path.dirname(appRoot), 'bin') :
@@ -166,7 +160,6 @@ const setupConfig = async (appDataPath, appName) => {
     }
     const baseDir = baseDirPath(appDataPath, appName)
     cfgObj.Base.BaseDir = baseDir
-    log.debug(JSON.stringify(cfgObj))
     if (!fs.existsSync(baseDir)) {
         log.debug("folder not exist")
         fs.mkdirSync(baseDir)
@@ -202,7 +195,6 @@ const setupConfig = async (appDataPath, appName) => {
         log.error("set up config error", err)
         log.debug("exist", fs.existsSync(baseDir))
     }
-    log.debug("setup config success")
 }
 
 const run = (appDataPath, appName) => {

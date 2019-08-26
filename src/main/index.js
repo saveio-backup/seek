@@ -6,7 +6,9 @@ import {
 } from 'electron'
 import './ipcManager'
 import './protocols/protocols' // custom protocol
-import './dbs/index';
+import {
+  SeekDB
+} from './dbs/index';
 import frontCfgObj from './windowManager/frontCfgObj'
 import {
   windows,
@@ -32,9 +34,11 @@ import * as node from "./node"
 node.setupConfig(app.getPath("appData"), app.getName())
 node.setFrontConfig(app.getPath("appData"), app.getName())
 app.on('ready', function () {
-  const fs = require('fs');
   (!frontCfgObj().devEdgeEnable) && node.run(app.getPath("appData"), app.getName())
-  createWindow(winURL)
+  let seekDB = new SeekDB();
+  seekDB.initDB(() => {
+    createWindow(winURL)
+  })
 })
 
 app.on('window-all-closed', () => {

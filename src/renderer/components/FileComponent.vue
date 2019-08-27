@@ -40,15 +40,15 @@
 				v-if="transferType === 2"
 				@click="openConfirmCancelDownload('all')"
 			>Cancel All</el-button>
+				<!-- title="Comming Soon..." -->
 			<el-button
 				v-if="transferType !== 0"
-				title="Comming Soon..."
 				:class="{'not-allow-opeation':!show}"
 				@click="continueAll"
 			>Start All</el-button>
+				<!-- title="Comming Soon..." -->
 			<el-button
 				v-if="transferType !== 0"
-				title="Comming Soon..."
 				:class="{'not-allow-opeation':!show}"
 				@click="pauseAll"
 			>Pause All</el-button>
@@ -217,15 +217,15 @@
 							><i class="ofont ofont-zanting"></i></span>
 							<span
 								class="active-blue cursor-pointer"
-								:class="{'not-allow-opeation':show}"
-								:title="show ? 'Comming Soon...' : scope.row.IsUploadAction ? 'Cancel to Upload':'Cancel to Download'"
+								:class="{'not-allow-opeation':!show}"
+								:title="!show ? 'Comming Soon...' : scope.row.IsUploadAction ? 'Cancel to Upload':'Cancel to Download'"
 								v-show="transferType === 1"
 								@click="openPassword(scope.row)"
 							><i class="ofont ofont-guanbi"></i></span>
 							<span
 								class="active-blue cursor-pointer"
-								:class="{'not-allow-opeation':show}"
-								:title="show ? 'Comming Soon...' : scope.row.IsUploadAction ? 'Cancel to Upload':'Cancel to Download'"
+								:class="{'not-allow-opeation':!show}"
+								:title="!show ? 'Comming Soon...' : scope.row.IsUploadAction ? 'Cancel to Upload':'Cancel to Download'"
 								v-show="transferType === 2"
 								@click="openConfirmCancelDownload(scope.row)"
 							><i class="ofont ofont-guanbi"></i></span>
@@ -552,7 +552,7 @@ export default {
 	data() {
 		return {
 			util,
-			show: false,
+			show: true,
 			switchToggle: {
 				loading: null,
 				newTaskDialog: false,

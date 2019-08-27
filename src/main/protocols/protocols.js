@@ -18,9 +18,9 @@ protocol.registerSchemesAsPrivileged([{
     corsEnabled: true
   }
 }]);
-// const host = process.env.NODE_ENV === 'development' ?
-//   `http://localhost:9080/#/` :
-//   `file://${__dirname}/index.html#/`
+const host = process.env.NODE_ENV === 'development' ?
+  `http://localhost:9080/#/` :
+  `file://${__dirname}/index.html#/`
 app.on('ready', () => {
   if (process.env.NODE_ENV === 'development') {
     protocol.registerHttpProtocol('seek', seekHttpProtocol, err => {

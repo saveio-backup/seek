@@ -157,9 +157,24 @@
 					<!-- api return 'KB' unit -->
 					<el-table-column
 						label="Size"
+						column-key="RealFileSize"
+						min-width="70"
+						prop="RealFileSize"
+						v-if="page ==='filebox'"
+						sortable
+					>
+						<template slot-scope="scope">
+							<span class="td-grey break-word"  :class="scope.row.Undone?'theme-font-blue-40':''">
+								{{util.bytesToSize(scope.row.RealFileSize * 1024)}}
+							</span>
+						</template>
+					</el-table-column>
+					<el-table-column
+						label="Size"
 						column-key="Size"
 						min-width="70"
 						prop="Size"
+						v-if="page ==='miner'"
 						sortable
 					>
 						<template slot-scope="scope">
@@ -168,6 +183,7 @@
 							</span>
 						</template>
 					</el-table-column>
+
 					<el-table-column
 						v-if="true"
 						label="Date"

@@ -24,6 +24,12 @@
 							<p class="ft14 mr20">{{fileDetail && $dateFormat.formatTimeByTimestamp(fileDetail.CreatedAt*1000) || ''}}</p>
 						</div>
 					</div>
+					<!-- <div class="adjust-item">
+						<p class="adjust-title theme-font-blue ft14">File Size:</p>
+						<div class="adjust-info">
+							<p class="ft14 mr20">{{fileDetail && util.bytesToSize(fileDetail.Size*1000 || 0) || ''}}</p>
+						</div>
+					</div> -->
 					<div class="adjust-item">
 						<p class="adjust-title theme-font-blue ft14">Node Number:</p>
 						<div class="adjust-info">
@@ -77,6 +83,7 @@
 	</div>
 </template>
 <script>
+import util from "../assets/config/util";
 const BASE = {
 	Second: 1,
 	Day: 86400,
@@ -94,6 +101,7 @@ export default {
 			fileDetailDialogToggle: false,
 			fileDetail: null,
 			loading: null,
+			util,
 			BASE
 		};
 	},

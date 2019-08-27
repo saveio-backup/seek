@@ -37,7 +37,6 @@ export default new Router({
     },
     {
       path: '/FileManager',
-      name: 'FileManager',
       component: require('../pages/FileManager.vue').default,
       meta: {
         keepAlive: false
@@ -92,7 +91,6 @@ export default new Router({
     },
     {
       path: '/Miner',
-      name: 'Miner',
       component: require('../pages/Miner.vue').default,
       meta: {
         keepAlive: true

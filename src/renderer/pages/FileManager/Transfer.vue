@@ -101,6 +101,7 @@ export default {
 		console.log("to is");
 		console.log(to);
 		this.transferType = to.query.transferType >= 0 ? to.query.transferType : 2;
+		localStorage.setItem("transferType", this.transferType);
 		next();
 		console.log("transferType is");
 		console.log(this.transferType);

@@ -9,15 +9,16 @@
 						v-for="(item,index) in views"
 						:key="index"
 						:class="{'is-active':item.isActive}"
-						@mousedown="remoteSetActive(item,index)"
 					>
 						<!-- @click="remoteSetActive(item,index)" -->
 						<span
 							v-if="item.isLoading"
 							class="el-icon-loading ml10"
+							@mousedown="remoteSetActive(item,index)"
 						></span>
 						<img
-							class="ml10 favicon"
+							@mousedown="remoteSetActive(item,index)"
+							class="favicon"
 							v-if="!item.isLoading && item.favicon"
 							:src="item.favicon"
 							@error='item.isLoading = false; item.favicon = false'
@@ -26,8 +27,12 @@
 						<span
 							v-if="!item.isLoading && !item.favicon"
 							class="el-icon-link ml10"
+							@mousedown="remoteSetActive(item,index)"
 						></span>
-						<p class="window-tab-item-title ml10">{{item.title || 'loading...'}}</p>
+						<p
+							class="window-tab-item-title"
+							@mousedown="remoteSetActive(item,index)"
+						>{{item.title || 'loading...'}}</p>
 
 						<p
 							class="flex ai-center close"
@@ -111,7 +116,10 @@
 							>
 								Syncing...
 							</span>
-							<span v-if="!isSync" class="ft12 theme-font-blue-70 ml10">
+							<span
+								v-if="!isSync"
+								class="ft12 theme-font-blue-70 ml10"
+							>
 								#{{currentHeihgt}}
 							</span>
 						</div>
@@ -238,9 +246,7 @@ export default {
 			user: {
 				name: localStorage.getItem("Label") || ""
 			},
-			colors: [
-				{ color: "#3C80EC", percentage: 100 }
-			]
+			colors: [{ color: "#3C80EC", percentage: 100 }]
 		};
 	},
 	methods: {
@@ -310,7 +316,7 @@ export default {
 			this.currentWindow.menuWindow.hiddenMenu();
 		},
 		setDialog(menuid) {
-			let params = { 
+			let params = {
 				id: menuid
 			};
 			this.currentWindow.menuWindow.openMenu(params);
@@ -393,6 +399,7 @@ $tabs-height: 62px;
 			.favicon {
 				width: 16px;
 				height: 16px;
+				padding-left: 10px;
 			}
 			.window-tab-item-title {
 				flex: 1;
@@ -401,6 +408,7 @@ $tabs-height: 62px;
 				padding-right: 20px;
 				width: calc(100% - 26px);
 				padding-top: 7px;
+				padding-left: 10px;
 				overflow: hidden;
 				white-space: nowrap;
 				text-overflow: ellipsis;

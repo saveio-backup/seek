@@ -36,7 +36,7 @@
 					 active-class="active-blue"
 					>Discovery</router-link> -->
 					<router-link
-						:to="{name:'transfer',query:{transferType:2}}"
+						:to="{name:'transfer',query:{transferType:localStorage.getItem('transferType')}}"
 						class="user-no-select"
 						active-class="active-blue"
 					>Transfer <span
@@ -133,6 +133,7 @@ export default {
 	},
 	data() {
 		return {
+			localStorage,
 			filterFloat,
 			switchToggle: {
 				loading: null,

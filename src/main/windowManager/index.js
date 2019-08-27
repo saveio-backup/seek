@@ -296,6 +296,7 @@ class View {
     });
     this.isActive = true; // viewIndex maybe undefined
     this.browserWindow.setBrowserView(this.browserView);
+    this.resize();
   }
   setBroserView() {
     this.browserWindow.setBrowserView(this.browserView);
@@ -348,6 +349,7 @@ export function createWindow(url) {
     onAppCommand(mainWindow, cmd)
   })
   mainWindow.on('resize', () => {
+    // we shouldn't resizeAll, because it will make blank screen in macOS
     // resizeAll(mainWindow);
   })
   // Vue can't update DOM while Main process changed (Though it could update it's data)
@@ -422,11 +424,14 @@ export function getActive(win) {
 function removeView(win, view, index) {
   win = getTopWindow(win);
   if (view.isActive) {
+    console.log('current view is active!!!~~~')
     if (win.views[index + 1]) {
       win.views[index + 1].setActive()
     } else if (win.views[index - 1]) {
       win.views[index - 1].setActive()
     }
+  }else{
+    console.log('current view is not active!!!!!!!')
   }
   view.browserView.destroy();
   view.browserView = null;

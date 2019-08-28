@@ -99,7 +99,7 @@ class View {
       this.displayURL = decodeURIComponent(this.url.slice(index + 6));
     } else if (url.host === 'localhost:9080') {
       const urlReg = new RegExp(url.origin + url.pathname + '(#/)?');
-      this.displayURL = decodeURIComponent(url.href.replace(urlReg, DEFAULT_PROTOCOL + '://'))
+      this.displayURL = decodeURIComponent(url.href.replace(urlReg, DEFAULT_PROTOCOL + '://'));
     } else if (hrefFormated.indexOf(defaultURLFormated) >= 0) {
       const urlReg = new RegExp(/(file:.+#)(\/?.*$)/);
       this.displayURL = decodeURIComponent(hrefFormated.replace((hrefFormated.match(urlReg) || [])[1], DEFAULT_PROTOCOL + '://').replace('\/\/\/', '\/\/'));

@@ -1,121 +1,111 @@
-html:not(.markdown) {
+html {
   font-size: 20px;
 }
-html {
-  margin: 0;
+
+
+body,
+div,
+section,
+a,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+pre,
+form,
+fieldset,
+form,
+input,
+p,
+blockquote,
+table,
+th,
+td,
+embed,
+object {
   padding: 0;
-}
-body {
   margin: 0;
-  padding: 0;
+  box-sizing: border-box;
 }
 
-html:not(.markdown) {
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
 
-  body,
-  div,
-  section,
-  a,
-  dl,
-  dt,
-  dd,
-  ul,
-  ol,
-  li,
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  pre,
-  form,
-  fieldset,
-  form,
-  input,
-  p,
-  blockquote,
-  table,
-  th,
-  td,
-  embed,
-  object {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-  }
+fieldset,
+img,
+abbr {
+  border: 0;
+}
 
-  table {
-    border-collapse: collapse;
-    border-spacing: 0;
-  }
+address,
+caption,
+cite,
+code,
+dfn,
+em,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+th,
+var {
+  font-weight: normal;
+  font-style: normal;
+}
 
-  fieldset,
-  img,
-  abbr {
-    border: 0;
-  }
+ul {
+  list-style: none;
+}
 
-  address,
-  caption,
-  cite,
-  code,
-  dfn,
-  em,
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  th,
-  var {
-    font-weight: normal;
-    font-style: normal;
-  }
+a {
+  text-decoration: none;
+  color: inherit;
+}
 
-  ul {
-    list-style: none;
-  }
+.clear {
+  clear: both;
+}
 
-  a {
-    text-decoration: none;
-    color: inherit;
-  }
+.clearfix:before,
+.clearfix:after {
+  content: "";
+  display: block;
+}
 
-  .clear {
-    clear: both;
-  }
+[v-cloak] {
+  display: none;
+}
 
-  .clearfix:before,
-  .clearfix:after {
-    content: "";
-    display: block;
-  }
+input,
+textarea {
+  outline: none !important;
 
-  [v-cloak] {
-    display: none;
-  }
+}
 
-  input,
-  textarea {
-    outline: none !important;
+.clearfix:after {
+  height: 0;
+  overflow: hidden;
+  clear: both;
+}
 
-  }
+.hidden {
+  opacity: 0 !important;
+}
 
-  .clearfix:after {
-    height: 0;
-    overflow: hidden;
-    clear: both;
-  }
-
-  .hidden {
-    opacity: 0 !important;
-  }
-
-  .displaynone {
-    display: none;
-  }
+.displaynone {
+  display: none;
 }
 
 ::-webkit-scrollbar {

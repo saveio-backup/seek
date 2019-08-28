@@ -64,12 +64,10 @@ export default {
 		},
 		init() {
 			// change tab title
-			document.querySelector("html").classList.add("markdown");
+			this.url = this.$route.query.url;
 			let index = this.url.lastIndexOf("\\");
 			let name = this.url.slice(index + 1);
 			document.title = name;
-			//get url
-			this.url = this.$route.query.url;
 		}
 	},
 	mounted() {
@@ -94,14 +92,13 @@ $gray-100: rgb(200, 200, 200);
 	& > div {
 		margin: 0 auto;
 		max-width: 1300px;
-		min-height: 100%;
 		width: 100%;
 
 		// reset markdown style
 		font-family: "ubuntu", "Tahoma", "Microsoft YaHei", arial, sans-serif;
 		color: #444444;
 		line-height: 1;
-		padding: 30px;
+		padding: 0px;
 
 		img {
 			max-width: 100%;
@@ -123,6 +120,7 @@ $gray-100: rgb(200, 200, 200);
 		h5 {
 			font-family: Georgia, Palatino, serif;
 		}
+		
 		h1,
 		h2,
 		h3,
@@ -174,13 +172,17 @@ $gray-100: rgb(200, 200, 200);
 			color: #ff6600;
 		}
 		a:visited {
-			/*color: purple;*/
+			color: purple;
 		}
 		ul,
 		ol {
 			padding: 0;
 			padding-left: 18px;
 			margin: 0;
+			list-style: initial;
+		}
+		ol  {
+			list-style: decimal;
 		}
 		li {
 			line-height: 24px;

@@ -165,7 +165,7 @@ export default {
 			index: 0,
 			timeoutObj: null,
 			historyIntervalObj: null,
-			currentBalanceList: [0,0,0,0,0,0,0],
+			currentBalanceList: [0, 0, 0, 0, 0, 0, 0],
 			balanceListsMock: {
 				Action: "getbalancehistory",
 				Desc: "SUCCESS",
@@ -300,11 +300,11 @@ export default {
 			const INTERVAL_TIME = 3000;
 			clearInterval(this.historyIntervalObj);
 			this.historyIntervalObj = setInterval(() => {
-				if(localStorage.getItem("Address")) {
+				if (localStorage.getItem("Address")) {
 					clearInterval(this.historyIntervalObj);
-					this.getBalanceList()
+					this.getBalanceList();
 				}
-			}, INTERVAL_TIME)
+			}, INTERVAL_TIME);
 		},
 		//get history balance
 		getBalanceList() {
@@ -361,14 +361,19 @@ export default {
 			return timestamp;
 		},
 		openAddChannel() {
-			if(this.isSync) {
-				this.$confirm('Block unsynchronized completion. Are you sure to do this?', 'Notice', {
-					confirmButtonText: 'confirm',
-					cancelButtonText: 'cancel',
-				}).then(() => {
-					this.$refs.channelListObj.openOpen();
-				}).catch(e => {
-				});
+			if (this.isSync) {
+				this.$confirm(
+					"Block unsynchronized completion. Are you sure to do this?",
+					"Notice",
+					{
+						confirmButtonText: "confirm",
+						cancelButtonText: "cancel"
+					}
+				)
+					.then(() => {
+						this.$refs.channelListObj.openOpen();
+					})
+					.catch(e => {});
 			} else {
 				this.$refs.channelListObj.openOpen();
 			}

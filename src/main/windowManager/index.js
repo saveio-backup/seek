@@ -81,6 +81,7 @@ class View {
   }
   forceUpdate() {
     if (this && this.browserView) {
+      console.log('forceUpdate------->', this.webContents.getURL());
       this.url = this.webContents.getURL();
       this.updateDisplayURL();
       this.isSave = this.displayURL ? new URL(this.displayURL).protocol === DEFAULT_PROTOCOL + ':' : false
@@ -89,20 +90,21 @@ class View {
   }
   updateDisplayURL() {
     let url = this.url ? new URL(this.url) : new URL('about:blank');
-    const hrefFormated = decodeURIComponent(url.href).replace(/(\\|\/)/g, '/').replace('\/\/\/', '\/\/');
-    const defaultURLFormated = decodeURIComponent(DEFAULT_URL).replace(/(\\|\/)/g, '/').replace('\/\/\/', '\/\/');
-    if (url.host === 'localhost:9080') {
+    let hrefFormated, defaultURLFormated;
+    hrefFormated = decodeURIComponent(url.href).replace(/(\\|\/)/g, '/').replace('\/\/\/', '\/\/');
+    defaultURLFormated = decodeURIComponent(DEFAULT_URL).replace(/(\\|\/)/g, '/').replace('\/\/\/', '\/\/');
+    if (this.url.endsWith('.pdf')) {
+      // if is pdf file change displayURL 
+      let index = this.url.indexOf('?file=');
+      this.displayURL = decodeURIComponent(this.url.slice(index + 6));
+    } else if (url.host === 'localhost:9080') {
       const urlReg = new RegExp(url.origin + url.pathname + '(#/)?');
-      this.displayURL = url.href.replace(urlReg, DEFAULT_PROTOCOL + '://')
+      this.displayURL = decodeURIComponent(url.href.replace(urlReg, DEFAULT_PROTOCOL + '://'))
     } else if (hrefFormated.indexOf(defaultURLFormated) >= 0) {
       const urlReg = new RegExp(/(file:.+#)(\/?.*$)/);
-      this.displayURL = hrefFormated.replace((hrefFormated.match(urlReg) || [])[1], DEFAULT_PROTOCOL + '://').replace('\/\/\/', '\/\/')
-    } else if(this.url.endsWith('.pdf')) {
-      // if is pdf file change displayURL
-      let index = this.url.indexOf('?file=');
-      this.displayURL = this.url.slice(index+6);
+      this.displayURL = decodeURIComponent(hrefFormated.replace((hrefFormated.match(urlReg) || [])[1], DEFAULT_PROTOCOL + '://').replace('\/\/\/', '\/\/'));
     } else {
-      this.displayURL = this.url
+      this.displayURL = decodeURIComponent(this.url);
     }
   }
   updateEvent() {
@@ -176,13 +178,15 @@ class View {
       dialogViewObj.addBrowserView();
       return;
     }
-
+    //if is pdf loading pdf html
     if (url.toLowerCase().endsWith('.pdf')) {
       console.log('open pdf page!!!!')
       this.resize();
       this.loadURL(`${__static}\\html\\pdf\\web\\viewer.html?file=${url}`);
       this.setBroserView();
       return;
+    } else if (url.toLowerCase().endsWith('.md') && !url.toLowerCase().startsWith(`seek://`)) {
+      url = `${DEFAULT_URL}#/Markdown?url=${url}`;
     }
 
     const urlFormat = this.formatURL(url);
@@ -430,7 +434,7 @@ function removeView(win, view, index) {
     } else if (win.views[index - 1]) {
       win.views[index - 1].setActive()
     }
-  }else{
+  } else {
     console.log('current view is not active!!!!!!!')
   }
   view.browserView.destroy();

@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import '../assets/css/reset.css'
+import '../assets/css/reset.scss'
 import api from '../assets/config/api';
 Vue.use(Router)
 
@@ -10,6 +10,11 @@ export default new Router({
       path: '/Navigation',
       name: 'Navigation',
       component: require('../WindowNavigation.vue').default
+    },
+    {
+      path: '/Markdown',
+      name: 'Markdown',
+      component: require('../pages/Markdown').default
     },
     {
       path: '/Home',

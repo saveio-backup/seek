@@ -64,8 +64,10 @@ export default {
 		},
 		init() {
 			// change tab title
-			this.url = this.$route.query.url;
+			this.url = decodeURIComponent(this.$route.query.url);
 			let index = this.url.lastIndexOf("\\");
+			let index2 = this.url.lastIndexOf("\/");
+			index = index > index2 ? index : index2;
 			let name = this.url.slice(index + 1);
 			document.title = name;
 		}
@@ -90,12 +92,12 @@ $gray-100: rgb(200, 200, 200);
 	background: white;
 
 	& > div {
-		margin: 0 auto;
-		max-width: 1300px;
-		width: 100%;
-
+		margin: 0 auto 25px;
+		max-width: 1200px;
+		
+		width: calc(100% - 100px);
 		// reset markdown style
-		font-family: "ubuntu", "Tahoma", "Microsoft YaHei", arial, sans-serif;
+		font-family: "Microsoft YaHei", "ubuntu", "Tahoma",  arial, sans-serif;
 		color: #444444;
 		line-height: 1;
 		padding: 0px;
@@ -109,7 +111,7 @@ $gray-100: rgb(200, 200, 200);
 		h3,
 		h4 {
 			color: #111111;
-			font-weight: 400;
+			font-weight: 700;
 			margin-top: 1em;
 		}
 
@@ -118,7 +120,7 @@ $gray-100: rgb(200, 200, 200);
 		h3,
 		h4,
 		h5 {
-			font-family: Georgia, Palatino, serif;
+			font-family: "Microsoft YaHei", Georgia, Palatino, serif;
 		}
 		
 		h1,
@@ -180,6 +182,7 @@ $gray-100: rgb(200, 200, 200);
 			padding-left: 18px;
 			margin: 0;
 			list-style: initial;
+			margin-left: 18px;
 		}
 		ol  {
 			list-style: decimal;
@@ -305,7 +308,7 @@ $gray-100: rgb(200, 200, 200);
 
 		//源代码
 		.hljs {
-			font-family: Menlo, Consolas, Courier New, Courier, FreeMono, monospace;
+			font-family: "Microsoft YaHei", Menlo, Consolas, Courier New, Courier, FreeMono, monospace;
 			display: block;
 			overflow-y: hidden;
 			overflow-x: auto;
@@ -316,7 +319,7 @@ $gray-100: rgb(200, 200, 200);
 		}
 		//修改为
 		pre {
-			font-family: Menlo, Consolas, Courier New, Courier, FreeMono, monospace;
+			font-family: "Microsoft YaHei", Menlo, Consolas, Courier New, Courier, FreeMono, monospace;
 			display: block;
 			overflow-y: hidden;
 			overflow-x: auto;

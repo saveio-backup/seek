@@ -250,7 +250,7 @@ export default {
 			menu.popup({});
 		},
 		showHelpDocument() {
-			this.activeView.createPDF({ isActive: true, focus: true });
+			this.activeView.createHelpDocument({ isActive: true, focus: true });
 		},
 		remoteOpenComponent(path) {
 			this.activeView.openComponent(path);

@@ -314,8 +314,8 @@ class View {
   create(option) {
     createView(this.browserWindow, undefined, option)
   }
-  createPDF(option) {
-    createView(this.browserWindow, `${__static}\\html\\pdf\\web\\viewer.html?file=${__static}\\html\\pdf\\Seeker.pdf`, option)
+  createHelpDocument(option) {
+    createView(this.browserWindow, decodeURIComponent(`${DEFAULT_URL}#/Markdown?url=${__static}/README.md`), option)
   }
 }
 export function createWindow(url) {

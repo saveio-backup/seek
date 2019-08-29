@@ -30,7 +30,12 @@
 						prop="FileSize"
 					>
 						<!-- prop="Path" -->
-						<span class="form-right browser-layout-reset light-blue" @click="resetFileList" title="clear all add file" v-if="uploadFormData.Files && uploadFormData.Files.length !== 0">Clear</span>
+						<span
+							class="form-right browser-layout-reset light-blue"
+							@click="resetFileList"
+							title="clear all add file"
+							v-if="uploadFormData.Files && uploadFormData.Files.length !== 0"
+						>Clear</span>
 						<el-button
 							class="form-right browser-layout"
 							@click="selectUpload"
@@ -47,7 +52,10 @@
 						>
 							<div slot="trigger">
 								<!-- <el-button class="browser-layout" type="primary">Browser</el-button> -->
-								<div class="path-content" @click.stop="">
+								<div
+									class="path-content"
+									@click.stop=""
+								>
 									<ul>
 										<el-tag
 											:type="(file.fileBytes > (4 * 1024 * 1024 * 1024 )) ?'danger':''"
@@ -63,9 +71,12 @@
 											{{file.fileName}}
 										</li> -->
 									</ul>
-									<div class="path-no-data-title" v-if="uploadFormData.Files.length === 0">
-										<p class="text-center mt60 user-no-select">Drag your file here or browse</p>
-										<p class="text-center mt10 user-no-select">A single file cannot be larger than 4GB</p>
+									<div
+										class="path-no-data-title"
+										v-if="uploadFormData.Files.length === 0"
+									>
+										<p class="text-center mt60 user-no-select break-word">Drag your file here or browse</p>
+										<p class="text-center mt10 user-no-select break-word">A single file cannot be larger than 4GB</p>
 									</div>
 								</div>
 							</div>
@@ -143,7 +154,7 @@
 						label="Integrity Verification Cycle:"
 						prop="Interval"
 					>
-						<p class="dark-grey tootips">Integrity Verification Cycle cannot be longer than Storage Cycle</p>
+						<p class="dark-grey tootips break-word">Integrity Verification Cycle cannot be longer than Storage Cycle</p>
 						<el-input
 							:precision='0'
 							v-model="verificationCycleNumber"
@@ -320,7 +331,7 @@
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content">
-				<p class="tl mt10">The files uploaded by the advance mode will not occupy the space you have purchased, but you will need to pay separately according to the uploaded file conditions and parameter configuration.</p>
+				<p class="tl mt10 break-word">The files uploaded by the advance mode will not occupy the space you have purchased, but you will need to pay separately according to the uploaded file conditions and parameter configuration.</p>
 				<p class="tr mt10 mb10">
 					<el-checkbox
 						@change="updateAllowRemind"
@@ -347,7 +358,7 @@
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content">
-				<p class="mt10 mb20 ft14 tl">Sorry, you don't have any storage yet. Please get storage before the Primary Upload.</p>
+				<p class="mt10 mb20 ft14 tl break-word">Sorry, you don't have any storage yet. Please get storage before the Primary Upload.</p>
 				<div slot="footer">
 					<el-button @click="noStorageDialog.show = false">Cancel</el-button>
 					<el-button
@@ -368,20 +379,29 @@ const DEFAULT_UPLOAD_PRICE = 0.03;
 export default {
 	data() {
 		let validateEncryptFileSize = (rule, value, callback) => {
-			if(this.uploadFormData.Files.length === 0) {
+			if (this.uploadFormData.Files.length === 0) {
 				callback(new Error(`Please select a file.`));
-			} else if (!this.switchToggle.advanced && (!this.space || (this.space.Remain*1024 < this.fileSize))) {
-				callback(new Error(`Insufficient remaining storage space, currently ${this.util.bytesToSize(this.space.Remain * 1024)} remaining.`));
+			} else if (
+				!this.switchToggle.advanced &&
+				(!this.space || this.space.Remain * 1024 < this.fileSize)
+			) {
+				callback(
+					new Error(
+						`Insufficient remaining storage space, currently ${this.util.bytesToSize(
+							this.space.Remain * 1024
+						)} remaining.`
+					)
+				);
 			} else {
-				for(let file of this.uploadFormData.Files) {
+				for (let file of this.uploadFormData.Files) {
 					if (file.fileBytes > 4 * 1024 * 1024 * 1024) {
-					 callback(new Error(`A single file cannot be larger than 4GB`));				
+						callback(new Error(`A single file cannot be larger than 4GB`));
 						return;
 					}
 				}
 			}
 			callback();
-		}
+		};
 		let validateEncryptPassword = (rule, value, callback) => {
 			// encryptionToggle
 			if (!this.encryptionToggle) {
@@ -505,21 +525,21 @@ export default {
 			this.uploadFormData.Files = [];
 			this.toGetPrice();
 			this.toGetFileSize();
-			this.$refs.uploadForm.validateField('FileSize');
+			this.$refs.uploadForm.validateField("FileSize");
 		},
 		handleChange(file, fileList) {
 			console.log(file);
 			console.log(fileList);
 			// console.log(fs.readFileSync(file.raw.path, 'utf8'));
 			fs.stat(file.raw.path, (err, stats) => {
-				console.log(stats)
-				if(err) {
-					console.log('err', err)
+				console.log(stats);
+				if (err) {
+					console.log("err", err);
 				}
-				if(stats.isDirectory()) return;
+				if (stats.isDirectory()) return;
 
-				for(let value of this.uploadFormData.Files) {
-					if(value.filePath === file.raw.path) {
+				for (let value of this.uploadFormData.Files) {
+					if (value.filePath === file.raw.path) {
 						return;
 					}
 				}
@@ -531,10 +551,10 @@ export default {
 				this.toGetFileSize();
 				this.toGetPrice();
 				// this.$refs.upload.clearFiles();
-				this.$refs.uploadForm.validateField('FileSize');
-			})
+				this.$refs.uploadForm.validateField("FileSize");
+			});
 		},
-		// get space is not zero go expand page 
+		// get space is not zero go expand page
 		getSpaceIsZero() {
 			this.$axios
 				.get(this.$api.userspace + window.localStorage.getItem("Address"))
@@ -566,7 +586,7 @@ export default {
 			this.switchToggle.advanced = true;
 			this.setDataInterval();
 			if (!this.remindToggle.noAllowRemind) this.remindToggle.show = true;
-			this.$refs.uploadForm.validateField('FileSize');
+			this.$refs.uploadForm.validateField("FileSize");
 		},
 		advancedDataInit() {
 			this.uploadPriceInfo = null;
@@ -599,11 +619,11 @@ export default {
 				// get current select not have file list
 				let arr = [];
 				let currentFilePathList = [];
-				for(let value of this.uploadFormData.Files) {
-					currentFilePathList.push(value.filePath)
+				for (let value of this.uploadFormData.Files) {
+					currentFilePathList.push(value.filePath);
 				}
-				for(let value of content.files) {
-					if(currentFilePathList.indexOf(value.filePath) === -1) {
+				for (let value of content.files) {
+					if (currentFilePathList.indexOf(value.filePath) === -1) {
 						arr.push(value);
 					}
 				}
@@ -613,7 +633,7 @@ export default {
 				// this.uploadFormData.Path = content.filePath;
 				// this.uploadFormData.Desc = content.fileName;
 				this.toGetPrice();
-				this.$refs.uploadForm.validateField('FileSize');
+				this.$refs.uploadForm.validateField("FileSize");
 			});
 		},
 		handleCloseByFile(file) {
@@ -623,7 +643,7 @@ export default {
 			);
 			this.toGetFileSize();
 			this.toGetPrice();
-			this.$refs.uploadForm.validateField('FileSize');
+			this.$refs.uploadForm.validateField("FileSize");
 		},
 		// close while list item
 		handleClose(tag) {
@@ -718,17 +738,17 @@ export default {
 				this.switchToggle.upload = false; // set toggle
 				let commitAll = [];
 				let data = null;
-				for(let file of this.uploadFormData.Files) {
+				for (let file of this.uploadFormData.Files) {
 					let params = {
 						Path: file.filePath,
 						Desc: file.fileName,
 						EncryptPassword: this.uploadFormData.EncryptPassword,
 						StoreType: this.switchToggle.advanced ? 1 : 0,
 						Password: this.passwordForm.Password
-					}
+					};
 					params = this.switchToggle.advanced
-					? Object.assign({}, params, this.advancedData)
-					: params;
+						? Object.assign({}, params, this.advancedData)
+						: params;
 					delete params.wihteListString;
 					commitAll.push(this.getToUploadFilePromise(params));
 				}
@@ -736,7 +756,7 @@ export default {
 				// 	this.$message.error("A single file cannot be larger than 4GB");
 				// 	return;
 				// }
-				
+
 				// format params
 				// let data = null;
 				// data = this.switchToggle.advanced
@@ -749,56 +769,59 @@ export default {
 					text: "Uploading..",
 					target: ".loading-content.upload-loading"
 				});
-				this.$axios.all(commitAll).then((resArr) => {
-					this.switchToggle.loading && this.switchToggle.loading.close();
-					console.log(resArr);
-					// is not have success task
-					let flag = false;
-					// error task list
-					let error = [];
-					this.switchToggle.upload = true;
-					for(let res of resArr) {
-						if(res.Error === 0) {
-							flag = true;
-						} else {
-							error.push(res);
+				this.$axios
+					.all(commitAll)
+					.then(resArr => {
+						this.switchToggle.loading && this.switchToggle.loading.close();
+						console.log(resArr);
+						// is not have success task
+						let flag = false;
+						// error task list
+						let error = [];
+						this.switchToggle.upload = true;
+						for (let res of resArr) {
+							if (res.Error === 0) {
+								flag = true;
+							} else {
+								error.push(res);
+							}
 						}
-					}
-					// if have success link transfer 
-					if(flag) {
-						this.passwordForm.show = false;
-						this.$store.dispatch("setUpload");
-						this.$router.push({
-							name: "transfer",
-							query: { transferType: 1 }
-						});
-						// is not all task success
-						if(error.length === 0) {
-							this.$message({
-								type: "success",
-								message: "Start Upload"
+						// if have success link transfer
+						if (flag) {
+							this.passwordForm.show = false;
+							this.$store.dispatch("setUpload");
+							this.$router.push({
+								name: "transfer",
+								query: { transferType: 1 }
+							});
+							// is not all task success
+							if (error.length === 0) {
+								this.$message({
+									type: "success",
+									message: "Start Upload"
+								});
+							}
+						}
+						// if have error show message
+						if (error.length != 0) {
+							let errorMsg = "";
+							for (let value of error) {
+								errorMsg += `<p>`;
+								errorMsg += `${value.FileName || ""}`;
+								errorMsg += this.$i18n.error[value.Error]
+									? this.$i18n.error[value.Error][this.$language]
+									: `error code is ${value.Error}`;
+								errorMsg += `</p>`;
+							}
+							this.$message.error({
+								dangerouslyUseHTMLString: true,
+								message: errorMsg
 							});
 						}
-					}
-					// if have error show message
-					if(error.length != 0) {
-						let errorMsg = '';
-						for(let value of error) {
-							errorMsg += `<p>`
-							errorMsg += `${value.FileName || ''}` 
-							errorMsg += this.$i18n.error[value.Error]
-								? this.$i18n.error[value.Error][this.$language]
-								: `error code is ${value.Error}`
-							errorMsg += `</p>`;
-						}
-						this.$message.error({
-							dangerouslyUseHTMLString: true,
-							message: errorMsg
-						});
-					}
-				}).catch(e => {
-					this.switchToggle.loading && this.switchToggle.loading.close();
-				})
+					})
+					.catch(e => {
+						this.switchToggle.loading && this.switchToggle.loading.close();
+					});
 				// this.$axios
 				// 	.post(this.$api.upload, data, {
 				// 		loading: {
@@ -836,17 +859,16 @@ export default {
 			});
 		},
 		getToUploadFilePromise(data) {
-			return this.$axios
-				.post(this.$api.upload, data)
+			return this.$axios.post(this.$api.upload, data);
 		},
 		toGetFileSize() {
 			let fileSize = 0;
-			for(let value of this.uploadFormData.Files) {
-				fileSize += value.fileBytes
+			for (let value of this.uploadFormData.Files) {
+				fileSize += value.fileBytes;
 			}
 			this.fileSize = fileSize;
 		},
-		toGetPricePromise({filePath}) {
+		toGetPricePromise({ filePath }) {
 			const path = ipcRenderer.sendSync(
 				"string-to-hex",
 				filePath
@@ -861,59 +883,65 @@ export default {
 					: 0;
 			const storeType = this.switchToggle.advanced ? 1 : 0;
 			// if (!path) return;
-			return this.$axios
-				.get(this.$api.uploadfee + path, {
-					params: { duration, interval, copyNum, whitelistCount, storeType }
-				})
+			return this.$axios.get(this.$api.uploadfee + path, {
+				params: { duration, interval, copyNum, whitelistCount, storeType }
+			});
 		},
 		// get price
 		toGetPrice() {
 			if (!this.switchToggle.advanced) {
-				this.uploadPrice = parseFloat((DEFAULT_UPLOAD_PRICE * (this.uploadFormData.Files.length || 1)).toFixed(2));
+				this.uploadPrice = parseFloat(
+					(
+						DEFAULT_UPLOAD_PRICE * (this.uploadFormData.Files.length || 1)
+					).toFixed(2)
+				);
 				return;
 			}
 			const commitAll = [];
 			if (this.uploadFormData.Files.length === 0) {
 				this.uploadPrice = DEFAULT_UPLOAD_PRICE;
 				return;
-			};
-			for(let file of this.uploadFormData.Files) {
+			}
+			for (let file of this.uploadFormData.Files) {
 				commitAll.push(this.toGetPricePromise(file));
 			}
-			this.$axios.all(commitAll).then((resArr) => {
-				let storageFee = 0;
-				let validateFee = 0;
-				let contractFee = 0;
-				for(let res of resArr) {
-					if (res.Error === 0) {
-						storageFee += res.Result.StorageFee;
-						validateFee += res.Result.ValidFee;
-						contractFee += res.Result.TxFee;
-					} else {
-						this.$message.error(
-							this.$i18n.error[res.Error]
-								? this.$i18n.error[res.Error][this.$language]
-								: `error code is ${res.Error}`
-						);
-						return;
+			this.$axios
+				.all(commitAll)
+				.then(resArr => {
+					let storageFee = 0;
+					let validateFee = 0;
+					let contractFee = 0;
+					for (let res of resArr) {
+						if (res.Error === 0) {
+							storageFee += res.Result.StorageFee;
+							validateFee += res.Result.ValidFee;
+							contractFee += res.Result.TxFee;
+						} else {
+							this.$message.error(
+								this.$i18n.error[res.Error]
+									? this.$i18n.error[res.Error][this.$language]
+									: `error code is ${res.Error}`
+							);
+							return;
+						}
 					}
-				};
 
-				let uploadPriceResult =
-					(parseFloat(contractFee) || 0) +
-					(parseFloat(storageFee) || 0) +
-					(parseFloat(validateFee) || 0);
-				this.uploadPrice = parseFloat(uploadPriceResult.toFixed(9)/Math.pow(10,9)); // format
-				this.uploadPriceInfo = {
-					TxFeeFormat: (contractFee/Math.pow(10,9)),
-					StorageFeeFormat: (storageFee/Math.pow(10,9)),
-					ValidFeeFormat: (validateFee/Math.pow(10,9))
-				};
-			}).catch(e => {
-				this.$message.error(
-					'Get Price Failes'
-				)
-			})
+					let uploadPriceResult =
+						(parseFloat(contractFee) || 0) +
+						(parseFloat(storageFee) || 0) +
+						(parseFloat(validateFee) || 0);
+					this.uploadPrice = parseFloat(
+						uploadPriceResult.toFixed(9) / Math.pow(10, 9)
+					); // format
+					this.uploadPriceInfo = {
+						TxFeeFormat: contractFee / Math.pow(10, 9),
+						StorageFeeFormat: storageFee / Math.pow(10, 9),
+						ValidFeeFormat: validateFee / Math.pow(10, 9)
+					};
+				})
+				.catch(e => {
+					this.$message.error("Get Price Failes");
+				});
 		},
 		hiddenAdvanced() {
 			if (!this.space || (this.space.Used === 0 && this.space.Remain === 0)) {
@@ -922,7 +950,7 @@ export default {
 			this.advancedDataInit();
 			this.switchToggle.advanced = false;
 			this.setDataInterval();
-			this.$refs.uploadForm.validateField('FileSize');
+			this.$refs.uploadForm.validateField("FileSize");
 		}
 	},
 	computed: {
@@ -1084,7 +1112,7 @@ $inputFocusBg: #dee2ea;
 					height: 180px;
 					margin-top: 45px;
 					clear: both;
-					background: #F9F9FB;
+					background: #f9f9fb;
 
 					& > .el-upload {
 						width: 100%;
@@ -1095,10 +1123,10 @@ $inputFocusBg: #dee2ea;
 							}
 							width: 100%;
 							height: 100%;
-							border-color: rgba(4,15,57,0.2);
+							border-color: rgba(4, 15, 57, 0.2);
 							overflow: visible;
 							&.is-dragover {
-								border-color: #409EFF;
+								border-color: #409eff;
 							}
 						}
 					}
@@ -1109,7 +1137,7 @@ $inputFocusBg: #dee2ea;
 						height: 100%;
 						overflow: auto;
 						text-align: left;
-						background: #F9F9FB;
+						background: #f9f9fb;
 						position: relative;
 						.el-tag {
 							margin-right: 20px;
@@ -1131,14 +1159,14 @@ $inputFocusBg: #dee2ea;
 					top: 10px;
 					position: absolute;
 				}
-				.browser-layout-reset{
+				.browser-layout-reset {
 					right: 150px;
 					top: 10px;
 					position: absolute;
 					cursor: pointer;
 					&:hover {
 						// text-decoration: underline;
-						opacity: .7;
+						opacity: 0.7;
 					}
 					&:active {
 						opacity: 1;
@@ -1194,7 +1222,7 @@ $inputFocusBg: #dee2ea;
 				width: 100%;
 				height: 110px;
 				margin-bottom: 15px;
-				overflow: auto; 
+				overflow: auto;
 				.el-tag {
 					margin-right: 20px;
 				}

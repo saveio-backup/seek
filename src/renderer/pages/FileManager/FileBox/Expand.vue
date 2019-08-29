@@ -197,7 +197,7 @@
 					<div class="dialog-title-border"></div>
 				</div>
 				<div class="loading-content">
-					<p class="mt10 mb30 ft14">You can now upload files via Primary mode.</p>
+					<p class="mt10 mb30 ft14 break-word">You can now upload files via Primary mode.</p>
 					<div slot="footer">
 						<el-button @click="linkUploadDialogVisible = false">Cancel</el-button>
 						<el-button

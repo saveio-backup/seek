@@ -13,7 +13,7 @@
 			</div>
 			<div class="loading-content isCreateChannelDialog">
 				<div class="mb20">
-					<p class="mt20 tl">The system detecets that you have not open a Channel,you can create a new channel based on the DNS Wallet address recommended by the current network.</p>
+					<p class="mt20 tl break-word">The system detecets that you have not open a Channel,you can create a new channel based on the DNS Wallet address recommended by the current network.</p>
 					<p class="mt20 tl">Recommend DNS: {{dns && dns.WalletAddr || ''}}</p>
 				</div>
 				<div slot="footer">

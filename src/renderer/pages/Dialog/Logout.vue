@@ -13,7 +13,7 @@
 			</div>
 			<div class="loading-content logout-loading">
 				<div class="mb20">
-					<p class="mt20 text-center">Please ensure that the private key(WIF) file is properly stored before exiting.</p>
+					<p class="mt20 text-center break-word">Please ensure that the private key(WIF) file is properly stored before exiting.</p>
 				</div>
 				<div slot="footer">
 					<el-button @click="closeDialog">Cancel</el-button>
@@ -46,12 +46,16 @@ export default {
 		},
 		logout() {
 			this.$axios
-				.post(this.$api.account + "/logout", {}, {
-					loading: {
-						text: "logging out",
-						target: ".loading-content.logout-loading"
+				.post(
+					this.$api.account + "/logout",
+					{},
+					{
+						loading: {
+							text: "logging out",
+							target: ".loading-content.logout-loading"
+						}
 					}
-				})
+				)
 				.then(res => {
 					if (res.Error === 0) {
 						window.localStorage.clear();

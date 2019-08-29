@@ -71,7 +71,7 @@
 					></el-table-column>
 
 					<!-- prop="Name" -->
-						<!-- min-width="350" -->
+					<!-- min-width="350" -->
 					<el-table-column
 						label="File Name"
 						class-name="rowName"
@@ -81,9 +81,15 @@
 					>
 						<template slot-scope="scope">
 							<div class="flex between">
-								<span class="row-name"  :class="scope.row.Undone?'theme-font-blue-40':''">{{ scope.row.Name }}</span>
+								<span
+									class="row-name"
+									:class="scope.row.Undone?'theme-font-blue-40':''"
+								>{{ scope.row.Name }}</span>
 								<!-- @click="executedFile = scope.row" -->
-								<div class="opera" v-if="!scope.row.Undone">
+								<div
+									class="opera"
+									v-if="!scope.row.Undone"
+								>
 									<span
 										@click.stop="shareFile(scope.row)"
 										title="Share"
@@ -163,7 +169,10 @@
 						sortable
 					>
 						<template slot-scope="scope">
-							<span class="td-grey break-word"  :class="scope.row.Undone?'theme-font-blue-40':''">
+							<span
+								class="td-grey break-word"
+								:class="scope.row.Undone?'theme-font-blue-40':''"
+							>
 								{{util.bytesToSize(scope.row.RealFileSize * 1024)}}
 							</span>
 						</template>
@@ -176,7 +185,10 @@
 						sortable
 					>
 						<template slot-scope="scope">
-							<div class="td-grey break-word"  :class="scope.row.Undone?'theme-font-blue-40':''">
+							<div
+								class="td-grey break-word"
+								:class="scope.row.Undone?'theme-font-blue-40':''"
+							>
 								{{date.formatTime(new Date( (scope.row.DownloadAt||scope.row.UpdatedAt) * 1000))}}
 							</div>
 						</template>
@@ -327,7 +339,7 @@
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content">
-				<p class="mt10 mb10 ft14 tl">Sorry, you don't have any storage yet. Please get storage before the Primary Upload. Or you can do an Advanced Upload without having to purchase storage in advance.</p>
+				<p class="mt10 mb10 ft14 tl break-word">Sorry, you don't have any storage yet. Please get storage before the Primary Upload. Or you can do an Advanced Upload without having to purchase storage in advance.</p>
 				<p class="tr mt10 mb10">
 					<el-checkbox
 						@change="linkUpdateAllowRemind"
@@ -481,7 +493,7 @@ export default {
 					DownloadCount: 0,
 					ExpiredAt: 155505125,
 					UpdatedAt: 124124041,
-					DownloadAt: 11241240,				
+					DownloadAt: 11241240,
 					Profit: 513452345234523450,
 					Privilege: 1,
 					Url: "aasfewfwa",
@@ -494,7 +506,7 @@ export default {
 					DownloadCount: 0,
 					ExpiredAt: 1555051257,
 					UpdatedAt: 1240,
-					DownloadAt: 1140,				
+					DownloadAt: 1140,
 					Profit: 23512312340,
 					Privilege: 1,
 					StoreType: 1
@@ -506,7 +518,7 @@ export default {
 					DownloadCount: 1536,
 					ExpiredAt: 555051257,
 					UpdatedAt: 1241241240,
-					DownloadAt: 1140124124,				
+					DownloadAt: 1140124124,
 					Profit: 1,
 					Privilege: 1,
 					StoreType: 0
@@ -518,7 +530,7 @@ export default {
 					DownloadCount: 0,
 					ExpiredAt: 15585051257,
 					UpdatedAt: 1241240,
-					DownloadAt: 11404134,				
+					DownloadAt: 11404134,
 					Profit: 6456120,
 					Privilege: 1,
 					StoreType: 0
@@ -656,7 +668,7 @@ export default {
 			shell.showItemInFolder(path);
 		},
 		clickRow(row) {
-			if(row.Url) {
+			if (row.Url) {
 				this.$refs.table.clearSelection();
 				this.$refs.table.toggleRowSelection(row);
 			}
@@ -677,16 +689,16 @@ export default {
 				}
 			});
 		},
-		selectAll(selection){
-			for(let i = selection.length - 1;i >= 0;i --) {
-				if(selection[i].Undone) {
+		selectAll(selection) {
+			for (let i = selection.length - 1; i >= 0; i--) {
+				if (selection[i].Undone) {
 					selection.splice(i, 1);
 				}
 			}
 			this.fileSelected = selection;
 		},
-		toSelectFile(selection,row) {
-			if(!row.Url) {
+		toSelectFile(selection, row) {
+			if (!row.Url) {
 				this.$refs.table.toggleRowSelection(row, false);
 			}
 		},
@@ -711,7 +723,8 @@ export default {
 						// result = this.mockData;
 						if (result.length) {
 							result.map(item => {
-								item.Undone = (item.Url !== "" && item.Url !== undefined)?false:true;
+								item.Undone =
+									item.Url !== "" && item.Url !== undefined ? false : true;
 								return item;
 							});
 							// do sth
@@ -740,15 +753,20 @@ export default {
 			this.switchToggle.shareDialog = true;
 		},
 		downloadFile(file) {
-			if(this.isSync) {
-				this.$confirm('Block unsynchronized completion. Are you sure to do this?', 'Notice', {
-					confirmButtonText: 'confirm',
-					cancelButtonText: 'cancel',
-				}).then(() => {
-					this.fileToDownload = [file];
-					this.switchToggle.confrimDownloadDialog = true;
-				}).catch(e => {
-				})
+			if (this.isSync) {
+				this.$confirm(
+					"Block unsynchronized completion. Are you sure to do this?",
+					"Notice",
+					{
+						confirmButtonText: "confirm",
+						cancelButtonText: "cancel"
+					}
+				)
+					.then(() => {
+						this.fileToDownload = [file];
+						this.switchToggle.confrimDownloadDialog = true;
+					})
+					.catch(e => {});
 			} else {
 				this.fileToDownload = [file];
 				this.switchToggle.confrimDownloadDialog = true;
@@ -763,15 +781,20 @@ export default {
 				});
 				return;
 			}
-			if(this.isSync) {
-				this.$confirm('Block unsynchronized completion. Are you sure to do this?', 'Notice', {
-					confirmButtonText: 'confirm',
-					cancelButtonText: 'cancel',
-				}).then(() => {
-					this.fileToDownload = this.fileSelected;
-					this.switchToggle.confrimDownloadDialog = true;
-				}).catch(e => {
-				})
+			if (this.isSync) {
+				this.$confirm(
+					"Block unsynchronized completion. Are you sure to do this?",
+					"Notice",
+					{
+						confirmButtonText: "confirm",
+						cancelButtonText: "cancel"
+					}
+				)
+					.then(() => {
+						this.fileToDownload = this.fileSelected;
+						this.switchToggle.confrimDownloadDialog = true;
+					})
+					.catch(e => {});
 			} else {
 				this.fileToDownload = this.fileSelected;
 				this.switchToggle.confrimDownloadDialog = true;
@@ -1029,7 +1052,7 @@ export default {
 		filterListData() {
 			const fileListData = this.fileListData;
 			return fileListData.filter(item => {
-				item.StoreTypeNum = - item.StoreType;
+				item.StoreTypeNum = -item.StoreType;
 				return item.Name.indexOf(this.filterInput) >= 0;
 			});
 		},

@@ -118,7 +118,7 @@
 							</span>
 							<span
 								v-if="!isSync"
-								class="ft12 theme-font-blue-70 ml10"
+								class="ft12 theme-font-blue-70 ml10 currentBlock"
 							>
 								#{{currentHeihgt}}
 							</span>
@@ -591,6 +591,14 @@ $tabs-height: 62px;
 			margin-left: 8px;
 			& > .sync-progress {
 				margin-right: 7px;
+			}
+			& > .currentBlock {
+				padding: 0 10px;
+				height: 22px;
+				line-height: 22px;
+				background: rgba(223, 226, 233, 0.5);
+				border-radius: 11px;
+				display: inline-block;
 			}
 		}
 	}

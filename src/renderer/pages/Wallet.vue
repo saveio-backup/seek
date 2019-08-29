@@ -6,7 +6,10 @@
 		<div class="content">
 			<div class="wallet-aside">
 				<div class="person-info">
-					<p class="person-info-name ft24">{{user.name || ''}}</p>
+					<p
+						class="person-info-name ft24"
+						:title="user.name || ''"
+					>{{user.name || ''}}</p>
 					<p class="person-info-address ft14">
 						<span
 							class="address"
@@ -168,7 +171,7 @@
 						>
 							<div class="txid grey-xs user-no-select">ID:
 								<span :title="item.Txid || ''">
-									{{item.Txid || ''}} 
+									{{item.Txid || ''}}
 								</span>
 								<i
 									class="ofont ofont-fuzhi tx-copy"
@@ -178,7 +181,7 @@
 							<div class="towards">
 								<p class='from user-no-select'>
 									<span :title="item.From">
-										{{item.From}} 
+										{{item.From}}
 									</span>
 									<i
 										class="ofont ofont-fuzhi tx-copy"
@@ -909,6 +912,10 @@ $light-grey: #f7f7f7;
 				flex-direction: column;
 				padding: 24px 16px;
 				font-weight: 400;
+				.person-info-name {
+					overflow: hidden;
+					text-overflow: ellipsis;
+				}
 				.person-info-address {
 					.address {
 						display: inline-block;
@@ -1191,12 +1198,12 @@ $light-grey: #f7f7f7;
 					.tx-li-item-detail {
 						background: #f8f9fa;
 						padding: 10px 45px;
-						& >.txid {
+						& > .txid {
 							& > span {
 								display: inline-block;
 								max-width: calc(100% - 60px);
 								overflow: hidden;
-								text-overflow:ellipsis;
+								text-overflow: ellipsis;
 								white-space: nowrap;
 								position: relative;
 								top: 3px;
@@ -1212,15 +1219,15 @@ $light-grey: #f7f7f7;
 							.from,
 							.to {
 								width: 400px;
-								max-width: 50%; 
+								max-width: 50%;
 								font-size: 12px;
 								word-break: break-all;
 								& > span {
 									display: inline-block;
 									max-width: calc(100% - 60px);
 									overflow: hidden;
-									text-overflow:ellipsis;
-									white-space: nowrap;	
+									text-overflow: ellipsis;
+									white-space: nowrap;
 								}
 							}
 							.arrow {

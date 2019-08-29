@@ -40,19 +40,19 @@
 				v-if="transferType === 2"
 				@click="openConfirmCancelDownload('all')"
 			>Cancel All</el-button>
-				<!-- title="Comming Soon..." -->
+			<!-- title="Comming Soon..." -->
 			<el-button
 				v-if="transferType !== 0"
 				:class="{'not-allow-opeation':!show}"
 				@click="continueAll"
 			>Start All</el-button>
-				<!-- title="Comming Soon..." -->
+			<!-- title="Comming Soon..." -->
 			<el-button
 				v-if="transferType !== 0"
 				:class="{'not-allow-opeation':!show}"
 				@click="pauseAll"
 			>Pause All</el-button>
-				<!--@click="switchToggle.newTaskDialog=true"-->
+			<!--@click="switchToggle.newTaskDialog=true"-->
 			<el-button
 				v-if="transferType === 2"
 				class="primary"
@@ -521,6 +521,12 @@
 							<p class="theme-font-blue ft14 mr20">{{$dateFormat.formatTimeByTimestamp(fileObjById[detailId].UpdatedAt*1000) || ''}}</p>
 						</div>
 					</div>
+					<div class="adjust-item">
+						<p class="adjust-title theme-font-blue ft14">Fee:</p>
+						<div class="adjust-info">
+							<p class="theme-font-blue ft14 mr20">{{fileObjById[detailId].DownloadSize * 1024 / Math.pow(10, 9) || '0'}} SAVE</p>
+						</div>
+					</div>
 				</div>
 				<div slot="footer">
 					<el-button
@@ -572,17 +578,22 @@ export default {
 			confirmCancelTask: null,
 			detailId: "",
 			uploadDetailHash: "",
+			detailObj: {
+				fee: 0
+			},
 			transferItem: {},
 			transferTypeConfig: ["Completed", "Upload", "Download"],
 			fileSelected: {
 				Path: "",
 				Password: ""
 			},
+			//cancel task input password form
 			passwordCancel: {
 				Password: "",
 				File: null, // if file is null is cancel all else cancel file
 				loadingObj: null
 			},
+			//cancel task input password form check
 			passwordCancelRules: {
 				Password: [
 					{
@@ -669,6 +680,7 @@ export default {
 					StoreType: 0
 				}
 			],
+			//http loading array
 			waitForing: {},
 			// speed association attributes
 			taskSpeed: {},
@@ -757,14 +769,19 @@ export default {
 	},
 	methods: {
 		openNewTaskDialog() {
-			if(this.isSync && this.transferType === 2) {
-				this.$confirm('Block unsynchronized completion. Are you sure to do this?', 'Notice', {
-					confirmButtonText: 'confirm',
-					cancelButtonText: 'cancel',
-				}).then(() => {
-					this.switchToggle.newTaskDialog = true;
-				}).catch(e => {
-				})
+			if (this.isSync && this.transferType === 2) {
+				this.$confirm(
+					"Block unsynchronized completion. Are you sure to do this?",
+					"Notice",
+					{
+						confirmButtonText: "confirm",
+						cancelButtonText: "cancel"
+					}
+				)
+					.then(() => {
+						this.switchToggle.newTaskDialog = true;
+					})
+					.catch(e => {});
 			} else {
 				this.switchToggle.newTaskDialog = true;
 			}
@@ -772,9 +789,9 @@ export default {
 		// dialog confirm cancel download
 		cancelDownload() {
 			this.switchToggle.confirmCancelDownloadDialog = false;
-			if(this.confirmCancelTask && this.confirmCancelTask.Id) {
+			if (this.confirmCancelTask && this.confirmCancelTask.Id) {
 				this.uploadOrDownloadCancel(this.confirmCancelTask, this.transferType);
-			} else if(this.confirmCancelTask === 'all') {
+			} else if (this.confirmCancelTask === "all") {
 				this.cancelAll();
 			}
 		},
@@ -785,7 +802,7 @@ export default {
 		 */
 		openConfirmCancelDownload(task) {
 			const type = this.transferType;
-			if(task === 'all') {
+			if (task === "all") {
 				const arr = this.getTask(type, 0, 1, 2, 4);
 				if (arr.length === 0) {
 					this.$message({
@@ -839,6 +856,7 @@ export default {
 				if (row.IsUploadAction) {
 					this.uploadDetailHash = row.FileHash;
 				} else {
+					this.detailObj = null;
 					this.detailId = row.Id;
 					this.switchToggle.downloadDetailDialog = true;
 				}
@@ -889,14 +907,19 @@ export default {
 		continueAll() {
 			// to do!!!!!
 			if (!this.show) return;
-			if(this.isSync && this.transferType === 2) {
-				this.$confirm('Block unsynchronized completion. Are you sure to do this?', 'Notice', {
-					confirmButtonText: 'confirm',
-					cancelButtonText: 'cancel',
-				}).then(() => {
-					this.toContinueAll();
-				}).catch(e => {
-				})
+			if (this.isSync && this.transferType === 2) {
+				this.$confirm(
+					"Block unsynchronized completion. Are you sure to do this?",
+					"Notice",
+					{
+						confirmButtonText: "confirm",
+						cancelButtonText: "cancel"
+					}
+				)
+					.then(() => {
+						this.toContinueAll();
+					})
+					.catch(e => {});
 			} else {
 				this.toContinueAll();
 			}
@@ -925,7 +948,14 @@ export default {
 				});
 				return;
 			}
-			this.deleteRecord(arr);
+			this.$confirm("Are you sure to delete all records?", "Delete All", {
+				confirmButtonText: "confirm",
+				cancelButtonText: "cancel"
+			})
+				.then(() => {
+					this.deleteRecord(arr);
+				})
+				.catch(e => {});
 		},
 		/**
 		 * get filter task list
@@ -1064,14 +1094,14 @@ export default {
 							this.switchToggle.passwordDialog = false;
 						}
 						//get error list
-						let errorMsg = ''
+						let errorMsg = "";
 						for (let value of res.Result.Tasks) {
 							if (value && value.Code) {
-								errorMsg += `<p>`
-								errorMsg += `${value.FileName || ''}` 
+								errorMsg += `<p>`;
+								errorMsg += `${value.FileName || ""}`;
 								errorMsg += this.$i18n.error[value.Error]
 									? this.$i18n.error[value.Error][this.$language]
-									: `error code is ${value.Error}`
+									: `error code is ${value.Error}`;
 								errorMsg += `</p>`;
 							}
 						}
@@ -1106,14 +1136,19 @@ export default {
 		toUploadOrDownloadAgain(row, type) {
 			// to do!!!!!
 			if (!this.show) return;
-			if(this.isSync && this.transferType === 2) {
-				this.$confirm('Block unsynchronized completion. Are you sure to do this?', 'Notice', {
-					confirmButtonText: 'confirm',
-					cancelButtonText: 'cancel',
-				}).then(() => {
-					this.uploadOrDownloadAgain(row, type);
-				}).catch(e => {
-				})
+			if (this.isSync && this.transferType === 2) {
+				this.$confirm(
+					"Block unsynchronized completion. Are you sure to do this?",
+					"Notice",
+					{
+						confirmButtonText: "confirm",
+						cancelButtonText: "cancel"
+					}
+				)
+					.then(() => {
+						this.uploadOrDownloadAgain(row, type);
+					})
+					.catch(e => {});
 			} else {
 				this.uploadOrDownloadAgain(row, type);
 			}
@@ -1124,7 +1159,6 @@ export default {
 		 * type: 0:upload    1:download
 		 */
 		uploadOrDownloadAgain(row, type) {
-			
 			// get http url
 			let url = type === 1 ? this.$api.uploadRetry : this.$api.downloadRetry;
 
@@ -1181,14 +1215,19 @@ export default {
 		toUploadOrDownloadContinue(row, type) {
 			// to do!!!!!
 			if (!this.show) return;
-			if(this.isSync && this.transferType === 2) {
-				this.$confirm('Block unsynchronized completion. Are you sure to do this?', 'Notice', {
-					confirmButtonText: 'confirm',
-					cancelButtonText: 'cancel',
-				}).then(() => {
-					this.uploadOrDownloadContinue(row, type);
-				}).catch(e => {
-				})
+			if (this.isSync && this.transferType === 2) {
+				this.$confirm(
+					"Block unsynchronized completion. Are you sure to do this?",
+					"Notice",
+					{
+						confirmButtonText: "confirm",
+						cancelButtonText: "cancel"
+					}
+				)
+					.then(() => {
+						this.uploadOrDownloadContinue(row, type);
+					})
+					.catch(e => {});
 			} else {
 				this.uploadOrDownloadContinue(row, type);
 			}

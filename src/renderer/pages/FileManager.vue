@@ -236,6 +236,7 @@ export default {
 							}`,
 							type: "success"
 						});
+						this.$store.dispatch("setSpace");
 					}
 					this.transferObj[value.Id] = value;
 				}

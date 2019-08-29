@@ -315,7 +315,7 @@ class View {
     createView(this.browserWindow, undefined, option)
   }
   createHelpDocument(option) {
-    createView(this.browserWindow, decodeURIComponent(`${DEFAULT_URL}#/Markdown?url=${__static}\\README.md`), option)
+    createView(this.browserWindow, decodeURIComponent(`${DEFAULT_URL}#/Markdown?url=${__static}/README.md`), option)
   }
 }
 export function createWindow(url) {

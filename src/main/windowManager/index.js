@@ -1,8 +1,10 @@
 import {
+  app,
   BrowserWindow,
   BrowserView
 } from 'electron'
 import dialogView from './dialogView'
+import path from 'path'
 import {
   DEFAULT_URL,
   DEFAULT_PROTOCOL,
@@ -16,7 +18,6 @@ import MenuWindow from './menuWindow'
 import log from 'electron-log'
 import errorPage from '../../../static/html/failed/failed.js'
 import frontCfgObj from './frontCfgObj'
-
 export const windows = {}; // map of {[parentWindow.id] => BrowserWindow}
 export let getCurrentView = null;
 export let dialogViewObj = null;
@@ -61,11 +62,12 @@ class View {
   initBrowserView(webOpt = {
     sandbox: !this.isSave
   }) {
-    console.log('initBrowserView')
+    console.log('initBrowserView');
     this.browserView = new BrowserView({
       webPreferences: {
-        contextIsolation: false,
         webviewTag: false,
+        contextIsolation: false,
+        preload: path.join(__static,'preload.js'),
         sandbox: webOpt.sandbox,
         // sandbox:false,
         enableRemoteModule: !webOpt.sandbox, // disable remote module
@@ -341,7 +343,7 @@ export function createWindow(url) {
       sandbox: false,
       nodeIntegration: true,
       enableRemoteModule: true,
-      allowRunningInsecureContent: true
+      allowRunningInsecureContent: false
     }
   })
   windows[mainWindow.id] = mainWindow; // add BrowserWindow Instance to windows

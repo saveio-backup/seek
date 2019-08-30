@@ -71,6 +71,7 @@
     }
   },
   "dependencies": {
+    "adm-zip": "^0.4.13",
     "app-root-dir": "^1.0.2",
     "axios": "^0.18.0",
     "cfonts": "^2.4.3",

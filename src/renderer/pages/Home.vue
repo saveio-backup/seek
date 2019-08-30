@@ -3,6 +3,7 @@
 		id="home"
 		class="common-main"
 	>
+		<!-- <p @click="testUnzip">Unzip</p> -->
 		<div
 			class="content islogin"
 			v-show="loginStatus ===1"
@@ -240,6 +241,9 @@ export default {
 		};
 	},
 	methods: {
+		testUnzip() {
+			ipcRenderer.send("testUnzip");
+		},
 		// init chart dom and listening resize event to change chart
 		chartInit() {
 			// bind resize event

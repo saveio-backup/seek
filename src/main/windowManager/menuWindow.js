@@ -23,7 +23,7 @@ export default class MenuWindow {
         sandbox: false,
         nodeIntegration: true,
         enableRemoteModule: true,
-        allowRunningInsecureContent: true
+        allowRunningInsecureContent: false
       }
     })
     const url = DEFAULT_URL + '#' + 'menuWindow';

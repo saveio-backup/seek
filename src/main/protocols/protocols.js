@@ -18,6 +18,16 @@ protocol.registerSchemesAsPrivileged([{
     corsEnabled: true
   }
 }]);
+protocol.registerSchemesAsPrivileged([{
+  scheme: 'save',
+  privileges: {
+    standard: true,
+    secure: true,
+    allowServiceWorkers: true,
+    supportFetchAPI: true,
+    corsEnabled: true
+  }
+}]);
 const host = process.env.NODE_ENV === 'development' ?
   `http://localhost:9080/#/` :
   `file://${__dirname}/index.html#/`
@@ -31,6 +41,9 @@ app.on('ready', () => {
       if (err) throw new Error('Failed to create protocol: seek. ' + err)
     })
   }
+  protocol.registerFileProtocol('save', saveStreamProtocol, err => {
+    if (err) throw new Error('Failed to create protocol: seek. ' + err)
+  })
 })
 // app.on('ready', () => {
 //   protocol.registerStreamProtocol('seek', seekStreamProtocol, err => {
@@ -71,4 +84,21 @@ function seekStreamProtocol(request, callback) {
   //   path: url
   //   // data: fs.createReadStream(url)
   // })
+}
+
+function saveStreamProtocol(request, callback) {
+  // todo  download process
+  const urlFormat = new URL(request.url);
+  const host = urlFormat.host;
+  const pathname = urlFormat.pathname === '/' ? '/index.html' : urlFormat.pathname;
+  const headers = {
+    'Cache-Control': 'no-cache',
+    'Content-Type': 'text/html; charset=utf-8',
+    'Access-Control-Allow-Origin': '*'
+  }
+  const url = ('/Users/ridesky/Documents/1_Project/seek/static/' + host + pathname);
+  callback({
+    method: 'get',
+    path: url
+  })
 }

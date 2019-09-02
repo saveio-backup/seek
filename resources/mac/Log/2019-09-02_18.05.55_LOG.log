@@ -1,0 +1,8 @@
+2019/09/02 18:05:55.640994 [0;36m[INFO ][m GID 1, start logging...
+2019/09/02 18:05:55.641205 [0;32m[DEBUG][m GID 1, main.dspInit main.go:65 set dsp config, config &{{. ./Log  0  10000 0 205 false 204 true 203   true 202 udp rpc 250   ./DB  [] [http://127.0.0.1:20334] [http://127.0.0.1:20336] udp://40.73.100.114:6008 udp 201 true 0 100 3600 1000000000 [] [] pwd ./wallet.dat} {./FS ./Downloads 0  true} []}
+2019/09/02 18:05:55.641263 [0;36m[INFO ][m GID 1, Restful init success
+2019/09/02 18:05:55.641304 [0;36m[INFO ][m GID 1, JsonRpc init success
+2019/09/02 18:05:55.641366 [0;32m[DEBUG][m GID 1, github.com/saveio/edge/dsp.Init api.go:59 walletDir: wallet.dat, 10
+2019/09/02 18:05:55.641430 [0;36m[INFO ][m GID 1, current wallet is empty, please create one
+2019/09/02 18:05:55.646280 [0;32m[DEBUG][m GID 12, github.com/saveio/edge/http/rest.(*restServer).Start server.go:168 start rest at 10203
+2019/09/02 18:06:34.692080 [0;36m[INFO ][m GID 66, do received exit signal:terminated.

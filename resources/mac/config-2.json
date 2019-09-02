@@ -3,6 +3,7 @@
 		"BaseDir": ".",
 		"LogPath": "./seekLog",
 		"NetworkId": 0,
+		"ChainId":"2",
 		"PublicIP": "",
 		"PortBase": 10000,
 		"LogLevel": 0,

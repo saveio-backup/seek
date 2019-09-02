@@ -62,6 +62,8 @@ const API = {
   balancehistory: HOST + VERSION + 'balancehistory',
   channelSync: HOST + VERSION + 'channel/syncing',
   networkStatus: HOST + VERSION + 'network/state',
-  reconnect:  HOST + VERSION + 'network/channel/reconnect'
+  reconnect:  HOST + VERSION + 'network/channel/reconnect',
+  chainId: HOST + VERSION + 'chainid',
+  switchChainId: HOST + VERSION + 'chainid/switch'
 }
 module.exports = API;

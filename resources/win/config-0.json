@@ -4,7 +4,7 @@
 		"LogPath": "./seekLog",
 		"NetworkId": 1565267317,
 		"PublicIP": "",
-		"ChainId":"2",
+		"ChainId":"0",
 		"PortBase": 10000,
 		"LogLevel": 0,
 		"LocalRpcPortOffset": 338,

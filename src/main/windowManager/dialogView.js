@@ -8,7 +8,11 @@ import {
   DEFAULT_URL
 } from './defaultOption'
 import frontCfgObj from './frontCfgObj'
-
+import {
+  SeekDB
+} from '../dbs/index'
+const seekDB = new SeekDB();
+seekDB.initDB();
 class dialogView {
   constructor(win) {
     this.browserView = null;
@@ -47,9 +51,14 @@ class dialogView {
     this.updateEvent();
     this.resize();
     this.loadDialog();
-    if (process.env.NODE_ENV === 'development' || frontCfgObj().console) {
-      this.browserView.webContents.openDevTools();
-    }
+    seekDB.querySettings('console').then(res => {
+      if (res) {
+        this.browserView.webContents.openDevTools();
+      }
+    })
+    // if (process.env.NODE_ENV === 'development' || frontCfgObj().console) {
+    //   this.browserView.webContents.openDevTools();
+    // }
   }
   async loadDialog() {
     const dialogUrl = DEFAULT_URL + '#' + 'dialog';

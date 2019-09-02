@@ -153,6 +153,11 @@ export default new Router({
       component: require('../pages/menuWindow.vue').default
     },
     {
+      path: '/settings',
+      name: 'settings',
+      component: require('../pages/Dialog/Settings.vue').default
+    },
+    {
       path: '*',
       redirect: '/Home',
       meta: {

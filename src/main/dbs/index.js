@@ -10,7 +10,7 @@ const DEFAULT_USERSUMMARY_CONFIG = {
     type: 'JSON',
     value: {
       Label: '',
-      Address: 'newAddr',
+      Address: '',
       DNSAddress: '',
       PublicKey: '',
     },
@@ -19,8 +19,9 @@ const DEFAULT_USERSUMMARY_CONFIG = {
   Settings: {
     type: 'JSON',
     value: {
-      console: true,
-      devEdgeEnable: false
+      console: false,
+      devEdgeEnable: false,
+      ChainId: '2'
     },
     modify: true
   },
@@ -34,15 +35,15 @@ const DEFAULT_USERSUMMARY_CONFIG = {
 }
 const DB_NAME = 'commonData';
 const DEFAULT_TABLE_NAME = 'summary';
-let g_seekDB;
+let g_seekDB = path.join(app.getPath("appData"), app.getName(), "seekDB");
 
 class SeekDB {
   constructor() {
     this.db = null;
+    initDir();
   }
 
   initDB(callback) {
-    initDir();
     this.callback = callback;
     this.db = createDB(DB_NAME, {
       createTableCallback: this.createTable.bind(this, DEFAULT_TABLE_NAME)
@@ -81,21 +82,24 @@ class SeekDB {
           console.error('insert error');
           console.error(err);
         } else {
-          this.callback();
+          Promise.all([this.updateData(null, null, true), this.updateSettings(null, null, true)]).then(res => {
+            this.callback && this.callback();
+          })
         }
       })
     }
 
   }
 
-  updateData(key, value) {
-    return new Promise(res => {
+  updateData(key, value, integrate) {
+    return new Promise(resolve => {
       this.db.get(`SELECT Usermeta FROM ${DEFAULT_TABLE_NAME}`, (err, row) => {
         if (err && (err.toString().indexOf('no such column') >= 0)) {
-          res('No such column')
+          resolve('No such column')
         } else {
-          const result = JSON.parse(row.Usermeta);
-          result[key] = value;
+          let result = JSON.parse(row.Usermeta);
+          if (key && value) result[key] = value;
+          if (integrate) result = Object.assign(DEFAULT_USERSUMMARY_CONFIG.Usermeta.value, result);
           this.db.run(`UPDATE ${DEFAULT_TABLE_NAME} 
           SET Usermeta = '${JSON.stringify(result)}'
           `, (err, res) => {
@@ -104,9 +108,9 @@ class SeekDB {
               console.error(err);
             } else {
               console.log('UPDATE SUCCESS');
-              console.log(res);
             }
           })
+          resolve('ok');
         }
       })
     })
@@ -118,24 +122,33 @@ class SeekDB {
         if (err && (err.toString().indexOf('no such column') >= 0)) {
           res('No such column')
         } else {
-          if (row) {
+          if (row && JSON.parse(row.Usermeta)[key]) {
             res(JSON.parse(row.Usermeta)[key]);
-          } else {
-            res('')
+          } else if (row) {
+            res(DEFAULT_USERSUMMARY_CONFIG.Usermeta.value[key]);
+            this.updateData(key, DEFAULT_USERSUMMARY_CONFIG.Usermeta.value[key]);
           }
         }
       })
     })
   }
 
-  updateSettings(key, value) {
-    return new Promise(res => {
+  updateSettings(key, value, integrate) {
+    return new Promise((resolve, reject) => {
       this.db.get(`SELECT Settings FROM ${DEFAULT_TABLE_NAME}`, (err, row) => {
         if (err && (err.toString().indexOf('no such column') >= 0)) {
-          res('No such column')
+          reject('Setting failed. There is no such filed.')
         } else {
-          const result = JSON.parse(row.Settings);
-          result[key] = value;
+          let result;
+          let settingsValue = JSON.parse(row.Settings);
+          if (key && (value != undefined)) {
+            settingsValue[key] = value;
+          }
+          if (integrate) {
+            result = Object.assign(DEFAULT_USERSUMMARY_CONFIG.Settings.value, settingsValue);
+          } else {
+            result = settingsValue;
+          }
           this.db.run(`UPDATE ${DEFAULT_TABLE_NAME} 
           SET Settings = '${JSON.stringify(result)}'
           `, (err, res) => {
@@ -147,21 +160,25 @@ class SeekDB {
               console.log(res);
             }
           })
+          resolve('ok');
         }
       })
     })
   }
 
   querySettings(key) {
-    return new Promise((res) => {
+    return new Promise((resolve, reject) => {
       this.db.get(`SELECT Settings FROM ${DEFAULT_TABLE_NAME}`, (err, row) => {
         if (err && (err.toString().indexOf('no such column') >= 0)) {
-          res('No such column')
+          reject('No such column')
         } else {
-          if (row) {
-            res(JSON.parse(row.Settings)[key]);
-          } else {
-            res('')
+          if (row && (key === 'All')) {
+            resolve(JSON.parse(row.Settings));
+          } else if (row && (key in JSON.parse(row.Settings))) {
+            resolve(JSON.parse(row.Settings)[key])
+          } else if (row) {
+            resolve(DEFAULT_USERSUMMARY_CONFIG.Settings.value[key]);
+            this.updateSettings(key, DEFAULT_USERSUMMARY_CONFIG.Settings.value[key])
           }
         }
       })
@@ -193,7 +210,6 @@ class SeekDB {
 
 // create dirctory if not exist
 function initDir(subDirname) {
-  g_seekDB = path.join(app.getPath("appData"), app.getName(), "seekDB");
   fs.mkdirSync(g_seekDB, {
     recursive: true
   }, err => {

@@ -18,6 +18,11 @@ import MenuWindow from './menuWindow'
 import log from 'electron-log'
 import errorPage from '../../../static/html/failed/failed.js'
 import frontCfgObj from './frontCfgObj'
+import {
+  SeekDB
+} from '../dbs/index';
+const seekDB = new SeekDB();
+seekDB.initDB();
 export const windows = {}; // map of {[parentWindow.id] => BrowserWindow}
 export let getCurrentView = null;
 export let dialogViewObj = null;
@@ -66,7 +71,7 @@ class View {
       webPreferences: {
         webviewTag: false,
         contextIsolation: false,
-        preload: path.join(__static,'preload.js'),
+        preload: path.join(__static, 'preload.js'),
         sandbox: webOpt.sandbox,
         // sandbox:false,
         enableRemoteModule: !webOpt.sandbox, // disable remote module
@@ -76,9 +81,14 @@ class View {
         defaultEncoding: 'utf-8'
       }
     });
-    if (process.env.NODE_ENV === 'development' || frontCfgObj().console) {
-      this.browserView.webContents.openDevTools();
-    }
+    seekDB.querySettings('console').then(res => {
+      if (res) {
+        this.browserView.webContents.openDevTools();
+      }
+    })
+    // if (process.env.NODE_ENV === 'development' || frontCfgObj().console) {
+    //   this.browserView.webContents.openDevTools();
+    // }
   }
   forceUpdate() {
     if (this && this.browserView) {
@@ -367,9 +377,14 @@ export function createWindow(url) {
     }
   }
 
-  if (process.env.NODE_ENV === 'development' || frontCfgObj().console) {
-    mainWindow.webContents.openDevTools();
-  }
+  seekDB.querySettings('console').then(res => {
+    if (res) {
+      this.browserView.webContents.openDevTools();
+    }
+  })
+  // if (process.env.NODE_ENV === 'development' || frontCfgObj().console) {
+  //   mainWindow.webContents.openDevTools();
+  // }
 
   mainWindow.views = new Proxy([], handlerViews) // Proxy Array<View> 
   mainWindow.on('closed', () => {

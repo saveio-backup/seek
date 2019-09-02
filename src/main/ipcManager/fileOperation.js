@@ -2,9 +2,13 @@ import {
   ipcMain,
   dialog
 } from 'electron'
+import {
+  SeekDB
+} from '../dbs/index';
 import fs from 'fs';
 import path from 'path';
-
+const seekDB = new SeekDB();
+seekDB.initDB();
 
 // File operation
 ipcMain.on('open-file-dialog', (event) => {
@@ -48,11 +52,11 @@ ipcMain.on('export-file-dialog', (event, contents, defaultName) => {
 })
 ipcMain.on('upload-file-dialog', (event) => {
   dialog.showOpenDialog({
-    properties: ['openFile','treatPackageAsDirectory','multiSelections']
+    properties: ['openFile', 'treatPackageAsDirectory', 'multiSelections']
   }, (files) => {
     if (files) {
       let arr = [];
-      for(let value of files) {
+      for (let value of files) {
         const fileName = path.basename(value)
         const filePath = value;
         let fileBytes = fs.statSync(filePath).size;
@@ -66,5 +70,27 @@ ipcMain.on('upload-file-dialog', (event) => {
         files: arr
       })
     }
+  })
+})
+
+
+// seekDB
+ipcMain.on('getAllSettings', event => {
+  seekDB.querySettings('All').then(res => {
+    event.returnValue = res;
+  })
+})
+ipcMain.on('updateSettings', (event, key, value) => {
+  console.log('key', key);
+  console.log('value', value);
+  seekDB.updateSettings(key, value).then(() => {
+    event.returnValue = {
+      status: true
+    };
+  }).catch((reject) => {
+    event.returnValue = {
+      status: false,
+      msg: reject
+    };
   })
 })

@@ -5,7 +5,7 @@
   "license": "MIT",
   "main": "./dist/electron/main.js",
   "scripts": {
-    "i": "npm i --build-from-source --runtime=electron --target=5.0.6 --dist-url=https://atom.io/download/electron",
+    "i": "npm i --build-from-source --runtime=electron --target=5.0.6  --dist-url=https://atom.io/download/electron",
     "build": "node .electron-vue/build.js && electron-builder",
     "build:win": "node .electron-vue/build.js && electron-builder --w",
     "build:dir": "node .electron-vue/build.js && electron-builder --dir",

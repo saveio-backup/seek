@@ -58,9 +58,24 @@ const result = {
     'en': 'Start downloading files'
   },
   '19': {
-    'en': 'File download in progress'
+    'en': 'Find nodes for download'
   },
   '20': {
+    'en': 'File download in progress'
+  },
+  '21': {
+    'en': 'Download data block'
+  },
+  '22': {
+    'en': 'Data block received'
+  },
+  '23': {
+    'en': 'Pay download fees for blocks of data'
+  },
+  '24': {
+    'en': 'Complete the download fee for the data block'
+  },
+  '25': {
     'en': 'File download complete, submit sharing information to DNS node'
   },
   '40000': {
@@ -217,10 +232,34 @@ const result = {
     'en': 'Failed to add request file block'
   },
   '50040': {
-    'en': 'Decryption Failure'
+    'en': 'Decryption failure'
   },
   '50041': {
     'en': 'File rename failed'
+  },
+  '50042': {
+    'en': 'Download file timeout'
+  },
+  '50043': {
+    'en': 'download file resused'
+  },
+  '50044': {
+    'en': 'Failed to obtain file download price'
+  },
+  '50045': {
+    'en': 'The download task already exists'
+  },
+  '50046': {
+    'en': 'Password decryption error'
+  },
+  '50047': {
+    'en': 'The deleted file Hash is empty'
+  },
+  '50048': {
+    'en': 'No files need to be deleted'
+  },
+  '50049': {
+    'en': 'No permission to delete files'
   },
   '54001': {
     'en': 'Failed to get FS contract configuration'
@@ -393,6 +432,12 @@ const result = {
   '55100': {
     'en': 'No file information found on the chain'
   },
+  '55101': {
+    'en': 'File does not exist'
+  },
+  '55102': {
+    'en': 'Password decryption error'
+  },
   '56000': {
     'en': 'Channel internal error'
   },
@@ -458,6 +503,9 @@ const result = {
   },
   '59004': {
     'en': 'Failed to retrieve file information'
+  },
+  '59100': {
+    'en': 'Reconnect node failed'
   }
 }
 module.exports = result;

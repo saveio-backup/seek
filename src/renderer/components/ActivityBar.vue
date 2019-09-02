@@ -163,13 +163,13 @@ export default {
 			let online = false;
 			let offline = false;
 			let statusKey = [
-				"ChainState",
-				"DNSState",
-				"DspProxyState",
-				"ChannelProxyState"
+				"Chain",
+				"DNS",
+				"DspProxy",
+				"ChannelProxy"
 			];
 			for (let value of statusKey) {
-				if (this.statusList && this.statusList[value] === 1) {
+				if (this.statusList && this.statusList[value] && this.statusList[value].Status === 1) {
 					online = true;
 				} else {
 					offline = true;

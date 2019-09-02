@@ -24,36 +24,43 @@ export default class MenuWindow {
         nodeIntegration: true,
         enableRemoteModule: true,
         allowRunningInsecureContent: false
-      }
+      },
+      transparent: true
     })
     const url = DEFAULT_URL + '#' + 'menuWindow';
     this.win.loadURL(url);
     if (process.env.NODE_ENV === 'development' || frontCfgObj().console) {
       this.win.webContents.openDevTools();
     }
+    this.setTimeoutObj = null
   }
   hiddenMenu() {
-    this.win.hide();
+    clearTimeout(this.setTimeoutObj)
+    this.setTimeoutObj = setTimeout(() => {
+      console.log('hiddenMenu---------------->')
+      this.win.hide();
+    }, 100);
   }
   openMenu(params, opt) {
+    clearTimeout(this.setTimeoutObj)
     if (params.id === 'syncInfo') {
       let parentBounds = this.parentWindow.getBounds();
       this.win.webContents.send('setMenuDialog', params);
       this.win.setBounds({
-        x: parentBounds.x + parentBounds.width - 210,
-        y: parentBounds.y + Y_POSITION,
-        width: 200,
-        height: 60
+        x: parentBounds.x + parentBounds.width - 225,
+        y: parentBounds.y + Y_POSITION - 5,
+        width: 230,
+        height: 90
       })
       this.win.showInactive();
     } else if (params.id === 'state') {
       let parentBounds = this.parentWindow.getBounds();
       this.win.webContents.send('setMenuDialog', params);
       this.win.setBounds({
-        x: parentBounds.x + 40,
-        y: parentBounds.y - 150 + parentBounds.height,
-        width: 210,
-        height: 140
+        x: parentBounds.x + 25,
+        y: parentBounds.y - 165 + parentBounds.height,
+        width: 240,
+        height: 170
       })
       this.win.showInactive();
     }

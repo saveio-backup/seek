@@ -1,7 +1,8 @@
 <template>
 	<div
 		id="app"
-		:class="{'haveBg':routerName !== 'Dialog'}"
+		:class="{'haveBg':(routerName !== 'Dialog' && routerName !== 'menuWindow')}"
+		:data-id="routerName"
 	>
 		<router-view></router-view>
 	</div>
@@ -28,14 +29,20 @@ export default {
 			}
 		});
 	},
-	computed: {
-		routerName() {
-			return this.$route.name;
-		}
+	// computed: {
+	// 	routerName() {
+	// 		return this.$route.name;
+	// 	}
+	// },
+	watch: {
+		'$route' (val, old) {
+			this.touterName = this.$route.name;
+    }
 	},
 	data() {
 		return {
-			syncListener: ["Home", "FileManager", "Wallet", "Miner"]
+			syncListener: ["Home", "FileManager", "Wallet", "Miner"],
+			routerName: this.$route.name
 		};
 	},
 	methods: {

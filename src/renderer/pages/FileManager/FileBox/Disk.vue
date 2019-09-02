@@ -69,9 +69,6 @@
 						type="selection"
 						width="30"
 					></el-table-column>
-
-					<!-- prop="Name" -->
-					<!-- min-width="350" -->
 					<el-table-column
 						label="File Name"
 						class-name="rowName"
@@ -193,10 +190,6 @@
 							</div>
 						</template>
 					</el-table-column>
-					<!-- <el-table-column
-      label="Download statistics"
-      prop="DownloadCount"
-     ></el-table-column>-->
 					<el-table-column
 						v-if="page ==='miner'"
 						label="Profit"
@@ -308,7 +301,7 @@
 					<div class="adjust-item">
 						<p class="adjust-title ft14">Cost:</p>
 						<div class="adjust-info">
-							<p class="ft14 mr20">{{fileDownloadInfo.Fee}}</p>
+							<p class="ft14 mr20">{{fileDownloadInfo.Fee ? fileDownloadInfo.Fee + 'SAVE': ''}} </p>
 						</div>
 					</div>
 					<div class="adjust-item">

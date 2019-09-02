@@ -275,7 +275,17 @@ export default {
 			view.formatDisplayURL();
 		},
 		remoteLoadURL(view) {
-			// this.$refs["inputUrl" + index][0].blur();
+			// if input url is createaccount checkout current account is not logout
+			if(this.inputDisplayUrl.toLowerCase().startsWith('seek://createaccount')) {
+				let nextString = this.inputDisplayUrl[this.inputDisplayUrl.indexOf('seek://createaccount') + 1];
+				if(nextString != '?' && nextString != '#') {
+					if(localStorage.getItem("Address") || "") {
+						this.inputDisplayUrl = view.displayURL;
+						return;
+					}
+				}
+			}
+			// browserView go url
 			view.url = this.inputDisplayUrl;
 			console.log(this.inputDisplayUrl);
 			view.onNewUrl(this.inputDisplayUrl);

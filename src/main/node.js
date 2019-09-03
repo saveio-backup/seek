@@ -5,6 +5,11 @@ import {
     app,
     ipcMain
 } from 'electron'
+import {
+    SeekDB
+} from './dbs/index'
+const seekDB = new SeekDB();
+seekDB.getDB();
 // const logP = console.log;
 // const keyWords = ['ProductRegistryImpl.Registry', 'stdout'];
 // console.log = function (data, ...args) {
@@ -45,12 +50,20 @@ const getPlatform = () => {
 // linux: ~/.config/<app name>/log.log
 const log = require('electron-log')
 
-const cfgFilePath = (appDataPath, appName) => {
+const cfgFilePath = async (appDataPath, appName) => {
+    let chainId;
+    try {
+        chainId = await seekDB.querySettings('ChainId');
+    } catch (error) {
+        console.error("init database error");
+        log.error("init database error", error)
+    }
+
     let cfgPath
     if (getPlatform() == "win") {
-        cfgPath = `${appDataPath}\\${appName}\\config.json`
+        cfgPath = `${appDataPath}\\${appName}\\config-${chainId || '2'}.json`
     } else {
-        cfgPath = `${appDataPath}/${appName}/config.json`
+        cfgPath = `${appDataPath}/${appName}/config-${chainId || '2'}.json`
     }
     return cfgPath
 }
@@ -128,86 +141,118 @@ let cacheRestartObj = {
 let cfgObj = null;
 
 const setupConfig = async (appDataPath, appName) => {
-    let cfgPath = cfgFilePath(appDataPath, appName)
-    // console.log('!!!!!cfgPath: ', cfgPath);
-    // console.log('!!!!appDataPath: ', appDataPath);
-    log.debug("[setupconfig] setup cfg")
-    log.debug("[setupconfig] appDataPath", appDataPath)
-    log.debug("[setupconfig] appname", cfgPath)
-    log.debug("[setupconfig] cfgPath", cfgPath)
-    const hasConfig = fs.existsSync(cfgPath)
-    const resourcesPath = (process.env.NODE_ENV === 'production') ?
-        path.join(path.dirname(appRoot), 'bin') :
-        path.join(appRoot, 'resources', getPlatform());
+    for (let index = 0; index <= 2; index++) {
+        console.log('exec setupConfig!!!!!!!!!!');
+        let cfgPath;
+        try {
+            // cfgPath = await cfgFilePath(appDataPath, appName)
+            if (getPlatform() == "win") {
+                cfgPath = `${appDataPath}\\${appName}\\config-${index.toString()}.json`;
+            } else {
+                cfgPath = `${appDataPath}/${appName}/config-${index.toString()}.json`;
+            }
+        } catch (error) {
+            console.error('Load config.json error');
+            log.error("Load config.json error", error)
+        }
+        log.debug("[setupconfig] setup cfg")
+        log.debug("[setupconfig] appDataPath", appDataPath)
+        log.debug("[setupconfig] appname", cfgPath)
+        log.debug("[setupconfig] cfgPath", cfgPath)
+        const hasConfig = fs.existsSync(cfgPath)
+        const resourcesPath = (process.env.NODE_ENV === 'production') ?
+            path.join(path.dirname(appRoot), 'bin') :
+            path.join(appRoot, 'resources', getPlatform());
+        // let chainId;
+        // try {
+        //     chainId = await seekDB.querySettings('ChainId');
+        // } catch (error) {
+        //     console.log('exex error !!!');
+        //     log.error("init database error", error)
+        // }
+        let srcCfgPath = `${resourcesPath}/config-${index.toString()}.json`;
+        console.log('srcCfgPath is', srcCfgPath);
+        if (!fs.existsSync(srcCfgPath)) {
+            log.debug("config.json not exist")
+            return
+        }
+        if (hasConfig) {
+            // log.debug("already has config")
+            // return
+            srcCfgPath = cfgPath;
+        }
+        let cfg = fs.readFileSync(srcCfgPath);
+        let cfgObj = JSON.parse(cfg.toString());
+        cacheRestartObj.cfgObj = Object.assign({}, cfgObj);
+        if (!cfgObj) {
+            log.error("cfg is no object ")
+            log.debug(cfg.toString())
+            return
+        }
+        const baseDir = baseDirPath(appDataPath, appName)
+        cfgObj.Base.BaseDir = baseDir
+        if (!fs.existsSync(baseDir)) {
+            log.debug("folder not exist")
+            fs.mkdirSync(baseDir)
+        }
+        cfgObj.Base.AutoSetupDNSEnable = false;
+        cfgObj.Base.NetworkId = 1565267317;
+        cfgObj.Base.DNSWalletAddrs = ["AXUhmdzcAJwaFW91q6UYuPGGJY3fimoTAj"];
+        cfgObj.Base.ChainRestAddrs = [
+            "http://221.179.156.57:10334",
+            "http://221.179.156.57:11334",
+            "http://221.179.156.57:12334",
+            "http://221.179.156.57:13334",
+            "http://221.179.156.57:14334",
+            "http://221.179.156.57:15334",
+            "http://221.179.156.57:16334"
+        ];
+        cfgObj.Base.ChainRpcAddrs = [
+            "http://221.179.156.57:10336",
+            "http://221.179.156.57:11336",
+            "http://221.179.156.57:12336",
+            "http://221.179.156.57:13336",
+            "http://221.179.156.57:14336",
+            "http://221.179.156.57:15336",
+            "http://221.179.156.57:16336"
+        ];
+        cfgObj.Base.NATProxyServerAddrs = "tcp://40.73.103.72:6007";
+        cfgObj.Base.ChannelRevealTimeout = "200";
+        cfgObj.Base.ChannelSettleTimeout = "500";
+        cfgObj.Base.edgeIsRestart = false;
+        try {
+            console.log('cfgPath is !!!!!');
+            console.log(cfgPath);
+            await fs.writeFileSync(cfgPath, JSON.stringify(cfgObj))
+        } catch (err) {
+            log.error("set up config error", err)
+            log.debug("exist", fs.existsSync(baseDir))
+        }
+    }
 
-    let srcCfgPath = `${resourcesPath}/config.json`
-    if (!fs.existsSync(srcCfgPath)) {
-        log.debug("config.json not exist")
-        return
-    }
-    if (hasConfig) {
-        // log.debug("already has config")
-        // return
-        srcCfgPath = cfgPath;
-    }
-    let cfg = fs.readFileSync(srcCfgPath)
-    let cfgObj = JSON.parse(cfg.toString());
-    cacheRestartObj.cfgObj = Object.assign({}, cfgObj);
-    if (!cfgObj) {
-        log.error("cfg is no object ")
-        log.debug(cfg.toString())
-        return
-    }
-    const baseDir = baseDirPath(appDataPath, appName)
-    cfgObj.Base.BaseDir = baseDir
-    if (!fs.existsSync(baseDir)) {
-        log.debug("folder not exist")
-        fs.mkdirSync(baseDir)
-    }
-    cfgObj.Base.AutoSetupDNSEnable = false;
-    cfgObj.Base.NetworkId = 1565267317;
-    cfgObj.Base.DNSWalletAddrs = ["AXUhmdzcAJwaFW91q6UYuPGGJY3fimoTAj"];
-    cfgObj.Base.ChainRestAddrs = [
-        "http://221.179.156.57:10334",
-        "http://221.179.156.57:11334",
-        "http://221.179.156.57:12334",
-        "http://221.179.156.57:13334",
-        "http://221.179.156.57:14334",
-        "http://221.179.156.57:15334",
-        "http://221.179.156.57:16334"
-    ];
-    cfgObj.Base.ChainRpcAddrs = [
-        "http://221.179.156.57:10336",
-        "http://221.179.156.57:11336",
-        "http://221.179.156.57:12336",
-        "http://221.179.156.57:13336",
-        "http://221.179.156.57:14336",
-        "http://221.179.156.57:15336",
-        "http://221.179.156.57:16336"
-    ];
-    cfgObj.Base.NATProxyServerAddrs = "tcp://40.73.103.72:6007";
-    cfgObj.Base.ChannelRevealTimeout = "200";
-    cfgObj.Base.ChannelSettleTimeout = "500";
-    cfgObj.Base.edgeIsRestart = false;
-    try {
-        await fs.writeFileSync(cfgPath, JSON.stringify(cfgObj))
-    } catch (err) {
-        log.error("set up config error", err)
-        log.debug("exist", fs.existsSync(baseDir))
-    }
 }
 
-const run = (appDataPath, appName) => {
+const run = async (appDataPath, appName) => {
+    console.log('run!!!!!!!!');
     cacheRestartObj.appDataPathCache = appDataPath;
     cacheRestartObj.appNameCache = appName;
     let cfgDir = ''
+    let cfgPath = '';
     let cmdStr = ''
+    let chainId;
+    try {
+        chainId = await seekDB.querySettings('ChainId');
+    } catch (error) {
+        log.error("init database error", error)
+    }
     if (getPlatform() == "win") {
-        cfgDir = `${appDataPath}\\${appName}`
+        cfgPath = `${appDataPath}\\${appName}\\config-${chainId || '2'}.json`;
+        cfgDir = `${appDataPath}\\${appName}`;
         // cmdStr = `.\\edge.exe --config='${cfgDir}'`
         cmdStr = `.\\edge-windows-amd64.exe`
     } else {
-        cfgDir = `${appDataPath}/${appName}`
+        cfgPath = `${appDataPath}/${appName}/config-${chainId || '2'}.json`;
+        cfgDir = `${appDataPath}/${appName}/`;
         // cmdStr = `./edge --config='${cfgDir}'`
         cmdStr = `./edge-darwin-amd64`
     }
@@ -220,7 +265,7 @@ const run = (appDataPath, appName) => {
         path.join(appRoot, 'resources', getPlatform());
     log.debug(cmdStr, resourcesPath)
     log.debug("[run] run node++++++")
-    let workerProcess = cp.spawn(cmdStr, ["--config", cfgDir], {
+    let workerProcess = cp.spawn(cmdStr, ["--config", cfgPath], {
         cwd: resourcesPath,
         detached: getPlatform() == "win" ? false : true
     })

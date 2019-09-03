@@ -11,7 +11,7 @@ import {
   SeekDB
 } from '../dbs/index';
 const seekDB = new SeekDB();
-seekDB.initDB();
+seekDB.getDB();
 export default class MenuWindow {
   constructor(parentWindow) {
     this.parentWindow = parentWindow;

@@ -1,14 +1,19 @@
 const {
   app
 } = require('electron').remote
+import {
+  ipcRenderer
+} from 'electron'
 const fs = require("fs")
 const userDataPath = app.getPath('userData')
-const exist = fs.existsSync(`${userDataPath}/config.json`)
+const chainId = ipcRenderer.sendSync('getSettings', 'ChainId');
 let HOST = null;
 // let HOST = 'http://localhost:10235/api/'
 // console.log('userDataPath', userDataPath, exist)
+const exist = fs.existsSync(`${userDataPath}/config-${chainId || '2'}.json`)
 if (exist) {
-  const cfg = fs.readFileSync(`${userDataPath}/config.json`)
+  console.log('chainid .json   exist !!!!!!!');
+  const cfg = fs.readFileSync(`${userDataPath}/config-${chainId || '2'}.json`)
   if (cfg) {
     const cfgObj = JSON.parse(cfg)
     // console.log('cfgObj', cfgObj)
@@ -16,6 +21,8 @@ if (exist) {
       HOST = `http://localhost:${cfgObj.Base.PortBase + cfgObj.Base.HttpRestPortOffset}/api/`
     }
   }
+} else {
+  console.log('not exist!!!!');
 }
 // console.log("HOST", HOST)
 const VERSION = 'v1/';
@@ -66,4 +73,4 @@ const API = {
   chainId: HOST + VERSION + 'chainid',
   switchChainId: HOST + VERSION + 'chainid/switch'
 }
-module.exports = API;
+export default API;

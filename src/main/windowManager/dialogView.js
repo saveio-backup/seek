@@ -12,7 +12,7 @@ import {
   SeekDB
 } from '../dbs/index'
 const seekDB = new SeekDB();
-seekDB.initDB();
+seekDB.getDB();
 class dialogView {
   constructor(win) {
     this.browserView = null;

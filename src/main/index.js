@@ -31,13 +31,13 @@ const winURL = process.env.NODE_ENV === 'development' ?
   `file://${__dirname}/index.html#/navigation`
 
 import * as node from "./node"
-node.setupConfig(app.getPath("appData"), app.getName())
-node.setFrontConfig(app.getPath("appData"), app.getName())
 app.on('ready', function () {
-  (!frontCfgObj().devEdgeEnable) && node.run(app.getPath("appData"), app.getName())
   let seekDB = new SeekDB();
   seekDB.initDB(() => {
-    createWindow(winURL)
+    node.setupConfig(app.getPath("appData"), app.getName());
+    node.setFrontConfig(app.getPath("appData"), app.getName());
+    (!frontCfgObj().devEdgeEnable) && node.run(app.getPath("appData"), app.getName());
+    createWindow(winURL);
   })
 })
 

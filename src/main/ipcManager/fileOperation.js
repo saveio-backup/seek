@@ -8,7 +8,7 @@ import {
 import fs from 'fs';
 import path from 'path';
 const seekDB = new SeekDB();
-seekDB.initDB();
+seekDB.getDB();
 
 // File operation
 ipcMain.on('open-file-dialog', (event) => {
@@ -77,6 +77,11 @@ ipcMain.on('upload-file-dialog', (event) => {
 // seekDB
 ipcMain.on('getAllSettings', event => {
   seekDB.querySettings('All').then(res => {
+    event.returnValue = res;
+  })
+})
+ipcMain.on('getSettings', (event, key) => {
+  seekDB.querySettings(key).then(res => {
     event.returnValue = res;
   })
 })

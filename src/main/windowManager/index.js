@@ -22,7 +22,7 @@ import {
   SeekDB
 } from '../dbs/index';
 const seekDB = new SeekDB();
-seekDB.initDB();
+seekDB.getDB();
 export const windows = {}; // map of {[parentWindow.id] => BrowserWindow}
 export let getCurrentView = null;
 export let dialogViewObj = null;

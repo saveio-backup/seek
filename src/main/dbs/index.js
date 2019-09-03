@@ -19,7 +19,7 @@ const DEFAULT_USERSUMMARY_CONFIG = {
   Settings: {
     type: 'JSON',
     value: {
-      console: false,
+      console: true,
       devEdgeEnable: false,
       ChainId: '2'
     },
@@ -49,7 +49,9 @@ class SeekDB {
       createTableCallback: this.createTable.bind(this, DEFAULT_TABLE_NAME)
     })
   }
-
+  getDB() {
+    this.db = getDB(DB_NAME);
+  }
   createTable(table = DEFAULT_TABLE_NAME) {
     let sqlStr = null;
     sqlStr = `CREATE TABLE IF NOT EXISTS ${table} 
@@ -92,7 +94,7 @@ class SeekDB {
   }
 
   updateData(key, value, integrate) {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       this.db.get(`SELECT Usermeta FROM ${DEFAULT_TABLE_NAME}`, (err, row) => {
         if (err && (err.toString().indexOf('no such column') >= 0)) {
           resolve('No such column')
@@ -155,6 +157,7 @@ class SeekDB {
             if (err) {
               console.error('UPDATE error');
               console.error(err);
+              reject(err);
             } else {
               console.log('UPDATE SUCCESS');
               console.log(res);
@@ -171,6 +174,8 @@ class SeekDB {
       this.db.get(`SELECT Settings FROM ${DEFAULT_TABLE_NAME}`, (err, row) => {
         if (err && (err.toString().indexOf('no such column') >= 0)) {
           reject('No such column')
+        } else if (err) {
+          reject(err);
         } else {
           if (row && (key === 'All')) {
             resolve(JSON.parse(row.Settings));
@@ -228,6 +233,13 @@ function initDir(subDirname) {
 function createDB(DBName, config) {
   const dbPath = path.join(g_seekDB, DBName, config.subDirname || '');
   return new sqlite3.Database(dbPath, config.createTableCallback, (err) => {
+    err && console.error(err)
+  })
+}
+
+function getDB(DBName,config) {
+  const dbPath = path.join(g_seekDB, DBName, config ? config.subDirname || '' : '');
+  return new sqlite3.Database(dbPath, (err) => {
     err && console.error(err)
   })
 }

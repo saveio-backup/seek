@@ -39,7 +39,7 @@ export default class MenuWindow {
     this.setTimeoutObj = setTimeout(() => {
       console.log('hiddenMenu---------------->')
       this.win.hide();
-    }, 100);
+    }, 150);
   }
   openMenu(params, opt) {
     clearTimeout(this.setTimeoutObj)
@@ -57,7 +57,7 @@ export default class MenuWindow {
       let parentBounds = this.parentWindow.getBounds();
       this.win.webContents.send('setMenuDialog', params);
       this.win.setBounds({
-        x: parentBounds.x + 25,
+        x: parentBounds.x + 30,
         y: parentBounds.y - 165 + parentBounds.height,
         width: 240,
         height: 170

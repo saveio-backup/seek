@@ -140,6 +140,7 @@ export default {
 	},
 	computed: {
 		statusList: function() {
+			console.log(this.$store.state.Home.state);
 			return this.$store.state.Home.state;
 		},
 		activeView: function() {
@@ -169,7 +170,7 @@ export default {
 				"ChannelProxy"
 			];
 			for (let value of statusKey) {
-				if (this.statusList && this.statusList[value] && this.statusList[value].Status === 1) {
+				if (this.statusList && this.statusList[value] && this.statusList[value].State === 1) {
 					online = true;
 				} else {
 					offline = true;

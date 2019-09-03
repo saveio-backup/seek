@@ -16,7 +16,7 @@
 					:class="{'process-all-error': statusList.DNS.State === 0}"
 				></i> DNS State
 				<i
-					v-show="statusList.DNS.State === 0 && UpdatedAt(statusList.DNS.UpdatedAt)"
+					v-show="statusList.DNS.State === 0 && statusList.DNS.HostAddr && UpdatedAt(statusList.DNS.UpdatedAt)"
 					class="ofont ofont-chonglian ft18 ml10 light-blue cursor-click cursor-pointer"
 					:class="{'rotate-animate': isLoading}"
 					@click="reconnect"

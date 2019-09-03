@@ -17,10 +17,10 @@ const state = {
   isSync: false,
   account: null,
   state: {
-    ChainState: 0,
-    DNSState: 0,
-    DspProxyState: 0,
-    ChannelProxyState: 0
+    ChainState: {},
+    DNSState: {},
+    DspProxyState: {},
+    ChannelProxyState: {}
   }
 }
 // Confirm login status

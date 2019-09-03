@@ -39,7 +39,7 @@ export default {
 			return remote.getCurrentWindow();
 		},
 		computedStyle: function() {
-			let _style = this.menuid === 'syncInfo' ? 'padding-top: 5px;' : '';
+			let _style = this.menuid === 'syncInfo' ? 'padding-top: 5px;' : this.menuid === 'state' ? 'padding-left: 10px;' : '';
 			return _style;
 		}
 	},
@@ -71,6 +71,7 @@ export default {
 		height: 100%;
 		background: white;
 		box-shadow: 0px 2px 20px 0px rgba(196, 196, 196, 0.24);
+		border-radius: 5px;
 		& > div {
 			width: 100%;
 			height: 100%;

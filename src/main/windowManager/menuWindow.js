@@ -17,6 +17,7 @@ export default class MenuWindow {
       maximizable: false,
       show: false,
       fullscreenable: false,
+      hasShadow: false,
       webPreferences: {
         defaultEncoding: 'utf-8',
         webSecurity: true,
@@ -39,6 +40,7 @@ export default class MenuWindow {
     this.setTimeoutObj = setTimeout(() => {
       console.log('hiddenMenu---------------->')
       this.win.hide();
+      this.blur();
     }, 150);
   }
   openMenu(params, opt) {
@@ -53,6 +55,7 @@ export default class MenuWindow {
         height: 90
       })
       this.win.showInactive();
+      this.focus();
     } else if (params.id === 'state') {
       let parentBounds = this.parentWindow.getBounds();
       this.win.webContents.send('setMenuDialog', params);
@@ -63,6 +66,15 @@ export default class MenuWindow {
         height: 170
       })
       this.win.showInactive();
+      this.focus();
     }
+  }
+  focus() {
+    this.parentWindow.blur();
+    this.win.focus();
+  }
+  blur() {
+    this.win.blur();
+    this.parentWindow.focus();
   }
 }

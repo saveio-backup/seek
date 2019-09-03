@@ -70,7 +70,7 @@ export default {
 		width: 100%;
 		height: 100%;
 		background: white;
-		box-shadow: 0px 2px 20px 0px rgba(196, 196, 196, 0.24);
+		box-shadow: 0px 2px 10px 0px rgba(196, 196, 196, 0.24);
 		border-radius: 5px;
 		& > div {
 			width: 100%;

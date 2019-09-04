@@ -1,10 +1,11 @@
 {
 	"Base": {
-		"BaseDir": ".",
-		"LogPath": "./seekLog",
-		"NetworkId": 1565267317,
+		"BaseDir": "",
+		"LogPath": "./Log_0903",
+		"NetworkId": 1567481543,
+		"ChainId": "0",
+		"BlockTime": 5,
 		"PublicIP": "",
-		"ChainId":"0",
 		"PortBase": 10000,
 		"LogLevel": 0,
 		"LocalRpcPortOffset": 338,
@@ -18,47 +19,39 @@
 		"ChannelPortOffset": 3005,
 		"ChannelProtocol": "tcp",
 		"ChannelClientType": "rpc",
-		"ChannelRevealTimeout": "200",
-		"ChannelSettleTimeout": "500",
+		"ChannelRevealTimeout": "20",
+		"ChannelSettleTimeout": "50",
+		"BlockDelay": "",
 		"DBPath": "./DB",
 		"PpListenAddr": "",
 		"PpBootstrap": null,
 		"ChainRestAddrs": [
-			"http://221.179.156.57:10334",
-			"http://221.179.156.57:11334",
-			"http://221.179.156.57:12334",
-			"http://221.179.156.57:13334",
-			"http://221.179.156.57:14334",
-			"http://221.179.156.57:15334",
-			"http://221.179.156.57:16334"
+			"http://139.219.136.38:20334"
 		],
 		"ChainRpcAddrs": [
-			"http://221.179.156.57:10336",
-			"http://221.179.156.57:11336",
-			"http://221.179.156.57:12336",
-			"http://221.179.156.57:13336",
-			"http://221.179.156.57:14336",
-			"http://221.179.156.57:15336",
-			"http://221.179.156.57:16336"
+			"http://139.219.136.38:20336"
 		],
-		"DNSWalletAddrs": "AXUhmdzcAJwaFW91q6UYuPGGJY3fimoTAj",
-		"NATProxyServerAddrs": "tcp://40.73.103.72:6007",
+		"NATProxyServerAddrs": "tcp://40.73.100.114:6007",
 		"DspProtocol": "tcp",
 		"DspPortOffset": 4024,
-		"AutoSetupDNSEnable": true,
+		"AutoSetupDNSEnable": false,
 		"TrackerPortOffset": 0,
 		"DnsNodeMaxNum": 100,
 		"SeedInterval": 3600,
 		"DnsChannelDeposit": 1000000000,
+		"Trackers": [],
+		"DNSWalletAddrs": [
+			"AUtcTFw1mMB1R2Lvf28pEmm9xemUDtBHun"
+		],
 		"WalletPwd": "pwd",
-		"WalletDir": "./wallet.dat",
-		"edgeIsRestart": true
+		"WalletDir": "./wallet.dat"
 	},
 	"Fs": {
 		"FsRepoRoot": "./FS",
 		"FsFileRoot": "./Downloads",
 		"FsType": 0,
-		"FsGCPeriod": "1h"
+		"FsGCPeriod": "1h",
+		"EnableBackup": false
 	},
 	"Bootstraps": []
 }

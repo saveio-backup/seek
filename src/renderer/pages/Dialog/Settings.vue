@@ -26,6 +26,10 @@
 						label="MainNet"
 						value="2"
 					></el-option>
+					<el-option
+						label="Previous version of the network"
+						value="alpha"
+					></el-option>
 				</el-select>
 			</div>
 			<div class="settings-box">

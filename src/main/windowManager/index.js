@@ -140,7 +140,9 @@ class View {
       if (errorCode == 0) return;
       this.webContents.executeJavaScript(`document.documentElement.innerHTML = '${errorPage(validatedURL)}' `)
     })
-    this.webContents.on('new-window', this.onNewWindow.bind(this))
+    this.webContents.on('new-window', (e, url) => {
+      this.onNewWindow(url, e)
+    })
     this.webContents.on('dom-ready', () => {
       // console.log('dom-ready, forceUpdate')
       this.forceUpdate()
@@ -166,9 +168,11 @@ class View {
       this.forceUpdate()
     });
   }
-  onNewWindow(e, url, framename, disposition) {
+  onNewWindow(url, e, framename, disposition) {
+    const win = this.browserWindow;
+    getCurrentView = getActive(win);
     console.log('create window');
-    e.preventDefault();
+    e && e.preventDefault();
     const isActive = (disposition !== 'background-tab');
     console.log(url);
     createView(this.browserWindow, url, {

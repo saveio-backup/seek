@@ -1,10 +1,10 @@
 {
 	"Base": {
-		"BaseDir": "",
-		"LogPath": "./Log_0903",
-		"NetworkId": 1567481543,
-		"ChainId": "2",
-		"BlockTime": 5,
+		"BaseDir": "/Users/zhijie/Desktop/onchain/save-test/node4",
+		"LogPath": "./Log_0901",
+		"ChainId": "alpha",
+		"BlockTime": 1,
+		"NetworkId": 1565267317,
 		"PublicIP": "",
 		"PortBase": 10000,
 		"LogLevel": 0,
@@ -19,19 +19,19 @@
 		"ChannelPortOffset": 3005,
 		"ChannelProtocol": "tcp",
 		"ChannelClientType": "rpc",
-		"ChannelRevealTimeout": "20",
-		"ChannelSettleTimeout": "50",
+		"ChannelRevealTimeout": "200",
+		"ChannelSettleTimeout": "500",
 		"BlockDelay": "",
 		"DBPath": "./DB",
 		"PpListenAddr": "",
 		"PpBootstrap": null,
 		"ChainRestAddrs": [
-			"http://139.219.136.38:20334"
+			"http://221.179.156.57:16334"
 		],
 		"ChainRpcAddrs": [
-			"http://139.219.136.38:20336"
+			"http://221.179.156.57:16336"
 		],
-		"NATProxyServerAddrs": "tcp://40.73.100.114:6007",
+		"NATProxyServerAddrs": "tcp://40.73.103.72:6007",
 		"DspProtocol": "tcp",
 		"DspPortOffset": 4024,
 		"AutoSetupDNSEnable": false,
@@ -41,7 +41,7 @@
 		"DnsChannelDeposit": 1000000000,
 		"Trackers": [],
 		"DNSWalletAddrs": [
-			"AUtcTFw1mMB1R2Lvf28pEmm9xemUDtBHun"
+			"AXUhmdzcAJwaFW91q6UYuPGGJY3fimoTAj"
 		],
 		"WalletPwd": "pwd",
 		"WalletDir": "./wallet.dat"

@@ -141,15 +141,15 @@ let cacheRestartObj = {
 let cfgObj = null;
 
 const setupConfig = async (appDataPath, appName) => {
-    for (let index = 0; index <= 2; index++) {
+    for (let index = 0; index <= 3; index++) {
         console.log('exec setupConfig!!!!!!!!!!');
         let cfgPath;
         try {
             // cfgPath = await cfgFilePath(appDataPath, appName)
             if (getPlatform() == "win") {
-                cfgPath = `${appDataPath}\\${appName}\\config-${index.toString()}.json`;
+                cfgPath = `${appDataPath}\\${appName}\\config-${index === 3? 'alpha':index.toString()}.json`;
             } else {
-                cfgPath = `${appDataPath}/${appName}/config-${index.toString()}.json`;
+                cfgPath = `${appDataPath}/${appName}/config-${index === 3? 'alpha':index.toString()}.json`;
             }
         } catch (error) {
             console.error('Load config.json error');
@@ -170,7 +170,7 @@ const setupConfig = async (appDataPath, appName) => {
         //     console.log('exex error !!!');
         //     log.error("init database error", error)
         // }
-        let srcCfgPath = `${resourcesPath}/config-${index.toString()}.json`;
+        let srcCfgPath = `${resourcesPath}/config-${index === 3? 'alpha':index.toString()}.json`;
         console.log('srcCfgPath is', srcCfgPath);
         if (!fs.existsSync(srcCfgPath)) {
             log.debug("config.json not exist")

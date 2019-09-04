@@ -210,6 +210,12 @@ export default {
 					}
 				},
 				{
+					label:'Settings',
+					click(){
+						that.remoteOpenComponent('settings');
+					}
+				},
+				{
 					label: "Version",
 					click() {
 						that.showVersion();

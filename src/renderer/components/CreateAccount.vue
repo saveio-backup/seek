@@ -4,8 +4,17 @@
 		class="account-wrap"
 	>
 		<div class="account-box">
-			<h2 class="theme-font-blue account-title">{{step === 1?'Backup Your Keystore File':step === 2?'Backup Your Private Key(WIF)':step===3?'Private Key(WIF) Repeat':'Create Account'}}</h2>
-			<div>
+			<h2
+				class="theme-font-blue account-title user-no-select"
+				v-if="accountStatus === 1"
+			>Block synchronization</h2>
+			<h2
+				class="theme-font-blue account-title"
+				v-if="accountStatus === 0"
+			>{{step === 1?'Backup Your Keystore File':step === 2?'Backup Your Private Key(WIF)':step===3?'Private Key(WIF) Repeat':'Create Account'}}</h2>
+			<div
+				v-if="accountStatus === 0"
+			>
 				<el-form
 					class="form"
 					v-show="step === 0"
@@ -130,6 +139,38 @@
 					>Done</el-button>
 				</div>
 			</div>
+			<div
+				class="progress-wrap"
+				v-if="accountStatus === 1"
+			>
+				<div class="flex ai-center">
+					<div class="create-progress">
+						<div class="progress-circle-min"></div>
+						<div class="progress-mask">
+							<div
+								class="progress-circle"
+								:style="{'width':((currentHeihgt/totalHeight)?(currentHeihgt/totalHeight):0)*100 +'%'}"
+							></div>
+							<span
+								class="ofont ofont-rocket"
+								:style="{'left':((currentHeihgt/totalHeight)?(currentHeihgt/totalHeight):0)*100 + '%'}"
+							></span>
+						</div>
+					</div>
+				</div>
+				<p
+					class="ft12 mt20 dark-grey bold "
+					style="text-align:center"
+				>{{prograssPercentage +'%'}} (#{{currentHeihgt}} / #{{totalHeight}})</p>
+				<p class="ft12 dark-grey bold text-center mt20 user-no-select">
+					<span :class="{'ft30 ml10 mr10':loopFontIndex === 0}">Synchronizing</span>
+					<span :class="{'ft30 ml10 mr10':loopFontIndex === 1}">blocks</span>
+					<span :class="{'ft30 ml10 mr10':loopFontIndex === 2}">at</span>
+					<span :class="{'ft30 ml10 mr10':loopFontIndex === 3}">the</span>
+					<span :class="{'ft30 ml10 mr10':loopFontIndex === 4}">speed</span>
+					<span :class="{'ft30 ml10 mr10':loopFontIndex === 5}">of </span>
+					<span :class="{'ft30 ml10 mr10':loopFontIndex === 6}">light</span> ……</p>
+			</div>
 		</div>
 	</div>
 </template>
@@ -137,8 +178,12 @@
 import { clipboard, ipcRenderer } from "electron";
 export default {
 	mounted() {
-		document.title = "CreateAccount";
+		document.title = localStorage.Address
+			? "CreateAccount"
+			: "Block synchronization";
+
 		this.loopFont();
+		this.getAccountStatus();
 	},
 	data() {
 		let validatePassword = (rule, value, callback) => {
@@ -151,7 +196,8 @@ export default {
 		return {
 			clipboard,
 			loopFontIndex: 0,
-			progress: 0,
+			accountStatus: "", // 0: no account, 1:account exist
+			// progress: 0,
 			switchToggle: {
 				loading: null,
 				submitSwitch: true
@@ -213,7 +259,35 @@ export default {
 			return this.$store.state.Home.totalHeight || 0;
 		}
 	},
+	watch: {
+		accountStatus: function(value) {
+			console.log("acountStatus changed!!!");
+			console.log(value);
+			if (value === 1) {
+				console.log("set Title");
+				document.title = "Block synchronization";
+			}
+		}
+	},
 	methods: {
+		getAccountStatus() {
+			this.$axios
+				.get(this.$api.account)
+				.then(res => {
+					if (res.Error === 0) {
+						if (res.Result.Address) {
+							this.accountStatus = 1;
+						} else {
+							this.accountStatus = 0;
+						}
+					} else {
+						this.accountStatus = 0;
+					}
+				})
+				.catch(err => {
+					console.error(err);
+				});
+		},
 		clip(content) {
 			clipboard.writeText(content);
 			this.$message({
@@ -266,11 +340,11 @@ export default {
 								this.switchToggle.submitSwitch = true;
 							} else {
 								this.switchToggle.submitSwitch = true;
-								this.$message.error(
-									this.$i18n.error[res.Error]
-										? this.$i18n.error[res.Error][this.$language]
-										: `error code is ${res.Error}`
-								);
+								// this.$message.error(
+								// 	this.$i18n.error[res.Error]
+								// 		? this.$i18n.error[res.Error][this.$language]
+								// 		: `error code is ${res.Error}`
+								// );
 							}
 						})
 						.catch(e => {
@@ -303,11 +377,12 @@ export default {
 					if (res.Error === 0) {
 						// this.$store.dispatch("getChannelInitProgress");
 						const result = res.Result;
+						this.accountStatus = 1;
 						for (let key in result) {
 							window.localStorage.setItem(key, result[key]);
 						}
 						this.switchToggle.submitSwitch = true;
-						window.location.href = location.origin + location.pathname;
+						// window.location.href = location.origin + location.pathname;
 					} else {
 						this.$message.error(
 							this.$i18n.error[res.Error]

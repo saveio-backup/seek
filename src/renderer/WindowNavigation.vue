@@ -98,7 +98,7 @@
 							@mouseenter="setDialog('syncInfo')"
 							@mouseleave="hiddenDialog"
 							class="sync-wrapper flex flex-center"
-							v-if="address"
+							v-if="address && !isNeedSync"
 						>
 							<el-progress
 								class="sync-progress"
@@ -189,6 +189,9 @@ export default {
 		},
 		isSync: function() {
 			return this.$store.state.Home.isSync || false;
+		},
+		isNeedSync: function() {
+			return this.$store.state.Home.isNeedSync || false;
 		},
 		realUrl: function() {
 			return this.activeView.url;

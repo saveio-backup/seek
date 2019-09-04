@@ -70,7 +70,8 @@ export default {
 			},
 			Address: "",
 			// Progress: 0,
-			downloadUrl: "" // downloadDialog url
+			downloadUrl: "", // downloadDialog url
+			isNeedSync: false
 		};
 	},
 	mounted() {
@@ -160,7 +161,14 @@ export default {
 						if(progressResult.Result.End - progressResult.Result.Now > 50) {
 							progressResult.Result.isSync = true;
 						} else {
+							this.isNeedSync = false;
 							progressResult.Result.isSync = false;
+						}
+						if(progressResult.Result.End - progressResult.Result.Now > 100000) {
+							this.isNeedSync = true;
+							progressResult.Result.isNeedSync = this.isNeedSync;
+						} else {
+							progressResult.Result.isNeedSync = this.isNeedSync;
 						}
 						this.renderDateToBrowserView({ result: progressResult.Result, type: "progress", rendTo: 1 });
 					}
@@ -282,7 +290,7 @@ export default {
 		renderDateToBrowserView({ result, type, rendTo = 0 }) {
 			let arr = this.getArr(rendTo);
 			for (let value of arr) {
-				ipcRenderer.sendTo(value, "get-data", { result, type });
+				ipcRenderer.sendTo(value, "get-data", { result, type, page: 'tab' });
 			}
 			let arrWin = remote.BrowserWindow.getAllWindows();
 			for(let win of arrWin) {

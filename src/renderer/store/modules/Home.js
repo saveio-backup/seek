@@ -15,6 +15,7 @@ const state = {
   totalHeight: 0,
   currentHeight: 0,
   isSync: false,
+  isNeedSync: false,
   account: null,
   state: {
     ChainState: {},
@@ -32,6 +33,9 @@ const mutations = {
   },
   'SET_IS_SYNC'(state, result) {
     state.isSync = result;
+  },
+  'SET_IS_NEED_SYNC'(state, result) {
+    state.isNeedSync = result;
   },
   'SET_ACCOUNT'(state, result) {
     state.account = result;
@@ -123,9 +127,31 @@ const actions = {
           // if (data.Error === 0) { // response data
           if (res.Result.Address) { // Wallet(Account) exist
             // try {
-            //   const progress = await axios.get(api.channelInitProgress)
-            //   if (progress.Error === 0) {
-            //     if (progress.Error === 0 && (progress.Result.Progress < 1)) { // but no Channel
+              const result = res.Result;
+              for (let key in result) {
+                window.localStorage.setItem(key, result[key]);
+              }
+              commit('SET_CURRENT_ACCOUNT', 1) // login success
+              this.dispatch("setBalanceLists"); // getBalance
+              this.dispatch("setChannelBalanceTotal"); // getAllChannels
+              this.dispatch("setRevenue");
+              try {
+                axios.get(api.channelInitProgress).then(progress => {
+                  if (progress.Error === 0) {
+                    if (progress.Result.End - progress.Result.Now > 100000) { // but no Channel
+                      if (location.href.indexOf('CreateAccount') < 0) {
+                        router.replace({
+                          name: 'CreateAccount'
+                        })
+                        commit('SET_CURRENT_HEIGHT', progress.Result.Now);
+                        commit('SET_TOTAL_HEIGHT', progress.Result.End);
+                      }
+                    }
+                  }
+                })
+              } catch(e) {
+                console.log(e);
+              }
             //       axios
             //         .get(api.channelSync)
             //         .then(res2 => {
@@ -134,14 +160,7 @@ const actions = {
             //             rebackToCreateAccount(commit, progress.Result.Progress); // back to create account
             //             this.dispatch('getChannelInitProgress'); // Loop loading progress
             //           } else { // both Wallet and Channel exist
-            const result = res.Result;
-            for (let key in result) {
-              window.localStorage.setItem(key, result[key]);
-            }
-            commit('SET_CURRENT_ACCOUNT', 1) // login success
-            this.dispatch("setBalanceLists"); // getBalance
-            this.dispatch("setChannelBalanceTotal"); // getAllChannels
-            this.dispatch("setRevenue");
+
                 //       }
                 //     })
                 // } else if (progress.Error === 0) { // both Wallet and Channel exist

@@ -20,8 +20,8 @@ export default {
 				type: type
 			});
 		});
-		ipcRenderer.on("get-data", (event, { result, type }) => {
-			this[type + "Update"](result);
+		ipcRenderer.on("get-data", (event, { result, type, page }) => {
+			this[type + "Update"]({result, page});
 		});
 		this.$axios.get(this.$api.version).then(res => {
 			if (res.Error === 0) {
@@ -70,25 +70,43 @@ export default {
 				}
 			});
 		},
-		channelUpdate(result) {
+		channelUpdate({result}) {
 			this.$store.commit("SET_BALANCE_TOTAL", result);
 		},
-		balanceUpdate(result) {
+		balanceUpdate({result}) {
 			this.$store.commit("SET_BALANCE_LISTS", result);
 		},
-		revenceUpdate(result) {
+		revenceUpdate({result}) {
 			this.$store.commit("SET_REVENUE", result);
 		},
-		progressUpdate(result) {
+		progressUpdate({result, page}) {
+			// console.log(result);
+			// console.log(location.href);			
+			if(page === 'tab') {
+				if(result.isNeedSync) {
+					if (location.href.indexOf('CreateAccount') < 0) {
+						this.$router.replace({
+							name: 'CreateAccount'
+						});
+					}
+				} else {
+					if (location.href.indexOf('CreateAccount') > 0) {
+						this.$router.replace({
+							name: 'Home'
+						});
+					}
+				}
+			}
 			try {
 				this.$store.commit("SET_CURRENT_HEIGHT", result.Now);
 				this.$store.commit("SET_TOTAL_HEIGHT", result.End);
 				this.$store.commit("SET_IS_SYNC", result.isSync);
+				this.$store.commit("SET_IS_NEED_SYNC", result.isNeedSync);				
 			} catch (e) {
 				console.log(e);
 			}
 		},
-		accountUpdate(result) {
+		accountUpdate({result}) {
 			this.$store.commit("SET_ACCOUNT", result);
 			// if (result && result.Address && result.type !== "windowRender") {
 			// 	if (
@@ -102,7 +120,7 @@ export default {
 			// 	this.$store.commit("SET_CURRENT_ACCOUNT", 1);
 			// }
 		},
-		stateUpdate(result) {
+		stateUpdate({result}) {
 			this.$store.commit("SET_STAET", result);
 		}
 	}

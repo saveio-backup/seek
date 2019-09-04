@@ -129,18 +129,11 @@ export default {
 			user: {
 				name: localStorage.getItem("Label") || ""
 			},
-			// statusList: {
-			// 	ChainState: 0,
-			// 	DNSState: 0,
-			// 	DspProxyState: 0,
-			// 	ChannelProxyState: 0
-			// },
 			statusIntervalObj: null
 		};
 	},
 	computed: {
 		statusList: function() {
-			console.log(this.$store.state.Home.state);
 			return this.$store.state.Home.state;
 		},
 		activeView: function() {
@@ -186,30 +179,6 @@ export default {
 		}
 	},
 	methods: {
-		// init() {
-		// 	const INTERVAL_TIME = 5000;
-		// 	this.getStatus();
-		// 	this.statusIntervalObj = setInterval(() => {
-		// 		this.getStatus();
-		// 	}, INTERVAL_TIME);
-		// },
-		// getStatus() {
-		// 	this.$axios
-		// 		.get(this.$api.networkStatus)
-		// 		.then(res => {
-		// 			if (res.Error === 0) {
-		// 				this.statusList = res.Result;
-		// 			}
-		// 		})
-		// 		.catch(e => {
-		// 			this.statusList = {
-		// 				ChainState: 0,
-		// 				DNSState: 0,
-		// 				DspProxyState: 0,
-		// 				ChannelProxyState: 0
-		// 			};
-		// 		});
-		// },
 		toPopCustomControlMenu() {
 			const that = this;
 			const customControlMenuItems = [

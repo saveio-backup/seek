@@ -48,22 +48,6 @@ export default {
 	},
 	computed: {
 		statusList: function() {
-			// return {
-			// 	ChannelProxy: {
-			// 		State: 1
-			// 	},
-			// 	DspProxy: {
-			// 		State: 1
-			// 	},
-			// 	DNS: {
-			// 		State: 0,
-			// 		HostAddr: 'tcp://128.1.0.22',
-			// 		UpdatedAt: 1565413639
-			// 	},
-			// 	Chain: {
-			// 		State: 1
-			// 	}
-			// }
 			return this.$store.state.Home.state;
 		},
 		UpdatedAt: function() {

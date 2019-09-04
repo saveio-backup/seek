@@ -194,7 +194,7 @@ export default {
 		getRevenue() {
 			this.$axios
 				.get(this.$api.revenue, {
-					timeout: 20000
+					timeout: (this.$outTime * 5000 + 15000)
 				})
 				.then(res => {
 					if (res.Error === 0) {
@@ -209,7 +209,7 @@ export default {
 		getChannel() {
 			this.$axios
 				.get(this.$api.channel, {
-					timeout: 20000
+					timeout: (this.$outTime * 5000 + 15000)
 				})
 				.then(res => {
 					if (res.Error === 0) {

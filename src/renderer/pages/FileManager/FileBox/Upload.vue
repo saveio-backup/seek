@@ -528,8 +528,8 @@ export default {
 			this.$refs.uploadForm.validateField("FileSize");
 		},
 		handleChange(file, fileList) {
-			console.log(file);
-			console.log(fileList);
+			// console.log(file);
+			// console.log(fileList);
 			// console.log(fs.readFileSync(file.raw.path, 'utf8'));
 			fs.stat(file.raw.path, (err, stats) => {
 				console.log(stats);

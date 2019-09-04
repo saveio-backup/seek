@@ -1004,7 +1004,7 @@ export default {
 
 			this.$axios
 				.post(this.$api.deleteRecord, params, {
-					timeout: 10000 * params.Ids.length
+					timeout: (this.$outTime * 2000 + 8000) * params.Ids.length
 				})
 				.then(res => {
 					this.$store.dispatch("setComplete");
@@ -1077,7 +1077,7 @@ export default {
 			// add password when current mode is upload
 			this.$axios
 				.post(url, params, {
-					timeout: 10000 * params.Ids.length
+					timeout: (this.$outTime * 2000 + 8000) * params.Ids.length
 				})
 				.then(res => {
 					this.passwordCancel.loadingObj &&
@@ -1184,7 +1184,7 @@ export default {
 
 			this.$axios
 				.post(url, params, {
-					timeout: 10000 * params.Ids.length
+					timeout: (this.$outTime * 2000 + 8000) * params.Ids.length
 				})
 				.then(res => {
 					// get transfer list info update status
@@ -1261,7 +1261,7 @@ export default {
 
 			this.$axios
 				.post(url, params, {
-					timeout: 10000 * params.Ids.length
+					timeout: (this.$outTime * 2000 + 8000) * params.Ids.length
 				})
 				.then(res => {
 					// get transfer list info update status
@@ -1355,7 +1355,7 @@ export default {
 
 			this.$axios
 				.post(url, params, {
-					timeout: 10000 * params.Ids.length
+					timeout: (this.$outTime * 2000 + 8000) * params.Ids.length
 				})
 				.then(res => {
 					// get transfer list info update status
@@ -1542,6 +1542,9 @@ $light-grey: #f9f9fb;
 	height: 100%;
 	display: flex;
 	flex-direction: column;
+	.el-progress-bar__inner {
+		transition: width 3.3s linear;
+	}
 	.el-progress__text {
 		display: inline-block !important;
 	}

@@ -3,6 +3,7 @@ import App from './App'
 import router from './router/router.js'
 import store from './store/store.js'
 import axios from './assets/config/http'
+import config from './assets/config/default'
 import i18n from './assets/config/i18n/index';
 import API from './assets/config/api'
 import commonMethods from './assets/config/commonMethods'
@@ -11,7 +12,8 @@ import dateFormat from './assets/tool/date'
 import ElementUI from 'element-ui'
 import locale from 'element-ui/lib/locale/lang/en'
 
-const LANGUAGE = 'en'
+const LANGUAGE = 'en'; //language
+// const OUTTIME = 1;//out block time
 Vue.use(ElementUI, {
   locale
 })
@@ -23,7 +25,8 @@ Vue.prototype.$axios = axios;
 Vue.prototype.$i18n = i18n;
 Vue.prototype.$api = API;
 Vue.prototype.$language = LANGUAGE;
-Vue.config.productionTip = false
+Vue.prototype.$outTime = config.outTime;
+Vue.config.productionTip = false;
 Vue.directive('seekclickoutside', {
   bind: function (el, binding, vnode) {
     el.documentHandler = (e) => {

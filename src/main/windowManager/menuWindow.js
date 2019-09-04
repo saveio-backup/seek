@@ -31,7 +31,7 @@ export default class MenuWindow {
     const url = DEFAULT_URL + '#' + 'menuWindow';
     this.win.loadURL(url);
     if (process.env.NODE_ENV === 'development' || frontCfgObj().console) {
-      this.win.webContents.openDevTools();
+      // this.win.webContents.openDevTools();
     }
     this.setTimeoutObj = null
   }

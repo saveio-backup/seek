@@ -1,10 +1,12 @@
 import axios from 'axios';
+import config from './default'
 import {
   Message
 } from 'element-ui'
 import loadingClass from './model/loadingClass';
-
-axios.defaults.timeout = 10000
+// const OUTTIME = 5;//out block time
+// axios.defaults.timeout = 10000;
+axios.defaults.timeout = config.outTime * 5000 + 5000;
 // http requst proxy
 axios.interceptors.request.use(request => {
   loadingClass.addLoading(request);

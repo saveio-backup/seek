@@ -184,7 +184,7 @@ export default {
 									target: ".loading-content.loading-channel",
 									text: "Transaction processing...."
 								},
-								timeout: 60000
+								timeout: (this.$outTime * 10000 + 50000)
 							}
 						)
 						.then(res => {

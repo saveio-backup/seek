@@ -1,6 +1,7 @@
 import axios from 'axios';
 import api from '../../assets/config/api';
 import { Message } from 'element-ui'
+import Vue from 'Vue'
 const transferClear = clearInterval;
 // const transferClear = function () { };
 const state = {
@@ -37,7 +38,7 @@ const mutations = {
 }
 let downloadTimer = null;
 let uploadTimer = null;
-let completeTimer = null
+let completeTimer = null;
 const TIME_COUNT = 3000;
 const actions = {
   setUpload({

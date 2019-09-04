@@ -30,7 +30,6 @@
 
 <script>
 import { ipcRenderer, dialog, remote } from "electron";
-import { setTimeout } from "timers";
 export default {
 	name: "Logout",
 	data() {

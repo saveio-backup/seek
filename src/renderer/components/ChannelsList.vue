@@ -63,6 +63,7 @@
 				</el-table-column>
 				<el-table-column label='DNS'
 					prop="HostAddr"
+					min-width="80px"
 					sortable
 				>
 					<template slot-scope="scope">
@@ -72,7 +73,7 @@
 					</template>
 				</el-table-column>
 				<el-table-column
-					width="80"
+					min-width="40px"
 					v-if="showRadio"
 				>
 					<span class="channel-radio"></span>

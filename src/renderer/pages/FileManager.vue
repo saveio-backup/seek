@@ -86,7 +86,7 @@
 				:close-on-click-modal='false'
 				:visible.sync="switchToggle.channelListDialog"
 				center
-				width="600px"
+				width="700px"
 			>
 				<div slot="title">
 					<h2>Channel Switch</h2>

@@ -39,6 +39,7 @@ const API = {
   download: HOST + VERSION + 'dsp/file/download',
   downloadInfo: HOST + VERSION + 'dsp/file/downloadinfo/',
   delete: HOST + VERSION + 'dsp/file/delete',
+  deletes: HOST + VERSION + 'dsp/files/delete',
   revenue: HOST + VERSION + 'dsp/file/share/revenue',
   income: HOST + VERSION + 'dsp/file/share/income/',
   uploadRetry: HOST + VERSION + 'dsp/file/upload/retry',

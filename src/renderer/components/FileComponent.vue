@@ -81,6 +81,7 @@
 				empty-text='No Data'
 				height="100%"
 				:show-header="false"
+				row-key="Id"
 			>
 				<!-- :data="fileList" -->
 				<el-table-column
@@ -1004,7 +1005,7 @@ export default {
 
 			this.$axios
 				.post(this.$api.deleteRecord, params, {
-					timeout: (this.$outTime * 2000 + 8000) * params.Ids.length
+					timeout: (this.$outTime * 2000 + 18000) * params.Ids.length
 				})
 				.then(res => {
 					this.$store.dispatch("setComplete");
@@ -1077,7 +1078,7 @@ export default {
 			// add password when current mode is upload
 			this.$axios
 				.post(url, params, {
-					timeout: (this.$outTime * 2000 + 8000) * params.Ids.length
+					timeout: (this.$outTime * 2000 + 18000) * params.Ids.length
 				})
 				.then(res => {
 					this.passwordCancel.loadingObj &&
@@ -1184,7 +1185,7 @@ export default {
 
 			this.$axios
 				.post(url, params, {
-					timeout: (this.$outTime * 2000 + 8000) * params.Ids.length
+					timeout: (this.$outTime * 2000 + 18000) * params.Ids.length
 				})
 				.then(res => {
 					// get transfer list info update status
@@ -1261,7 +1262,7 @@ export default {
 
 			this.$axios
 				.post(url, params, {
-					timeout: (this.$outTime * 2000 + 8000) * params.Ids.length
+					timeout: (this.$outTime * 2000 + 18000) * params.Ids.length
 				})
 				.then(res => {
 					// get transfer list info update status
@@ -1355,7 +1356,7 @@ export default {
 
 			this.$axios
 				.post(url, params, {
-					timeout: (this.$outTime * 2000 + 8000) * params.Ids.length
+					timeout: (this.$outTime * 2000 + 18000) * params.Ids.length
 				})
 				.then(res => {
 					// get transfer list info update status

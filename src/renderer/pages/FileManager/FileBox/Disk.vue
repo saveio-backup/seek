@@ -871,65 +871,61 @@ export default {
 			this.fileToDelete = this.fileSelected;
 			this.switchToggle.deleteDialog = true;
 		},
+		syncDeleteFile(res) {
+			if(Object.prototype.toString.call(res) === "[object Array]") {
+				for(let value of res) {
+					this.fileListData.some((item, index) => {
+						if(item.Hash === value.FileHash) {
+							if(value.Tx) {
+								this.fileListData.splice(index, 1);
+							}
+							return true;
+						} else {
+							return false;
+						}
+					});
+				}
+			}
+		},
 		toDeleteFileNew(deleteFiles) {
 			this.$refs.extraParamsForm.validate(valid => {
 				if (!valid) return;
-				this.switchToggle.loading = this.$loading({
-					lock: true,
-					text: "Deleting....",
-					target: ".loading-content.disk-delete-loading"
-				});
-				const length = deleteFiles.length;
-				const commitAll = [];
-				for (let i = 0; i < length; i++) {
-					commitAll.push(
-						this.$axios
-							.post(this.$api.delete, {
-								Hash: deleteFiles[i].Hash,
-								Password: this.extraParams.Password
-							})
-							.then(res => {
-								if (res.Error === 0) {
-									this.$message({
-										message: "Delete Successful",
-										type: "success"
-									});
-									this.fileListData.some((item, index) => {
-										if (item.Hash === deleteFiles[i].Hash) {
-											this.fileListData.splice(index, 1);
-											return true;
-										} else {
-											return false;
-										}
-									});
-									console.log("delete");
-								} else {
-									this.$message.error(
-										this.$i18n.error[res.Error][this.$language]
-									);
-								}
-							})
-					);
+				let arr = [];
+				for(let file of deleteFiles) {
+					arr.push(file.Hash);
 				}
 				this.$axios
-					.all(commitAll)
-					.then(
-						this.$axios.spread(() => {
-							this.$refs["extraParamsForm"].resetFields();
-							this.$store.dispatch("setSpace"); // get userspace
-							this.switchToggle.deleteDialog = false;
-						})
-					)
-					.catch(e => {
+					.post(this.$api.deletes, {
+						Hash: arr
+					},{
+						timeout: (20000 * arr.length + this.$outTime),
+						loading: {
+							text: "Deleting....",
+							target: ".loading-content.disk-delete-loading"
+						}
+					})
+					.then(res => {
+						this.$refs["extraParamsForm"].resetFields();
+						this.$store.dispatch("setSpace"); // get userspace
+						this.switchToggle.deleteDialog = false;
+						if (res.Error === 0) {
+							this.$message({
+								message: "Delete Successful",
+								type: "success"
+							});
+							this.syncDeleteFile(res.Result);
+							// console.log("delete");
+						} else {
+							this.$message.error(
+								this.$i18n.error[res.Error][this.$language]
+							);
+							this.syncDeleteFile(res.Result);
+						}
+					}).catch(e => {
 						if (!e.message.includes("timeout")) {
-							// this.$message.error('Network Error!');
 							this.$message.error("Network Error. Delete Failed.");
 						}
 					})
-					.finally(() => {
-						this.switchToggle.loading.close();
-						this.switchToggle.loading = null;
-					});
 			});
 		},
 		toDeleteFile(dataList, hash) {

@@ -1,7 +1,7 @@
 {
   "name": "seek",
   "version": "0.0.1",
-  "description": "seek about SAVE",
+  "description": "seek about ONI",
   "license": "MIT",
   "main": "./dist/electron/main.js",
   "scripts": {

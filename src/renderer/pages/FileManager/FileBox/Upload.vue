@@ -254,20 +254,20 @@
 					</el-form-item>
 				</el-form>
 				<div class="flex price-div">
-					<div class="price-div-bg user-no-select">SA</div>
-					<p class="price-gas-fee">Gas Fee: {{uploadPrice}} SAVE
+					<div class="price-div-bg user-no-select">ON</div>
+					<p class="price-gas-fee">Gas Fee: {{uploadPrice}} ONI
 						<el-popover
 							placement="bottom"
 							title="Fee Detail"
 							trigger="hover"
 						>
-							<p>Contract Fee: {{uploadPriceInfo && uploadPriceInfo.TxFeeFormat || parseFloat((0.03 * (this.uploadFormData.Files.length || 1)).toFixed(2))}} SAVE</p>
-							<p>Storage Fee: {{uploadPriceInfo && uploadPriceInfo.StorageFeeFormat || 0}} SAVE</p>
-							<p>Validate Fee: {{uploadPriceInfo && uploadPriceInfo.ValidFeeFormat || 0}} SAVE</p>
+							<p>Contract Fee: {{uploadPriceInfo && uploadPriceInfo.TxFeeFormat || parseFloat((0.03 * (this.uploadFormData.Files.length || 1)).toFixed(2))}} ONI</p>
+							<p>Storage Fee: {{uploadPriceInfo && uploadPriceInfo.StorageFeeFormat || 0}} ONI</p>
+							<p>Validate Fee: {{uploadPriceInfo && uploadPriceInfo.ValidFeeFormat || 0}} ONI</p>
 							<span slot="reference"><i class="el-icon-question"></i></span>
 						</el-popover>
 					</p>
-					<p class="price-balance">Available: {{mainCount}} SAVE</p>
+					<p class="price-balance">Available: {{mainCount}} ONI</p>
 				</div>
 				<div class="flex jc-center submit-foot mb10">
 					<el-button @click="toEmptyUpload">Cancel</el-button>
@@ -309,7 +309,7 @@
 							v-model="passwordForm.Password"
 						></el-input>
 					</el-form-item>
-					<p class="mb20 tr">Confirm Payment: {{uploadPrice}} SAVE</p>
+					<p class="mb20 tr">Confirm Payment: {{uploadPrice}} ONI</p>
 				</el-form>
 				<div slot="footer">
 					<el-button @click="passwordForm.show = false">Cancel</el-button>
@@ -501,7 +501,6 @@ export default {
 				Privilege: 1, // Authority
 				CopyNum: 1, // axios.get
 				wihteListString: "",
-				// "Url": "oni://share/12nsdhu",
 				WhiteList: []
 			},
 			remindToggle: {

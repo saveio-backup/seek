@@ -5,7 +5,7 @@
 				v-if="withDraw && channelSelected.Connected"
 				class="flex1 text-left"
 			>
-				<p class="theme-font-blue-40 transparent ft14 user-no-select">Channel(SAVE)</p>
+				<p class="theme-font-blue-40 transparent ft14 user-no-select">Channel(ONI)</p>
 				<p class="theme-font-blue ft24 mt10">{{filterFloat(channelSelected.BalanceFormat || 0).toLocaleString('en-US')}}</p>
 				<!-- <p class="theme-font-blue transparent ft12 bold">{{channelSelected.Address}}</p> -->
 			</div>
@@ -13,7 +13,7 @@
 				v-else
 				class="flex1 text-left"
 			>
-				<p class="theme-font-blue-40 transparent ft14 user-no-select">Wallet(SAVE)</p>
+				<p class="theme-font-blue-40 transparent ft14 user-no-select">Wallet(ONI)</p>
 				<p class="theme-font-blue ft24 mt10">{{filterFloat(mainCount).toLocaleString('en-US')}}</p>
 			</div>
 			<div class="flex column between">
@@ -28,7 +28,7 @@
 				v-if="!withDraw || !channelSelected.Connected"
 				class="flex1 text-right"
 			>
-				<p class="theme-font-blue-40 transparent ft14 user-no-select">Channel(SAVE)</p>
+				<p class="theme-font-blue-40 transparent ft14 user-no-select">Channel(ONI)</p>
 				<p class="theme-font-blue ft24 mt10">{{filterFloat(channelSelected.BalanceFormat || 0).toLocaleString('en-US')}}</p>
 				<!-- <p class="theme-font-blue transparent ft12 bold">{{channelSelected.Address}}</p> -->
 			</div>
@@ -36,7 +36,7 @@
 				v-else
 				class="flex1 text-right"
 			>
-				<p class="theme-font-blue-40 transparent ft14 user-no-select">Wallet(SAVE)</p>
+				<p class="theme-font-blue-40 transparent ft14 user-no-select">Wallet(ONI)</p>
 				<p class="theme-font-blue ft24 mt10">{{filterFloat(mainCount).toLocaleString('en-US')}}</p>
 			</div>
 		</div>
@@ -47,7 +47,7 @@
 			:rules="transferRules"
 		>
 			<el-form-item
-				label="Amount(SAVE)"
+				label="Amount(ONI)"
 				prop="Amount"
 			>
 				<el-input

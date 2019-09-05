@@ -54,13 +54,13 @@
 						<p class="grey-xs bold ft14">Your Profit:</p>
 						<div class="flex between ai-center">
 							<span class="theme-bold ft36">{{revenueFormat.toLocaleString('en-US')}}</span>
-							<span class="bold ft16 unit">SAVE</span>
+							<span class="bold ft16 unit">ONI</span>
 						</div>
 					</div>
 				</div>
 				<div class="user-meta-center">
 					<p class="grey-xs bold ft14 user-meta-title">Total Balance:</p>
-					<p class="total-num"> {{balanceLists.length>0?filterFloat(balanceLists[0].BalanceFormat).toLocaleString('en-US'):'0'}}<span> SAVE</span></p>
+					<p class="total-num"> {{balanceLists.length>0?filterFloat(balanceLists[0].BalanceFormat).toLocaleString('en-US'):'0'}}<span> ONI</span></p>
 					<div
 						id="balance-view"
 						class="balanceView"
@@ -407,7 +407,7 @@ export default {
 							normal: {
 								show: false,
 								position: "center",
-								formatter: ["{a|{b}}", "{c|{c} SAVE}", "{b|{d}%}"].join("\n"),
+								formatter: ["{a|{b}}", "{c|{c} ONI}", "{b|{d}%}"].join("\n"),
 								rich: {
 									a: {
 										color: "#2F8FF0",

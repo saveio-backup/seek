@@ -199,7 +199,7 @@
 					>
 						<template slot-scope="scope">
 							<div class="light-blue break-word">
-								{{parseFloat(scope.row.Profit / 1000000000).toFixed(9)}} SAVE
+								{{parseFloat(scope.row.Profit / 1000000000).toFixed(9)}} ONI
 							</div>
 						</template>
 					</el-table-column>
@@ -301,7 +301,7 @@
 					<div class="adjust-item">
 						<p class="adjust-title ft14">Cost:</p>
 						<div class="adjust-info">
-							<p class="ft14 mr20">{{fileDownloadInfo.Fee ? fileDownloadInfo.Fee + 'SAVE': ''}} </p>
+							<p class="ft14 mr20">{{fileDownloadInfo.Fee ? fileDownloadInfo.Fee + ' ONI': ''}} </p>
 						</div>
 					</div>
 					<div class="adjust-item">

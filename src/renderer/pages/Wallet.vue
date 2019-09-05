@@ -43,7 +43,7 @@
 							<el-option
 								v-for="(item,index) in balanceLists"
 								:key='index'
-								:label='item.Symbol'
+								:label="item.Symbol === 'SAVE' ? 'ONI' : item.Symbol"
 								:value='index'
 								class="asset-item"
 								:disabled="item.Symbol !== 'SAVE'"
@@ -52,7 +52,7 @@
 									class="asset-icon mr10"
 									:src="'static/images/logo/'+ item.Symbol+ '.png'"
 									:alt="item.Symbol"
-								> <span class="">{{item.Symbol}}</span>
+								> <span class="">{{item.Symbol === 'SAVE' ? 'ONI' : item.Symbol}}</span>
 							</el-option>
 						</el-select>
 					</div>
@@ -85,7 +85,7 @@
 									:src="'static/images/logo/'+balanceLists[balanceSelected].Symbol+'.png'"
 									alt=""
 								>
-								<span class="asset-display-logo-name">{{balanceLists[balanceSelected].Symbol}}</span>
+								<span class="asset-display-logo-name">{{balanceLists[balanceSelected].Symbol === 'SAVE' ? 'ONI' : balanceLists[balanceSelected].Symbol}}</span>
 							</div>
 							<div class="asset-display-num">
 								<p :title="parseFloat(balanceLists[balanceSelected].BalanceFormat).toFixed(3) || 0">{{parseFloat(balanceLists[balanceSelected].BalanceFormat).toFixed(3) || 0}}</p>
@@ -156,7 +156,7 @@
 							<div
 								class="item-amount"
 								:class="{'send-item-amount':item.Type ==1}"
-							>{{item.Type ==1 ? '-':'+'}} {{parseFloat(parseFloat(item.AmountFormat).toFixed(9)).toLocaleString('en-US')}} {{item.Asset.toUpperCase()}}</div>
+							>{{item.Type ==1 ? '-':'+'}} {{parseFloat(parseFloat(item.AmountFormat).toFixed(9))}} {{(item.Asset).toUpperCase() === 'SAVE' ? 'ONI' : (item.Asset).toUpperCase()}}</div>
 							<div
 								class="item-more"
 								v-if="item.BlockHeight>0"
@@ -200,7 +200,7 @@
 									></i></p>
 							</div>
 							<div class="flex between bottom-info">
-								<div class="minerfee"><span class="theme-font-color user-no-select">Miner fee:</span> <span class="theme-font-blue">{{item.FeeFormat}}</span> {{balanceLists[balanceSelected].Symbol}}</div>
+								<div class="minerfee"><span class="theme-font-color user-no-select">Miner fee:</span> <span class="theme-font-blue">{{item.FeeFormat}}</span> {{balanceLists[balanceSelected].Symbol === 'SAVE' ? 'ONI': balanceLists[balanceSelected].Symbol}}</div>
 								<div class="flex1"></div>
 								<div class="blockheight"><span class="user-no-select">Block:</span> {{item.BlockHeight}}</div>
 							</div>
@@ -273,11 +273,11 @@
 							:rules="sendRules"
 						>
 							<div class="flex between mb10 mt10">
-								<p class="theme-font-blue-bold ft14">{{balanceLists[balanceSelected].Symbol}}</p>
+								<p class="theme-font-blue-bold ft14">{{balanceLists[balanceSelected].Symbol === 'SAVE' ? 'ONI' : balanceLists[balanceSelected].Symbol}}</p>
 								<p
 									v-if="balanceLists && balanceLists.length>0"
 									class="ft14 tl theme-font-blue-70"
-								>{{parseFloat(balanceLists[balanceSelected].BalanceFormat).toFixed(2)}} {{balanceLists[balanceSelected].Symbol}}</p>
+								>{{parseFloat(balanceLists[balanceSelected].BalanceFormat).toFixed(2)}} {{balanceLists[balanceSelected].Symbol === 'SAVE' ? 'ONI' : balanceLists[balanceSelected].Symbol}}</p>
 							</div>
 							<el-form-item
 								class="theme-font-blue-bold"
@@ -301,7 +301,7 @@
 								<el-input
 									v-model="sendInfo.To"
 									class="grey-theme"
-									:placeholder="'Input ' +balanceLists[balanceSelected].Symbol.toUpperCase()+' Address'"
+									:placeholder="'Input ' +(balanceLists[balanceSelected].Symbol === 'SAVE' ? 'ONI' : balanceLists[balanceSelected].Symbol).toUpperCase()+' Address'"
 								></el-input>
 							</el-form-item>
 							<el-form-item
@@ -321,7 +321,7 @@
 						</el-form>
 						<div class="flex between">
 							<span></span>
-							<div>Miner Fee: 0.01 {{balanceLists[balanceSelected].Symbol}}
+							<div>Miner Fee: 0.01 {{balanceLists[balanceSelected].Symbol === 'SAVE' ? 'ONI' :balanceLists[balanceSelected].Symbol}}
 							</div>
 						</div>
 					</div>
@@ -356,7 +356,7 @@
 								alt=""
 							>
 							<div class="flex1 ml10 tl">
-								<p class="theme-font-blue ft18"><span class="bold">{{balanceLists[balanceSelected].Symbol}}</span> <span class="theme-font-blue-40 ft14 ml10 balance-select-name"> {{balanceLists[balanceSelected].Name}}</span></p>
+								<p class="theme-font-blue ft18"><span class="bold">{{balanceLists[balanceSelected].Symbol === 'SAVE' ? 'ONI' : balanceLists[balanceSelected].Symbol}}</span> <span class="theme-font-blue-40 ft14 ml10 balance-select-name"> {{balanceLists[balanceSelected].Name === 'Save Power' ? 'Oni Power' : balanceLists[balanceSelected].Name}}</span></p>
 								<p class="theme-font-blue-40 ft14">{{balanceLists[balanceSelected].Address}}</p>
 							</div>
 							<el-switch

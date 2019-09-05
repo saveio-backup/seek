@@ -39,7 +39,7 @@
 						>{{scope.row.Connected ? 'online' : 'offline'}}</div>
 					</template>
 				</el-table-column>
-				<el-table-column label='Balance(SAVE)'
+				<el-table-column label='Balance(ONI)'
 					prop="Balance"
 					sortable
 				>
@@ -194,11 +194,11 @@
 					</el-form-item>
 					<el-form-item
 						class="theme-font-blue-bold form-amount"
-						label="Amount(SAVE)"
+						label="Amount(ONI)"
 						prop="amount"
 						v-if="channelToggle.type==='add'"
 					>
-						<p class="form-item-title">Recommended no less than 100 SAVE</p>
+						<p class="form-item-title">Recommended no less than 100 ONI</p>
 						<el-input
 							v-model="channelForm.amount"
 							placeholder="Please Input Top Up Amount"

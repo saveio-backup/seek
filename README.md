@@ -1,6 +1,6 @@
 # Seek
 
-> save edge explore kits
+> oni edge explore kits
 
 #### Build Setup
 

@@ -173,7 +173,7 @@ class View {
     getCurrentView = getActive(win);
     win.setBrowserView(this.browserView); //if have dialog browserView
     let newIsSave = null;
-    if (url.toLowerCase().indexOf('save://share/') >= 0) {
+    if (url.toLowerCase().indexOf('oni://share/') >= 0) {
       console.log('share URL!!!!')
       dialogViewObj.browserView.webContents.send('setDownloadUrl', url);
       dialogViewObj.setMenuSelector('downloadDialog');

@@ -121,7 +121,8 @@ const actions = {
     commit('SET_CURRENT_ACCOUNT', 1) // login success
     axios
       .get(api.account)
-      .then(async (res) => {
+      .then((res) => {
+        console.log('account', res);
         if (res.Error === 0) {
           // const data = res.data;
           // if (data.Error === 0) { // response data

@@ -401,7 +401,7 @@
 						<div
 							class="theme-font-blue-40 node-value"
 							v-if="fileObjById[detailId]"
-						>{{fileObjById[detailId].DownloadSize * 1024 / Math.pow(10, 9)}} SAVE</div>
+						>{{fileObjById[detailId].DownloadSize * 1024 / Math.pow(10, 9)}} ONI</div>
 					</li>
 					<template v-if="transferType === 1">
 						<li
@@ -525,7 +525,7 @@
 					<div class="adjust-item">
 						<p class="adjust-title theme-font-blue ft14">Fee:</p>
 						<div class="adjust-info">
-							<p class="theme-font-blue ft14 mr20">{{fileObjById[detailId].DownloadSize * 1024 / Math.pow(10, 9) || '0'}} SAVE</p>
+							<p class="theme-font-blue ft14 mr20">{{fileObjById[detailId].DownloadSize * 1024 / Math.pow(10, 9) || '0'}} ONI</p>
 						</div>
 					</div>
 				</div>

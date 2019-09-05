@@ -13,7 +13,7 @@
 				end-placeholder="End"
 			>
 			</el-date-picker>
-			<div class="total-income ft14">Total Profit: <span>{{filterFloat(result.TotalIncomeFormat).toLocaleString('en-US') || 0}} SAVE</span></div>
+			<div class="total-income ft14">Total Profit: <span>{{filterFloat(result.TotalIncomeFormat).toLocaleString('en-US') || 0}} ONI</span></div>
 		</div>
 
 		<!-- border -->
@@ -30,7 +30,7 @@
 				sortable
 			></el-table-column>
 			<el-table-column
-				label="Profit(SAVE)"
+				label="Profit(ONI)"
 				sortable
 				prop="Profit"
 			>

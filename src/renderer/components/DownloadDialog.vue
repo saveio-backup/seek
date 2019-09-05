@@ -25,7 +25,7 @@
 			</div>
 			<div class="tl">
 				<p class="theme-font-blue new-download-left">Cost:</p>
-				<p class="theme-font-blue-70 new-download-right">{{downloadInfo.FeeFormat || '0'}} SAVE</p>
+				<p class="theme-font-blue-70 new-download-right">{{downloadInfo.FeeFormat || '0'}} ONI</p>
 			</div>
 			<el-button
 				class="mt40 primary"
@@ -50,7 +50,7 @@ export default {
 		return {
 			util,
 			downloadUrl: this.parentDownloadUrl,
-			formatUrl: "save://share/",
+			formatUrl: "oni://share/",
 			downloadInfo: {},
 			win: remote.getCurrentWindow()
 		};

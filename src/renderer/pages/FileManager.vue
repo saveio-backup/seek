@@ -47,7 +47,7 @@
 				<div class="coin">
 					<div class="flex jc-end">
 					</div>
-					<span class="mr10 ft24">{{filterFloat(channelBind.BalanceFormat || 0).toLocaleString('en-US')}}<span class="user-no-select"> SAVE</span></span>
+					<span class="mr10 ft24">{{filterFloat(channelBind.BalanceFormat || 0).toLocaleString('en-US')}}<span class="user-no-select"> ONI</span></span>
 					<span
 						@click="openAssetTransferDialog"
 						class="coin-icon-box cursor-pointer user-no-select"

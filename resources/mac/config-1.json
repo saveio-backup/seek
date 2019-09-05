@@ -1,10 +1,10 @@
 {
 	"Base": {
-		"BaseDir": "",
-		"LogPath": "./Log_0903",
-		"NetworkId": 1567481543,
+		"BaseDir": ".",
+		"LogPath": "./SeekLog_Config_1",
 		"ChainId": "1",
 		"BlockTime": 5,
+		"NetworkId": 1567651915,
 		"PublicIP": "",
 		"PortBase": 10000,
 		"LogLevel": 0,
@@ -26,14 +26,18 @@
 		"PpListenAddr": "",
 		"PpBootstrap": null,
 		"ChainRestAddrs": [
-			"http://139.219.136.38:20334"
+			"http://52.163.217.230:10334",
+			"http://52.163.217.230:20334",
+			"http://139.219.141.206:20334"
 		],
 		"ChainRpcAddrs": [
-			"http://139.219.136.38:20336"
+			"http://52.163.217.230:10336",
+			"http://52.163.217.230:20336",
+			"http://139.219.141.206:20336"
 		],
-		"NATProxyServerAddrs": "tcp://40.73.100.114:6007",
+		"NATProxyServerAddrs": "tcp://52.230.121.132:6007",
 		"DspProtocol": "tcp",
-		"DspPortOffset": 4024,
+		"DspPortOffset": 4001,
 		"AutoSetupDNSEnable": false,
 		"TrackerPortOffset": 0,
 		"DnsNodeMaxNum": 100,
@@ -41,9 +45,9 @@
 		"DnsChannelDeposit": 1000000000,
 		"Trackers": [],
 		"DNSWalletAddrs": [
-			"AUtcTFw1mMB1R2Lvf28pEmm9xemUDtBHun"
+			"AcJdio7iRMzPxCWgBjSLSqKZcXMjNRtLpd"
 		],
-		"WalletPwd": "pwd",
+		"WalletPwd": "",
 		"WalletDir": "./wallet.dat"
 	},
 	"Fs": {

@@ -155,7 +155,7 @@ export default new Router({
     {
       path: '/settings',
       name: 'settings',
-      component: require('../pages/Dialog/Settings.vue').default
+      component: require('../pages/Settings.vue').default
     },
     {
       path: '*',

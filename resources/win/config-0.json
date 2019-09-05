@@ -1,10 +1,10 @@
 {
 	"Base": {
-		"BaseDir": "",
-		"LogPath": "./Log_0903",
-		"NetworkId": 1567481543,
+		"BaseDir": ".",
+		"LogPath": "./SeekLog_Config_0",
 		"ChainId": "0",
 		"BlockTime": 5,
+		"NetworkId": 1567481543,
 		"PublicIP": "",
 		"PortBase": 10000,
 		"LogLevel": 0,

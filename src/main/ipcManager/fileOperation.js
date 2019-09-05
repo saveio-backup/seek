@@ -86,8 +86,6 @@ ipcMain.on('getSettings', (event, key) => {
   })
 })
 ipcMain.on('updateSettings', (event, key, value) => {
-  console.log('key', key);
-  console.log('value', value);
   seekDB.updateSettings(key, value).then(() => {
     event.returnValue = {
       status: true

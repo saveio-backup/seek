@@ -8,6 +8,9 @@ import {
 import {
     SeekDB
 } from './dbs/index'
+import {
+    DEFAULT_CHAINID
+} from './windowManager/defaultOption';
 const seekDB = new SeekDB();
 seekDB.getDB();
 // const logP = console.log;
@@ -61,9 +64,9 @@ const cfgFilePath = async (appDataPath, appName) => {
 
     let cfgPath
     if (getPlatform() == "win") {
-        cfgPath = `${appDataPath}\\${appName}\\config-${chainId || '2'}.json`
+        cfgPath = `${appDataPath}\\${appName}\\config-${chainId || DEFAULT_CHAINID}.json`
     } else {
-        cfgPath = `${appDataPath}/${appName}/config-${chainId || '2'}.json`
+        cfgPath = `${appDataPath}/${appName}/config-${chainId || DEFAULT_CHAINID}.json`
     }
     return cfgPath
 }
@@ -143,6 +146,7 @@ let cfgObj = null;
 const setupConfig = async (appDataPath, appName) => {
     for (let index = 0; index <= 3; index++) {
         console.log('exec setupConfig!!!!!!!!!!');
+        if (index === 2) continue;
         let cfgPath;
         try {
             // cfgPath = await cfgFilePath(appDataPath, appName)
@@ -195,31 +199,33 @@ const setupConfig = async (appDataPath, appName) => {
             log.debug("folder not exist")
             fs.mkdirSync(baseDir)
         }
-        cfgObj.Base.AutoSetupDNSEnable = false;
-        cfgObj.Base.NetworkId = 1565267317;
-        cfgObj.Base.DNSWalletAddrs = ["AXUhmdzcAJwaFW91q6UYuPGGJY3fimoTAj"];
-        cfgObj.Base.ChainRestAddrs = [
-            "http://221.179.156.57:10334",
-            "http://221.179.156.57:11334",
-            "http://221.179.156.57:12334",
-            "http://221.179.156.57:13334",
-            "http://221.179.156.57:14334",
-            "http://221.179.156.57:15334",
-            "http://221.179.156.57:16334"
-        ];
-        cfgObj.Base.ChainRpcAddrs = [
-            "http://221.179.156.57:10336",
-            "http://221.179.156.57:11336",
-            "http://221.179.156.57:12336",
-            "http://221.179.156.57:13336",
-            "http://221.179.156.57:14336",
-            "http://221.179.156.57:15336",
-            "http://221.179.156.57:16336"
-        ];
-        cfgObj.Base.NATProxyServerAddrs = "tcp://40.73.103.72:6007";
-        cfgObj.Base.ChannelRevealTimeout = "200";
-        cfgObj.Base.ChannelSettleTimeout = "500";
-        cfgObj.Base.edgeIsRestart = false;
+        if (index === 3) {
+            cfgObj.Base.AutoSetupDNSEnable = false;
+            cfgObj.Base.NetworkId = 1565267317;
+            cfgObj.Base.DNSWalletAddrs = ["AXUhmdzcAJwaFW91q6UYuPGGJY3fimoTAj"];
+            cfgObj.Base.ChainRestAddrs = [
+                "http://221.179.156.57:10334",
+                "http://221.179.156.57:11334",
+                "http://221.179.156.57:12334",
+                "http://221.179.156.57:13334",
+                "http://221.179.156.57:14334",
+                "http://221.179.156.57:15334",
+                "http://221.179.156.57:16334"
+            ];
+            cfgObj.Base.ChainRpcAddrs = [
+                "http://221.179.156.57:10336",
+                "http://221.179.156.57:11336",
+                "http://221.179.156.57:12336",
+                "http://221.179.156.57:13336",
+                "http://221.179.156.57:14336",
+                "http://221.179.156.57:15336",
+                "http://221.179.156.57:16336"
+            ];
+            cfgObj.Base.NATProxyServerAddrs = "tcp://40.73.103.72:6007";
+            cfgObj.Base.ChannelRevealTimeout = "200";
+            cfgObj.Base.ChannelSettleTimeout = "500";
+            cfgObj.Base.edgeIsRestart = false;
+        }
         try {
             console.log('cfgPath is !!!!!');
             console.log(cfgPath);
@@ -246,12 +252,12 @@ const run = async (appDataPath, appName) => {
         log.error("init database error", error)
     }
     if (getPlatform() == "win") {
-        cfgPath = `${appDataPath}\\${appName}\\config-${chainId || '2'}.json`;
+        cfgPath = `${appDataPath}\\${appName}\\config-${chainId || DEFAULT_CHAINID}.json`;
         cfgDir = `${appDataPath}\\${appName}`;
         // cmdStr = `.\\edge.exe --config='${cfgDir}'`
         cmdStr = `.\\edge-windows-amd64.exe`
     } else {
-        cfgPath = `${appDataPath}/${appName}/config-${chainId || '2'}.json`;
+        cfgPath = `${appDataPath}/${appName}/config-${chainId || DEFAULT_CHAINID}.json`;
         cfgDir = `${appDataPath}/${appName}/`;
         // cmdStr = `./edge --config='${cfgDir}'`
         cmdStr = `./edge-darwin-amd64`

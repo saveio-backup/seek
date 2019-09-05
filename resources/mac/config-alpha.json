@@ -1,7 +1,7 @@
 {
 	"Base": {
-		"BaseDir": "/Users/zhijie/Desktop/onchain/save-test/node4",
-		"LogPath": "./Log_0901",
+		"BaseDir": ".",
+		"LogPath": "./SeekLog_Config_Alpha",
 		"ChainId": "alpha",
 		"BlockTime": 1,
 		"NetworkId": 1565267317,

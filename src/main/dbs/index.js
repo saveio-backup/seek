@@ -1,9 +1,11 @@
 import {
   app
 } from 'electron'
+import {
+  DEFAULT_CHAINID
+} from '../windowManager/defaultOption';
 import path from 'path'
 import fs from 'fs';
-
 const sqlite3 = require('sqlite3').verbose();
 const DEFAULT_USERSUMMARY_CONFIG = {
   Usermeta: {
@@ -21,7 +23,7 @@ const DEFAULT_USERSUMMARY_CONFIG = {
     value: {
       console: true,
       devEdgeEnable: false,
-      ChainId: '2'
+      ChainId: DEFAULT_CHAINID
     },
     modify: true
   },
@@ -160,7 +162,6 @@ class SeekDB {
               reject(err);
             } else {
               console.log('UPDATE SUCCESS');
-              console.log(res);
             }
           })
           resolve('ok');
@@ -237,7 +238,7 @@ function createDB(DBName, config) {
   })
 }
 
-function getDB(DBName,config) {
+function getDB(DBName, config) {
   const dbPath = path.join(g_seekDB, DBName, config ? config.subDirname || '' : '');
   return new sqlite3.Database(dbPath, (err) => {
     err && console.error(err)

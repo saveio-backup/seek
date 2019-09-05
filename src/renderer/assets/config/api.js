@@ -4,16 +4,19 @@ const {
 import {
   ipcRenderer
 } from 'electron'
+import {
+  DEFAULT_CHAINID
+} from '../../../main/windowManager/defaultOption';
 const fs = require("fs")
 const userDataPath = app.getPath('userData')
 const chainId = ipcRenderer.sendSync('getSettings', 'ChainId');
 let HOST = null;
 // let HOST = 'http://localhost:10235/api/'
 // console.log('userDataPath', userDataPath, exist)
-const exist = fs.existsSync(`${userDataPath}/config-${chainId || '2'}.json`)
+const exist = fs.existsSync(`${userDataPath}/config-${chainId || DEFAULT_CHAINID}.json`)
 if (exist) {
   console.log('chainid .json   exist !!!!!!!');
-  const cfg = fs.readFileSync(`${userDataPath}/config-${chainId || '2'}.json`)
+  const cfg = fs.readFileSync(`${userDataPath}/config-${chainId || DEFAULT_CHAINID}.json`)
   if (cfg) {
     const cfgObj = JSON.parse(cfg)
     // console.log('cfgObj', cfgObj)

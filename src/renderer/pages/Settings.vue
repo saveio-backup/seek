@@ -2,7 +2,7 @@
 	<div id="settings">
 		<div class="settings-content">
 			<div class="settings-box">
-				<div class="tag">Setting</div>
+				<div class="ft20">Setting</div>
 				<!-- <p class="active-blue ft14">Clear browsing data</p> -->
 			</div>
 			<div class="settings-box">
@@ -14,20 +14,22 @@
 					v-model="settings.ChainId"
 					@change="switchChainId(settings.ChainId)"
 				>
-					<el-option
+					<!-- <el-option
 						label="DevNet"
 						value="0"
-					></el-option>
+					></el-option> -->
 					<el-option
 						label="TestNet"
 						value="1"
 					></el-option>
 					<el-option
 						label="MainNet"
+						disabled
 						value="2"
 					></el-option>
 					<el-option
-						label="Previous version of the network"
+						label="Alpha(Previous version)"
+						disabled
 						value="alpha"
 					></el-option>
 				</el-select>
@@ -53,6 +55,7 @@
 </template>
 <script>
 import { ipcRenderer } from "electron";
+import { DEFAULT_CHAINID } from "../../main/windowManager/defaultOption";
 export default {
 	mounted() {
 		document.title = "Settings";
@@ -81,22 +84,29 @@ export default {
 						this.updateSettings("ChainId", res.Result.ChainId);
 						this.settings.ChainId = res.Result.ChainId;
 					} else {
-						this.switchChainId("2");
+						this.switchChainId(DEFAULT_CHAINID);
 					}
 				} else {
-					this.$message.error(
-						this.$i18n.error[res.Error]
-							? this.$i18n.error[res.Error][this.$language]
-							: `error code is ${res.Error}`
-					);
+					if (res.Error !== 40007) {
+						this.$message.error(
+							this.$i18n.error[res.Error]
+								? this.$i18n.error[res.Error][this.$language]
+								: `error code is ${res.Error}`
+						);
+					}
 				}
 			});
 		},
 		switchChainId(id) {
+			console.log("switch chainid", id);
 			this.$axios.post(this.$api.switchChainId, { ChainId: id }).then(res => {
 				if (res.Error === 0) {
 					this.updateSettings("ChainId", id);
 					this.settings.ChainId = id;
+					this.$message({
+						message: "Switch Success",
+						type: "success"
+					});
 				} else {
 					this.$message.error(
 						this.$i18n.error[res.Error]
@@ -126,8 +136,7 @@ export default {
 			}
 			.el-select {
 				input {
-					width: 150px;
-					height: 32px;
+					width: 200px;
 					border: 1px solid rgba(4, 15, 57, 0.2);
 					border-radius: 2px;
 					// color: rgba(32, 32, 32, 0.4);

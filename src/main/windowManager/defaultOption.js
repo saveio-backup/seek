@@ -9,6 +9,7 @@ if (!process) {
 
 }
 module.exports = {
+  DEFAULT_CHAINID: '1',
   DEFAULT_URL,
   DEFAULT_PROTOCOL: 'seek',
   Y_POSITION: 63,

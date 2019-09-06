@@ -746,6 +746,9 @@ export default {
 		isSync: function() {
 			return this.$store.state.Home.isSync || false;
 		}
+	},
+	beforeDestroy() {
+		clearInterval(this.historyIntervalObj);
 	}
 };
 </script>

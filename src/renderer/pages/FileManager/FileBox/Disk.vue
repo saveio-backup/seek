@@ -728,6 +728,7 @@ export default {
 						}
 						this.switchToggle.load = true;
 					} else {
+						if(res.Error === 40007) return;
 						this.$message.error(
 							this.$i18n.error[res.Error]
 								? this.$i18n.error[res.Error][this.$language]

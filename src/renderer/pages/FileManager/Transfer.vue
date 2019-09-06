@@ -81,6 +81,11 @@ export default {
 			this.$router.push({ name: "transfer", query: query });
 		});
 	},
+	watch: {
+		transferType(newVal, oldVal) {
+			localStorage.setItem("transferType", newVal);
+		}
+	},
 	computed: {
 		downloadLength: function() {
 			return this.$store.state.Transfer.downloadLength;
@@ -101,7 +106,7 @@ export default {
 		console.log("to is");
 		console.log(to);
 		this.transferType = to.query.transferType >= 0 ? to.query.transferType : 2;
-		localStorage.setItem("transferType", this.transferType);
+		// localStorage.setItem("transferType", this.transferType);
 		next();
 		console.log("transferType is");
 		console.log(this.transferType);

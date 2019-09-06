@@ -155,8 +155,13 @@
 							</div>
 							<div
 								class="item-amount"
-								:class="{'send-item-amount':item.Type ==1}"
+								:class="{'send-item-amount': item.Type ==1}"
 							>{{item.Type ==1 ? '-':'+'}} {{parseFloat(parseFloat(item.AmountFormat).toFixed(9))}} {{(item.Asset).toUpperCase() === 'SAVE' ? 'ONI' : (item.Asset).toUpperCase()}}</div>
+							<div class="item-contract theme-font-blue-40 ft14 grey-xs user-no-select">
+								<div v-if="item.ContractType == 1">
+									Contract								
+								</div>
+							</div>
 							<div
 								class="item-more"
 								v-if="item.BlockHeight>0"
@@ -1180,6 +1185,19 @@ $light-grey: #f7f7f7;
 							text-align: center;
 							&.send-item-amount {
 								color: #eb8b7e;
+							}
+						}
+						.item-contract {
+							margin: 0 50px 0 5px;
+							width:94px;
+							height:26px;
+							& > div {
+								width:100%;
+								height:100%;
+								border: 1px solid rgba(237,239,244,1);
+								border-radius:1px;
+								text-align: center;
+								line-height: 26px;
 							}
 						}
 						.item-more {

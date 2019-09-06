@@ -1,4 +1,4 @@
 const config = {
-  outTime: 1
+  outTime: 5
 }
 module.exports = config;

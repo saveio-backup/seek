@@ -36,7 +36,7 @@
 					 active-class="active-blue"
 					>Discovery</router-link> -->
 					<router-link
-						:to="{name:'transfer',query:{transferType:localStorage.getItem('transferType')}}"
+						:to="{name:'transfer',query:{transferType: (localStorage.getItem('transferType') || 1)}}"
 						class="user-no-select"
 						active-class="active-blue"
 					>Transfer <span
@@ -221,6 +221,7 @@ export default {
 		},
 		completeTransferList(newVal, oldVal) {
 			clearTimeout(this.setTimeoutObj.complete);
+			let haveComplete = false;
 			this.setTimeoutObj.complete = setTimeout(() => {
 				for (let value of newVal) {
 					if (
@@ -236,6 +237,9 @@ export default {
 							}`,
 							type: "success"
 						});
+						haveComplete = true;
+					}
+					if(haveComplete) {
 						this.$store.dispatch("setSpace");
 					}
 					this.transferObj[value.Id] = value;

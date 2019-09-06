@@ -417,7 +417,7 @@
 									:stroke-width="14"
 									class="file-progress"
 									:percentage="Math.ceil(((item.UploadSize?item.UploadSize:item.DownloadSize)/fileObjById[detailId].FileSize)*100)"
-									:class="{'more-than-5': (((item.UploadSize?item.UploadSize:item.DownloadSize)/fileObjById[detailId].FileSize) < 0.05),'progressAnimate': fileObjById[detailId].Status != 4 && fileObjById[detailId].Status != 0}"
+									:class="{'more-than-5': (((item.UploadSize?item.UploadSize:item.DownloadSize)/fileObjById[detailId].FileSize) < 0.15),'progressAnimate': fileObjById[detailId].Status != 4 && fileObjById[detailId].Status != 0}"
 								></el-progress>
 							</div>
 							<div class="ml10 tl node-speed ft14 theme-font-blue-40">{{nodeSpeed[item.HostAddr] && util.bytesToSize(nodeSpeed[item.HostAddr].speed*1024) || '0 Byte'}}/s</div>
@@ -1522,6 +1522,7 @@ export default {
 	},
 	mounted() {
 		const INTERVAL_TIME = 1000;
+		clearInterval(this.speedIntervalObj);
 		this.speedIntervalObj = setInterval(() => {
 			this.getTaskSpeed();
 			this.getNodeSpeed();

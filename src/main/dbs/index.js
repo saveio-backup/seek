@@ -21,7 +21,7 @@ const DEFAULT_USERSUMMARY_CONFIG = {
   Settings: {
     type: 'JSON',
     value: {
-      console: true,
+      console: false,
       devEdgeEnable: false,
       ChainId: DEFAULT_CHAINID
     },

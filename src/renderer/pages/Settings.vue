@@ -14,23 +14,11 @@
 					v-model="settings.ChainId"
 					@change="switchChainId(settings.ChainId)"
 				>
-					<!-- <el-option
-						label="DevNet"
-						value="0"
-					></el-option> -->
 					<el-option
-						label="TestNet"
-						value="1"
-					></el-option>
-					<el-option
-						label="MainNet"
-						disabled
-						value="2"
-					></el-option>
-					<el-option
-						label="Alpha(Previous version)"
-						disabled
-						value="alpha"
+						v-for="(item,index) in netConfig.list"
+						:key="index"
+						:label="netConfig.default[item] ||'Private'+' (' + item +')'"
+						:value="item"
 					></el-option>
 				</el-select>
 			</div>
@@ -60,6 +48,7 @@ export default {
 	mounted() {
 		document.title = "Settings";
 		this.getSettingsAll();
+		this.getChainList();
 		this.getChainId();
 	},
 	data() {
@@ -67,7 +56,15 @@ export default {
 			switchToggle: {
 				console: true
 			},
-			settings: {}
+			settings: {},
+			netConfig: {
+				list: [],
+				default: {
+					"0": "DevNet",
+					"1": "TestNet",
+					"2": "MainNet"
+				}
+			}
 		};
 	},
 	methods: {
@@ -76,6 +73,13 @@ export default {
 		},
 		updateSettings(key, value) {
 			const result = ipcRenderer.sendSync("updateSettings", key, value);
+		},
+		getChainList() {
+			this.$axios.get(this.$api.getchainidlist).then(res => {
+				if (res.Error === 0) {
+					this.netConfig.list = res.Result.Ids;
+				}
+			});
 		},
 		getChainId() {
 			this.$axios.get(this.$api.chainId).then(res => {

@@ -144,7 +144,30 @@ let cacheRestartObj = {
 let cfgObj = null;
 
 const setupConfig = async (appDataPath, appName) => {
-    for (let index = 0; index <= 3; index++) {
+    let deadline = 1567755700195; // 2019-09-06 15:41:40
+    let cfg0;
+    let cfg2;
+    let cfgAlpha;
+    if (getPlatform() == "win") {
+        cfg0 = `${appDataPath}\\${appName}\\config-0.json`;
+        cfg2 = `${appDataPath}\\${appName}\\config-2.json`;
+        cfgAlpha = `${appDataPath}\\${appName}\\config-alpha.json`;
+    } else {
+        cfg0 = `${appDataPath}/${appName}/config-0.json`;
+        cfg2 = `${appDataPath}/${appName}/config-2.json`;
+        cfgAlpha = `${appDataPath}/${appName}/config-alpha.json`;
+    }
+
+    unlinkFile(cfg0);
+    unlinkFile(cfg2);
+    unlinkFile(cfgAlpha);
+
+    function unlinkFile(path) {
+        if (fs.existsSync(path) && (fs.statSync(path).birthtimeMs < deadline)) {
+            fs.unlinkSync(path);
+        }
+    }
+    for (let index = 1; index <= 1; index++) {
         console.log('exec setupConfig!!!!!!!!!!');
         if (index === 2) continue;
         let cfgPath;

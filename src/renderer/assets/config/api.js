@@ -74,6 +74,7 @@ const API = {
   networkStatus: HOST + VERSION + 'network/state',
   reconnect: HOST + VERSION + 'network/channel/reconnect',
   chainId: HOST + VERSION + 'chainid',
-  switchChainId: HOST + VERSION + 'chainid/switch'
+  switchChainId: HOST + VERSION + 'chainid/switch',
+  getchainidlist: HOST + VERSION + 'chainid/list'
 }
 export default API;

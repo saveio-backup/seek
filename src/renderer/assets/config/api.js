@@ -13,10 +13,10 @@ const chainId = ipcRenderer.sendSync('getSettings', 'ChainId');
 let HOST = null;
 // let HOST = 'http://localhost:10235/api/'
 // console.log('userDataPath', userDataPath, exist)
-const exist = fs.existsSync(`${userDataPath}/config-${chainId || DEFAULT_CHAINID}.json`)
+const exist = fs.existsSync(`${userDataPath}/config-${chainId}.json`)
 if (exist) {
   console.log('chainid .json   exist !!!!!!!');
-  const cfg = fs.readFileSync(`${userDataPath}/config-${chainId || DEFAULT_CHAINID}.json`)
+  const cfg = fs.readFileSync(`${userDataPath}/config-${chainId}.json`)
   if (cfg) {
     const cfgObj = JSON.parse(cfg)
     // console.log('cfgObj', cfgObj)
@@ -26,6 +26,17 @@ if (exist) {
   }
 } else {
   console.log('not exist!!!!');
+  try {
+    const result = ipcRenderer.sendSync("updateSettings", 'ChainId', DEFAULT_CHAINID);
+    const cfg = fs.readFileSync(`${userDataPath}/config-${DEFAULT_CHAINID}.json`)
+    if (cfg) {
+      const cfgObj = JSON.parse(cfg)
+      // console.log('cfgObj', cfgObj)
+      if (cfgObj) {
+        HOST = `http://localhost:${cfgObj.Base.PortBase + cfgObj.Base.HttpRestPortOffset}/api/`
+      }
+    }
+  } catch (err) {}
 }
 // console.log("HOST", HOST)
 const VERSION = 'v1/';

@@ -72,7 +72,9 @@ export default {
 			this.settings = ipcRenderer.sendSync("getAllSettings");
 		},
 		updateSettings(key, value) {
-			const result = ipcRenderer.sendSync("updateSettings", key, value);
+			try {
+				const result = ipcRenderer.sendSync("updateSettings", key, value);
+			} catch (error) {}
 		},
 		getChainList() {
 			this.$axios.get(this.$api.getchainidlist).then(res => {

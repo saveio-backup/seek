@@ -144,7 +144,7 @@ let cacheRestartObj = {
 let cfgObj = null;
 
 const setupConfig = async (appDataPath, appName) => {
-    let deadline = 1567755700195; // 2019-09-06 15:41:40
+    let deadline = 1567767645712; // Fri Sep 06 2019 19:00:45 GMT+0800
     let cfg0;
     let cfg2;
     let cfgAlpha;
@@ -275,12 +275,17 @@ const run = async (appDataPath, appName) => {
         log.error("init database error", error)
     }
     if (getPlatform() == "win") {
-        cfgPath = `${appDataPath}\\${appName}\\config-${chainId || DEFAULT_CHAINID}.json`;
+        const chainIdPath = `${appDataPath}/${appName}/config-${chainId}.json`;
+        const defaultPath = `${appDataPath}/${appName}/config-${DEFAULT_CHAINID}.json`
+        cfgPath = fs.existsSync(chainIdPath) ? chainIdPath : defaultPath;
+        // cfgPath = `${appDataPath}\\${appName}\\config-${chainId || DEFAULT_CHAINID}.json`;
         cfgDir = `${appDataPath}\\${appName}`;
         // cmdStr = `.\\edge.exe --config='${cfgDir}'`
         cmdStr = `.\\edge-windows-amd64.exe`
     } else {
-        cfgPath = `${appDataPath}/${appName}/config-${chainId || DEFAULT_CHAINID}.json`;
+        const chainIdPath = `${appDataPath}/${appName}/config-${chainId}.json`;
+        const defaultPath = `${appDataPath}/${appName}/config-${DEFAULT_CHAINID}.json`
+        cfgPath = fs.existsSync(chainIdPath) ? chainIdPath : defaultPath;
         cfgDir = `${appDataPath}/${appName}/`;
         // cmdStr = `./edge --config='${cfgDir}'`
         cmdStr = `./edge-darwin-amd64`

@@ -155,10 +155,10 @@
 							</div>
 							<div
 								class="item-amount"
-								:class="{'send-item-amount': item.Type ==1}"
+								:class="{'send-item-amount': item.Type ==1, 'item-contract-amount': item.ContractType == 1}"
 							>{{item.Type ==1 ? '-':'+'}} {{parseFloat(parseFloat(item.AmountFormat).toFixed(9))}} {{(item.Asset).toUpperCase() === 'SAVE' ? 'ONI' : (item.Asset).toUpperCase()}}</div>
-							<div class="item-contract theme-font-blue-40 ft14 grey-xs user-no-select">
-								<div v-if="item.ContractType == 1">
+							<div class="item-contract theme-font-blue-40 ft12 grey-xs user-no-select"  v-if="item.ContractType == 1">
+								<div>
 									Contract								
 								</div>
 							</div>
@@ -1180,15 +1180,18 @@ $light-grey: #f7f7f7;
 							font-size: 14px;
 							color: #8bd179;
 							width: 100%;
-							max-width: 400px;
+							// max-width: 400px;
 							margin: 0 auto;
 							text-align: center;
 							&.send-item-amount {
 								color: #eb8b7e;
 							}
+							&.item-contract-amount {
+								margin-left: calc(94px + 3%);
+							}
 						}
 						.item-contract {
-							margin: 0 50px 0 5px;
+							margin: 0 3% 0 5px;
 							width:94px;
 							height:26px;
 							& > div {

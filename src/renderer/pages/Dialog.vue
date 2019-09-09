@@ -231,6 +231,14 @@ export default {
 					}
 				});
 		},
+		// getCurrentChnannel() {
+		// 	this.$axios.get(this.$api.getCurrentChannel).then(res => {
+		// 		if(res.Error === 0) {
+		// 			let result = res.Result;
+		// 			this.renderDateToBrowserView({ result: result, type: "currentChannel", rendTo: 1 });
+		// 		}
+		// 	})	
+		// },
 		getState() {
 			this.$axios
 				.get(this.$api.networkStatus)

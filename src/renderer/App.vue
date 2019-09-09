@@ -79,9 +79,7 @@ export default {
 		revenceUpdate({result}) {
 			this.$store.commit("SET_REVENUE", result);
 		},
-		progressUpdate({result, page}) {
-			// console.log(result);
-			// console.log(location.href);			
+		progressUpdate({result, page}) {			
 			if(page === 'tab') {
 				if(result.isNeedSync) {
 					if (location.href.indexOf('CreateAccount') < 0) {
@@ -108,21 +106,13 @@ export default {
 		},
 		accountUpdate({result}) {
 			this.$store.commit("SET_ACCOUNT", result);
-			// if (result && result.Address && result.type !== "windowRender") {
-			// 	if (
-			// 		location.href.indexOf("ImportAccount") > 0 ||
-			// 		location.href.indexOf("CreateAccount") > 0
-			// 	) {
-			// 		this.$router.replace({
-			// 			name: "Home"
-			// 		});
-			// 	}
-			// 	this.$store.commit("SET_CURRENT_ACCOUNT", 1);
-			// }
 		},
 		stateUpdate({result}) {
 			this.$store.commit("SET_STAET", result);
-		}
+		},
+		// currentChannelUpdate({result}) {
+		// 	this.$store.dispatch("setChannelBind", result.ChannelId);
+		// }
 	}
 };
 </script>

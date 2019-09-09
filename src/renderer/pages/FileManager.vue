@@ -4,9 +4,10 @@
 			<div class="top-nav">
 				<div
 					class="change-channel mr10"
-					@click="switchToggle.channelListDialog = true"
+					@click="openChannelListDialog"
 					title="Change Channel"
 				>
+					<!-- @click="switchToggle.channelListDialog = true" -->
 					<i class="ofont ofont-qiehuan"></i>
 				</div>
 				<div
@@ -86,19 +87,43 @@
 				:close-on-click-modal='false'
 				:visible.sync="switchToggle.channelListDialog"
 				center
-				width="700px"
+				width="900px"
 			>
 				<div slot="title">
 					<h2>Channel Switch</h2>
 					<div class="dialog-title-border"></div>
 				</div>
-				<div class="loading-content">
-					<div style="height:400px; overflow:hidden; display:flex;">
+				<div class="loading-content channelSwitchBind">
+					<div style="height:300px; overflow:hidden;display: flex">
 						<channel-list
 							ref="channellist"
 							:showRadio='true'
 							@toCloseDialog="toCloseDialog"
 						></channel-list>
+					</div>
+
+					<div class="adjust-item flex margin-center mt10 mb10">
+						<el-form
+							ref="switchChannelForm"
+							:model="switchChannelForm"
+							:rules="switchChannelRules"
+							class="margin-center"
+						>
+							<el-form-item
+								class="theme-font-blue-bold label-input-one-col"
+								label="Password"
+								prop="Password"
+							>
+								<el-input 
+									class="grey-theme"
+									type="password"
+									show-password
+									v-model="switchChannelForm.Password"
+									@keydown.enter.native="toApplyChange"
+									placeholder="Please Input Password"
+								></el-input>
+							</el-form-item>
+						</el-form>
 					</div>
 					<div slot="footer">
 						<el-button @click="toCancelChange">Cancel</el-button>
@@ -141,27 +166,18 @@ export default {
 				assetTransferDialog: false,
 				channelListDialog: false
 			},
-			// transferInfo: {
-			// 	Amount: "",
-			// 	Password: ""
-			// },
-			// transferRules: {
-			// 	Amount: [
-			// 		{
-			// 			required: true,
-			// 			message: "Please fill amount",
-			// 			trigger: "blur"
-			// 		}
-			// 	],
-			// 	Password: [
-			// 		{
-			// 			required: true,
-			// 			message: "Please fill password",
-			// 			trigger: "blur"
-			// 		}
-			// 	]
-			// },
-			// withDraw: true,
+			switchChannelForm: {
+				Password: ""
+			},
+			switchChannelRules: {
+				Password: [
+					{
+						required: true,
+						message: "Please Input Password",
+						trigger: "blur"
+					}				
+				]
+			},
 			location: location,
 			transferObj: {},
 			setTimeoutObj: {
@@ -182,15 +198,59 @@ export default {
 		toConfirm() {
 			this.$refs["channelwallettransfer"].toTransfer();
 		},
-		toApplyChange() {
-			this.$refs.channellist.applyChange();
-		},
-		toCloseDialog() {
-			this.switchToggle.channelListDialog = false;
-			this.$message({
-				type: "success",
-				message: "Switching channel successfully"
+		openChannelListDialog() {
+			this.switchToggle.channelListDialog = true;
+			this.$nextTick(() => {
+				this.$refs.switchChannelForm.resetFields();
 			});
+		},
+		toApplyChange() {
+			this.$refs.switchChannelForm.validate(valid => {
+				if(!valid) return;
+				this.$refs.channellist.applyChange();
+			});
+		},
+		getDnsAddressById(id) {
+			for(let dns of this.channels) {
+				if(dns.ChannelId == id) {
+					return dns.Address;
+				}
+			}
+		},
+		toCloseDialog(ChannelId) {
+			let partnerId = ChannelId;
+			let partnerAddress = this.getDnsAddressById(partnerId);
+
+			this.$axios.post(this.$api.channelSwitch, {
+				Partner: partnerAddress,
+				Password: this.switchChannelForm.Password
+			},
+			{
+				loading: {
+					text: "Loading...",
+					target: ".channelSwitchBind.loading-content"
+				},
+				timeout: (this.$outTime * 10000 + 50000)
+			}).then(res => {
+				if(res.Error === 0) {
+					this.switchToggle.channelListDialog = false;
+					this.$message({
+						type: "success",
+						message: "Switching channel successfully"
+					});
+					localStorage.setItem("channelBindId", ChannelId);
+					this.$store.dispatch(
+						"setChannelBind",
+						ChannelId
+					);
+				} else {
+					this.$message.error(
+						this.$i18n.error[res.Error]
+							? this.$i18n.error[res.Error][this.$language]
+							: `error code is ${res.Error}`
+					);
+				}
+			})
 		},
 		toCancelChange() {
 			this.$refs.channellist.initCurrentRow();
@@ -251,18 +311,12 @@ export default {
 		mainCount: function() {
 			return this.$store.state.Wallet.mainCount;
 		},
-		// balanceAddress: function() {
-		// 	return this.$store.state.Home.balanceAddress;
-		// },
 		channels: function() {
 			return this.$store.state.Home.channels;
 		},
 		channelBind: function() {
 			return this.$store.state.Home.channelBind;
 		},
-		// balanceTotal: function() {
-		// 	return this.$store.state.Home.balanceTotal;
-		// },
 		transferLength: function() {
 			return (
 				this.$store.state.Transfer.downloadLength +

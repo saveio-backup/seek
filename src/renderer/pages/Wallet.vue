@@ -1192,15 +1192,16 @@ $light-grey: #f7f7f7;
 						}
 						.item-contract {
 							margin: 0 3% 0 5px;
-							width:94px;
-							height:26px;
+							width: 80px;
+							height: 20px;
 							& > div {
-								width:100%;
-								height:100%;
-								border: 1px solid rgba(237,239,244,1);
-								border-radius:1px;
+								width: 100%;
+								height: 100%;
+								border: 1px solid rgba(237, 239, 244, 1);
+								border-radius: 1px;
 								text-align: center;
-								line-height: 26px;
+								line-height: 20px;
+								border-radius: 10px;
 							}
 						}
 						.item-more {

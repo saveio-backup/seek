@@ -41,10 +41,6 @@ const mutations = {
     state.account = result;
   },
   'SET_BALANCE_TOTAL'(state, result) {
-    // state.balanceTotal = result.BalanceFormat;
-    // if (result.Channels && (result.Channels.length > 0)) {
-    //   state.balanceAddress = result.Channels[0].Address;
-    // }
     state.channels = result.Channels;
     this.dispatch('setChannelBind', localStorage.getItem('channelBindId') || '')
   },
@@ -52,8 +48,9 @@ const mutations = {
     state.channelBind = {};
     state.channels = state.channels || [];
     let result = state.channels.some(channel => {
-      if (channel.ChannelId.toString() === Id) {
-        state.channelBind = channel;
+      if (channel.ChannelId == Id) {
+        state.channelBind = Object.assign({}, channel);
+        localStorage.setItem('channelBindId', Id);
         return true;
       } else {
         return false;
@@ -63,15 +60,13 @@ const mutations = {
       // state.channelBind = state.channels[0] || {};
       for (let value of state.channels) {
         if (state.dns.indexOf(value.HostAddr) >= 0) {
+          localStorage.setItem('channelBindId', value.ChannelId);
           state.channelBind = Object.assign({}, value);
           return;
         }
       }
     }
   },
-  // 'SET_CHANNEL_PROGRESS'(state, progress) {
-  //   state.initChannelProgress = progress;
-  // },
   'SET_CURRENT_HEIGHT'(state, progress) {
     state.currentHeight = progress;
   },
@@ -101,19 +96,11 @@ const actions = {
     commit
   }) {
     requestChannelBalanceTotal(commit);
-    // clearInterval(timer.channelBalanceTotalTimer);
-    // timer.channelBalanceTotalTimer = setInterval(() => {
-    //   requestChannelBalanceTotal(commit);
-    // }, timer.COUNT_INTERVAL);
   },
   setRevenue({
     commit
   }) {
     requestRevenue(commit);
-    // clearInterval(timer.revenueTimer);
-    // timer.revenueTimer = setInterval(() => {
-    //   requestRevenue(commit);
-    // }, timer.COUNT_INTERVAL);
   },
   setCurrentAccount({
     commit
@@ -124,10 +111,7 @@ const actions = {
       .then((res) => {
         console.log('account', res);
         if (res.Error === 0) {
-          // const data = res.data;
-          // if (data.Error === 0) { // response data
           if (res.Result.Address) { // Wallet(Account) exist
-            // try {
               const result = res.Result;
               for (let key in result) {
                 window.localStorage.setItem(key, result[key]);
@@ -136,6 +120,7 @@ const actions = {
               this.dispatch("setBalanceLists"); // getBalance
               this.dispatch("setChannelBalanceTotal"); // getAllChannels
               this.dispatch("setRevenue");
+              this.dispatch("setCurrentChannel");
               try {
                 axios.get(api.channelInitProgress).then(progress => {
                   if (progress.Error === 0) {
@@ -153,39 +138,11 @@ const actions = {
               } catch(e) {
                 console.log(e);
               }
-            //       axios
-            //         .get(api.channelSync)
-            //         .then(res2 => {
-            //           if (res2.Result.Syncing === true) {
-            //             console.log('progress:', progress);
-            //             rebackToCreateAccount(commit, progress.Result.Progress); // back to create account
-            //             this.dispatch('getChannelInitProgress'); // Loop loading progress
-            //           } else { // both Wallet and Channel exist
-
-                //       }
-                //     })
-                // } else if (progress.Error === 0) { // both Wallet and Channel exist
-                //   const result = res.Result;
-                //   for (let key in result) {
-                //     window.localStorage.setItem(key, result[key]);
-                //   }
-                //   commit('SET_CURRENT_ACCOUNT', 1) // login success
-                //   this.dispatch("setBalanceLists"); // getBalance
-                //   this.dispatch("setChannelBalanceTotal"); // getAllChannels
-                //   this.dispatch("setRevenue");
-                // }
-              // } else {
-              //   commit('SET_CURRENT_ACCOUNT', 0) // login fail
-              // }
-            // } catch (error) {
-            //   console.error(error)
-            // }
           } else {
             commit('SET_CURRENT_ACCOUNT', 0) // login fail
             window.localStorage.clear(); // remove all local infomation
           }
         } else {
-          // this.$message.error(this.$i18n.error[res.Error]?this.$i18n.error[res.Error][this.$language]:`error code is ${res.Error}`);
           if (location.href.indexOf('Home') < 0) {
             router.replace({
               name: 'Home'
@@ -204,25 +161,6 @@ const actions = {
         commit('SET_CURRENT_ACCOUNT', 0) // login fail Or no user
       });
   },
-  // getChannelInitProgress({
-  //   commit
-  // }) {
-  //   clearInterval(timer.channelInitProgress);
-  //   timer.channelInitProgress = setInterval(() => {
-  //     axios.get(api.channelInitProgress).then(res => {
-  //       if (res.Error === 0) {
-  //         if (res.Result.Progress >= 1) {
-  //           commit('SET_CHANNEL_PROGRESS', 1)
-  //           clearInterval(timer.channelInitProgress);
-  //           window.location.href = location.origin + location.pathname; // success login link to home page
-  //         }
-  //         commit('SET_CHANNEL_PROGRESS', res.Result.Progress)
-  //         commit('SET_CURRENT_HEIGHT', res.Result.Now)
-  //         commit('SET_TOTAL_HEIGHT', res.Result.End)
-  //       }
-  //     });
-  //   }, timer.COUNT_INTERVAL);
-  // },
   setChannelBind({
     commit
   }, Id) {
@@ -239,6 +177,15 @@ const actions = {
   },
   clearIntervalGetDns({commit}) {
     clearInterval(timer.dns);
+  },
+  setCurrentChannel({
+    commit
+  }) {
+    axios.get(api.getCurrentChannel).then(res => {
+      if(res.Error === 0) {
+        this.dispatch('setChannelBind', res.Result.ChannelId);
+      }
+    });
   }
 }
 
@@ -253,14 +200,6 @@ function getAllDns(commit) {
     }
   });
 }
-
-// function rebackToCreateAccount(commit, progress) {
-//   commit('SET_CURRENT_ACCOUNT', 0) // login fail
-//   commit('SET_CHANNEL_PROGRESS', progress)
-//   router.replace({
-//     name: 'CreateAccount'
-//   })
-// }
 
 function requestChannelBalanceTotal(commit) {
   axios

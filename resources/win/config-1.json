@@ -45,7 +45,8 @@
 		"DnsChannelDeposit": 1000000000,
 		"Trackers": [],
 		"DNSWalletAddrs": [
-			"AcJdio7iRMzPxCWgBjSLSqKZcXMjNRtLpd"
+			"AcJdio7iRMzPxCWgBjSLSqKZcXMjNRtLpd",
+			"APnoekqXUkNDFQMbnnBCsMPQgmWoQQmsd4"
 		],
 		"WalletPwd": "",
 		"WalletDir": "./wallet.dat"

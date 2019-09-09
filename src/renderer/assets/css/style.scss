@@ -389,4 +389,15 @@ select {
     line-height: 32px;
     user-select: none;
   }
+  .el-form-item {
+    &.label-input-one-col {
+      .el-form-item__content {
+        float: left;
+      }
+      .el-form-item__label {
+        height: 40px;
+        line-height: 40px;
+      }
+    }
+  }
 }

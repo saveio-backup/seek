@@ -16,8 +16,8 @@
 			>
 				<el-table-column
 					label='Channel'
-					min-width="80px"
-					max-width="120px"
+					min-width="60px"
+					max-width="80px"
 					prop="ChannelId"
 					sortable
 				>
@@ -25,10 +25,11 @@
 						<div class="bold">{{scope.row.ChannelId}}</div>
 					</template>
 				</el-table-column>
+					<!-- min-width="80px"
+					max-width="120px" -->
 				<el-table-column
 					label='Status'
-					min-width="80px"
-					max-width="120px"
+					min-width="50"
 					prop="Connected"
 					sortable
 				>
@@ -51,7 +52,7 @@
 				</el-table-column>
 				<el-table-column
 					label='Address'
-					:max-width="600"
+					min-width="100"
 					prop="Address"
 					sortable
 				>
@@ -317,7 +318,9 @@ export default {
 					Address: "im007",
 					HostAddr: "tcp://127.0.0.1:13004",
 					TokenAddr: "gofkys007",
-					IsDNS: false
+					IsOnline: true,
+					IsDNS: true,
+					Selected: true
 				},
 				{
 					ChannelId: 196,
@@ -326,7 +329,8 @@ export default {
 					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
 					HostAddr: "tcp://127.0.0.1:13004",
 					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV",
-					IsDNS: true
+					IsOnline: true,
+					IsDNS: true,
 				},
 				{
 					ChannelId: 105,
@@ -335,6 +339,7 @@ export default {
 					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
 					HostAddr: "tcp://127.0.0.1:13004",
 					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV",
+					IsOnline: true,
 					IsDNS: true
 				},
 				{
@@ -344,7 +349,8 @@ export default {
 					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
 					HostAddr: "tcp://127.0.0.1:13004",
 					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV",
-					IsDNS: false
+					IsOnline: true,
+					IsDNS: true
 				},
 				{
 					ChannelId: 107,
@@ -353,7 +359,8 @@ export default {
 					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
 					HostAddr: "tcp://127.0.0.1:13004",
 					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV",
-					IsDNS: false
+					IsOnline: true,
+					IsDNS: true
 				},
 				{
 					ChannelId: 108,
@@ -362,7 +369,8 @@ export default {
 					Address: "ANa3f9jm2FkWu4NrVn6L1FGu7zadKdvPjL",
 					HostAddr: "tcp://127.0.0.1:13004",
 					TokenAddr: "AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV",
-					IsDNS: false
+					IsOnline: true,
+					IsDNS: true
 				},
 				{
 					ChannelId: 109,
@@ -441,6 +449,7 @@ export default {
 				: "";
 		},
 		initCurrentRow() {
+			console.log(this.channelsDns)
 			let result = this.channelsDns.some((channel, index) => {
 				if (
 					channel.ChannelId.toString() === localStorage.getItem("channelBindId")
@@ -461,10 +470,10 @@ export default {
 			this.$refs.singleTable.setCurrentRow(row);
 		},
 		handleCurrentChange(currentRow, oldCurrentRow) {
-			console.log("curreuntRow is");
-			console.log(currentRow);
-			console.log("oldCurrentRow is ");
-			console.log(oldCurrentRow);
+			// console.log("curreuntRow is");
+			// console.log(currentRow);
+			// console.log("oldCurrentRow is ");
+			// console.log(oldCurrentRow);
 			this.currentRow = currentRow ? currentRow : oldCurrentRow;
 			this.channelsDns.map((channel, index) => {
 				if (
@@ -475,13 +484,8 @@ export default {
 			});
 		},
 		applyChange() {
-			localStorage.setItem("channelBindId", this.currentRow.ChannelId);
-			this.$store.dispatch(
-				"setChannelBind",
-				localStorage.getItem("channelBindId") || ""
-			);
 			if(this.currentRow.ChannelId) {
-				this.$emit('toCloseDialog');
+				this.$emit('toCloseDialog', this.currentRow.ChannelId);
 			} else {
 				this.$message({
 					type: "error",

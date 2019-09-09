@@ -9,7 +9,6 @@ resources/mac/edge
 resources/mac/edge-darwin-amd64
 resources/seek_releases
 coverage
-package-lock.json
 node_modules/
 npm-debug.log
 npm-debug.log.*

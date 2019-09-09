@@ -158,6 +158,11 @@ export default new Router({
       component: require('../pages/Settings.vue').default
     },
     {
+      path: '/orderpay',
+      name: 'orderpay',
+      component: require('../pages/OrderPay/OrderPay.vue').default
+    },
+    {
       path: '*',
       redirect: '/Home',
       meta: {

@@ -10,6 +10,7 @@ resources/mac/edge-darwin-amd64
 resources/seek_releases
 coverage
 node_modules/
+node_modules.zip
 npm-debug.log
 npm-debug.log.*
 thumbs.db

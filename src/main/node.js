@@ -222,6 +222,12 @@ const setupConfig = async(appDataPath, appName) => {
             log.debug("folder not exist")
             fs.mkdirSync(baseDir)
         }
+        if (index === 1) {
+            cfgObj.Base.DNSWalletAddrs = [
+                "AcJdio7iRMzPxCWgBjSLSqKZcXMjNRtLpd",
+                "APnoekqXUkNDFQMbnnBCsMPQgmWoQQmsd4"
+            ];
+        }
         if (index === 3) {
             cfgObj.Base.AutoSetupDNSEnable = false;
             cfgObj.Base.NetworkId = 1565267317;

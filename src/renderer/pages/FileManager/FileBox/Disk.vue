@@ -899,7 +899,7 @@ export default {
 					.post(this.$api.deletes, {
 						Hash: arr
 					},{
-						timeout: (20000 * arr.length + this.$outTime),
+						timeout: (20000 * arr.length + this.$outTime * 2000),
 						loading: {
 							text: "Deleting....",
 							target: ".loading-content.disk-delete-loading"

@@ -194,8 +194,8 @@
 							><i class="el-icon-lock"></i></span>
 							<span
 								class="active-blue cursor-pointer"
-								:class="{'not-allow-opeation':!show || scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23}"
-								:title="(!show || scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) ? 'Comming Soon...' : scope.row.IsUploadAction ? 'Start to Upload':'Start to Download'"
+								:class="{'not-allow-opeation':!show || ((scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4)}"
+								:title="(!show || ((scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4)) ? 'Comming Soon...' : scope.row.IsUploadAction ? 'Start to Upload':'Start to Download'"
 								v-show="scope.row.Status === 4"
 								@click="toUploadOrDownloadAgain(scope.row, transferType)"
 							><i
@@ -204,29 +204,29 @@
 								></i></span>
 							<span
 								class="active-blue cursor-pointer"
-								:title="(!show || scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) ? 'Comming Soon...' : scope.row.IsUploadAction ? 'Start to Upload':'Start to Download'"
+								:title="(!show || ((scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4)) ? 'Comming Soon...' : scope.row.IsUploadAction ? 'Start to Upload':'Start to Download'"
 								:class="{'not-allow-opeation':!show || scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23}"
 								v-show="scope.row.Status === 0"
 								@click="toUploadOrDownloadContinue(scope.row, transferType)"
 							><i class="ofont ofont-jixu"></i></span>
 							<span
 								class="active-blue cursor-pointer"
-								:class="{'not-allow-opeation':!show || scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23}"
-								:title="(!show || scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) ? 'Comming Soon...' : scope.row.IsUploadAction ? 'Pause to Upload':'Pause to Download'"
+								:class="{'not-allow-opeation':!show || ((scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4)}"
+								:title="(!show || ((scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4)) ? 'Comming Soon...' : scope.row.IsUploadAction ? 'Pause to Upload':'Pause to Download'"
 								v-show="(scope.row.Status === 1 || scope.row.Status === 2 )"
 								@click="uploadOrDownloadPause(scope.row, transferType)"
 							><i class="ofont ofont-zanting"></i></span>
 							<span
 								class="active-blue cursor-pointer"
-								:class="{'not-allow-opeation':!show || scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23}"
-								:title="(!show || scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) ? 'Comming Soon...' : scope.row.IsUploadAction ? 'Cancel to Upload':'Cancel to Download'"
+								:class="{'not-allow-opeation':!show || ((scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4)}"
+								:title="(!show || ((scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4)) ? 'Comming Soon...' : scope.row.IsUploadAction ? 'Cancel to Upload':'Cancel to Download'"
 								v-show="transferType === 1"
 								@click="openPassword(scope.row)"
 							><i class="ofont ofont-guanbi"></i></span>
 							<span
 								class="active-blue cursor-pointer"
-								:class="{'not-allow-opeation':!show || scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23}"
-								:title="(!show || scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) ? 'Comming Soon...' : scope.row.IsUploadAction ? 'Cancel to Upload':'Cancel to Download'"
+								:class="{'not-allow-opeation':!show || ((scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4)}"
+								:title="(!show || ((scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4)) ? 'Comming Soon...' : scope.row.IsUploadAction ? 'Cancel to Upload':'Cancel to Download'"
 								v-show="transferType === 2"
 								@click="openConfirmCancelDownload(scope.row)"
 							><i class="ofont ofont-guanbi"></i></span>
@@ -813,7 +813,7 @@ export default {
 				}
 				this.confirmCancelTask = task;
 			} else {
-				if (!this.show || row.DetailStatus === 5 || row.DetailStatus === 23) return;				
+				if (!this.show || ((task.DetailStatus === 5 || task.DetailStatus === 23) && task.Status !== 4)) {return};				
 				this.confirmCancelTask = Object.assign({}, task);
 			}
 			this.switchToggle.confirmCancelDownloadDialog = true;
@@ -842,7 +842,7 @@ export default {
 		// upload file open cancel task dialog to input password
 		openPassword(file = null) {
 			// to do!!!!!
-			if (file != null && (!this.show || file.DetailStatus === 5 || file.DetailStatus === 23)) return;
+			if (file != null && (!this.show || (file.DetailStatus === 5 || file.DetailStatus === 23) && file.Status !== 4)) {return};
 			this.switchToggle.passwordDialog = true;
 			this.$nextTick(() => {
 				this.$refs.passwordCancel.resetFields();
@@ -974,7 +974,7 @@ export default {
 				} else if (status.indexOf(item.Status) === -1) {
 					return false;
 				}
-				if(item.DetailStatus === 5 || item.DetailStatus === 23) {
+				if((item.DetailStatus === 5 || item.DetailStatus === 23) && item.Status !== 4) {
 					return false;
 				}
 				return true;
@@ -1140,7 +1140,9 @@ export default {
 		},
 		toUploadOrDownloadAgain(row, type) {
 			// to do!!!!!
-			if (!this.show || row.DetailStatus === 5 || row.DetailStatus === 23) return;
+			if (!this.show || ((row.DetailStatus === 5 || row.DetailStatus === 23) && row.Status !== 4)) {
+				return;
+			}
 			if (this.isSync && this.transferType === 2) {
 				this.$confirm(
 					"Block unsynchronized completion. Are you sure to do this?",
@@ -1219,7 +1221,7 @@ export default {
 		},
 		toUploadOrDownloadContinue(row, type) {
 			// to do!!!!!
-			if (!this.show || row.DetailStatus === 5 || row.DetailStatus === 23) return;
+			if (!this.show || ((row.DetailStatus === 5 || row.DetailStatus === 23)) && row.Status !== 4) {return};
 			if (this.isSync && this.transferType === 2) {
 				this.$confirm(
 					"Block unsynchronized completion. Are you sure to do this?",
@@ -1333,7 +1335,7 @@ export default {
 		 */
 		uploadOrDownloadPause(row, type) {
 			// to do!!!!!
-			if (!this.show || row.DetailStatus === 5 || row.DetailStatus === 23) return;
+			if (!this.show || ((row.DetailStatus === 5 || row.DetailStatus === 23) && row.Status !== 4)) {return};
 			// get http url
 			let url = type === 1 ? this.$api.uploadPause : this.$api.downloadPause;
 

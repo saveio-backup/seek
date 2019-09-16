@@ -135,6 +135,7 @@ export default {
 	},
 	mounted() {
 		document.title = "Home";
+		const vm = this;
 		this.chartInit();
 		this.$store.dispatch("setCurrentAccount"); // get login status
 		// open channel callback form createChannel of browserView dialog
@@ -144,7 +145,8 @@ export default {
 		}
 		ipcRenderer.on("open-add-channel-dialog", (event, dnsAdress) => {
 			console.log(dnsAdress);
-			this.$refs.channelListObj.openOpen(dnsAdress, 100);
+			vm.openOpen(dnsAdress, 100);
+			// vm.$refs.channelListObj.openOpen(dnsAdress, 100);
 		});
 	},
 	filters: {
@@ -241,6 +243,11 @@ export default {
 		};
 	},
 	methods: {
+		openOpen(dnsAdress, amount) {
+			this.$nextTick(() => {
+				this.$refs.channelListObj.openOpen(dnsAdress, amount);
+			})
+		},
 		testUnzip() {
 			ipcRenderer.send("testUnzip");
 		},

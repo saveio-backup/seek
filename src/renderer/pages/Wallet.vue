@@ -286,6 +286,17 @@
 							</div>
 							<el-form-item
 								class="theme-font-blue-bold"
+								label="Send to"
+								prop="To"
+							>
+								<el-input
+									v-model="sendInfo.To"
+									class="grey-theme"
+									:placeholder="'Input ' +(balanceLists[balanceSelected].Symbol === 'SAVE' ? 'ONI' : balanceLists[balanceSelected].Symbol).toUpperCase()+' Address'"
+								></el-input>
+							</el-form-item>
+							<el-form-item
+								class="theme-font-blue-bold"
 								label="Amount"
 								prop="Amount"
 							>
@@ -296,17 +307,6 @@
 									type="number"
 									class="grey-theme"
 									@blur="setFixed"
-								></el-input>
-							</el-form-item>
-							<el-form-item
-								class="theme-font-blue-bold"
-								label="Send to"
-								prop="To"
-							>
-								<el-input
-									v-model="sendInfo.To"
-									class="grey-theme"
-									:placeholder="'Input ' +(balanceLists[balanceSelected].Symbol === 'SAVE' ? 'ONI' : balanceLists[balanceSelected].Symbol).toUpperCase()+' Address'"
 								></el-input>
 							</el-form-item>
 							<el-form-item

@@ -53,7 +53,7 @@ const getPlatform = () => {
 // linux: ~/.config/<app name>/log.log
 const log = require('electron-log')
 
-const cfgFilePath = async (appDataPath, appName) => {
+const cfgFilePath = async(appDataPath, appName) => {
     let chainId;
     try {
         chainId = await seekDB.querySettings('ChainId');
@@ -91,7 +91,7 @@ const frontcfgFilePath = (appDataPath, appName) => {
     return cfgPath
 }
 
-const setFrontConfig = async (appDataPath, appName) => {
+const setFrontConfig = async(appDataPath, appName) => {
 
     let cfgPath = frontcfgFilePath(appDataPath, appName)
     const hasConfig = fs.existsSync(cfgPath)
@@ -115,8 +115,8 @@ const setFrontConfig = async (appDataPath, appName) => {
         return
     }
     const baseDir = baseDirPath(appDataPath, appName)
-    // cfgObj.Base.BaseDir = baseDir
-    // log.debug(JSON.stringify(cfgObj))
+        // cfgObj.Base.BaseDir = baseDir
+        // log.debug(JSON.stringify(cfgObj))
     if (!fs.existsSync(baseDir)) {
         log.debug("folder not exist")
         fs.mkdirSync(baseDir)
@@ -130,20 +130,20 @@ const setFrontConfig = async (appDataPath, appName) => {
     log.debug("setup front-config success")
 }
 let cacheRestartObj = {
-    appDataPathCache: "",
-    appNameCache: "",
-    edgeCloseRestartFailed: "",
-    cfgObj: ""
-}
-//cache restart need data;
-// let appDataPathCache = '';
-// let appNameCache = '';
-//cache page edgeClose event callback 
-// let edgeCloseRestartFailed = '';
-//cache config.json
+        appDataPathCache: "",
+        appNameCache: "",
+        edgeCloseRestartFailed: "",
+        cfgObj: ""
+    }
+    //cache restart need data;
+    // let appDataPathCache = '';
+    // let appNameCache = '';
+    //cache page edgeClose event callback 
+    // let edgeCloseRestartFailed = '';
+    //cache config.json
 let cfgObj = null;
 
-const setupConfig = async (appDataPath, appName) => {
+const setupConfig = async(appDataPath, appName) => {
     let deadline = 1567767645712; // Fri Sep 06 2019 19:00:45 GMT+0800
     let cfg0;
     let cfg2;
@@ -261,7 +261,7 @@ const setupConfig = async (appDataPath, appName) => {
 
 }
 
-const run = async (appDataPath, appName) => {
+const run = async(appDataPath, appName) => {
     console.log('run!!!!!!!!');
     cacheRestartObj.appDataPathCache = appDataPath;
     cacheRestartObj.appNameCache = appName;
@@ -300,13 +300,13 @@ const run = async (appDataPath, appName) => {
     log.debug(cmdStr, resourcesPath)
     log.debug("[run] run node++++++")
     let workerProcess = cp.spawn(cmdStr, ["--config", cfgPath], {
-        cwd: resourcesPath,
-        detached: getPlatform() == "win" ? false : true
-    })
-    // let workerProcess = cp.exec(cmdStr, {
-    //     cwd: resourcesPath,
-    //     maxBuffer: 5000 * 1024,
-    // })    
+            cwd: resourcesPath,
+            detached: getPlatform() == "win" ? false : true
+        })
+        // let workerProcess = cp.exec(cmdStr, {
+        //     cwd: resourcesPath,
+        //     maxBuffer: 5000 * 1024,
+        // })    
     app.on('will-quit', () => {
         try {
             process.kill(-workerProcess.pid)
@@ -314,7 +314,7 @@ const run = async (appDataPath, appName) => {
             console.log('edge had already exit.')
         }
     })
-    workerProcess.stdout.on('data', function (data) {
+    workerProcess.stdout.on('data', function(data) {
         // console.log('stdout: ' + data);
     });
     var now = new Date()
@@ -330,7 +330,7 @@ const run = async (appDataPath, appName) => {
             fs.mkdirSync(panicLogDir)
         }
     }
-    workerProcess.stderr.on('data', function (data) {
+    workerProcess.stderr.on('data', function(data) {
         if (getPlatform() == "win") {
             fs.appendFileSync(`${panicLogDir}\\${panicLogFileName}`, data)
         } else {
@@ -339,13 +339,13 @@ const run = async (appDataPath, appName) => {
         // console.log('stderr: ' + data);
     });
 
-    workerProcess.on('exit', function (code) {
+    workerProcess.on('exit', function(code) {
         // console.log('child process exited with code ' + code);
     });
     ipcMain.on('watchEdge', (event) => {
         cacheRestartObj.edgeCloseRestartFailed = event; //cache event
     })
-    workerProcess.on('close', function (code) {
+    workerProcess.on('close', function(code) {
         log.error('workerProcess close with code' + code);
         // this setInterval for init process need edgeCloseRestartFailed have value(ipcMain watchEdge event get value)
         let i = 0;

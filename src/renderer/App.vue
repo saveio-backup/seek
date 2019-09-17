@@ -36,7 +36,7 @@ export default {
 	// },
 	watch: {
 		'$route' (val, old) {
-			this.touterName = this.$route.name;
+			this.routerName = this.$route.name;
     }
 	},
 	data() {

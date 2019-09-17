@@ -30,34 +30,38 @@
 
 			<!-- upload cancel btn -->
 
-			<el-button
+			<ripper-button
 				v-if="transferType === 1"
+				class="batch-button"
 				@click="openPassword()"
-			>Cancel All</el-button>
+			>Cancel All</ripper-button>
 
 			<!-- download cancel -->
-			<el-button
+			<ripper-button
 				v-if="transferType === 2"
+				class="batch-button"
 				@click="openConfirmCancelDownload('all')"
-			>Cancel All</el-button>
+			>Cancel All</ripper-button>
 			<!-- title="Comming Soon..." -->
-			<el-button
+			<ripper-button
 				v-if="transferType !== 0"
+				class="batch-button"
 				:class="{'not-allow-opeation':!show}"
 				@click="continueAll"
-			>Start All</el-button>
+			>Start All</ripper-button>
 			<!-- title="Comming Soon..." -->
-			<el-button
+			<ripper-button
 				v-if="transferType !== 0"
+				class="batch-button"
 				:class="{'not-allow-opeation':!show}"
 				@click="pauseAll"
-			>Pause All</el-button>
+			>Pause All</ripper-button>
 			<!--@click="switchToggle.newTaskDialog=true"-->
-			<el-button
+			<ripper-button
 				v-if="transferType === 2"
-				class="primary"
+				class="primary batch-button"
 				@click="openNewTaskDialog"
-			>New Task</el-button>
+			>New Task</ripper-button>
 		</div>
 		<!-- delete all -->
 		<div
@@ -65,10 +69,10 @@
 			class="top-progress mr50 ml20"
 		>
 			<p class="theme-font-blue ft14 user-no-select flex1">Finished {{fileList.length}} Files</p>
-			<el-button
+			<ripper-button
 				v-if="transferType === 0"
 				@click="deleteAll"
-			>Delete All</el-button>
+			>Delete All</ripper-button>
 		</div>
 		<!-- table -->
 		<div
@@ -295,11 +299,11 @@
 					</el-form-item>
 				</el-form>
 				<div slot="footer">
-					<el-button
+					<ripper-button
 						class="primary"
 						type="primary"
 						@click="toCancel"
-					>Confirm</el-button>
+					>Confirm</ripper-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -326,11 +330,11 @@
 					</el-form-item>
 				</el-form>
 				<div slot="footer">
-					<el-button
+					<ripper-button
 						class="primary"
 						type="primary"
 						@click="toDecrypt"
-					>Confirm</el-button>
+					>Confirm</ripper-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -348,11 +352,11 @@
 			<p>Are your Sure to Delete this File?</p>
 			<p>{{executedFile.FileName}}</p>
 			<div slot="footer">
-				<el-button @click="switchToggle.deleteDialog = false">Cancel</el-button>
-				<el-button
-					type="danger"
+				<ripper-button @click="switchToggle.deleteDialog = false">Cancel</ripper-button>
+				<ripper-button
+					class="primary"
 					@click="toDeleteFile(executedFile.FileHash)"
-				>Delete</el-button>
+				>Delete</ripper-button>
 			</div>
 		</el-dialog>
 		<!-- upload page upload dialog -->
@@ -451,10 +455,10 @@
 					</template>
 				</ul>
 				<div slot="footer">
-					<el-button
+					<ripper-button
 						class="primary"
 						@click="switchToggle.detailDialog = false"
-					>OK</el-button>
+					>OK</ripper-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -475,15 +479,15 @@
 					Are you sure you want to delete the selected task?
 				</p>
 				<div slot="footer">
-					<el-button
+					<ripper-button
 						type="primary"
 						@click="switchToggle.confirmCancelDownloadDialog=false"
-					>Cancel</el-button>
-					<el-button
+					>Cancel</ripper-button>
+					<ripper-button
 						class="primary"
 						type="primary"
 						@click="cancelDownload"
-					>Confirm</el-button>
+					>Confirm</ripper-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -530,11 +534,11 @@
 					</div>
 				</div>
 				<div slot="footer">
-					<el-button
+					<ripper-button
 						class="primary"
 						type="primary"
 						@click="switchToggle.downloadDetailDialog=false"
-					>Close</el-button>
+					>Close</ripper-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -775,8 +779,8 @@ export default {
 					"Block unsynchronized completion. Are you sure to do this?",
 					"Notice",
 					{
-						confirmButtonText: "confirm",
-						cancelButtonText: "cancel"
+						confirmButtonText: "Confirm",
+						cancelButtonText: "Cancel"
 					}
 				)
 					.then(() => {
@@ -813,7 +817,13 @@ export default {
 				}
 				this.confirmCancelTask = task;
 			} else {
-				if (!this.show || ((task.DetailStatus === 5 || task.DetailStatus === 23) && task.Status !== 4)) {return};				
+				if (
+					!this.show ||
+					((task.DetailStatus === 5 || task.DetailStatus === 23) &&
+						task.Status !== 4)
+				) {
+					return;
+				}
 				this.confirmCancelTask = Object.assign({}, task);
 			}
 			this.switchToggle.confirmCancelDownloadDialog = true;
@@ -842,7 +852,14 @@ export default {
 		// upload file open cancel task dialog to input password
 		openPassword(file = null) {
 			// to do!!!!!
-			if (file != null && (!this.show || (file.DetailStatus === 5 || file.DetailStatus === 23) && file.Status !== 4)) {return};
+			if (
+				file != null &&
+				(!this.show ||
+					((file.DetailStatus === 5 || file.DetailStatus === 23) &&
+						file.Status !== 4))
+			) {
+				return;
+			}
 			this.switchToggle.passwordDialog = true;
 			this.$nextTick(() => {
 				this.$refs.passwordCancel.resetFields();
@@ -879,6 +896,8 @@ export default {
 				this.$message({
 					message: "There are no tasks to cancel"
 				});
+				this.passwordCancel.loadingObj &&
+					this.passwordCancel.loadingObj.close();
 				return;
 			}
 			this.uploadOrDownloadCancel(arr, type);
@@ -914,8 +933,8 @@ export default {
 					"Block unsynchronized completion. Are you sure to do this?",
 					"Notice",
 					{
-						confirmButtonText: "confirm",
-						cancelButtonText: "cancel"
+						confirmButtonText: "Confirm",
+						cancelButtonText: "Cancel"
 					}
 				)
 					.then(() => {
@@ -951,8 +970,8 @@ export default {
 				return;
 			}
 			this.$confirm("Are you sure to delete all records?", "Delete All", {
-				confirmButtonText: "confirm",
-				cancelButtonText: "cancel"
+				confirmButtonText: "Confirm",
+				cancelButtonText: "Cancel"
 			})
 				.then(() => {
 					this.deleteRecord(arr);
@@ -974,7 +993,10 @@ export default {
 				} else if (status.indexOf(item.Status) === -1) {
 					return false;
 				}
-				if((item.DetailStatus === 5 || item.DetailStatus === 23) && item.Status !== 4) {
+				if (
+					(item.DetailStatus === 5 || item.DetailStatus === 23) &&
+					item.Status !== 4
+				) {
 					return false;
 				}
 				return true;
@@ -1140,7 +1162,11 @@ export default {
 		},
 		toUploadOrDownloadAgain(row, type) {
 			// to do!!!!!
-			if (!this.show || ((row.DetailStatus === 5 || row.DetailStatus === 23) && row.Status !== 4)) {
+			if (
+				!this.show ||
+				((row.DetailStatus === 5 || row.DetailStatus === 23) &&
+					row.Status !== 4)
+			) {
 				return;
 			}
 			if (this.isSync && this.transferType === 2) {
@@ -1148,8 +1174,8 @@ export default {
 					"Block unsynchronized completion. Are you sure to do this?",
 					"Notice",
 					{
-						confirmButtonText: "confirm",
-						cancelButtonText: "cancel"
+						confirmButtonText: "Confirm",
+						cancelButtonText: "Cancel"
 					}
 				)
 					.then(() => {
@@ -1221,14 +1247,20 @@ export default {
 		},
 		toUploadOrDownloadContinue(row, type) {
 			// to do!!!!!
-			if (!this.show || ((row.DetailStatus === 5 || row.DetailStatus === 23)) && row.Status !== 4) {return};
+			if (
+				!this.show ||
+				((row.DetailStatus === 5 || row.DetailStatus === 23) &&
+					row.Status !== 4)
+			) {
+				return;
+			}
 			if (this.isSync && this.transferType === 2) {
 				this.$confirm(
 					"Block unsynchronized completion. Are you sure to do this?",
 					"Notice",
 					{
-						confirmButtonText: "confirm",
-						cancelButtonText: "cancel"
+						confirmButtonText: "Confirm",
+						cancelButtonText: "Cancel"
 					}
 				)
 					.then(() => {
@@ -1335,7 +1367,13 @@ export default {
 		 */
 		uploadOrDownloadPause(row, type) {
 			// to do!!!!!
-			if (!this.show || ((row.DetailStatus === 5 || row.DetailStatus === 23) && row.Status !== 4)) {return};
+			if (
+				!this.show ||
+				((row.DetailStatus === 5 || row.DetailStatus === 23) &&
+					row.Status !== 4)
+			) {
+				return;
+			}
 			// get http url
 			let url = type === 1 ? this.$api.uploadPause : this.$api.downloadPause;
 
@@ -1565,9 +1603,10 @@ $light-grey: #f9f9fb;
 		.progress {
 			flex: 1;
 		}
-		.el-button--default {
+		.batch-button {
 			position: relative;
 			top: 5px;
+			margin-left: 5px;
 		}
 		&.is-not-compelete-top-progress {
 			height: 140px;

@@ -9,10 +9,10 @@
 						:percentage="takeSpace"
 					></el-progress>
 				</div>
-				<el-button
+				<ripper-button
 					ref='getspace'
 					@click="openExpandDialog"
-				>Storage</el-button>
+				>Storage</ripper-button>
 			</div>
 			<p class="theme-font-blue bold mt40 mb10 ft14 user-no-select">Space Adjust Record</p>
 			<div class="space-record">
@@ -177,12 +177,12 @@
 						</div>
 					</div>
 					<div slot="footer">
-						<el-button @click="expandDialogVisible = false">Cancel</el-button>
-						<el-button
+						<ripper-button @click="expandDialogVisible = false">Cancel</ripper-button>
+						<ripper-button
 							type="primary"
 							class="primary"
 							@click="setUserSpace"
-						>Update</el-button>
+						>Update</ripper-button>
 					</div>
 				</div>
 			</el-dialog>
@@ -199,12 +199,11 @@
 				<div class="loading-content">
 					<p class="mt10 mb30 ft14 break-word">You can now upload files via Primary mode.</p>
 					<div slot="footer">
-						<el-button @click="linkUploadDialogVisible = false">Cancel</el-button>
-						<el-button
-							type="primary"
+						<ripper-button @click="linkUploadDialogVisible = false">Cancel</ripper-button>
+						<ripper-button
 							class="primary"
 							@click="linkUpload"
-						>Upload</el-button>
+						>Upload</ripper-button>
 					</div>
 				</div>
 			</el-dialog>

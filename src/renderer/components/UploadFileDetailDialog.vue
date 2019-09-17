@@ -72,11 +72,11 @@
 					</div>
 				</div>
 				<div slot="footer">
-					<el-button
+					<ripper-button
 						class="primary"
 						type="primary"
 						@click="fileDetailDialogToggle=false"
-					>Close</el-button>
+					>Close</ripper-button>
 				</div>
 			</div>
 		</el-dialog>

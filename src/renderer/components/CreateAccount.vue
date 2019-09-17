@@ -58,11 +58,12 @@
 						></el-input>
 					</el-form-item>
 					<p class="grey-xs ft14 break-word">This password is used to recover the account from the keystore file, and all related payment needs to be used.</p>
-					<el-button
-						class="account-button"
-						type='primary'
+					<ripper-button
+						class="account-button text-center"
 						@click="submitForm('form')"
-					>Submit</el-button>
+					>
+						Submit
+					</ripper-button>
 				</el-form>
 				<div
 					class="step"
@@ -70,19 +71,18 @@
 				>
 					<div class="flex between">
 						<!-- <p> Backup your </p> -->
-						<el-button
+						<ripper-button
 							class="primary margin-center mt20 mb20"
 							@click="$exportFile(validation.Wallet,'Wallet')"
-						>Save as File</el-button>
+						>Save as File</ripper-button>
 					</div>
 					<p class="stop-desc ft14 mt20 mb20 break-word">This Keystore File is an account file encrypted based on the private key(WIF). After re-importing, you need to enter a password to log in to the account. Although losing this file will not pose a direct threat to the account, please keep it safe.</p>
 					<p class="back-class ft14">
 						<a @click="setStep(0)">Back</a>
 					</p>
-					<el-button
-						type="primary"
+					<ripper-button
 						@click="setStep()"
-					>Next</el-button>
+					>Next</ripper-button>
 				</div>
 				<div
 					class="step"
@@ -90,14 +90,14 @@
 				>
 					<!-- <p>Backup your Private Key(WIF)</p> -->
 					<p class="back-border-class">{{validation.PrivateKey}}</p>
-					<el-button
+					<ripper-button
 						class="primary"
 						@click="clip(validation.PrivateKey)"
-					>Copy</el-button>
-					<el-button
+					>Copy</ripper-button>
+					<ripper-button
 						class="primary"
 						@click="$exportFile(validation.PrivateKey,'PrivateKey')"
-					>Save as File</el-button>
+					>Save as File</ripper-button>
 					<p
 						class="mt20 mb20 ft14 break-word"
 						style="color:#e95464"
@@ -106,10 +106,9 @@
 					<p class="back-class ft14">
 						<a @click="setStep(1)">Back</a>
 					</p>
-					<el-button
-						type="primary"
+					<ripper-button
 						@click="setStep()"
-					>Next</el-button>
+					>Next</ripper-button>
 				</div>
 				<div
 					class="step"
@@ -117,10 +116,10 @@
 				>
 					<div class="flex between ai-center">
 						<!-- <p></p> -->
-						<el-button
+						<ripper-button
 							@click="importFile"
 							class="primary margin-center mt20 mb20"
-						>Import Private Key(WIF) File</el-button>
+						>Import Private Key(WIF) File</ripper-button>
 					</div>
 					<el-input
 						class="mt20 mb20 ft14 back-border-input-class grey-theme"
@@ -133,10 +132,9 @@
 					<p class="back-class ft14">
 						<a @click="setStep(2)">Back</a>
 					</p>
-					<el-button
-						type="primary"
+					<ripper-button
 						@click="importAccountWithPrivatekey"
-					>Done</el-button>
+					>Done</ripper-button>
 				</div>
 			</div>
 			<div

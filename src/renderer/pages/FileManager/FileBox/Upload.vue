@@ -36,10 +36,10 @@
 							title="clear all add file"
 							v-if="uploadFormData.Files && uploadFormData.Files.length !== 0"
 						>Clear</span>
-						<el-button
+						<ripper-button
 							class="form-right browser-layout"
 							@click="selectUpload"
-						>Browser</el-button>
+						>Browser</ripper-button>
 						<el-upload
 							class="path-wrapper"
 							ref="upload"
@@ -230,12 +230,12 @@
 								@keyup.enter.native="setWhiteList"
 								@blur="setWhiteList"
 							></el-input>
-							<el-button
+							<ripper-button
 								v-else
 								size="small"
 								class="form-right"
 								@click="showWhitelistInput"
-							> + Add WhiteList</el-button>
+							> + Add WhiteList</ripper-button>
 						</div>
 					</el-form-item>
 					<el-form-item
@@ -270,12 +270,12 @@
 					<p class="price-balance">Available: {{mainCount}} ONI</p>
 				</div>
 				<div class="flex jc-center submit-foot mb10">
-					<el-button @click="toEmptyUpload">Cancel</el-button>
-					<el-button
+					<ripper-button @click="toEmptyUpload">Cancel</ripper-button>
+					<ripper-button
 						type="primary"
 						class="primary"
 						@click="OpenPasswordDialog"
-					>Pay & Upload</el-button>
+					>Pay & Upload</ripper-button>
 				</div>
 			</div>
 		</div>
@@ -312,12 +312,12 @@
 					<p class="mb20 tr">Confirm Payment: {{uploadPrice}} ONI</p>
 				</el-form>
 				<div slot="footer">
-					<el-button @click="passwordForm.show = false">Cancel</el-button>
-					<el-button
+					<ripper-button @click="passwordForm.show = false">Cancel</ripper-button>
+					<ripper-button
 						type="primary"
 						class="primary"
 						@click="toUploadFile"
-					>Confirm</el-button>
+					>Confirm</ripper-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -339,10 +339,10 @@
 					>No longer remind</el-checkbox>
 				</p>
 				<div slot="footer">
-					<el-button
+					<ripper-button
 						class="primary"
 						@click="remindToggle.show = false"
-					>Close</el-button>
+					>Close</ripper-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -360,11 +360,11 @@
 			<div class="loading-content">
 				<p class="mt10 mb20 ft14 tl break-word">Sorry, you don't have any storage yet. Please get storage before the Primary Upload.</p>
 				<div slot="footer">
-					<el-button @click="noStorageDialog.show = false">Cancel</el-button>
-					<el-button
+					<ripper-button @click="noStorageDialog.show = false">Cancel</ripper-button>
+					<ripper-button
 						class="primary"
 						@click="goStorage"
-					>Get Storage</el-button>
+					>Get Storage</ripper-button>
 				</div>
 			</div>
 		</el-dialog>

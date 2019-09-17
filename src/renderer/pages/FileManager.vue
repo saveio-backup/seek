@@ -75,11 +75,11 @@
 						:channelSelected='channelBind'
 					></channel-wallet-transfer>
 					<div slot="footer">
-						<el-button
+						<ripper-button
 							type="primary"
 							class="primary"
 							@click="toConfirm"
-						>Confirm</el-button>
+						>Confirm</ripper-button>
 					</div>
 				</div>
 			</el-dialog>
@@ -126,12 +126,11 @@
 						</el-form>
 					</div>
 					<div slot="footer">
-						<el-button @click="toCancelChange">Cancel</el-button>
-						<el-button
-							type="primary"
+						<ripper-button @click="toCancelChange">Cancel</ripper-button>
+						<ripper-button
 							class="primary"
 							@click="toApplyChange"
-						>Apply</el-button>
+						>Apply</ripper-button>
 					</div>
 				</div>
 			</el-dialog>

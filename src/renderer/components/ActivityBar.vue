@@ -3,18 +3,6 @@
 		<div class="content">
 			<div class="composite-bar">
 				<ul class="action-container">
-					<!-- <li class="action-item item-user">
-						<div
-						 class="nav-button"
-						 @click="remoteOpenComponent('Home')"
-						>
-							<i v-if="!user.name" class="ofont ofont-user user user-first"></i>
-							<i v-else class="user-first">{{user.name | firstString}}</i>
-						</div>
-					</li> -->
-					<!-- <li class="action-item">
-						<router-link to="/Appstore"><i class="ofont ofont-menu appstore"></i></router-link>
-					</li> -->
 					<li class="action-item">
 						<div
 							title="FileManager"

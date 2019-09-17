@@ -16,12 +16,12 @@
 					<p class="mt20 text-center break-word">Please ensure that the private key(WIF) file is properly stored before exiting.</p>
 				</div>
 				<div slot="footer">
-					<el-button @click="closeDialog">Cancel</el-button>
-					<el-button
+					<ripper-button @click="closeDialog">Cancel</ripper-button>
+					<ripper-button
 						type="primary"
 						class="primary"
 						@click="logout"
-					>Logout</el-button>
+					>Logout</ripper-button>
 				</div>
 			</div>
 		</el-dialog>

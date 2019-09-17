@@ -37,14 +37,18 @@
 									></i>
 								</p>
 								<div class="user-name-bottom">
-									<el-button
-										class="seek-btn"
+									<ripper-button
+										class="theme1"
 										@click="exportPrivateKey"
-									><i class="user-name-btn-icon ofont ofont-daochu"></i> <span class="user-name-btn-content">Private Key(WIF)</span></el-button>
-									<el-button
-										class="seek-btn"
+									>
+									<i class="user-name-btn-icon ofont ofont-daochu"></i> <span class="user-name-btn-content">Private Key(WIF)</span>
+									</ripper-button>
+									<ripper-button
+										class="theme1"
 										@click="$exportWallet"
-									><i class="user-name-btn-icon ofont ofont-daochu"></i> <span class="user-name-btn-content">Keystore File</span></el-button>
+									>
+										<i class="user-name-btn-icon ofont ofont-daochu"></i> <span class="user-name-btn-content">Keystore File</span>
+									</ripper-button>
 								</div>
 							</div>
 						</div>
@@ -75,10 +79,12 @@
 					<div class="circle-assist"></div>
 				</div>
 			</div>
-			<el-button
-				class="openAddChannel primary"
+			<ripper-button
 				@click="openAddChannel"
-			><i class="el-icon-plus"></i> New Channel</el-button>
+				class="openAddChannel primary"
+			>
+				<i class="el-icon-plus"></i> New Channel
+			</ripper-button>
 			<channels-list
 				ref="channelListObj"
 				:showTransfer='true'
@@ -104,18 +110,8 @@
 						</div>
 					</div>
 					<div class="tologin">
-						<router-link
-							to="/CreateAccount"
-							class="button"
-						>
-							<el-button type="primary">Create Account</el-button>
-						</router-link>
-						<router-link
-							to="/ImportAccount"
-							class="button"
-						>
-							<el-button class="primary">Import Account</el-button>
-						</router-link>
+						<ripper-button class="button" @click="goPage('/CreateAccount')">Create Account</ripper-button>
+						<ripper-button class="primary button" @click="goPage('/ImportAccount')">Import Account</ripper-button>
 					</div>
 				</div>
 			</div>
@@ -243,6 +239,11 @@ export default {
 		};
 	},
 	methods: {
+		goPage(path) {
+			this.$router.push({
+				path: path
+			});
+		},
 		openOpen(dnsAdress, amount) {
 			this.$nextTick(() => {
 				this.$refs.channelListObj.openOpen(dnsAdress, amount);
@@ -377,8 +378,8 @@ export default {
 					"Block unsynchronized completion. Are you sure to do this?",
 					"Notice",
 					{
-						confirmButtonText: "confirm",
-						cancelButtonText: "cancel"
+						confirmButtonText: "Confirm",
+						cancelButtonText: "Cancel"
 					}
 				)
 					.then(() => {
@@ -849,7 +850,7 @@ $input-color: rgba(203, 203, 203, 1);
 				position: relative;
 				z-index: 999;
 
-				.button {
+				& > .button {
 					padding: 10px;
 					color: #fff;
 					font-size: 14px;
@@ -984,6 +985,7 @@ $input-color: rgba(203, 203, 203, 1);
 					}
 
 					.user-name-bottom {
+						display: flex;
 						.user-name-btn-icon {
 							font-size: 14px;
 							display: inline-block;
@@ -1095,9 +1097,9 @@ $input-color: rgba(203, 203, 203, 1);
 			}
 		}
 		& > .openAddChannel {
-			width: fit-content;
+			width: -webkit-fill-available;
 			margin-bottom: 10px;
-			align-self: flex-end;
+			text-align: right;
 		}
 		.channels-title {
 			border-radius: 2px;

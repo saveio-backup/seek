@@ -138,11 +138,10 @@
 					:channelSelected='channelSelected'
 				></channel-wallet-transfer>
 				<div slot="footer">
-					<el-button
-						type="primary"
+					<ripper-button
 						class="primary"
 						@click="toConfirm"
-					>Confirm</el-button>
+					>Confirm</ripper-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -229,12 +228,13 @@
 					</el-form-item>
 				</el-form>
 				<div slot="footer">
-					<el-button @click="channelToggle.channelCloseDialog = false">Cancel</el-button>
-					<el-button
-						type="primary"
+					<ripper-button
+						@click="channelToggle.channelCloseDialog = false"
+					>Cancel</ripper-button>
+					<ripper-button
 						class="primary"
 						@click="toPeationChannel"
-					>Confirm</el-button>
+					>Confirm</ripper-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -496,8 +496,8 @@ export default {
 		openTransfer(channelSelected) {
 			if(this.isSync) {
 				this.$confirm('Block unsynchronized completion. Are you sure to do this?', 'Notice', {
-					confirmButtonText: 'confirm',
-					cancelButtonText: 'cancel',
+					confirmButtonText: 'Confirm',
+					cancelButtonText: 'Cancel',
 				}).then(() => {
 					this.channelSelected = channelSelected;
 					this.switchToggle.assetTransferDialog = true;

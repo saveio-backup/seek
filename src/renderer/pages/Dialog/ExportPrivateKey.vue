@@ -33,12 +33,11 @@
 					</el-form-item>
 				</el-form>
 				<div slot="footer">
-					<el-button @click="closeDialog">Cancel</el-button>
-					<el-button
-						type="primary"
+					<ripper-button @click="closeDialog">Cancel</ripper-button>
+					<ripper-button
 						class="primary"
 						@click="exportPrivateKey"
-					>Export</el-button>
+					>Export</ripper-button>
 				</div>
 			</div>
 		</el-dialog>

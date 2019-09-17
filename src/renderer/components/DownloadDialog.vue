@@ -27,11 +27,11 @@
 				<p class="theme-font-blue new-download-left">Cost:</p>
 				<p class="theme-font-blue-70 new-download-right">{{downloadInfo.FeeFormat || '0'}} ONI</p>
 			</div>
-			<el-button
+			<ripper-button
 				class="mt40 primary"
 				type="primary"
 				@click="toDownload"
-			>Download</el-button>
+			>Download</ripper-button>
 		</div>
 	</div>
 </template>

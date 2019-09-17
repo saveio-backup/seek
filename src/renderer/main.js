@@ -11,6 +11,7 @@ import './assets/css/style.scss'
 import dateFormat from './assets/tool/date'
 import ElementUI from 'element-ui'
 import locale from 'element-ui/lib/locale/lang/en'
+import RipperButton from './components/RipperButton.vue'
 
 const LANGUAGE = 'en'; //language
 // const OUTTIME = 1;//out block time
@@ -20,6 +21,10 @@ Vue.use(ElementUI, {
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.use(commonMethods);
+
+Vue.use(RipperButton);
+Vue.component('ripper-button', RipperButton); // init component
+
 Vue.prototype.$dateFormat = dateFormat;
 Vue.prototype.$axios = axios;
 Vue.prototype.$i18n = i18n;
@@ -56,7 +61,8 @@ Vue.directive('seekclickoutside', {
 /* eslint-disable no-new */
 new Vue({
   components: {
-    App
+    App,
+    RipperButton
   },
   router,
   store,

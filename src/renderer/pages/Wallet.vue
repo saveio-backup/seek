@@ -1,7 +1,6 @@
 <template>
 	<div
 		id="wallet"
-		class=""
 	>
 		<div class="content">
 			<div class="wallet-aside">
@@ -98,11 +97,11 @@
 						><i class="el-icon-plus"></i></div>
 					</div>
 					<div class="wallet-deal">
-						<el-button
-							class="primary"
+						<ripper-button
 							@click="getQRCode"
-						><i class="ofont ofont-jieshou"></i> <span>Receive</span></el-button>
-						<el-button @click="switchToggle.sendDialog = true"><i class="ofont ofont-send"></i> <span>Send</span></el-button>
+							class="primary"
+						><i class="ofont ofont-jieshou"></i> <span>Receive</span></ripper-button>
+						<ripper-button @click="switchToggle.sendDialog = true"><i class="ofont ofont-send"></i> <span>Send</span></ripper-button>
 						<!-- <div @click="getQRCode"><i class="ofont ofont-jieshou"></i> <span class="theme-bold">Receive</span></div> -->
 						<!-- <div @click="switchToggle.sendDialog =true"><i class="ofont ofont-send"></i> <span class="theme-bold">Send</span></div> -->
 					</div>
@@ -252,11 +251,11 @@
 					></div>
 					<!-- class="mt20" -->
 					<div slot="footer">
-						<el-button
+						<ripper-button
 							class="done primary"
 							type="primary"
 							@click="switchToggle.receiveDialog = false"
-						>Done</el-button>
+						>Done</ripper-button>
 					</div>
 				</div>
 			</el-dialog>
@@ -331,11 +330,11 @@
 						</div>
 					</div>
 					<span slot="footer">
-						<el-button
+						<ripper-button
 							type="primary"
 							class="primary"
 							@click="sendTransfer"
-						>Transfer</el-button>
+						>Transfer</ripper-button>
 					</span>
 				</div>
 			</el-dialog>
@@ -372,11 +371,10 @@
 						</li>
 					</ul>
 					<div slot="footer">
-						<el-button
-							type="primary"
+						<ripper-button
 							class="primary"
 							@click="switchToggle.assetDialog = false"
-						>Comfirm</el-button>
+						>Comfirm</ripper-button>
 					</div>
 				</div>
 			</el-dialog>

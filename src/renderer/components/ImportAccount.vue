@@ -37,12 +37,12 @@
                   class="light-blue ft14 cursor-pointer cursor-click user-no-select"
                 >Select Keystore File</a></div> -->
 							<div class="tr input-opeation">
-								<el-button
+								<ripper-button
 									@click='importWallet'
 									class="primary ft12"
 								>
 									<i class="ofont ofont-DAT"></i> Select Keystore File
-								</el-button>
+								</ripper-button>
 							</div>
 						</el-form-item>
 						<el-form-item label="Wallet Password:">
@@ -85,9 +85,9 @@
 								class="tr input-opeation"
 								@click='importPrivateKey'
 							>
-								<el-button class="primary ft12">
+								<ripper-button class="primary ft12">
 									<i class="ofont ofont-DAT"></i> Select Private Key File
-								</el-button>
+								</ripper-button>
 							</div>
 						</el-form-item>
 						<el-form-item
@@ -128,11 +128,11 @@
 					</el-form>
 				</div>
 				<div>
-					<el-button
+					<ripper-button
 						@click="importAccount"
-						class="import-button account-button"
+						class="import-button account-button text-center"
 						type="primary"
-					>Import</el-button>
+					>Import</ripper-button>
 				</div>
 			</div>
 		</div>

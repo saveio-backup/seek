@@ -17,11 +17,11 @@
 					<p class="mt20 tl">Recommend DNS: {{dns && dns.WalletAddr || ''}}</p>
 				</div>
 				<div slot="footer">
-					<el-button
+					<ripper-button
 						type="primary"
 						class="primary"
 						@click="confirmCreateChannel"
-					>Open</el-button>
+					>Open</ripper-button>
 				</div>
 			</div>
 		</el-dialog>

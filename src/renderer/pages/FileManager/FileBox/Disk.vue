@@ -7,24 +7,24 @@
 			<div class="fun-button">
 
 				<!-- <router-link :to="{name:'upload'}"> -->
-				<el-button
+				<ripper-button
 					class="primary theme-font-blue"
 					@click="goUpload"
-				>Upload</el-button>
+				>Upload</ripper-button>
 
 				<!-- </router-link> -->
-				<el-button
+				<ripper-button
 					class="ml10 bt-download theme-font-blue"
 					@click="batchDownload"
 				>
 					Download
-				</el-button>
-				<el-button
+				</ripper-button>
+				<ripper-button
 					class="ml10 bt-download theme-font-blue"
 					@click="batchDelete"
 				>
 					Delete
-				</el-button>
+				</ripper-button>
 			</div>
 			<div class="fun-search">
 				<el-input
@@ -259,11 +259,11 @@
 				</el-form>
 				<div slot="footer">
 					<!-- slot="footer" -->
-					<el-button
+					<ripper-button
 						type="primer"
 						class="primary"
 						@click="switchToggle.shareDialog = false"
-					>Close</el-button>
+					>Close</ripper-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -312,11 +312,11 @@
 					</div>
 				</div>
 				<div slot="footer">
-					<el-button @click="switchToggle.confrimDownloadDialog = false">Cancel</el-button>
-					<el-button
+					<ripper-button @click="switchToggle.confrimDownloadDialog = false">Cancel</ripper-button>
+					<ripper-button
 						class="primary"
 						@click="toDownload(fileToDownload)"
-					>Download</el-button>
+					>Download</ripper-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -340,11 +340,11 @@
 					>No Longer remind, only do advanced uploads</el-checkbox>
 				</p>
 				<div slot="footer">
-					<el-button @click="goStorage">Get Storage</el-button>
-					<el-button
+					<ripper-button @click="goStorage">Get Storage</ripper-button>
+					<ripper-button
 						class="primary"
 						@click="goAdvanceUpload"
-					>Advance Upload</el-button>
+					>Advance Upload</ripper-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -383,12 +383,12 @@
 					</el-form-item>
 				</el-form>
 				<div slot="footer">
-					<el-button @click="switchToggle.deleteDialog = false">Cancel</el-button>
-					<el-button
+					<ripper-button @click="switchToggle.deleteDialog = false">Cancel</ripper-button>
+					<ripper-button
 						type="danger"
 						class="primary"
 						@click="toDeleteFileNew(fileToDelete)"
-					>Delete</el-button>
+					>Delete</ripper-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -752,8 +752,8 @@ export default {
 					"Block unsynchronized completion. Are you sure to do this?",
 					"Notice",
 					{
-						confirmButtonText: "confirm",
-						cancelButtonText: "cancel"
+						confirmButtonText: "Confirm",
+						cancelButtonText: "Cancel"
 					}
 				)
 					.then(() => {
@@ -780,8 +780,8 @@ export default {
 					"Block unsynchronized completion. Are you sure to do this?",
 					"Notice",
 					{
-						confirmButtonText: "confirm",
-						cancelButtonText: "cancel"
+						confirmButtonText: "Confirm",
+						cancelButtonText: "Cancel"
 					}
 				)
 					.then(() => {

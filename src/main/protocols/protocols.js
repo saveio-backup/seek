@@ -3,7 +3,8 @@ import {
   protocol
 } from 'electron'
 import {
-  getCurrentView
+  getCurrentView,
+  getActive
 } from '../windowManager/index'
 import fs from 'fs';
 import path from 'path';
@@ -56,8 +57,8 @@ function seekHttpProtocol(request, callback) {
   // console.log(request);
   const url = request.url.replace('seek://', `${host}`);
   console.log('url now is : ', url);
-  getCurrentView.webContents.reload();
-  getCurrentView.loadURL(url)
+  getActive(getCurrentView.browserWindow).webContents.reload();
+  getActive(getCurrentView.browserWindow).loadURL(url)
   // callback({
   //   url: domain,
   //   method: 'GET',

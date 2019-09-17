@@ -1231,48 +1231,6 @@ $inputFocusBg: #dee2ea;
 			border-bottom: 0;
 			padding-bottom: 0;
 		}
-		.price-div {
-			display: flex;
-			justify-content: space-around;
-			width: calc(100% - 30px);
-			height: 54px;
-			margin: 0 auto 20px;
-			background: linear-gradient(
-				90deg,
-				rgba(19, 176, 250, 1) 0%,
-				rgba(62, 126, 235, 1) 100%
-			);
-			box-shadow: 0px 2px 20px 0px rgba(196, 196, 196, 0.24);
-			border-radius: 6px;
-			color: #fff;
-			line-height: 54px;
-			padding: 0 15px;
-			position: relative;
-			.price-div-bg {
-				position: absolute;
-				top: 0px;
-				right: -10px;
-				font-size: 108px;
-				font-weight: bold;
-				color: #fff;
-				opacity: 0.1;
-			}
-			.price-gas-fee {
-				float: left;
-				// margin-right: 10px;
-				font-size: 18px;
-				font-weight: 500;
-				white-space: nowrap;
-			}
-			.price-balance {
-				float: left;
-				font-size: 14px;
-				font-weight: 500;
-				opacity: 0.7;
-				white-space: nowrap;
-				overflow: hidden;
-			}
-		}
 	}
 	// .el-dialog__body {
 	// 	padding-bottom: 0;

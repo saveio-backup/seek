@@ -121,7 +121,7 @@ export default {
 $light-grey: #f9f9fb;
 $tabs-height: 70px;
 #app {
-	height: 100vh;
+	min-height: 100vh;
 	&.haveBg {
 		background: #f9f9fb;
 	}

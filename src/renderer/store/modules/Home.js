@@ -109,7 +109,6 @@ const actions = {
     axios
       .get(api.account)
       .then((res) => {
-        console.log('account', res);
         if (res.Error === 0) {
           if (res.Result.Address) { // Wallet(Account) exist
               const result = res.Result;

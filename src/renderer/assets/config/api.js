@@ -1,9 +1,11 @@
 const {
   app
 } = require('electron').remote
+// const ipcRenderer = require('electron').ipcRenderer;
 import {
   ipcRenderer
 } from 'electron'
+// const DEFAULT_CHAINID = require('../../../main/windowManager/defaultOption').DEFAULT_CHAINID;
 import {
   DEFAULT_CHAINID
 } from '../../../main/windowManager/defaultOption';
@@ -88,6 +90,7 @@ const API = {
   reconnect: HOST + VERSION + 'network/channel/reconnect',
   chainId: HOST + VERSION + 'chainid',
   switchChainId: HOST + VERSION + 'chainid/switch',
-  getchainidlist: HOST + VERSION + 'chainid/list'
+  getchainidlist: HOST + VERSION + 'chainid/list',
+  invoke: HOST + VERSION + 'smartcontract/invoke'
 }
 export default API;

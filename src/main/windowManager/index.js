@@ -69,15 +69,16 @@ class View {
   }) {
     this.browserView = new BrowserView({
       webPreferences: {
-        webviewTag: false,
+        preload: path.join(path.join(__static, 'webpackPreloadOutput.js')),
+        // preload: './static/preload.js',
         contextIsolation: false,
-        preload: path.join(__static, 'preload.js'),
+        webviewTag: false,
         sandbox: webOpt.sandbox,
-        // sandbox:false,
-        enableRemoteModule: !webOpt.sandbox, // disable remote module
-        // enableRemoteModule:true,
+        // sandbox: false,
+        // enableRemoteModule: !webOpt.sandbox, // disable remote module
+        // enableRemoteModule: true, // disable remote module
         nodeIntegration: !webOpt.sandbox,
-        // nodeIntegration:true,
+        // nodeIntegration: true,
         defaultEncoding: 'utf-8'
       }
     });
@@ -92,7 +93,6 @@ class View {
   }
   forceUpdate() {
     if (this && this.browserView) {
-      console.log('forceUpdate------->', this.webContents.getURL());
       this.url = this.webContents.getURL();
       this.updateDisplayURL();
       this.isSave = this.displayURL ? new URL(this.displayURL).protocol === DEFAULT_PROTOCOL + ':' : false
@@ -138,6 +138,7 @@ class View {
       if (!isMainFrame) return;
       if (errorDescription == 'ERR_ABORTED' || errorCode == -3) return;
       if (errorCode == 0) return;
+      if (!validatedURL) return;
       this.webContents.executeJavaScript(`document.documentElement.innerHTML = '${errorPage(validatedURL)}' `)
     })
     this.webContents.on('new-window', (e, url) => {
@@ -151,7 +152,7 @@ class View {
       }
     });
     this.webContents.on('did-navigate', (e, url) => {
-      // console.log('did navigate, forceUpdate')
+      console.log('did navigate, forceUpdate')
       // console.log(url);
       this.forceUpdate()
     });
@@ -165,6 +166,7 @@ class View {
     this.webContents.on('did-start-navigation', (e, url) => {})
     // handler hashchange
     this.webContents.on('did-navigate-in-page', (e, url) => {
+      console.log('navigation in page');
       this.forceUpdate()
     });
   }
@@ -186,7 +188,7 @@ class View {
     getCurrentView = getActive(win);
     win.setBrowserView(this.browserView); //if have dialog browserView
     let newIsSave = null;
-    if (url.toLowerCase().indexOf('oni://share/') >= 0) {
+    if (url.toLowerCase().startsWith('oni://share/')) {
       console.log('share URL!!!!')
       dialogViewObj.browserView.webContents.send('setDownloadUrl', url);
       dialogViewObj.setMenuSelector('downloadDialog');
@@ -206,8 +208,10 @@ class View {
 
     const urlFormat = this.formatURL(url);
     if (urlFormat.protocol === DEFAULT_PROTOCOL + ':') { // is ours custom 'seek://' html page?
+      console.log('urlFormat.protocol === DEFAULT_PROTOCOL + :')
       newIsSave = true;
     } else if (urlFormat.host === 'localhost:9080') {
+      console.log("urlFormat.host === 'localhost:9080'");
       newIsSave = true;
     } else if (decodeURIComponent(urlFormat.href).replace(/(\\|\/)/g, '').toLowerCase().indexOf(DEFAULT_URL.replace(/(\\|\/)/g, '').toLowerCase()) >= 0) {
       newIsSave = true;
@@ -331,6 +335,9 @@ class View {
   }
   createHelpDocument(option) {
     createView(this.browserWindow, decodeURIComponent(`${DEFAULT_URL}#/Markdown?url=${__static}/README.md`), option)
+  }
+  createNewView(win, url = DEFAULT_URL + '#/', option) {
+    createView(win, url, option);
   }
 }
 export function createWindow(url) {

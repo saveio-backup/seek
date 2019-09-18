@@ -12,6 +12,7 @@ import dateFormat from './assets/tool/date'
 import ElementUI from 'element-ui'
 import locale from 'element-ui/lib/locale/lang/en'
 import RipperButton from './components/RipperButton.vue'
+import '../../static/css/buttonRipple/js/TweenMax.min'
 
 const LANGUAGE = 'en'; //language
 // const OUTTIME = 1;//out block time

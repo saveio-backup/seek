@@ -5,33 +5,47 @@ import {
   ipcRenderer
 } from "electron";
 const views = remote.getCurrentWindow().views;
+const Version = '00';
 class Seek {
   constructor() {}
-  getAccount() {
+  static getAccount() {
     return new Promise((resolve, reject) => {
       axios.get(api.account).then(res => {
-        resolve(res.data)
+        resolve(res.data);
       }).catch(err => {
         reject(err);
       })
     })
   }
-  toDeal(data, callback) {
+  static getFilmList(data) {
+    data = JSON.parse(data);
+    data.Version = Version;
+    return new Promise((resolve, reject) => {
+      axios.post(api.filmlist, data).then(res => {
+        resolve(res.data);
+      }).catch(err => {
+        reject(err);
+      })
+    })
+
+  }
+  static toDeal(data, callback) {
     const uid = uniqId();
-    const viewid = this.currentView().webContents.id;
-    let path = `orderpay/?data=${data}&channel=${uid}&viewid=${viewid}`
-    this.openComponent(path)
+    const viewid = currentView().webContents.id;
+    let path = `orderpay/?data=${data}&channel=${uid}&viewid=${viewid}`;
+    this.openComponent(path);
 
     callback && ipcRenderer.once(uid, (event, tx) => {
       callback(tx);
     })
   }
-  openComponent(page) {
-    views.find(item => item.isActive).openComponent(page)
+  static openComponent(path) {
+    views.find(item => item.isActive).openComponent(path)
   }
-  currentView() {
-    return views.find(item => item.isActive);
-  }
+}
+
+function currentView() {
+  return views.find(item => item.isActive);
 }
 
 function uniqId() {

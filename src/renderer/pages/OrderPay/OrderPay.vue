@@ -1,6 +1,7 @@
 <template>
 	<div id="orderpay">
 		<div class="orderpay-content">
+			<div @click="rebackPage">gogogogogogo</div>
 			<div class="ft24 orderpay-title">Confirm Transaction</div>
 			<div class="transfer-user">
 				<div class="transfer-avatar">
@@ -15,25 +16,12 @@
 					</p>
 				</div>
 				<div class="transfer-amount">
-					<p
-						class="amount-text"
-						v-show="contractData.Method ==='FilmPublish'"
-					>0.01 ONI</p>
+					<p class="amount-text">0.01 ONI</p>
 					<i class="transfer-arrow ofont ofont-transfer_right"></i>
 				</div>
 				<div class="transfer-avatar">
-					<p
-						class="name-wrapper"
-						v-show="contractData.Method ==='FilmPublish'"
-					>
-						C
-					</p>
-					<p
-						class="name-text"
-						v-show="contractData.Method ==='FilmPublish'"
-					>
-						Contract
-					</p>
+					<p class="name-wrapper">C</p>
+					<p class="name-text">Contract</p>
 				</div>
 			</div>
 			<div class="contract-text">
@@ -63,14 +51,8 @@
 					</div>
 					<div class="box-item">
 						<p class="item-title">To</p>
-						<p
-							class="item-name"
-							v-if="contractData.Method ==='FilmPublish'"
-						>Contract</p>
-						<p
-							class="item-addr"
-							v-if="contractData.Method ==='FilmPublish'"
-						>{{contractData.Contract||'No Address'}}</p>
+						<p class="item-name">Contract</p>
+						<p class="item-addr">{{contractData.Contract||'No Address'}}</p>
 					</div>
 					<div class="box-item flex between">
 						<p class="item-title">Gas Fee</p>
@@ -160,7 +142,8 @@
 	</div>
 </template>
 <script>
-import { ipcRenderer } from "electron";
+import { ipcRenderer, remote } from "electron";
+import { parse } from "querystring";
 export default {
 	mounted() {
 		let seek = new Seek();
@@ -236,6 +219,22 @@ export default {
 						this.switchToggle.loading && this.switchToggle.loading.close();
 					});
 			});
+		},
+		rebackPage() {
+			this.setActiveByContentsId(parseInt(this.contractData.viewid));
+		},
+		setActiveByContentsId(id) {
+			let views = remote.getCurrentWindow().views;
+			let activeView = views.find(view => view.isActive);
+			views.map(viewItem => {
+				if (viewItem.webContents.id === id) {
+					viewItem.isActive = true;
+					viewItem.resize();
+				} else if (viewItem.isActive === true) {
+					viewItem.isActive = false;
+				}
+			});
+			this.$forceUpdate();
 		}
 	},
 	beforeRouteEnter(to, from, next) {

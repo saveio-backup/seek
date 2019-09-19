@@ -222,7 +222,12 @@ export default {
 				});
 				const data = {
 					Version: "00",
-					Password: this.passwordForm.Password
+					Contract: this.contractData.Contract,
+					Method: this.contractData.Method,
+					Params: this.contractData.Params,
+					Password: this.passwordForm.Password,
+					GasPrice: this.contractData.GasPrice,
+					GasLimit: this.contractData.GasLimit
 				};
 				Object.assign(data, this.contractData);
 				this.$axios

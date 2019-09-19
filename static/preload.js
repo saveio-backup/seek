@@ -32,13 +32,26 @@ class Seek {
     const uid = uniqId();
     const viewid = currentView().webContents.id;
     let path = `orderpay/?data=${data}&channel=${uid}&viewid=${viewid}`;
-    this.openComponent(path);
+    this.openComponent({path});
 
     callback && ipcRenderer.once(uid, (event, tx) => {
       callback(tx);
     })
   }
-  static openComponent(path) {
+  static downloadUrl({path}, callback) {
+    if (path.toLowerCase().startsWith('oni://share/')) {
+      this.openNewUrl(path);
+      // callback({Error: 0, Desc: ''});
+    } else {
+      // callback({Error: 90000, Desc: '格式不正确'});
+    }
+  }
+  static openNewUrl({path}) {
+    let view = views.find(item => item.isActive)
+    view.url = path;
+    view.onNewUrl(path);
+  }
+  static openComponent({path}) {
     views.find(item => item.isActive).openComponent(path)
   }
 }

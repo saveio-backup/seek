@@ -29,6 +29,7 @@ class Seek {
     })
   }
   static invokeNativeContract(data, callback) {
+    console.log(data);
     const uid = uniqId();
     const viewid = currentView().webContents.id;
     let path = `orderpay/?data=${data}&channel=${uid}&viewid=${viewid}`;
@@ -40,10 +41,10 @@ class Seek {
   }
   static downloadUrl({path}, callback) {
     if (path.toLowerCase().startsWith('oni://share/')) {
-      this.openNewUrl(path);
-      // callback({Error: 0, Desc: ''});
+      this.openNewUrl({path});
+      callback({Error: 0, Desc: ''});
     } else {
-      // callback({Error: 90000, Desc: '格式不正确'});
+      callback({Error: 90000, Desc: '格式不正确'});
     }
   }
   static openNewUrl({path}) {

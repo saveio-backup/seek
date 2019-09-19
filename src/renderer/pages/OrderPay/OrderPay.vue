@@ -195,18 +195,16 @@ export default {
 				});
 				const data = {
 					Version: "00",
-					Contract: this.contractData.Contract,
-					Method: this.contractData.Method,
-					Params: this.contractData.Params,
 					Password: this.passwordForm.Password
 				};
+				Object.assign(data, this.contractData);
 				this.$axios
 					.post(this.$api.invokeContract, data)
 					.then(res => {
 						console.log(res);
 						if (res.Error === 0) {
 							ipcRenderer.sendTo(
-								this.contractData.viewid,
+								parseInt(this.contractData.viewid),
 								this.contractData.channel,
 								res.Result.Tx
 							);
@@ -343,7 +341,7 @@ export default {
 					font-size: 14px;
 					color: rgba(32, 32, 32, 0.7);
 					text-align: left;
-					width:305px;
+					width: 305px;
 				}
 			}
 		}

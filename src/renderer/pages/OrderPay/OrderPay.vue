@@ -1,31 +1,45 @@
 <template>
 	<div id="orderpay">
 		<div class="orderpay-content">
-			<!-- <div @click="rebackPage">gogogogogogo</div> -->
-			<div class="ft24 orderpay-title">Confirm Transaction</div>
-			<div class="transfer-user">
-				<div class="transfer-avatar">
-					<p
-						class="name-wrapper"
-						v-if="contractData.Label"
-					>
-						{{contractData.Label[0].toUpperCase()}}
-					</p>
-					<p class="name-text">
-						{{contractData.Label}}
-					</p>
+			<div
+				class="trading-status"
+				v-if="tradingStatus === 0"
+			>
+				<div class="ft24 orderpay-title">Confirm Transaction</div>
+				<div class="transfer-user">
+					<div class="transfer-avatar">
+						<p
+							class="name-wrapper"
+							v-if="contractData.Label"
+						>
+							{{contractData.Label[0].toUpperCase()}}
+						</p>
+						<p class="name-text">
+							{{contractData.Label}}
+						</p>
+					</div>
+					<div class="transfer-amount">
+						<p class="amount-text">{{round( (contractData.GasPrice*contractData.GasLimit) /powBase,9)}} ONI</p>
+						<i class="transfer-arrow ofont ofont-transfer_right"></i>
+					</div>
+					<div class="transfer-avatar">
+						<p class="name-wrapper">C</p>
+						<p class="name-text">Contract</p>
+					</div>
 				</div>
-				<div class="transfer-amount">
-					<p class="amount-text">{{round( (contractData.GasPrice*contractData.GasLimit) /powBase,9)}} ONI</p>
-					<i class="transfer-arrow ofont ofont-transfer_right"></i>
-				</div>
-				<div class="transfer-avatar">
-					<p class="name-wrapper">C</p>
-					<p class="name-text">Contract</p>
+				<div class="contract-text">
+					CONTRACT INTERACTION
 				</div>
 			</div>
-			<div class="contract-text">
-				CONTRACT INTERACTION
+			<div
+				class="trading-status"
+				v-if="tradingStatus === 1"
+			>
+				<div class="ft24 orderpay-title">Transaction Successful</div>
+				<div class="transfer-success">
+					<i class="ofont ofont-success"></i>
+					<p class="mt10">{{round( (contractData.GasPrice*contractData.GasLimit) /powBase,9)}} ONI</p>
+				</div>
 			</div>
 			<div class="transfer-meta">
 				<div class="transfer-meta-choose">
@@ -83,19 +97,31 @@
 					v-if="contractData.Method==='FilmPublish'"
 				>{{round((contractData.GasPrice*contractData.GasLimit) /powBase,9)}} ONI (Amount + Gas)</p>
 			</div>
-			<div
+			<!-- <div
 				class="text-center whitelist-checkbox"
 				style="margin: 0 auto 20px;"
 			>
-				<!-- <el-checkbox v-model="whiteselected">Whitelist this action</el-checkbox> -->
-			</div>
-			<div class="flex jc-center submit-foot">
-				<el-button>Cancel</el-button>
+				<el-checkbox v-model="whiteselected">Whitelist this action</el-checkbox>
+			</div> -->
+			<div
+				class="flex jc-center submit-foot"
+				v-if="tradingStatus === 0"
+			>
 				<el-button
 					type="primary"
 					class="primary"
 					@click="OpenPasswordDialog"
 				>Confirm</el-button>
+			</div>
+			<div
+				class="flex jc-center submit-foot"
+				v-if="tradingStatus === 1"
+			>
+				<el-button
+					type="primary"
+					class="primary"
+					@click="rebackPage"
+				>Reback</el-button>
 			</div>
 		</div>
 		<el-dialog
@@ -156,6 +182,7 @@ export default {
 	data() {
 		return {
 			round,
+			tradingStatus: 0, // 0 trading 1 success
 			powBase: 1000000000,
 			whiteselected: false,
 			contractData: {
@@ -203,6 +230,7 @@ export default {
 					.then(res => {
 						console.log(res);
 						if (res.Error === 0) {
+							this.tradingStatus = 1;
 							ipcRenderer.sendTo(
 								parseInt(this.contractData.viewid),
 								this.contractData.channel,
@@ -224,19 +252,24 @@ export default {
 			});
 		},
 		rebackPage() {
-			this.setActiveByContentsId(parseInt(this.contractData.viewid));
+			this.contractData.viewid &&
+				this.setActiveByContentsId(parseInt(this.contractData.viewid));
 		},
 		setActiveByContentsId(id) {
 			let views = remote.getCurrentWindow().views;
 			let activeView = views.find(view => view.isActive);
-			views.map(viewItem => {
-				if (viewItem.webContents.id === id) {
-					viewItem.isActive = true;
-					viewItem.resize();
-				} else if (viewItem.isActive === true) {
-					viewItem.isActive = false;
-				}
+			let hasView = views.some(viewItem => {
+				return viewItem.webContents.id === id;
 			});
+			hasView &&
+				views.map(viewItem => {
+					if (viewItem.webContents.id === id) {
+						viewItem.isActive = true;
+						viewItem.resize();
+					} else if (viewItem.isActive === true) {
+						viewItem.isActive = false;
+					}
+				});
 			this.$forceUpdate();
 		}
 	},
@@ -252,6 +285,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 #orderpay {
+	background: #f9f9fb;
 	.orderpay-content {
 		width: 60%;
 		padding-top: 60px;
@@ -260,6 +294,15 @@ export default {
 			text-align: center;
 			padding-bottom: 30px;
 			border-bottom: solid 1px rgba(125, 125, 125, 0.1);
+		}
+		.transfer-success {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			.ofont-success {
+				font-size: 100px;
+				color: #2f8ff0;
+			}
 		}
 		.transfer-user {
 			display: flex;

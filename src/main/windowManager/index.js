@@ -351,7 +351,7 @@ export function createWindow(url) {
     frame: false,
     useContentSize: true,
     minWidth: 1200,
-    minHeight: 563,
+    minHeight: 600,
     width: 1200,
     titleBarStyle: 'hiddenInset',
     autoHideMenuBar: true,

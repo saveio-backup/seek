@@ -1,7 +1,7 @@
 <template>
 	<div id="orderpay">
 		<div class="orderpay-content">
-			<div @click="rebackPage">gogogogogogo</div>
+			<!-- <div @click="rebackPage">gogogogogogo</div> -->
 			<div class="ft24 orderpay-title">Confirm Transaction</div>
 			<div class="transfer-user">
 				<div class="transfer-avatar">
@@ -16,7 +16,7 @@
 					</p>
 				</div>
 				<div class="transfer-amount">
-					<p class="amount-text">0.01 ONI</p>
+					<p class="amount-text">{{round( (contractData.GasPrice*contractData.GasLimit) /powBase,9)}} ONI</p>
 					<i class="transfer-arrow ofont ofont-transfer_right"></i>
 				</div>
 				<div class="transfer-avatar">
@@ -56,7 +56,8 @@
 					</div>
 					<div class="box-item flex between">
 						<p class="item-title">Gas Fee</p>
-						<p class="item-addr">{{contractData.Gas}}</p>
+						<p></p>
+						<p class="item-addr">{{round( (contractData.GasPrice*contractData.GasLimit) /powBase,9)}} ONI</p>
 					</div>
 				</div>
 				<div
@@ -80,7 +81,7 @@
 				<p
 					class="price-gas-fee"
 					v-if="contractData.Method==='FilmPublish'"
-				>0.01 ONI (Amount + Gas)</p>
+				>{{round((contractData.GasPrice*contractData.GasLimit) /powBase,9)}} ONI (Amount + Gas)</p>
 			</div>
 			<div
 				class="text-center whitelist-checkbox"
@@ -144,20 +145,24 @@
 <script>
 import { ipcRenderer, remote } from "electron";
 import { parse } from "querystring";
+import { round } from "mathjs";
 export default {
 	mounted() {
-		let seek = new Seek();
-		seek.getAccount().then(res => {
+		Seek.getAccount().then(res => {
 			this.contractData.Address = res.Result.Address;
 			this.contractData.Label = res.Result.Label;
 		});
 	},
 	data() {
 		return {
+			round,
+			powBase: 1000000000,
 			whiteselected: false,
 			contractData: {
-				Label: "aaas",
-				Address: ""
+				Label: "",
+				Address: "",
+				GasPrice: 500,
+				GasLimit: 20000
 			},
 			switchToggle: {},
 			uploadRules: {
@@ -196,7 +201,7 @@ export default {
 					Password: this.passwordForm.Password
 				};
 				this.$axios
-					.post(this.$api.invoke, data)
+					.post(this.$api.invokeContract, data)
 					.then(res => {
 						console.log(res);
 						if (res.Error === 0) {
@@ -331,13 +336,14 @@ export default {
 					text-align: right;
 				}
 				.item-name {
-					margin: 0 30px;
+					margin: 0 20px;
 					width: 150px;
 				}
 				.item-addr {
 					font-size: 14px;
 					color: rgba(32, 32, 32, 0.7);
 					text-align: left;
+					width:305px;
 				}
 			}
 		}

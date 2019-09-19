@@ -91,7 +91,7 @@ const API = {
   chainId: HOST + VERSION + 'chainid',
   switchChainId: HOST + VERSION + 'chainid/switch',
   getchainidlist: HOST + VERSION + 'chainid/list',
-  invoke: HOST + VERSION + 'smartcontract/invoke',
-  filmlist: HOST + VERSION + 'smartcontract/preexec'
+  invokeContract: HOST + VERSION + 'smartcontract/invoke',
+  preexecContract: HOST + VERSION + 'smartcontract/preexec'
 }
 export default API;

@@ -17,19 +17,18 @@ class Seek {
       })
     })
   }
-  static getFilmList(data) {
+  static preExecNativeContract(data) {
     data = JSON.parse(data);
     data.Version = Version;
     return new Promise((resolve, reject) => {
-      axios.post(api.filmlist, data).then(res => {
+      axios.post(api.preexecContract, data).then(res => {
         resolve(res.data);
       }).catch(err => {
         reject(err);
       })
     })
-
   }
-  static toDeal(data, callback) {
+  static invokeNativeContract(data, callback) {
     const uid = uniqId();
     const viewid = currentView().webContents.id;
     let path = `orderpay/?data=${data}&channel=${uid}&viewid=${viewid}`;

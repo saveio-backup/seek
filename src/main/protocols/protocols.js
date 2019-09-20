@@ -20,7 +20,7 @@ protocol.registerSchemesAsPrivileged([{
   }
 }]);
 protocol.registerSchemesAsPrivileged([{
-  scheme: 'save',
+  scheme: 'oni',
   privileges: {
     standard: true,
     secure: true,
@@ -42,7 +42,7 @@ app.on('ready', () => {
       if (err) throw new Error('Failed to create protocol: seek. ' + err)
     })
   }
-  protocol.registerFileProtocol('save', saveStreamProtocol, err => {
+  protocol.registerFileProtocol('oni', saveStreamProtocol, err => {
     if (err) throw new Error('Failed to create protocol: seek. ' + err)
   })
 })

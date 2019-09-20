@@ -18,6 +18,7 @@
 			<div class="upload-params">
 				<el-form
 					ref="uploadForm"
+					@submit.native.prevent
 					:model="uploadFormData"
 					:rules="rules"
 					hide-required-asterisk

@@ -282,7 +282,7 @@ export default {
 	},
 	beforeRouteEnter(to, from, next) {
 		next(vm => {
-			const data = JSON.parse(to.query.data);
+			const data = JSON.parse(decodeURIComponent(to.query.data));
 			Object.assign(vm.contractData, data);
 			to.query.channel && (vm.contractData.channel = to.query.channel);
 			to.query.viewid && (vm.contractData.viewid = to.query.viewid);

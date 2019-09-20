@@ -235,6 +235,8 @@ export default {
 					.then(res => {
 						console.log(res);
 						if (res.Error === 0) {
+							this.switchToggle.loading && this.switchToggle.loading.close();
+							this.passwordForm.show = false;
 							this.tradingStatus = 1;
 							ipcRenderer.sendTo(
 								parseInt(this.contractData.viewid),

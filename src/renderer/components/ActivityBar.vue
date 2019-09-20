@@ -208,6 +208,12 @@ export default {
 					click() {
 						that.showVersion();
 					}
+				},
+				{
+					label: "Filmlab",
+					click() {
+						that.showFilmlab();
+					}
 				}
 			];
 			let menu = Menu.buildFromTemplate(customControlMenuItems);
@@ -215,6 +221,9 @@ export default {
 		},
 		showHelpDocument() {
 			this.activeView.createHelpDocument({ isActive: true, focus: true });
+		},
+		showFilmlab() {
+			this.activeView.onNewUrl('http://192.168.1.178:9999');
 		},
 		remoteOpenComponent(path) {
 			this.activeView.openComponent(path);

@@ -51,6 +51,14 @@
 						:value="item"
 					></el-option>
 				</el-select>
+				<div class="tag">
+					<p>Download Path</p>
+					<p
+						:title="pathDir.DownloadPath"
+						class="pathdir dark-grey"
+					>{{pathDir.DownloadPath}}</p>
+				</div>
+				<el-button @click="setDir('DownloadPath')">Change</el-button>
 			</div>
 		</div>
 	</div>
@@ -64,11 +72,15 @@ export default {
 		this.getSettingsAll();
 		this.getChainList();
 		this.getChainId();
+		this.getConfig();
 	},
 	data() {
 		return {
 			switchToggle: {
 				console: true
+			},
+			pathDir: {
+				DownloadPath: ""
 			},
 			settings: {},
 			netConfig: {
@@ -137,6 +149,13 @@ export default {
 				}
 			});
 		},
+		getConfig() {
+			this.$axios.get(this.$api.config).then(res => {
+				console.log("config is ");
+				console.log(res);
+				Object.assign(this.pathDir, res.Result);
+			});
+		},
 		switchChainId(id) {
 			console.log("switch chainid", id);
 			this.$axios.post(this.$api.switchChainId, { ChainId: id }).then(res => {
@@ -154,6 +173,16 @@ export default {
 							: `error code is ${res.Error}`
 					);
 				}
+			});
+		},
+		setDir(pathType) {
+			console.log("setdirrrrrr");
+			ipcRenderer.send("will-set-dir");
+			ipcRenderer.once("did-set-dir", (event, dir) => {
+				this.$axios.post(this.$api.config, { [pathType]: dir }).then(res => {
+					console.log("did-set");
+					console.log(res);
+				});
 			});
 		}
 	}
@@ -173,6 +202,12 @@ export default {
 			padding: 20px 0px;
 			.tag {
 				font-size: 14px;
+				.pathdir {
+					width: 400px;
+					overflow: hidden;
+					text-overflow: ellipsis;
+					white-space: nowrap;
+				}
 			}
 			.el-select {
 				input {

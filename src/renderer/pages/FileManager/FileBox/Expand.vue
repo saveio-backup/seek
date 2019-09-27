@@ -394,18 +394,23 @@ export default {
 			}
 		},
 		expired_old() {
-			if (this.$store.state.Filemanager.space.ExpiredAt) {
+			if (
+				this.$store.state.Filemanager.space.ExpiredAt &&
+				this.$store.state.Filemanager.space.ExpiredAt > _NOW.getTime()
+			) {
 				this.expired = new Date(
 					this.$store.state.Filemanager.space.ExpiredAt * 1000
 				);
+				return this.$store.state.Filemanager.space.ExpiredAt * 1000;
 			} else {
 				this.expired = new Date(_NOW.getTime());
+				return this.$dateFormat.formatTimeByTimestamp(_NOW.getTime());
 			}
-			return (
-				this.$dateFormat.formatTimeByTimestamp(
-					this.$store.state.Filemanager.space.ExpiredAt * 1000
-				) || this.$dateFormat.formatTimeByTimestamp(_NOW)
-			);
+			// return (
+			// 	this.$dateFormat.formatTimeByTimestamp(
+			// 		this.$store.state.Filemanager.space.ExpiredAt * 1000
+			// 	) || this.$dateFormat.formatTimeByTimestamp(_NOW.getTime())
+			// );
 		},
 		space() {
 			return this.$store.state.Filemanager.space;

@@ -16,6 +16,7 @@
 					ref="dialogForm"
 					:model="dialogForm"
 					:rules="dialogRules"
+					@submit.native.prevent
 				>
 					<el-form-item
 						class="theme-font-blue-bold"

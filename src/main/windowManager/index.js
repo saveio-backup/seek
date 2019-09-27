@@ -102,20 +102,20 @@ class View {
   updateDisplayURL() {
     let url = this.url ? new URL(this.url) : new URL('about:blank');
     let hrefFormated, defaultURLFormated;
-    hrefFormated = decodeURIComponent(url.href).replace(/(\\|\/)/g, '/').replace('\/\/\/', '\/\/');
-    defaultURLFormated = decodeURIComponent(DEFAULT_URL).replace(/(\\|\/)/g, '/').replace('\/\/\/', '\/\/');
+    hrefFormated = (url.href).replace(/(\\|\/)/g, '/').replace('\/\/\/', '\/\/');
+    defaultURLFormated = (DEFAULT_URL).replace(/(\\|\/)/g, '/').replace('\/\/\/', '\/\/');
     if (this.url.endsWith('.pdf')) {
       // if is pdf file change displayURL 
       let index = this.url.indexOf('?file=');
-      this.displayURL = decodeURIComponent(this.url.slice(index + 6));
+      this.displayURL = (this.url.slice(index + 6));
     } else if (url.host === 'localhost:9080') {
       const urlReg = new RegExp(url.origin + url.pathname + '(#/)?');
-      this.displayURL = decodeURIComponent(url.href.replace(urlReg, DEFAULT_PROTOCOL + '://'));
-    } else if (hrefFormated.indexOf(defaultURLFormated) >= 0) {
+      this.displayURL = (url.href.replace(urlReg, DEFAULT_PROTOCOL + '://'));
+    } else if (decodeURIComponent(hrefFormated).indexOf(decodeURIComponent(defaultURLFormated)) >= 0) { // use decodeURIComponent to replace('%20',' ')
       const urlReg = new RegExp(/(file:.+#)(\/?.*$)/);
-      this.displayURL = decodeURIComponent(hrefFormated.replace((hrefFormated.match(urlReg) || [])[1], DEFAULT_PROTOCOL + '://').replace('\/\/\/', '\/\/'));
+      this.displayURL = (hrefFormated.replace((hrefFormated.match(urlReg) || [])[1], DEFAULT_PROTOCOL + '://').replace('\/\/\/', '\/\/'));
     } else {
-      this.displayURL = decodeURIComponent(this.url);
+      this.displayURL = (this.url);
     }
   }
   updateEvent() {
@@ -139,6 +139,8 @@ class View {
       if (errorDescription == 'ERR_ABORTED' || errorCode == -3) return;
       if (errorCode == 0) return;
       if (!validatedURL) return;
+      console.log('load error!!');
+      console.log(errorDescription);
       this.webContents.executeJavaScript(`document.documentElement.innerHTML = '${errorPage(validatedURL)}' `)
     })
     this.webContents.on('new-window', (e, url) => {
@@ -267,6 +269,8 @@ class View {
     } else {
       newURLFormat = this.formatURL(this.realURL);
     }
+    console.log('newURLFormat.href is');
+    console.log(newURLFormat.href);
     this.browserView.webContents.loadURL(newURLFormat.href);
   }
   formatURL(newURL) {
@@ -359,6 +363,7 @@ export function createWindow(url) {
     fullscreenWindowTitle: true,
     frame: false,
     webPreferences: {
+      preload: path.join(path.join(__static, 'webpackPreloadOutput.js')),
       webSecurity: true,
       sandbox: false,
       nodeIntegration: true,

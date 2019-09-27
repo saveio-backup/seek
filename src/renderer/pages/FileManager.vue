@@ -107,6 +107,7 @@
 							ref="switchChannelForm"
 							:model="switchChannelForm"
 							:rules="switchChannelRules"
+							@submit.native.prevent
 							class="margin-center"
 						>
 							<el-form-item

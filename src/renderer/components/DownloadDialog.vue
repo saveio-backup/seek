@@ -50,7 +50,7 @@ export default {
 		return {
 			util,
 			downloadUrl: this.parentDownloadUrl,
-			formatUrl: "oni://share/",
+			formatUrl: "oni://",
 			downloadInfo: {},
 			win: remote.getCurrentWindow()
 		};

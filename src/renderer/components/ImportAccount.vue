@@ -67,6 +67,7 @@
 						ref='privatekeyform'
 						:model='privateKeyForm'
 						:rules='privateKeyRules'
+						@submit.native.prevent
 					>
 						<el-form-item
 							label="PrivateKey"

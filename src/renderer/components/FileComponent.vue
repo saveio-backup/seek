@@ -284,6 +284,7 @@
 					ref="passwordCancel"
 					:model="passwordCancel"
 					:rules="passwordCancelRules"
+					@submit.native.prevent
 				>
 					<el-form-item
 						label="Password:"

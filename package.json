@@ -8,7 +8,7 @@
     "i": "npm i --build-from-source --runtime=electron --target=5.0.6  --dist-url=https://atom.io/download/electron",
     "preload": "npx webpack --config ./.electron-vue/webpack.preload.config.js",
     "build": "npm run preload && node .electron-vue/build.js && electron-builder",
-    "build:win": "npm run preload && node .electron-vue/build.js && electron-builder --w",
+    "build:win": "npm run preload && node .electron-vue/build.js && electron-builder --w --x64",
     "build:dir": "node .electron-vue/build.js && electron-builder --dir",
     "build:clean": "cross-env BUILD_TARGET=clean node .electron-vue/build.js",
     "build:web": "cross-env BUILD_TARGET=web node .electron-vue/build.js",

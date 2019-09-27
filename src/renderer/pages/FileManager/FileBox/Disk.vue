@@ -240,7 +240,7 @@
 			</div>
 			<div class="loading-content">
 				<p class="mt10 mb10 tl">File name: {{executedFile.Name}}</p>
-				<el-form>
+				<el-form @submit.native.prevent>
 					<el-form-item label="Link:">
 						<el-input
 							readonly

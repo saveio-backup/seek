@@ -73,6 +73,13 @@ ipcMain.on('upload-file-dialog', (event) => {
   })
 })
 
+ipcMain.on('will-set-dir', (event) => {
+  dialog.showOpenDialog({
+    properties: ['openDirectory']
+  }, (dir) => {
+    event.sender.send('did-set-dir', dir[0]);
+  })
+})
 
 // seekDB
 ipcMain.on('getAllSettings', event => {

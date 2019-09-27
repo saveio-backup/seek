@@ -1,46 +1,41 @@
 const {
   app
-} = require('electron').remote
-// const ipcRenderer = require('electron').ipcRenderer;
+} = require('electron').remote;
 import {
   ipcRenderer
-} from 'electron'
-// const DEFAULT_CHAINID = require('../../../main/windowManager/defaultOption').DEFAULT_CHAINID;
+} from 'electron';
 import {
   DEFAULT_CHAINID
 } from '../../../main/windowManager/defaultOption';
-const fs = require("fs")
-const userDataPath = app.getPath('userData')
+
+const fs = require("fs");
+const userDataPath = app.getPath('userData');
 const chainId = ipcRenderer.sendSync('getSettings', 'ChainId');
 let HOST = null;
-// let HOST = 'http://localhost:10235/api/'
-// console.log('userDataPath', userDataPath, exist)
-const exist = fs.existsSync(`${userDataPath}/config-${chainId}.json`)
+const exist = fs.existsSync(`${userDataPath}/config-${chainId}.json`);
 if (exist) {
   console.log('chainid .json   exist !!!!!!!');
-  const cfg = fs.readFileSync(`${userDataPath}/config-${chainId}.json`)
+  const cfg = fs.readFileSync(`${userDataPath}/config-${chainId}.json`);
   if (cfg) {
-    const cfgObj = JSON.parse(cfg)
-    // console.log('cfgObj', cfgObj)
+    const cfgObj = JSON.parse(cfg);
     if (cfgObj) {
-      HOST = `http://localhost:${cfgObj.Base.PortBase + cfgObj.Base.HttpRestPortOffset}/api/`
+      HOST = `http://localhost:${cfgObj.Base.PortBase + cfgObj.Base.HttpRestPortOffset}/api/`;
     }
   }
 } else {
   console.log('not exist!!!!');
   try {
     const result = ipcRenderer.sendSync("updateSettings", 'ChainId', DEFAULT_CHAINID);
-    const cfg = fs.readFileSync(`${userDataPath}/config-${DEFAULT_CHAINID}.json`)
+    const cfg = fs.readFileSync(`${userDataPath}/config-${DEFAULT_CHAINID}.json`);
     if (cfg) {
-      const cfgObj = JSON.parse(cfg)
-      // console.log('cfgObj', cfgObj)
+      const cfgObj = JSON.parse(cfg);
       if (cfgObj) {
-        HOST = `http://localhost:${cfgObj.Base.PortBase + cfgObj.Base.HttpRestPortOffset}/api/`
+        HOST = `http://localhost:${cfgObj.Base.PortBase + cfgObj.Base.HttpRestPortOffset}/api/`;
       }
     }
   } catch (err) {}
 }
-// console.log("HOST", HOST)
+
 const VERSION = 'v1/';
 const API = {
   host: HOST,
@@ -56,6 +51,7 @@ const API = {
   transactions: HOST + VERSION + 'transactions/',
   transfer: HOST + VERSION + 'asset/transfer/direct',
   transferlist: HOST + VERSION + 'dsp/file/transferlist',
+  transferDetail: HOST + VERSION + 'dsp/file/transfer/detail',
   getfscontractsetting: HOST + VERSION + 'smartcontract/fs/setting',
   upload: HOST + VERSION + 'dsp/file/upload',
   uploadfee: HOST + VERSION + 'dsp/file/uploadfee/',
@@ -93,6 +89,7 @@ const API = {
   getchainidlist: HOST + VERSION + 'chainid/list',
   invokeContract: HOST + VERSION + 'smartcontract/invoke',
   preexecContract: HOST + VERSION + 'smartcontract/preexec',
-  checkPassword:  HOST + VERSION + 'account/password/check'
+  checkPassword:  HOST + VERSION + 'account/password/check',
+  config: HOST + VERSION + 'config'
 }
 export default API;

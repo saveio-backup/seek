@@ -21,6 +21,7 @@
 					ref='form'
 					:model='form'
 					:rules='rules'
+					@submit.native.prevent
 				>
 					<el-form-item
 						label="User Name"

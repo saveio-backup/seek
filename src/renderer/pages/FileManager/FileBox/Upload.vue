@@ -127,6 +127,7 @@
 					:rules="advancedRulus"
 					label-position="left"
 					label-width="210px"
+					@submit.native.prevent
 				>
 					<el-form-item label="Storage Cycle:">
 						<p class="dark-grey tootips">Expired Time: {{expiredDate}} </p>

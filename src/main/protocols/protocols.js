@@ -1,6 +1,7 @@
 import {
   app,
-  protocol
+  protocol,
+  ipcMain
 } from 'electron'
 import {
   getCurrentView,
@@ -8,6 +9,7 @@ import {
 } from '../windowManager/index'
 import fs from 'fs';
 import path from 'path';
+import AdmZip from 'adm-zip';
 const log = require('electron-log')
 protocol.registerSchemesAsPrivileged([{
   scheme: 'seek',
@@ -90,16 +92,38 @@ function seekStreamProtocol(request, callback) {
 function saveStreamProtocol(request, callback) {
   // todo  download process
   const urlFormat = new URL(request.url);
-  const host = urlFormat.host;
-  const pathname = urlFormat.pathname === '/' ? '/index.html' : urlFormat.pathname;
-  const headers = {
-    'Cache-Control': 'no-cache',
-    'Content-Type': 'text/html; charset=utf-8',
-    'Access-Control-Allow-Origin': '*'
-  }
-  const url = ('/Users/ridesky/Documents/1_Project/seek/static/' + host + pathname);
-  callback({
-    method: 'get',
-    path: url
+  console.log('urlFormat is');
+  console.log(urlFormat);
+  const {
+    protocol,
+    host,
+    search,
+    hash
+  } = urlFormat;
+  const pathname = (urlFormat.pathname === '/' || urlFormat.pathname === '') ? '/index.html' : urlFormat.pathname;
+  /*   const headers = {
+      'Cache-Control': 'no-cache',
+      'Content-Type': 'text/html; charset=utf-8',
+      'Access-Control-Allow-Origin': '*'
+    } */
+  getCurrentView.browserWindow.webContents.send('will-load-thirdpage', protocol + `//${host}`)
+  ipcMain.once('load-third-page', (event, result) => {
+    try {
+      const zip = new AdmZip(result)
+      const parse = path.parse(result);
+      zip.extractAllTo(path.join(parse.dir));
+      callback({
+        method: 'get',
+        path: path.join(parse.dir, parse.name, pathname)
+      })
+    } catch (error) {
+      console.error(error)
+    }
+  })
+  ipcMain.once('loadErrorPage', () => {
+    callback({
+      method: 'get',
+      path: path.join(__static, 'html/failed/failed.html')
+    })
   })
 }

@@ -45,6 +45,7 @@
 			class="transferForm"
 			:model="transferInfo"
 			:rules="transferRules"
+			@submit.native.prevent
 		>
 			<el-form-item
 				label="Amount(ONI)"

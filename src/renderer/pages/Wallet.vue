@@ -1,7 +1,5 @@
 <template>
-	<div
-		id="wallet"
-	>
+	<div id="wallet">
 		<div class="content">
 			<div class="wallet-aside">
 				<div class="person-info">
@@ -155,10 +153,13 @@
 							<div
 								class="item-amount"
 								:class="{'send-item-amount': item.Type ==1, 'item-contract-amount': item.ContractType == 1}"
-							>{{item.Type ==1 ? '-':'+'}} {{parseFloat(parseFloat(item.AmountFormat).toFixed(9))}} {{(item.Asset).toUpperCase() === 'SAVE' ? 'ONI' : (item.Asset).toUpperCase()}}</div>
-							<div class="item-contract theme-font-blue-40 ft12 grey-xs user-no-select"  v-if="item.ContractType == 1">
+							>{{item.Type ==1 ? '-':'+'}} {{item.AmountFormat | resolveAmount}} {{(item.Asset).toUpperCase() === 'SAVE' ? 'ONI' : (item.Asset).toUpperCase()}}</div>
+							<div
+								class="item-contract theme-font-blue-40 ft12 grey-xs user-no-select"
+								v-if="item.ContractType == 1"
+							>
 								<div>
-									Contract								
+									Contract
 								</div>
 							</div>
 							<div
@@ -275,6 +276,7 @@
 							ref='transferForm'
 							:model="sendInfo"
 							:rules="sendRules"
+							@submit.native.prevent
 						>
 							<div class="flex between mb10 mt10">
 								<p class="theme-font-blue-bold ft14">{{balanceLists[balanceSelected].Symbol === 'SAVE' ? 'ONI' : balanceLists[balanceSelected].Symbol}}</p>
@@ -384,6 +386,7 @@
 <script>
 import date from "../assets/tool/date";
 import QRCode from "../assets/tool/qrcode.min";
+import { round } from "mathjs";
 const { clipboard } = require("electron");
 export default {
 	mounted() {
@@ -407,6 +410,7 @@ export default {
 			callback();
 		};
 		return {
+			round,
 			QRCode,
 			date,
 			switchToggle: {
@@ -869,6 +873,12 @@ export default {
 		},
 		txType(newVal, oldVal) {
 			this.switchToggle.loadSwitch = true;
+		}
+	},
+	filters: {
+		resolveAmount: function(value) {
+			if (!value) return "";
+			return parseFloat(value).toFixed(Number.isInteger(Number(value))?0:9)
 		}
 	}
 };

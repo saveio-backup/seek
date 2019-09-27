@@ -7,6 +7,11 @@ import {
   dialogViewObj
 } from './../windowManager/index'
 
+ipcMain.on('run-dialog-event', (event, result) => {
+  // dialogViewObj.loadUrl(url);
+  dialogViewObj.runDialogEvent(result);
+})
+
 // File operation
 ipcMain.on('dialog-open', (event, selector) => {
   // dialogViewObj.loadUrl(url);

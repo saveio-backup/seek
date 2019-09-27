@@ -57,7 +57,17 @@ export default {
 				)
 				.then(res => {
 					if (res.Error === 0) {
-						window.localStorage.clear();
+						const notClear = ['waitForUploadOrderList', 'uploadTask', 'localStatus']
+						outer: for(let value in window.localStorage) {
+							if(!window.localStorage.propertyIsEnumerable(value)) continue;
+							for(let notClearItem of notClear) {
+								if(value.startsWith(notClearItem)) {
+									continue outer;
+								}
+							}
+							window.localStorage.removeItem(value);
+						}
+						// window.localStorage.clear();
 						this.logoutUploadViews();
 						this.closeDialog();
 					} else {

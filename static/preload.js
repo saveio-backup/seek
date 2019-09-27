@@ -32,7 +32,8 @@ class Seek {
     console.log(data);
     const uid = uniqId();
     const viewid = currentView().webContents.id;
-    let path = encodeURIComponent(`orderpay/?data=${data}&channel=${uid}&viewid=${viewid}`);
+    let path = 'orderpay/?data=' + encodeURIComponent(`${data}&channel=${uid}&viewid=${viewid}`);
+    // let path = `orderpay/?data=${data}&channel=${uid}&viewid=${viewid}`;
     this.openComponent({
       path
     });

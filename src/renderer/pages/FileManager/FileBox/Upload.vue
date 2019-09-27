@@ -376,6 +376,8 @@ import { ipcRenderer } from "electron";
 import util from "../../../assets/config/util";
 import { connect } from "net";
 import fs from "fs";
+import sha256 from "js-sha256";
+import uuid from "node-uuid";
 const DEFAULT_UPLOAD_PRICE = 0.03;
 export default {
 	data() {
@@ -528,9 +530,6 @@ export default {
 			this.$refs.uploadForm.validateField("FileSize");
 		},
 		handleChange(file, fileList) {
-			// console.log(file);
-			// console.log(fileList);
-			// console.log(fs.readFileSync(file.raw.path, 'utf8'));
 			fs.stat(file.raw.path, (err, stats) => {
 				console.log(stats);
 				if (err) {
@@ -732,131 +731,171 @@ export default {
 		},
 		// to upload file
 		toUploadFile() {
-			this.$refs["passwordForm"].validate(valid => {
+			const vm = this;
+			this.$refs["passwordForm"].validate(async valid => {
 				// checkout
 				if (!valid) return;
 				this.switchToggle.upload = false; // set toggle
-				let commitAll = [];
-				let data = null;
-				for (let file of this.uploadFormData.Files) {
-					let params = {
-						Path: file.filePath,
-						Desc: file.fileName,
-						EncryptPassword: this.uploadFormData.EncryptPassword,
-						StoreType: this.switchToggle.advanced ? 1 : 0,
-						Password: this.passwordForm.Password
-					};
-					params = this.switchToggle.advanced
-						? Object.assign({}, params, this.advancedData)
-						: params;
-					delete params.wihteListString;
-					commitAll.push(this.getToUploadFilePromise(params));
-				}
-				// if (this.fileSize > MAX_STORAGE) {
-				// 	this.$message.error("A single file cannot be larger than 4GB");
-				// 	return;
-				// }
-
-				// format params
-				// let data = null;
-				// data = this.switchToggle.advanced
-				// 	? Object.assign({}, this.uploadFormData, this.advancedData)
-				// 	: this.uploadFormData;
-				// data.Password = this.passwordForm.Password;
-				// data.StoreType = this.switchToggle.advanced ? 1 : 0;
-				// delete data.wihteListString;
 				this.switchToggle.loading = this.$loading({
 					text: "Uploading..",
 					target: ".loading-content.upload-loading"
 				});
-				this.$axios
-					.all(commitAll)
-					.then(resArr => {
+
+				// password check
+				let passwordEncode = sha256(vm.passwordForm.Password);
+				let passwordParams = {
+					Password: passwordEncode
+				};
+				this.$axios.post(this.$api.checkPassword, passwordParams).then(passwordCheck => {
+					if (passwordCheck.Error !== 0) {
+						this.switchToggle.upload = true; // set toggle
 						this.switchToggle.loading && this.switchToggle.loading.close();
-						console.log(resArr);
-						// is not have success task
-						let flag = false;
-						// error task list
-						let error = [];
-						this.switchToggle.upload = true;
-						for (let res of resArr) {
-							if (res.Error === 0) {
-								flag = true;
-							} else {
-								error.push(res);
-							}
-						}
-						// if have success link transfer
-						if (flag) {
-							this.passwordForm.show = false;
-							this.$store.dispatch("setUpload");
-							this.$router.push({
-								name: "transfer",
-								query: { transferType: 1 }
-							});
-							// is not all task success
-							if (error.length === 0) {
-								this.$message({
-									type: "success",
-									message: "Start Upload"
-								});
-							}
-						}
-						// if have error show message
-						if (error.length != 0) {
-							let errorMsg = "";
-							for (let value of error) {
-								errorMsg += `<p>`;
-								errorMsg += `${value.FileName || ""}`;
-								errorMsg += this.$i18n.error[value.Error]
-									? this.$i18n.error[value.Error][this.$language]
-									: `error code is ${value.Error}`;
-								errorMsg += `</p>`;
-							}
-							this.$message.error({
-								dangerouslyUseHTMLString: true,
-								message: errorMsg
-							});
-						}
-					})
-					.catch(e => {
+						this.$message.error("Password Check Failed");
+					}
+	
+					// get all upload file params
+					let arr = [];
+					for (let file of this.uploadFormData.Files) {
+						let params = {
+							Path: file.filePath,
+							Desc: file.fileName,
+							EncryptPassword: this.uploadFormData.EncryptPassword,
+							StoreType: this.switchToggle.advanced ? 1 : 0,
+							Password: passwordEncode,
+							// cache upload data↓
+							FileSize: file.fileBytes / 1024,
+							DetailStatus: "uploadLoading",
+							FileName: file.fileName,
+							FileHash: "",
+							Type: 1,
+							Status: 2,
+							IsUploadAction: true,
+							Id: ('waitfor_' + uuid.v4()),
+							Nodes: []
+							// Url:"oni://www.filmlabtest.com"
+						};
+						params = this.switchToggle.advanced
+							? Object.assign({}, params, this.advancedData)
+							: params;
+						delete params.wihteListString;
+						arr.push(params);
+					}
+	
+					let waitForNowUploadLength =
+						this.$config.maxNumUpload - this.$store.state.Transfer.uploadTransferList.length ||
+						0;
+					if (waitForNowUploadLength <= 0) {
 						this.switchToggle.loading && this.switchToggle.loading.close();
-					});
-				// this.$axios
-				// 	.post(this.$api.upload, data, {
-				// 		loading: {
-				// 			text: "Uploading..",
-				// 			target: ".loading-content.upload-loading"
-				// 		}
-				// 	})
-				// 	.then(res => {
-				// 		if (res.Error === 0) {
-				// 			this.switchToggle.upload = true;
-				// 			this.passwordForm.show = false;
-				// 			this.$store.dispatch("setUpload");
-				// 			this.$router.push({
-				// 				name: "transfer",
-				// 				query: { transferType: 1 }
-				// 			});
-				// 			this.$message({
-				// 				type: "success",
-				// 				message: "Start Upload"
-				// 			});
-				// 		} else {
-				// 			this.$message.error(
-				// 				this.$i18n.error[res.Error]
-				// 					? this.$i18n.error[res.Error][this.$language]
-				// 					: `error code is ${res.Error}`
-				// 			);
-				// 			this.switchToggle.upload = true;
-				// 		}
-				// 	})
-				// 	.catch(e => {
-				// 		if (!e.message.includes("timeout")) {
-				// 			this.$message.error("Network Error. Upload File Failed!");
-				// 		}
-				// 	});
+						this.passwordForm.show = false;
+						// this.$store.dispatch("setUpload");
+						ipcRenderer.send("run-dialog-event", {name: "setUpload"});
+						this.$router.push({
+							name: "transfer",
+							query: { transferType: 1 }
+						});
+						this.addTask(arr);
+						return;
+					}
+	
+					let errorMsg = ""; // error message
+					let flag = false; // is have success
+					this.waitForNowUpload({ arr, len: waitForNowUploadLength, errorMsg, flag });
+				})
 			});
+		},
+		addTask(arr) {
+			let newWaitForUploadList = this.waitForUploadList.concat(arr);
+			this.$store.commit("SET_WAIT_FOR_UPLOAD_LIST", newWaitForUploadList);
+			ipcRenderer.send("run-dialog-event", {name: "setWaitForUploadList", data: newWaitForUploadList});
+			// update WaitForUploadOrderList
+			let WaitForUploadOrderList = [];
+			for(let value of newWaitForUploadList) {
+				WaitForUploadOrderList.push(value.Id);
+			}
+			ipcRenderer.send("run-dialog-event", {name: "pushWaitForUploadOrderList", data: WaitForUploadOrderList});
+		},
+		// Call upload interface and joint errorMsg
+		waitForNowUpload({ arr, len, errorMsg, flag }) {
+			if (!arr || arr.length === 0 || len === 0) {
+				this.uploadDone({ arr, errorMsg, flag });
+				return;
+			}
+
+			let waitForNowUploadList = arr.splice(
+				0,
+				len > arr.length ? arr.length : len
+			); // get now upload list
+
+			let commitAll = [];
+			for (let uploadFileParam of waitForNowUploadList) {
+				commitAll.push(this.getToUploadFilePromise(uploadFileParam));
+			}
+
+			this.$axios.all(commitAll).then(resArr => {
+				let errorArr = [];
+				for (let res of resArr) {
+					if (res.Error === 0) {
+						flag = true;
+					} else {
+						errorArr.push(res);
+					}
+				}
+
+				if (errorArr.length === 0) {
+					this.uploadDone({ arr, errorMsg, flag });
+				} else {
+					//if have error task joint errorMsg and run me again(argumnets.callee())
+					for (let value of errorArr) {
+						errorMsg += `<p>`;
+						errorMsg += `${value.FileName || ""}`;
+						errorMsg += this.$i18n.error[value.Error]
+							? this.$i18n.error[value.Error][this.$language]
+							: `error code is ${value.Error}`;
+						errorMsg += `</p>`;
+					}
+					let errorLength = errorArr.length;
+					this.waitForNowUpload({ arr, len: errorLength, errorMsg, flag });
+				}
+			});
+		},
+		// Processing after the interface call is complete
+		uploadDone({ errorMsg, flag, arr = [] }) {
+			// close loading...
+			this.switchToggle.loading && this.switchToggle.loading.close();
+			this.switchToggle.upload = true; // set toggle
+			if (flag === false) {
+				// is have upload success task
+				if (errorMsg) {
+					this.$message.error({
+						dangerouslyUseHTMLString: true,
+						message: errorMsg
+					});
+				} else {
+					this.$message.error("Upload Error");
+				}
+			} else {
+				if (!errorMsg) {
+					this.$message({
+						type: "success",
+						message: "Start Upload"
+					});
+				} else {
+					this.$message.error({
+						dangerouslyUseHTMLString: true,
+						message: errorMsg
+					});
+				}
+				if (arr.length > 0) {
+					this.addTask(arr);
+				}
+				this.passwordForm.show = false;
+				// this.$store.dispatch("setUpload");
+				ipcRenderer.send("run-dialog-event", {name: "setUpload"});
+				this.$router.push({
+					name: "transfer",
+					query: { transferType: 1 }
+				});
+			}
 		},
 		getToUploadFilePromise(data) {
 			return this.$axios.post(this.$api.upload, data);
@@ -964,10 +1003,10 @@ export default {
 		},
 		space() {
 			return this.$store.state.Filemanager.space;
+		},
+		waitForUploadList() {
+			return this.$store.state.Transfer.waitForUploadList || [];
 		}
-		// storageCycleNumber: function() {
-		// 	return this.verificationCycleNumber * this.advancedData.Times;
-		// }
 	}
 };
 </script>

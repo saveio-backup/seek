@@ -45,7 +45,7 @@ export default {
   },
   methods: {
     init() {
-      const TIME_OUT = 1000 * this.$outTime;
+      const TIME_OUT = 1000 * this.$config.outTime;
       this.oldCurrentNum = this.currentHeihgt;
       this.intervalObj = setInterval(() => {
         this.speedNum ++;
@@ -64,7 +64,7 @@ export default {
         if(this.secondSpeed <= 1) {
           return 0;
         } 
-        let _t = (this.totalHeight - this.currentHeihgt)/(this.secondSpeed - 1) * this.$outTime;
+        let _t = (this.totalHeight - this.currentHeihgt)/(this.secondSpeed - 1) * this.$config.outTime;
         let _d = parseInt(_t / 86400);
         let _h = parseInt((_t % 86400) / 3600);
         let _m = parseInt((_t % 3600) / 60);

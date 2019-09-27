@@ -562,7 +562,7 @@ export default {
 						target: ".loading-content-2"
 					},
 					// timeout: 60000
-					timeout: (this.$outTime * 10000 + 50000)
+					timeout: (this.$config.outTime * 10000 + 50000)
 				})
 				.then(res => {
 					if (res.Error === 0) {
@@ -593,7 +593,7 @@ export default {
 						text: "Processing...",
 						target: ".loading-content-2"
 					},
-					timeout: (this.$outTime * 10000 + 50000)
+					timeout: (this.$config.outTime * 10000 + 50000)
 				})
 				.then(res => {
 					if (res.Error === 0) {

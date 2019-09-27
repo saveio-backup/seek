@@ -31,7 +31,7 @@ Vue.prototype.$axios = axios;
 Vue.prototype.$i18n = i18n;
 Vue.prototype.$api = API;
 Vue.prototype.$language = LANGUAGE;
-Vue.prototype.$outTime = config.outTime;
+Vue.prototype.$config = config;
 Vue.config.productionTip = false;
 Vue.directive('seekclickoutside', {
   bind: function (el, binding, vnode) {

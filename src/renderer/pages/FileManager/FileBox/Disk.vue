@@ -186,7 +186,7 @@
 								class="td-grey break-word"
 								:class="scope.row.Undone?'theme-font-blue-40':''"
 							>
-								{{date.formatTime(new Date( (scope.row.DownloadAt||scope.row.UpdatedAt) * 1000))}}
+								{{scope.row.Status === -1 ? '' : date.formatTime(new Date( (scope.row.DownloadAt||scope.row.UpdatedAt) * 1000))}}
 							</div>
 						</template>
 					</el-table-column>
@@ -720,7 +720,11 @@ export default {
 									item.Url !== "" && item.Url !== undefined ? false : true;
 								return item;
 							});
-							// do sth
+							if(!this.fileListData || this.fileListData.length === 0) {
+								this.fileListData = this.fileListData.concat(this.waitForUploadList);
+							}
+							// console.log(this.fileListData);
+							// console.log(this.waitForUploadList);
 							this.fileListData = this.fileListData.concat(result);
 						} else {
 							this.switchToggle.load = false;
@@ -833,7 +837,8 @@ export default {
 				.all(commitAll)
 				.then(
 					this.$axios.spread(() => {
-						this.$store.dispatch("setDownload");
+						// this.$store.dispatch("setDownload");
+						ipcRenderer.send("run-dialog-event", {name: "setDownload"});
 						this.switchToggle.confrimDownloadDialog = false;
 						this.$message({
 							message: "Start download",
@@ -899,7 +904,7 @@ export default {
 					.post(this.$api.deletes, {
 						Hash: arr
 					},{
-						timeout: (20000 * arr.length + this.$outTime * 2000),
+						timeout: (20000 * arr.length + this.$config.outTime * 2000),
 						loading: {
 							text: "Deleting....",
 							target: ".loading-content.disk-delete-loading"
@@ -1048,6 +1053,20 @@ export default {
 		},
 		isSync: function() {
 			return this.$store.state.Home.isSync || false;
+		},
+		waitForUploadList: function() {
+			const vm = this;
+			let arr = JSON.parse(JSON.stringify(vm.$store.state.Transfer.waitForUploadList || []));
+			let UpdatedAt = Date.now()/1000;
+			arr.map(item => {
+				item.Name = item.FileName
+				item.RealFileSize = item.FileSize;
+				item.Undone = true; //not done upload
+				item.Privilege = item.Privilege === undefined ? 1 : item.Privilege; 
+				item.UpdatedAt = UpdatedAt;
+				return item;
+			})
+			return arr;
 		}
 	},
 	beforeRouteEnter(to, from, next) {

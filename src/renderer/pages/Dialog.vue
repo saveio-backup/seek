@@ -66,13 +66,67 @@ export default {
 				COUNT_INTERVAL: COUNT_INTERVAL,
 				setTimeObj: null,
 				setTimeAddressObj: null,
-				setTimeProcessObj: null
+				setTimeProcessObj: null,
+				setTimeTransferObj: null
 			},
 			Address: "",
 			// Progress: 0,
 			downloadUrl: "", // downloadDialog url
-			isNeedSync: false
+			isNeedSync: false,
+			// transfer correlation
+			transferObj: {
+
+			},
+			setTimeoutObj: {
+				upload: null,
+				download: null,
+				complete: null
+			},
+			readyUpload: []
 		};
+	},
+	computed: {
+		// uploading file
+		uploadingTransferList() {
+			return this.$store.state.Transfer.uploadingTransferList || [];
+		},
+		// uploading file list add wait for upload file list
+		uploadTransferList: function() {
+			let arr = this.$store.state.Transfer.uploadTransferList || [];
+			return arr;
+		},
+		// downloading file list
+		downloadTransferList: function() {
+			let arr = this.$store.state.Transfer.downloadTransferList || [];
+			this.rendToFileManage({
+				type: 'downloadList',
+				result: arr
+			});
+			return arr;
+		},
+		// complete transfer file list
+		completeTransferList: function() {
+			let arr = this.$store.state.Transfer.completeTransferList || [];
+			this.rendToFileManage({
+				type: 'completeList',
+				result: arr
+			});
+			return arr;
+		},
+		// wait for upload file list
+		waitForUploadList: function() {
+			let arr = this.$store.state.Transfer.waitForUploadList || [];
+			return arr;
+		},
+		waitForUploadOrderList: function() {
+			return this.$store.state.Transfer.waitForUploadOrderList || [];
+		},
+		localStatus: function() {
+			return this.$store.state.Transfer.localStatus;
+		},
+		realUploadingLength: function() {
+			return this.$store.state.Transfer.realUploadingLength;
+		}
 	},
 	mounted() {
 		ipcRenderer.on("setSelector", (e, selector) => {
@@ -82,10 +136,23 @@ export default {
 		ipcRenderer.on("setDownloadUrl", (e, url) => {
 			this.downloadUrl = url;
 		});
+		ipcRenderer.on("runDialogEvent", (e, {name, data}) => {
+			// this.downloadUrl = url;
+			this[name](data);
+		});
 		localStorage.setItem("DNSAdress", "");
 		this.isNeedCreateChannel();
 	},
 	watch: {
+		uploadingTransferList(val, oldVal) {
+			if(this.realUploadingLength < this.$config.maxNumUpload) {
+				this.waitForUploadFileToUpload();
+			}
+			this.rendToFileManage({
+				type: 'uploadList',
+				result: val
+			});
+		},
 		Address(newVal, oldVal) {
 			this.Balance = null;
 			this.channelNum = null;
@@ -106,9 +173,180 @@ export default {
 			if (this.Balance && newVal === 0 && oldVal === null) {
 				this.toGetDns()
 			}
+		},
+		uploadTransferList(newVal, oldVal) {
+			clearTimeout(this.setTimeoutObj.upload);
+			this.setTimeoutObj.upload = setTimeout(() => {
+				for (let value of newVal) {
+					this.transferObj[value.Id] = value;
+				}
+			}, 50);
+		},
+		downloadTransferList(newVal, oldVal) {
+			clearTimeout(this.setTimeoutObj.download);
+			this.setTimeoutObj.download = setTimeout(() => {
+				for (let value of newVal) {
+					this.transferObj[value.Id] = value;
+				}
+			}, 50);
+		},
+		completeTransferList(newVal, oldVal) {
+			clearTimeout(this.setTimeoutObj.complete);
+			let haveComplete = false;
+			this.setTimeoutObj.complete = setTimeout(() => {
+				for (let value of newVal) {
+					if (
+						value.Id &&
+						this.transferObj[value.Id] &&
+						this.transferObj[value.Id].Status !== 3
+					) {
+						this.message({
+							info: `${value.FileName} ${
+								this.transferObj[value.Id].Type === 1
+									? "Upload Success"
+									: "Download Success"
+							}`,
+							type: "success"
+						});
+						haveComplete = true;
+					}
+					if(haveComplete) {
+						this.$store.dispatch("setSpace");
+					}
+					this.transferObj[value.Id] = value;
+				}
+			}, 50);
+		},
+		waitForUploadList(val, oldVal) {
+			this.rendToFileManage({
+				type: 'waitForUploadList',
+				result: val
+			});
+		},
+		waitForUploadOrderList(val, oldVal) {
+			this.rendToFileManage({
+				type: 'waitForUploadOrderList',
+				result: val
+			});
+		},
+		localStatus(val, oldVal) {
+			this.rendToFileManage({
+				type: 'localStatus',
+				result: val
+			});
+		},
+		realUploadingLength(val, oldVal) {
+			this.rendToFileManage({
+				type: 'realUploadingLength',
+				result: val
+			});
 		}
 	},
 	methods: {
+		getStartWaitForUploadPromise(arr) {
+			// to upload
+			const commitAll = []; // will to upload file promise 
+			for (let file of arr) {
+				commitAll.push(this.getToUploadFilePromise(file));
+			}
+			return commitAll;
+		},
+		waitForUploadFileToUpload() {
+			let needUploadLen = this.$config.maxNumUpload - this.realUploadingLength;
+			if(this.waitForUploadOrderList.length === 0 || this.readyUpload.length !== 0 || needUploadLen <= 0) return;
+			// update readyUpload
+			let realUploadLen = Math.min(needUploadLen, this.waitForUploadOrderList.length);
+			this.readyUpload = this.waitForUploadOrderList.slice(0, realUploadLen);
+
+			// get upload list in the waitForUploadList
+			let filterWaitForUploadList = this.waitForUploadList.filter(item => {
+				return this.readyUpload.indexOf(item.Id) !== -1;
+			})
+			// get upload list in the waitForUploadList
+			let filterUploadingList = this.uploadingTransferList.filter(item => {
+				return this.readyUpload.indexOf(item.Id) !== -1;
+			});
+
+			let commitAll = [];
+			commitAll.concat(this.getStartWaitForUploadPromise(filterWaitForUploadList));
+			commitAll.concat(this.getContinueUploadPromise(filterUploadingList));
+			this.toStartUpload(commitAll);
+		},
+		toStartUpload(commitAll) {
+			const vm = this;
+			this.$axios.all(commitAll).then(resArr => {
+				let newWaitForList = this.waitForUploadList.filter(item => {
+					return this.readyUpload.indexOf(item.Id) < 0
+				})
+				this.$store.dispatch('setUpload');
+				this.$store.commit('SET_WAIT_FOR_UPLOAD_LIST', newWaitForList);
+				this.$store.commit('REMOVE_WAIT_FOR_UPLOAD_ORDER_LIST', this.readyUpload);
+				this.$store.commit('REMOVE_UPLOADING', this.readyUpload);
+				this.$store.commit('REMOVE_PAUSING', this.readyUpload);
+				this.rendToFileManage({
+					type: 'localStatus',
+					result: vm.localStatus
+				});
+
+				// to do: wait for 2s for wait for get upload file done
+				setTimeout(() => {
+					this.readyUpload = [];
+				}, 2000);
+				
+				// error message
+				let errorArr = [];
+				let errorMsg = '';
+				for (let value of resArr) {
+					if (value.Error !== 0) {
+						errorMsg += `<p>`;
+						errorMsg += `${value.FileName || ""}`;
+						errorMsg += this.$i18n.error[value.Error]
+							? this.$i18n.error[value.Error][this.$language]
+							: `error code is ${value.Error}`;
+						errorMsg += `</p>`;
+					}
+				}
+				if(errorMsg !== "") {
+					this.message({
+						info: errorMsg,
+						type: "error",
+						dangerouslyUseHTMLString: true
+					});
+				}
+			})
+		},
+		getContinueUploadPromise(arr) {
+			const commitAll = [];
+			let continueArr = [];
+			let retryArr = []
+			for(let value of arr) {
+				if(value.Status === 4) {
+					retryArr.push(value.Id);
+				} else {
+					continueArr.push(value.Id);
+				}
+			}
+			if(retryArr.length > 0) {
+				let params = {
+					Ids: retryArr
+				}
+				commitAll.push(
+					this.$axios.post(this.$api.uploadRetry, params)
+				)
+			}
+			if(continueArr.length > 0) {
+				let params = {
+					Ids: continueArr
+				}
+				commitAll.push(
+					this.$axios.post(this.$api.uploadResume, params)
+				)
+			}
+			return commitAll;
+		},
+		getToUploadFilePromise(data) {
+			return this.$axios.post(this.$api.upload, data);
+		},
 		toGetDns() {
 			this.$axios
 				.get(this.$api.getAllDns)
@@ -191,10 +429,11 @@ export default {
 				}
 			});
 		},
+		// get revenue
 		getRevenue() {
 			this.$axios
 				.get(this.$api.revenue, {
-					timeout: (this.$outTime * 5000 + 15000)
+					timeout: (this.$config.outTime * 5000 + 15000)
 				})
 				.then(res => {
 					if (res.Error === 0) {
@@ -209,7 +448,7 @@ export default {
 		getChannel() {
 			this.$axios
 				.get(this.$api.channel, {
-					timeout: (this.$outTime * 5000 + 15000)
+					timeout: (this.$config.outTime * 5000 + 15000)
 				})
 				.then(res => {
 					if (res.Error === 0) {
@@ -231,14 +470,7 @@ export default {
 					}
 				});
 		},
-		// getCurrentChnannel() {
-		// 	this.$axios.get(this.$api.getCurrentChannel).then(res => {
-		// 		if(res.Error === 0) {
-		// 			let result = res.Result;
-		// 			this.renderDateToBrowserView({ result: result, type: "currentChannel", rendTo: 1 });
-		// 		}
-		// 	})	
-		// },
+		// get connect state
 		getState() {
 			this.$axios
 				.get(this.$api.networkStatus)
@@ -317,6 +549,8 @@ export default {
 		},
 		// get channel、balance、revenue list data and check have channel and wallet money
 		getPollingData() {
+			this.getTransferPollData();
+
 			clearInterval(this.intervalObj.setTimeObj);
 			this.getProcess();
 			this.getChannel();
@@ -330,6 +564,76 @@ export default {
 				this.getRevenue();
 				this.getState();
 			}, this.intervalObj.COUNT_INTERVAL);
+		},
+		getTransferPollData() {
+			this.$store.dispatch("getWaitForUploadList"); // get wait for upload list
+			this.$store.dispatch("setUpload");
+			this.$store.dispatch("setDownload");
+		},
+		getWin() {
+			let arrWin = remote.BrowserWindow.getAllWindows();
+			for(let winItem of arrWin) {
+				if(winItem.webContents.getURL().indexOf("/#/navigation") > 0) {
+					this.win = winItem
+				}
+			}
+		},
+		rendToFileManage({ result, type }) {
+			if(!this.win) {
+				this.getWin();
+			}
+
+			let views = this.win.views;
+			let activeView = views.find(view => view.isActive && view.displayURL.toLowerCase().startsWith('seek://filemanager'));
+			if(!activeView) return;
+			 let winContentId = activeView.webContents.id;
+			 ipcRenderer.sendTo(winContentId, 'get-data', {result, type})
+		},
+		// rendTo active browser display message
+		message({ info, type, dangerouslyUseHTMLString }) {
+			let views = this.win.views;
+			let activeView = views.find(view => view.isActive);
+			const webContentsId = activeView.browserView.webContents.id;
+			ipcRenderer.sendTo(webContentsId, "current-active-show-message", {
+				info,
+				type,
+				dangerouslyUseHTMLString
+			});
+		},
+		setUpload() {
+			this.$store.dispatch("setUpload");
+		},
+		setDownload() {
+			this.$store.dispatch("setDownload");
+		},
+		setComplete() {
+			this.$store.dispatch("setComplete");
+		},
+		setWaitForUploadList(data) {
+			this.$store.commit('GET_WAIT_FOR_UPLOAD_LIST', data);
+		},
+
+		/**
+		 * params:
+		 * data(type array): 
+		 */
+		pushWaitForUploadOrderList(data) {
+			this.$store.commit('PUSH_WAIT_FOR_UPLOAD_ORDER_LIST', data);
+		},
+		removeWaitForUploadOrderList(data) {
+			this.$store.commit('REMOVE_WAIT_FOR_UPLOAD_ORDER_LIST', data);
+		},
+		addPausing(data) {
+			this.$store.commit('ADD_PAUSING', data);
+		},
+		removePausing(data) {
+			this.$store.commit('REMOVE_PAUSING', data);
+		},
+		addUploading(data) {
+			this.$store.commit('ADD_UPLOADING', data);
+		},
+		removeUploading(data) {
+			this.$store.commit('REMOVE_UPLOADING', data);
 		}
 	}
 };

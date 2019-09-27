@@ -1,5 +1,8 @@
 const result = {
   //The status code of the transmission process
+  'uploadLoading': {
+    'en': 'Wait for the Upload'
+  },
   '0': {
     'en': ''
   },

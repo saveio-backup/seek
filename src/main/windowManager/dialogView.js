@@ -46,6 +46,9 @@ class dialogView {
   setMenuSelector(selector) {
     this.browserView.webContents.send('setSelector', selector)
   }
+  runDialogEvent(data) {
+    this.browserView.webContents.send('runDialogEvent', data);
+  }
   createBrowserView() {
     this.initBrowserView();
     this.updateEvent();

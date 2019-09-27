@@ -139,7 +139,17 @@ const actions = {
               }
           } else {
             commit('SET_CURRENT_ACCOUNT', 0) // login fail
-            window.localStorage.clear(); // remove all local infomation
+            // window.localStorage.clear(); // remove all local infomation
+            const notClear = ['waitForUploadOrderList', 'uploadTask', 'localStatus']
+						outer: for(let value of window.localStorage) {
+							if(!window.localStorage.propertyIsEnumerable(value)) continue;
+							for(let notClearItem of notClear) {
+								if(value.startsWith(notClearItem)) {
+									continue outer;
+								}
+							}
+							window.localStorage.removeItem(value);
+						}
           }
         } else {
           if (location.href.indexOf('Home') < 0) {

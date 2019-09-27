@@ -144,9 +144,11 @@
 import { filterFloat } from "../assets/config/util";
 import channelList from "../components/ChannelsList.vue";
 import channelWalletTransfer from "../components/ChannelWalletTransfer.vue";
+import { ipcRenderer } from "electron";
 export default {
 	mounted() {
 		document.title = "File Manager";
+		this.$store.dispatch("getWaitForUploadList"); // get wait for upload list
 		this.$store.dispatch("setCurrentAccount"); // get login status
 		this.$store.dispatch("getDns"); // get login status
 		this.initBalanceRequest();
@@ -178,12 +180,12 @@ export default {
 				]
 			},
 			location: location,
-			transferObj: {},
-			setTimeoutObj: {
-				upload: null,
-				download: null,
-				complete: null
-			}
+			// transferObj: {},
+			// setTimeoutObj: {
+			// 	upload: null,
+			// 	download: null,
+			// 	complete: null
+			// }
 		};
 	},
 	methods: {
@@ -229,7 +231,7 @@ export default {
 					text: "Loading...",
 					target: ".channelSwitchBind.loading-content"
 				},
-				timeout: (this.$outTime * 10000 + 50000)
+				timeout: (this.$config.outTime * 10000 + 50000)
 			}).then(res => {
 				if(res.Error === 0) {
 					this.switchToggle.channelListDialog = false;
@@ -260,52 +262,52 @@ export default {
 			this.$store.dispatch("setChannelBalanceTotal");
 		}
 	},
-	watch: {
-		// to do!!!! transfer api message need delete
-		uploadTransferList(newVal, oldVal) {
-			clearTimeout(this.setTimeoutObj.upload);
-			this.setTimeoutObj.upload = setTimeout(() => {
-				for (let value of newVal) {
-					this.transferObj[value.Id] = value;
-				}
-			}, 50);
-		},
-		downloadTransferList(newVal, oldVal) {
-			clearTimeout(this.setTimeoutObj.download);
-			this.setTimeoutObj.download = setTimeout(() => {
-				for (let value of newVal) {
-					this.transferObj[value.Id] = value;
-				}
-			}, 50);
-		},
-		completeTransferList(newVal, oldVal) {
-			clearTimeout(this.setTimeoutObj.complete);
-			let haveComplete = false;
-			this.setTimeoutObj.complete = setTimeout(() => {
-				for (let value of newVal) {
-					if (
-						value.Id &&
-						this.transferObj[value.Id] &&
-						this.transferObj[value.Id].Status !== 3
-					) {
-						this.$message({
-							message: `${value.FileName} ${
-								this.transferObj[value.Id].Type === 1
-									? "Upload Success"
-									: "Download Success"
-							}`,
-							type: "success"
-						});
-						haveComplete = true;
-					}
-					if(haveComplete) {
-						this.$store.dispatch("setSpace");
-					}
-					this.transferObj[value.Id] = value;
-				}
-			}, 50);
-		}
-	},
+	// watch: {
+	// 	// transfer api message wait for delete
+	// 	uploadTransferList(newVal, oldVal) {
+	// 		clearTimeout(this.setTimeoutObj.upload);
+	// 		this.setTimeoutObj.upload = setTimeout(() => {
+	// 			for (let value of newVal) {
+	// 				this.transferObj[value.Id] = value;
+	// 			}
+	// 		}, 50);
+	// 	},
+	// 	downloadTransferList(newVal, oldVal) {
+	// 		clearTimeout(this.setTimeoutObj.download);
+	// 		this.setTimeoutObj.download = setTimeout(() => {
+	// 			for (let value of newVal) {
+	// 				this.transferObj[value.Id] = value;
+	// 			}
+	// 		}, 50);
+	// 	},
+	// 	completeTransferList(newVal, oldVal) {
+	// 		clearTimeout(this.setTimeoutObj.complete);
+	// 		let haveComplete = false;
+	// 		this.setTimeoutObj.complete = setTimeout(() => {
+	// 			for (let value of newVal) {
+	// 				if (
+	// 					value.Id &&
+	// 					this.transferObj[value.Id] &&
+	// 					this.transferObj[value.Id].Status !== 3
+	// 				) {
+	// 					this.$message({
+	// 						message: `${value.FileName} ${
+	// 							this.transferObj[value.Id].Type === 1
+	// 								? "Upload Success"
+	// 								: "Download Success"
+	// 						}`,
+	// 						type: "success"
+	// 					});
+	// 					haveComplete = true;
+	// 				}
+	// 				if(haveComplete) {
+	// 					this.$store.dispatch("setSpace");
+	// 				}
+	// 				this.transferObj[value.Id] = value;
+	// 			}
+	// 		}, 50);
+	// 	}
+	// },
 	computed: {
 		mainCount: function() {
 			return this.$store.state.Wallet.mainCount;
@@ -322,15 +324,19 @@ export default {
 				this.$store.state.Transfer.uploadLength
 			);
 		},
-		uploadTransferList: function() {
-			return this.$store.state.Transfer.uploadTransferList;
-		},
-		downloadTransferList: function() {
-			return this.$store.state.Transfer.downloadTransferList;
-		},
-		completeTransferList: function() {
-			return this.$store.state.Transfer.completeTransferList;
-		}
+
+		// uploadTransferList: function() {
+		// 	return this.$store.state.Transfer.uploadTransferList;
+		// },
+		// downloadTransferList: function() {
+		// 	return this.$store.state.Transfer.downloadTransferList;
+		// },
+		// completeTransferList: function() {
+		// 	return this.$store.state.Transfer.completeTransferList;
+		// },
+		// waitForUploadList: function() {
+		// 	return this.$store.state.Transfer.waitForUploadList || [];
+		// }
 	},
 	beforeRouteEnter(to, from, next) {
 		next(vm => {
@@ -343,8 +349,8 @@ export default {
 					}
 				});
 			}
-			vm.$store.dispatch("setUpload");
-			vm.$store.dispatch("setDownload");
+			// vm.$store.dispatch("setUpload");
+			// vm.$store.dispatch("setDownload");
 		});
 	},
 	beforeRouteUpdate(to, from, next) {
@@ -357,9 +363,9 @@ export default {
 	},
 	beforeDestroy() {
 		this.$store.dispatch("clearIntervalGetDns");
-		this.$store.dispatch("clearIntervalSetUpload");
-		this.$store.dispatch("clearIntervalSetDownload");
-		this.$store.dispatch("clearIntervalSetComplete");
+		// this.$store.dispatch("clearIntervalSetUpload");
+		// this.$store.dispatch("clearIntervalSetDownload");
+		// this.$store.dispatch("clearIntervalSetComplete");
 	}
 };
 </script>

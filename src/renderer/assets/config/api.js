@@ -92,6 +92,7 @@ const API = {
   switchChainId: HOST + VERSION + 'chainid/switch',
   getchainidlist: HOST + VERSION + 'chainid/list',
   invokeContract: HOST + VERSION + 'smartcontract/invoke',
-  preexecContract: HOST + VERSION + 'smartcontract/preexec'
+  preexecContract: HOST + VERSION + 'smartcontract/preexec',
+  checkPassword:  HOST + VERSION + 'account/password/check'
 }
 export default API;

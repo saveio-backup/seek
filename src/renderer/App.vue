@@ -14,10 +14,11 @@ export default {
 	name: "browser",
 	mounted() {
 		this.activeListener();
-		ipcRenderer.on("current-active-show-message", (event, { info, type }) => {
+		ipcRenderer.on("current-active-show-message", (event, { info, type, dangerouslyUseHTMLString = false }) => {
 			this.$message({
 				message: info,
-				type: type
+				type,
+				dangerouslyUseHTMLString
 			});
 		});
 		ipcRenderer.on("get-data", (event, { result, type, page }) => {
@@ -29,11 +30,6 @@ export default {
 			}
 		});
 	},
-	// computed: {
-	// 	routerName() {
-	// 		return this.$route.name;
-	// 	}
-	// },
 	watch: {
 		'$route' (val, old) {
 			this.routerName = this.$route.name;
@@ -60,7 +56,7 @@ export default {
 						this.$axios.get = null;
 						this.$axios.post = null;
 						this.$message({
-							message: "Server has been closed, please restart seeker.",
+							message: "Unexpected failure, need to restart Seeker.",
 							type: "error",
 							duration: 0
 						});
@@ -69,6 +65,9 @@ export default {
 					return true;
 				}
 			});
+		},
+		accountUpdate({result}) {
+			this.$store.commit("SET_ACCOUNT", result);
 		},
 		channelUpdate({result}) {
 			this.$store.commit("SET_BALANCE_TOTAL", result);
@@ -104,15 +103,31 @@ export default {
 				console.log(e);
 			}
 		},
-		accountUpdate({result}) {
-			this.$store.commit("SET_ACCOUNT", result);
-		},
 		stateUpdate({result}) {
 			this.$store.commit("SET_STAET", result);
 		},
-		// currentChannelUpdate({result}) {
-		// 	this.$store.dispatch("setChannelBind", result.ChannelId);
-		// }
+		// transfering some polling
+		uploadListUpdate({result}) {
+			this.$store.commit("GET_UPLOAD_TRANSFER", result);
+		},
+		downloadListUpdate({result}) {
+			this.$store.commit("GET_DOWNLOAD_TRANSFER", result);
+		},
+		completeListUpdate({result}) {
+			this.$store.commit("GET_COMPLETED_TRANSFER", result);
+		},
+		waitForUploadListUpdate({result}) {
+			this.$store.commit("GET_WAIT_FOR_UPLOAD_LIST", result);
+		},
+		waitForUploadOrderListUpdate({result}) {
+			this.$store.commit("GET_WAIT_FOR_UPLOAD_ORDER_LIST", result);
+		},
+		localStatusUpdate({result}) {			
+			this.$store.commit("GET_LOCAL_STATUS", result);
+		},
+		realUploadingLengthUpdate({result}) {
+			this.$store.commit("GET_REAL_UPLOADING_LENGTH", result);
+		}
 	}
 };
 </script>

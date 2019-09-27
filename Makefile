@@ -1,13 +1,12 @@
 GOFMT=gofmt
 GC=go build --tags "json1"
-SRC_FILES = $(shell git ls-files | grep -e .go$ | grep -v _test.go)
 EDGE_GITCOMMIT=$(shell cd ~/go/src/github.com/saveio/edge && git log -1 --pretty=format:"%H")
 PYLONS_GITCOMMIT=$(shell cd ~/go/src/github.com/saveio/pylons && git log -1 --pretty=format:"%H")
 CARRIER_GITCOMMIT=$(shell cd ~/go/src/github.com/saveio/carrier && git log -1 --pretty=format:"%H")
 MAX_GITCOMMIT=$(shell cd ~/go/src/github.com/saveio/max && git log -1 --pretty=format:"%H")
 DSP_GITCOMMIT=$(shell cd ~/go/src/github.com/saveio/dsp-go-sdk && git log -1 --pretty=format:"%H")
 
-BUILD_EDGE_PAR =-x -v -ldflags "-s -w -X github.com/saveio/edge/dsp.Version=$(EDGE_GITCOMMIT) -X github.com/saveio/pylons.Version=${PYLONS_GITCOMMIT} -X github.com/saveio/carrier/network.Version=${CARRIER_GITCOMMIT} -X github.com/saveio/max/max.Version=${MAX_GITCOMMIT} -X github.com/saveio/dsp-go-sdk.Version=${DSP_GITCOMMIT}"
+BUILD_EDGE_PAR =-v -ldflags "-s -w -X github.com/saveio/edge/dsp.Version=$(EDGE_GITCOMMIT) -X github.com/saveio/pylons.Version=${PYLONS_GITCOMMIT} -X github.com/saveio/carrier/network.Version=${CARRIER_GITCOMMIT} -X github.com/saveio/max/max.Version=${MAX_GITCOMMIT} -X github.com/saveio/dsp-go-sdk.Version=${DSP_GITCOMMIT}"
 
 all: client
 

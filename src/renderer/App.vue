@@ -13,6 +13,7 @@ import { ipcRenderer } from "electron";
 export default {
 	name: "browser",
 	mounted() {
+		this.init();
 		this.activeListener();
 		ipcRenderer.on("current-active-show-message", (event, { info, type, dangerouslyUseHTMLString = false }) => {
 			this.$message({
@@ -78,7 +79,7 @@ export default {
 		revenceUpdate({result}) {
 			this.$store.commit("SET_REVENUE", result);
 		},
-		progressUpdate({result, page}) {			
+		progressUpdate({result, page}) {
 			if(page === 'tab') {
 				if(result.isNeedSync) {
 					if (location.href.indexOf('CreateAccount') < 0) {
@@ -127,6 +128,13 @@ export default {
 		},
 		realUploadingLengthUpdate({result}) {
 			this.$store.commit("GET_REAL_UPLOADING_LENGTH", result);
+		},
+		frontConfigUpdate({result}) {
+			this.__proto__.__proto__.$config.maxNumUpload = result.maxNumUpload;
+		},
+		init() {
+			let settings = ipcRenderer.sendSync("getAllSettings");
+			this.__proto__.__proto__.$config.maxNumUpload = settings.maxNumUpload;
 		}
 	}
 };

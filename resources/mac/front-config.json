@@ -1,4 +1,5 @@
 {
   "console": false,
-  "devEdgeEnable": false
+  "devEdgeEnable": false,
+  "maxNumUpload": 5
 }

@@ -83,6 +83,21 @@ const mutations = {
             localStorage.setItem(`waitForUploadOrderList_${address}`, JSON.stringify(state.waitForUploadOrderList));
         }
     },
+    UNSHIFT_WAIT_FOR_UPLOAD_ORDER_LIST(state, result) {
+        let _waitForUploadOrderList = JSON.parse(JSON.stringify(state.waitForUploadOrderList));
+        let flag = false;
+        for(let value of result) {
+            let index = _waitForUploadOrderList.indexOf(value);
+            if(index === -1) {
+                _waitForUploadOrderList.unshift(value);
+                flag = true;
+            }
+        }
+        if(flag) {
+            state.waitForUploadOrderList = _waitForUploadOrderList;
+            localStorage.setItem(`waitForUploadOrderList_${address}`, JSON.stringify(state.waitForUploadOrderList));
+        }
+    },
     /**
      * params:
      * result(type array)

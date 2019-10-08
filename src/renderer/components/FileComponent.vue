@@ -785,7 +785,7 @@ export default {
 			return this.$store.state.Transfer.waitForUploadList || [];
 		},
 		localStatus: function() {
-			console.log(this.$store.state.Transfer.localStatus);
+			// console.log(this.$store.state.Transfer.localStatus);
 			return this.$store.state.Transfer.localStatus;
 		}
 	},

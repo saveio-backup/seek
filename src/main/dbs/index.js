@@ -23,6 +23,7 @@ const DEFAULT_USERSUMMARY_CONFIG = {
     value: {
       console: false,
       devEdgeEnable: false,
+      maxNumUpload: 5,
       ChainId: DEFAULT_CHAINID
     },
     modify: true

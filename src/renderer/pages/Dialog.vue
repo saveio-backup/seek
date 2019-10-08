@@ -505,7 +505,7 @@ export default {
 		 */
 		getArr() {
 			let arr = [];
-			let views = {}
+			let views = {};
 			//  remote.BrowserWindow.getAllWindows()[0].views;
 			for(let win of remote.BrowserWindow.getAllWindows()) {
 				if(win.views) {
@@ -582,16 +582,30 @@ export default {
 			if(!this.win) {
 				this.getWin();
 			}
-
-			let views = this.win.views;
-			let activeView = views.find(view => view.isActive && view.displayURL.toLowerCase().startsWith('seek://filemanager'));
+			let views = {}
+			//  remote.BrowserWindow.getAllWindows()[0].views;
+			for(let win of remote.BrowserWindow.getAllWindows()) {
+				if(win.views) {
+					views = win.views;
+				}
+			}
+			
+			let activeView = views.find(view => view.displayURL.toLowerCase().startsWith('seek://filemanager'));
 			if(!activeView) return;
 			 let winContentId = activeView.webContents.id;
 			 ipcRenderer.sendTo(winContentId, 'get-data', {result, type})
 		},
 		// rendTo active browser display message
 		message({ info, type, dangerouslyUseHTMLString }) {
-			let views = this.win.views;
+			// let views = this.win.views;
+			let views = {}
+			//  remote.BrowserWindow.getAllWindows()[0].views;
+			for(let win of remote.BrowserWindow.getAllWindows()) {
+				if(win.views) {
+					views = win.views;
+				}
+			}
+
 			let activeView = views.find(view => view.isActive);
 			const webContentsId = activeView.browserView.webContents.id;
 			ipcRenderer.sendTo(webContentsId, "current-active-show-message", {
@@ -620,6 +634,9 @@ export default {
 		pushWaitForUploadOrderList(data) {
 			this.$store.commit('PUSH_WAIT_FOR_UPLOAD_ORDER_LIST', data);
 		},
+		unshiftWaitForUploadOrderList(data) {
+			this.$store.commit('UNSHIFT_WAIT_FOR_UPLOAD_ORDER_LIST', data);
+		},
 		removeWaitForUploadOrderList(data) {
 			this.$store.commit('REMOVE_WAIT_FOR_UPLOAD_ORDER_LIST', data);
 		},
@@ -634,6 +651,38 @@ export default {
 		},
 		removeUploading(data) {
 			this.$store.commit('REMOVE_UPLOADING', data);
+		},
+		settingUpdate(data) {
+			this.__proto__.__proto__.$config.maxNumUpload = data.maxNumUpload;
+			let remoteUploadingList = [];
+			for(let value of this.uploadTransferList) {
+				if(value.Id.indexOf('waitfor_') !== 0) {
+					if(value.Status === 1 || value.Status === 2) {
+						remoteUploadingList.push(value.Id)
+					}
+				}
+			}
+			if(remoteUploadingList.length > this.$config.maxNumUpload) {
+				let pauseList = remoteUploadingList.splice(this.$config.maxNumUpload);
+				this.addUploading(pauseList);
+				this.unshiftWaitForUploadOrderList(pauseList);
+				this.toPause(pauseList);
+			}
+		},
+		toPause(arr) {
+			const vm = this;
+			let params = {
+				Ids: arr
+			}
+			this.$axios.post(this.$api.uploadPause, params, {
+				timeout: (this.$config.outTime * 2000 + 18000) * params.Ids.length
+			})
+			.finally(res => {
+				vm.rendToFileManage({
+					type: 'localStatus',
+					result: vm.localStatus
+				});
+			})
 		}
 	}
 };

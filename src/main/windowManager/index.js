@@ -16,7 +16,7 @@ import {
 } from 'url';
 import MenuWindow from './menuWindow'
 import log from 'electron-log'
-import errorPage from '../../../static/html/failed/failed.js'
+import failedPage from '../../../static/html/failed/failed.js'
 import frontCfgObj from './frontCfgObj'
 import {
   SeekDB
@@ -141,7 +141,8 @@ class View {
       if (!validatedURL) return;
       console.log('load error!!');
       console.log(errorDescription);
-      this.webContents.executeJavaScript(`document.documentElement.innerHTML = '${errorPage(validatedURL)}' `)
+      console.log(`uri is ${validatedURL}`);
+      this.webContents.executeJavaScript(`document.documentElement.innerHTML = '${failedPage(validatedURL)}' `)
     })
     this.webContents.on('new-window', (e, url) => {
       this.onNewWindow(url, e)

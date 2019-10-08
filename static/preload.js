@@ -1,6 +1,6 @@
 import axios from 'axios';
 import api from '../src/renderer/assets/config/api';
-import errorPage from './html/failed/failed';
+import failedPage from './html/failed/failed';
 import fs from 'fs';
 import {
   remote,
@@ -41,7 +41,7 @@ class Seek {
       path
     });
 
-    callback && ipcRenderer.once(uid, (event, tx) => {
+    callback && ipcRenderer.on(uid, (event, tx) => {
       callback(tx);
     })
   }
@@ -70,6 +70,12 @@ class Seek {
     view.url = path;
     view.onNewUrl(path);
   }
+  static openChannel(flag) {
+    const path = 'seek://Home?exec=openAddChannel'
+    let view = views.find(item => item.isActive)
+    view.url = path;
+    view.onNewUrl(path);
+  }
   static openComponent({
     path
   }) {
@@ -85,7 +91,7 @@ async function loadThirdPage(url) {
   const detail = await getTransferDetail(url);
   if (detail.data.Result) {
     const data = detail.data.Result;
-    if (data.Progress >= 0 && data.Progress < 1) { // task has exit
+    if (data.Progress >= 0 && data.Progress < 1) { // task has exist
       if (data.Status === 0) { // but in Pause state 
         // todo  download continue
         axios.post(api.downloadResume, {
@@ -109,10 +115,12 @@ async function loadThirdPage(url) {
         ipcRenderer.send('load-third-page', data.Path);
         console.log('task finished!!!!');
       } catch (error) {
+        console.error(`error ${error}`);
         downloadPage(url); // task exist but file not found
       }
     }
   } else {
+    console.log(`no result ${url}`);
     downloadPage(url);
   }
 }
@@ -128,7 +136,7 @@ function downloadPage(url) {
         loadThirdPage(url);
       }, 2000);
     } else {
-      ipcRenderer.send('loadErrorPage');
+      ipcRenderer.send('loadErrorPage', res.data.Error);
     }
   })
 }

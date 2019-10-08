@@ -18,6 +18,12 @@ const result = {
       .test(value))
       return Number(value);
     return NaN;
+  },
+  effectiveNumber(value) {
+    var m = Number(value)
+      .toExponential()
+      .match(/\d(?:\.(\d*))?e([+-]\d+)/);
+    return Number(value).toFixed(Math.max(0, (m[1] || "").length - m[2]));
   }
 }
 module.exports = result;

@@ -402,6 +402,7 @@
 import date from "../../../assets/tool/date";
 import util from "../../../assets/config/util";
 import { clipboard, shell, ipcRenderer } from "electron";
+import { effectiveNumber } from "../../../assets/config/util";
 import fs from "fs";
 import uploadFileDetailDialog from "./../../../components/UploadFileDetailDialog";
 let tableElement;
@@ -409,6 +410,7 @@ export default {
 	data() {
 		return {
 			clipboard,
+			effectiveNumber,
 			toggleFilebox: false,
 			date,
 			util,
@@ -720,8 +722,10 @@ export default {
 									item.Url !== "" && item.Url !== undefined ? false : true;
 								return item;
 							});
-							if(!this.fileListData || this.fileListData.length === 0) {
-								this.fileListData = this.fileListData.concat(this.waitForUploadList);
+							if (!this.fileListData || this.fileListData.length === 0) {
+								this.fileListData = this.fileListData.concat(
+									this.waitForUploadList
+								);
 							}
 							// console.log(this.fileListData);
 							// console.log(this.waitForUploadList);
@@ -732,7 +736,7 @@ export default {
 						}
 						this.switchToggle.load = true;
 					} else {
-						if(res.Error === 40007) return;
+						if (res.Error === 40007) return;
 						this.$message.error(
 							this.$i18n.error[res.Error]
 								? this.$i18n.error[res.Error][this.$language]
@@ -838,7 +842,7 @@ export default {
 				.then(
 					this.$axios.spread(() => {
 						// this.$store.dispatch("setDownload");
-						ipcRenderer.send("run-dialog-event", {name: "setDownload"});
+						ipcRenderer.send("run-dialog-event", { name: "setDownload" });
 						this.switchToggle.confrimDownloadDialog = false;
 						this.$message({
 							message: "Start download",
@@ -878,11 +882,11 @@ export default {
 			this.switchToggle.deleteDialog = true;
 		},
 		syncDeleteFile(res) {
-			if(Object.prototype.toString.call(res) === "[object Array]") {
-				for(let value of res) {
+			if (Object.prototype.toString.call(res) === "[object Array]") {
+				for (let value of res) {
 					this.fileListData.some((item, index) => {
-						if(item.Hash === value.FileHash) {
-							if(value.Tx) {
+						if (item.Hash === value.FileHash) {
+							if (value.Tx) {
 								this.fileListData.splice(index, 1);
 							}
 							return true;
@@ -897,19 +901,23 @@ export default {
 			this.$refs.extraParamsForm.validate(valid => {
 				if (!valid) return;
 				let arr = [];
-				for(let file of deleteFiles) {
+				for (let file of deleteFiles) {
 					arr.push(file.Hash);
 				}
 				this.$axios
-					.post(this.$api.deletes, {
-						Hash: arr
-					},{
-						timeout: (20000 * arr.length + this.$config.outTime * 2000),
-						loading: {
-							text: "Deleting....",
-							target: ".loading-content.disk-delete-loading"
+					.post(
+						this.$api.deletes,
+						{
+							Hash: arr
+						},
+						{
+							timeout: 20000 * arr.length + this.$outTime * 2000,
+							loading: {
+								text: "Deleting....",
+								target: ".loading-content.disk-delete-loading"
+							}
 						}
-					})
+					)
 					.then(res => {
 						this.$refs["extraParamsForm"].resetFields();
 						this.$store.dispatch("setSpace"); // get userspace
@@ -922,16 +930,15 @@ export default {
 							this.syncDeleteFile(res.Result);
 							// console.log("delete");
 						} else {
-							this.$message.error(
-								this.$i18n.error[res.Error][this.$language]
-							);
+							this.$message.error(this.$i18n.error[res.Error][this.$language]);
 							this.syncDeleteFile(res.Result);
 						}
-					}).catch(e => {
+					})
+					.catch(e => {
 						if (!e.message.includes("timeout")) {
 							this.$message.error("Network Error. Delete Failed.");
 						}
-					})
+					});
 			});
 		},
 		toDeleteFile(dataList, hash) {
@@ -1056,16 +1063,18 @@ export default {
 		},
 		waitForUploadList: function() {
 			const vm = this;
-			let arr = JSON.parse(JSON.stringify(vm.$store.state.Transfer.waitForUploadList || []));
-			let UpdatedAt = Date.now()/1000;
+			let arr = JSON.parse(
+				JSON.stringify(vm.$store.state.Transfer.waitForUploadList || [])
+			);
+			let UpdatedAt = Date.now() / 1000;
 			arr.map(item => {
-				item.Name = item.FileName
+				item.Name = item.FileName;
 				item.RealFileSize = item.FileSize;
 				item.Undone = true; //not done upload
-				item.Privilege = item.Privilege === undefined ? 1 : item.Privilege; 
+				item.Privilege = item.Privilege === undefined ? 1 : item.Privilege;
 				item.UpdatedAt = UpdatedAt;
 				return item;
-			})
+			});
 			return arr;
 		}
 	},

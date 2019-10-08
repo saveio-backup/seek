@@ -6,7 +6,7 @@
 				class="flex1 text-left"
 			>
 				<p class="theme-font-blue-40 transparent ft14 user-no-select">Channel(ONI)</p>
-				<p class="theme-font-blue ft24 mt10">{{filterFloat(channelSelected.BalanceFormat || 0).toLocaleString('en-US')}}</p>
+				<p class="theme-font-blue ft24 mt10">{{filterFloat(channelSelected.BalanceFormat || 0)}}</p>
 				<!-- <p class="theme-font-blue transparent ft12 bold">{{channelSelected.Address}}</p> -->
 			</div>
 			<div
@@ -14,7 +14,7 @@
 				class="flex1 text-left"
 			>
 				<p class="theme-font-blue-40 transparent ft14 user-no-select">Wallet(ONI)</p>
-				<p class="theme-font-blue ft24 mt10">{{filterFloat(mainCount).toLocaleString('en-US')}}</p>
+				<p class="theme-font-blue ft24 mt10">{{filterFloat(mainCount)}}</p>
 			</div>
 			<div class="flex column between">
 				<i class="ofont ofont-fasong"></i>
@@ -29,7 +29,7 @@
 				class="flex1 text-right"
 			>
 				<p class="theme-font-blue-40 transparent ft14 user-no-select">Channel(ONI)</p>
-				<p class="theme-font-blue ft24 mt10">{{filterFloat(channelSelected.BalanceFormat || 0).toLocaleString('en-US')}}</p>
+				<p class="theme-font-blue ft24 mt10">{{filterFloat(channelSelected.BalanceFormat || 0)}}</p>
 				<!-- <p class="theme-font-blue transparent ft12 bold">{{channelSelected.Address}}</p> -->
 			</div>
 			<div
@@ -37,7 +37,7 @@
 				class="flex1 text-right"
 			>
 				<p class="theme-font-blue-40 transparent ft14 user-no-select">Wallet(ONI)</p>
-				<p class="theme-font-blue ft24 mt10">{{filterFloat(mainCount).toLocaleString('en-US')}}</p>
+				<p class="theme-font-blue ft24 mt10">{{filterFloat(mainCount)}}</p>
 			</div>
 		</div>
 		<el-form

@@ -77,7 +77,9 @@ ipcMain.on('will-set-dir', (event) => {
   dialog.showOpenDialog({
     properties: ['openDirectory']
   }, (dir) => {
-    event.sender.send('did-set-dir', dir[0]);
+    if (dir) {
+      event.sender.send('did-set-dir', dir[0]);
+    }
   })
 })
 

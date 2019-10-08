@@ -41,7 +41,7 @@
 										class="theme1"
 										@click="exportPrivateKey"
 									>
-									<i class="user-name-btn-icon ofont ofont-daochu"></i> <span class="user-name-btn-content">Private Key(WIF)</span>
+										<i class="user-name-btn-icon ofont ofont-daochu"></i> <span class="user-name-btn-content">Private Key(WIF)</span>
 									</ripper-button>
 									<ripper-button
 										class="theme1"
@@ -110,8 +110,14 @@
 						</div>
 					</div>
 					<div class="tologin">
-						<ripper-button class="button" @click="goPage('/CreateAccount')">Create Account</ripper-button>
-						<ripper-button class="primary button" @click="goPage('/ImportAccount')">Import Account</ripper-button>
+						<ripper-button
+							class="button"
+							@click="goPage('/CreateAccount')"
+						>Create Account</ripper-button>
+						<ripper-button
+							class="primary button"
+							@click="goPage('/ImportAccount')"
+						>Import Account</ripper-button>
 					</div>
 				</div>
 			</div>
@@ -120,7 +126,7 @@
 </template>
 <script>
 const { ipcRenderer, clipboard } = require("electron");
-import { filterFloat } from "../assets/config/util";
+import { filterFloat, effectiveNumber } from "../assets/config/util";
 import channelsList from "../components/ChannelsList.vue";
 import canvasBg from "./Home/CanvasBg.vue";
 import echarts from "echarts";
@@ -161,6 +167,7 @@ export default {
 			// balanceSelected: 0,
 			chartsDom: "",
 			chartsChannelDom: "",
+			exec: "",
 			index: 0,
 			timeoutObj: null,
 			historyIntervalObj: null,
@@ -247,7 +254,7 @@ export default {
 		openOpen(dnsAdress, amount) {
 			this.$nextTick(() => {
 				this.$refs.channelListObj.openOpen(dnsAdress, amount);
-			})
+			});
 		},
 		testUnzip() {
 			ipcRenderer.send("testUnzip");
@@ -702,7 +709,7 @@ export default {
 			}
 		},
 		currentChannelTotal() {
-			return parseFloat(this.currentBalanceFormat).toFixed(3);
+			return parseFloat(this.currentBalanceFormat).toFixed(9);
 		},
 		// get [max, max - 1, max - 2, [min array]]
 		currentChannelData: function() {
@@ -754,6 +761,17 @@ export default {
 		isSync: function() {
 			return this.$store.state.Home.isSync || false;
 		}
+	},
+	beforeRouteEnter(to, from, next) {
+		next(vm => {
+			vm.exec = to.query.exec ? to.query.exec : "";
+			if (vm.exec) {
+				console.log("exec is exit");
+				vm[vm.exec]();
+			} else {
+				console.error("no exec");
+			}
+		});
 	},
 	beforeDestroy() {
 		clearInterval(this.historyIntervalObj);

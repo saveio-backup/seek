@@ -10,6 +10,8 @@ import {
 import fs from 'fs';
 import path from 'path';
 import AdmZip from 'adm-zip';
+import failedPage from '../../../static/html/failed/failed.js';
+import dnsErrorPage from '../../../static/html/failed/dnsError.js';
 const log = require('electron-log')
 protocol.registerSchemesAsPrivileged([{
   scheme: 'seek',
@@ -61,13 +63,6 @@ function seekHttpProtocol(request, callback) {
   console.log('url now is : ', url);
   getActive(getCurrentView.browserWindow).webContents.reload();
   getActive(getCurrentView.browserWindow).loadURL(url)
-  // callback({
-  //   url: domain,
-  //   method: 'GET',
-  //   uploadData: {
-  //     contentType: 'text/html'
-  //   }
-  // });
 }
 
 function seekStreamProtocol(request, callback) {
@@ -78,22 +73,13 @@ function seekStreamProtocol(request, callback) {
     'Access-Control-Allow-Origin': '*'
   }
   const url = request.url.replace('seek://', `${host}`);
-  // const url = path.join(__dirname, 'helloworld/hello.html');
   getCurrentView.webContents.reload();
   getCurrentView.loadURL(url)
-  // callback({
-  //   statusCode: '200',
-  //   headers,
-  //   path: url
-  //   // data: fs.createReadStream(url)
-  // })
 }
 
 function saveStreamProtocol(request, callback) {
   // todo  download process
   const urlFormat = new URL(request.url);
-  console.log('urlFormat is');
-  console.log(urlFormat);
   const {
     protocol,
     host,
@@ -101,13 +87,10 @@ function saveStreamProtocol(request, callback) {
     hash
   } = urlFormat;
   const pathname = (urlFormat.pathname === '/' || urlFormat.pathname === '') ? '/index.html' : urlFormat.pathname;
-  /*   const headers = {
-      'Cache-Control': 'no-cache',
-      'Content-Type': 'text/html; charset=utf-8',
-      'Access-Control-Allow-Origin': '*'
-    } */
+  console.log(`will-load-thirdpage ${host}`)
   getCurrentView.browserWindow.webContents.send('will-load-thirdpage', protocol + `//${host}`)
   ipcMain.once('load-third-page', (event, result) => {
+    console.log('load-third-page!!!');
     try {
       const zip = new AdmZip(result)
       const parse = path.parse(result);
@@ -120,10 +103,12 @@ function saveStreamProtocol(request, callback) {
       console.error(error)
     }
   })
-  ipcMain.once('loadErrorPage', () => {
+  ipcMain.once('loadErrorPage', (event, ErrorCode) => {
+    console.log('loadErrorPage!!!');
     callback({
       method: 'get',
-      path: path.join(__static, 'html/failed/failed.html')
+      path: path.join(__static, 'html/failed/blank.html')
     })
+    getActive(getCurrentView.browserWindow).webContents.executeJavaScript(`document.documentElement.innerHTML = '${dnsErrorPage('',ErrorCode,'')}' `)
   })
 }

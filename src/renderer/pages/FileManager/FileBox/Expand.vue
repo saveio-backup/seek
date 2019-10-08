@@ -147,17 +147,17 @@
 							<p class="adjust-title theme-font-blue ft14">{{cost.TransferType === 2?'Pledge Refund':'Pledge Payment'}}:</p>
 							<div class="adjust-info theme-font-blue ft14">
 								<div v-if="cost.TransferType !== 2">
-									{{cost.FeeFormat?parseFloat(parseFloat(cost.FeeFormat).toFixed(3)):0}} ONI
+									{{cost.FeeFormat?util.effectiveNumber(cost.FeeFormat):0}} ONI
 								</div>
 								<div v-if="cost.TransferType === 2">
-									{{cost.RefundFormat?parseFloat(parseFloat(cost.RefundFormat).toFixed(3)):0}} ONI
+									{{cost.RefundFormat? util.effectiveNumber(cost.RefundFormat):0}} ONI
 								</div>
 							</div>
 						</div>
 						<div class="adjust-item">
 							<p class="adjust-title theme-font-blue ft14"></p>
 							<div class="adjust-info theme-font-blue-40 ft14">
-								<span class="mr10">Available</span> {{mainCount?parseFloat(mainCount).toFixed(3):0}} ONI
+								<span class="mr10">Available</span> {{mainCount? util.effectiveNumber(mainCount):0}} ONI
 							</div>
 						</div>
 					</div>

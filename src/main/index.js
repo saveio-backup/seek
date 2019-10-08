@@ -9,6 +9,7 @@ import './protocols/protocols' // custom protocol
 import {
   SeekDB
 } from './dbs/index';
+// import './dbs/index_levelup';
 import frontCfgObj from './windowManager/frontCfgObj'
 import {
   windows,

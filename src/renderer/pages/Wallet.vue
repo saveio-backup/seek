@@ -55,22 +55,12 @@
 					</div>
 					<div class="wallet-asset">
 						<p class="ft14 user-no-select">Total Balance:</p>
-						<div class="total"> <span class="symbol"></span> <span v-if="balanceLists && balanceLists.length>0">{{parseFloat(balanceLists[balanceSelected].BalanceFormat).toFixed(3)}}</span></div>
+						<div class="total"> <span class="symbol"></span> <span v-if="balanceLists && balanceLists.length>0">{{effectiveNumber(balanceLists[balanceSelected].BalanceFormat)}}</span></div>
 					</div>
 					<div
 						class="balance-content"
 						v-if="balanceLists && balanceLists.length>0"
 					>
-						<!-- <ul class="child-ul">
-							<li class="child-list selected">
-								<div class="name"><img
-									 class="asset-icon"
-									 :src="'static/images/logo/'+balanceLists[balanceSelected].Symbol+'.png'"
-									 alt=""
-									> <span class="theme-bold">{{balanceLists[balanceSelected].Symbol}}</span></div>
-								<div class="balance theme-bold">{{parseFloat(balanceLists[balanceSelected].BalanceFormat).toFixed(3)}}</div>
-							</li>
-						</ul> -->
 						<div
 							class="asset-display-li asset-display"
 							:class="{'asset-display-li-select': childrenChain === 0}"
@@ -85,7 +75,7 @@
 								<span class="asset-display-logo-name">{{balanceLists[balanceSelected].Symbol === 'SAVE' ? 'ONI' : balanceLists[balanceSelected].Symbol}}</span>
 							</div>
 							<div class="asset-display-num">
-								<p :title="parseFloat(balanceLists[balanceSelected].BalanceFormat).toFixed(3) || 0">{{parseFloat(balanceLists[balanceSelected].BalanceFormat).toFixed(3) || 0}}</p>
+								<p :title="effectiveNumber(balanceLists[balanceSelected].BalanceFormat) || 0">{{effectiveNumber(balanceLists[balanceSelected].BalanceFormat) || 0}}</p>
 								<p class="asset-display-grey">$ 0</p>
 							</div>
 						</div>
@@ -153,7 +143,7 @@
 							<div
 								class="item-amount"
 								:class="{'send-item-amount': item.Type ==1, 'item-contract-amount': item.ContractType == 1}"
-							>{{item.Type ==1 ? '-':'+'}} {{item.AmountFormat | resolveAmount}} {{(item.Asset).toUpperCase() === 'SAVE' ? 'ONI' : (item.Asset).toUpperCase()}}</div>
+							>{{item.Type ==1 ? '-':'+'}} {{effectiveNumber(item.AmountFormat)}} {{(item.Asset).toUpperCase() === 'SAVE' ? 'ONI' : (item.Asset).toUpperCase()}}</div>
 							<div
 								class="item-contract theme-font-blue-40 ft12 grey-xs user-no-select"
 								v-if="item.ContractType == 1"
@@ -283,7 +273,7 @@
 								<p
 									v-if="balanceLists && balanceLists.length>0"
 									class="ft14 tl theme-font-blue-70"
-								>{{parseFloat(balanceLists[balanceSelected].BalanceFormat).toFixed(2)}} {{balanceLists[balanceSelected].Symbol === 'SAVE' ? 'ONI' : balanceLists[balanceSelected].Symbol}}</p>
+								>{{effectiveNumber(balanceLists[balanceSelected].BalanceFormat)}} {{balanceLists[balanceSelected].Symbol === 'SAVE' ? 'ONI' : balanceLists[balanceSelected].Symbol}}</p>
 							</div>
 							<el-form-item
 								class="theme-font-blue-bold"
@@ -386,6 +376,7 @@
 <script>
 import date from "../assets/tool/date";
 import QRCode from "../assets/tool/qrcode.min";
+import { effectiveNumber } from "../assets/config/util";
 import { round } from "mathjs";
 const { clipboard } = require("electron");
 export default {
@@ -410,6 +401,7 @@ export default {
 			callback();
 		};
 		return {
+			effectiveNumber,
 			round,
 			QRCode,
 			date,
@@ -873,12 +865,6 @@ export default {
 		},
 		txType(newVal, oldVal) {
 			this.switchToggle.loadSwitch = true;
-		}
-	},
-	filters: {
-		resolveAmount: function(value) {
-			if (!value) return "";
-			return parseFloat(value).toFixed(Number.isInteger(Number(value))?0:9)
 		}
 	}
 };

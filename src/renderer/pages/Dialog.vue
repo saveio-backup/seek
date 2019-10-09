@@ -57,11 +57,16 @@ export default {
 			switchToggle: {
 				downloadDialog: true
 			},
-			menuSelector: "",
-			win: null,
 
+			menuSelector: "",
+			// current main browserWindow
+			win: null,
+			downloadUrl: "", // downloadDialog url
+
+			// polling data
 			channelNum: null,
 			Balance: null,
+			Address: "",
 			intervalObj: {
 				COUNT_INTERVAL: COUNT_INTERVAL,
 				setTimeObj: null,
@@ -69,19 +74,22 @@ export default {
 				setTimeProcessObj: null,
 				setTimeTransferObj: null
 			},
-			Address: "",
-			// Progress: 0,
-			downloadUrl: "", // downloadDialog url
+
 			isNeedSync: false,
+
 			// transfer correlation
 			transferObj: {
-
 			},
+			// timeout object
 			setTimeoutObj: {
 				upload: null,
 				download: null,
 				complete: null
 			},
+			maxNumUpload: 0,
+			isNotDonePause: true,
+
+			// ready upload list
 			readyUpload: []
 		};
 	},
@@ -243,6 +251,7 @@ export default {
 		}
 	},
 	methods: {
+		// get wait for upload promise list
 		getStartWaitForUploadPromise(arr) {
 			// to upload
 			const commitAll = []; // will to upload file promise 
@@ -251,6 +260,7 @@ export default {
 			}
 			return commitAll;
 		},
+		// wait for upload file to upload when max Upload length gt current Uploading length
 		waitForUploadFileToUpload() {
 			let needUploadLen = this.$config.maxNumUpload - this.realUploadingLength;
 			if(this.waitForUploadOrderList.length === 0 || this.readyUpload.length !== 0 || needUploadLen <= 0) return;
@@ -272,6 +282,7 @@ export default {
 			commitAll.concat(this.getContinueUploadPromise(filterUploadingList));
 			this.toStartUpload(commitAll);
 		},
+		// to upload and callback
 		toStartUpload(commitAll) {
 			const vm = this;
 			this.$axios.all(commitAll).then(resArr => {
@@ -315,6 +326,7 @@ export default {
 				}
 			})
 		},
+		// get continue upload promise list
 		getContinueUploadPromise(arr) {
 			const commitAll = [];
 			let continueArr = [];
@@ -344,9 +356,11 @@ export default {
 			}
 			return commitAll;
 		},
+		// get to upload file ajax promise
 		getToUploadFilePromise(data) {
 			return this.$axios.post(this.$api.upload, data);
 		},
+		// open create channel dialog when have channel
 		toGetDns() {
 			this.$axios
 				.get(this.$api.getAllDns)
@@ -358,6 +372,7 @@ export default {
 					}
 				});
 		},
+		// close dialog
 		closeDialog({ timeout = 0 }) {
 			this.menuSelector = "";
 			if (timeout === 0) {
@@ -565,11 +580,13 @@ export default {
 				this.getState();
 			}, this.intervalObj.COUNT_INTERVAL);
 		},
+		// get polling data about transfer list 
 		getTransferPollData() {
 			this.$store.dispatch("getWaitForUploadList"); // get wait for upload list
 			this.$store.dispatch("setUpload");
 			this.$store.dispatch("setDownload");
 		},
+		// update get current main browseWindow
 		getWin() {
 			let arrWin = remote.BrowserWindow.getAllWindows();
 			for(let winItem of arrWin) {
@@ -578,6 +595,7 @@ export default {
 				}
 			}
 		},
+		// rend to filemanage page content
 		rendToFileManage({ result, type }) {
 			if(!this.win) {
 				this.getWin();
@@ -614,46 +632,89 @@ export default {
 				dangerouslyUseHTMLString
 			});
 		},
+		// immediately update upload list
 		setUpload() {
 			this.$store.dispatch("setUpload");
 		},
+		// immediately update download list
 		setDownload() {
 			this.$store.dispatch("setDownload");
 		},
+		// immediately update complete list
 		setComplete() {
 			this.$store.dispatch("setComplete");
 		},
+		// set wait for upload list;
 		setWaitForUploadList(data) {
 			this.$store.commit('GET_WAIT_FOR_UPLOAD_LIST', data);
 		},
-
 		/**
+		 * push data to waitForUploadOrderList
 		 * params:
 		 * data(type array): 
 		 */
 		pushWaitForUploadOrderList(data) {
 			this.$store.commit('PUSH_WAIT_FOR_UPLOAD_ORDER_LIST', data);
 		},
+		/**
+		 * unshift data to waitForUploadOrderList
+		 * params:
+		 * data(type array): 
+		 */
 		unshiftWaitForUploadOrderList(data) {
 			this.$store.commit('UNSHIFT_WAIT_FOR_UPLOAD_ORDER_LIST', data);
 		},
+		/**
+		 * remove data to waitForOrderList 
+		 * params:
+		 * data(type array): 
+		 */
 		removeWaitForUploadOrderList(data) {
 			this.$store.commit('REMOVE_WAIT_FOR_UPLOAD_ORDER_LIST', data);
 		},
+		/**
+		 * add data to pausing 
+		 * params:
+		 * data(type array): 
+		 */
 		addPausing(data) {
 			this.$store.commit('ADD_PAUSING', data);
 		},
+		/**
+		 * remove data to pausing 
+		 * params:
+		 * data(type array): 
+		 */
 		removePausing(data) {
 			this.$store.commit('REMOVE_PAUSING', data);
 		},
+		/**
+		 * add data to uploading 
+		 * params:
+		 * data(type array): 
+		 */
 		addUploading(data) {
 			this.$store.commit('ADD_UPLOADING', data);
 		},
+		/**
+		 * remove data to uploading 
+		 * params:
+		 * data(type array): 
+		 */
 		removeUploading(data) {
 			this.$store.commit('REMOVE_UPLOADING', data);
 		},
+		/**
+		 * set config 
+		 * params:
+		 * data(type array): 
+		 */
 		settingUpdate(data) {
+			this.maxNumUpload = data.maxNumUpload;
+			if(!this.isNotDonePause) return;
+			this.isNotDonePause = false;
 			this.__proto__.__proto__.$config.maxNumUpload = data.maxNumUpload;
+
 			let remoteUploadingList = [];
 			for(let value of this.uploadTransferList) {
 				if(value.Id.indexOf('waitfor_') !== 0) {
@@ -667,8 +728,14 @@ export default {
 				this.addUploading(pauseList);
 				this.unshiftWaitForUploadOrderList(pauseList);
 				this.toPause(pauseList);
+			} else {
+				this.isNotDonePause = true;
+				if(this.$config.maxNumUpload !== this.maxNumUpload && this.maxNumUpload) {
+					this.settingUpdate({maxNumUpload: this.maxNumUpload});
+				}
 			}
 		},
+		// to pause task
 		toPause(arr) {
 			const vm = this;
 			let params = {
@@ -682,6 +749,10 @@ export default {
 					type: 'localStatus',
 					result: vm.localStatus
 				});
+				this.isNotDonePause = true;
+				if(vm.$config.maxNumUpload !== vm.maxNumUpload && vm.maxNumUpload) {
+					vm.settingUpdate({maxNumUpload: vm.maxNumUpload});
+				}
 			})
 		}
 	}

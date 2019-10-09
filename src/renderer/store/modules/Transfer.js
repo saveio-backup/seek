@@ -313,7 +313,6 @@ function uploadTransferListRequest(commit) {
                 }
             }
             console.log('num',num);
-            console.dir(result);
             commit('GET_REAL_UPLOADING_LENGTH', num)
         } else {
             // transferClear(uploadTimer);

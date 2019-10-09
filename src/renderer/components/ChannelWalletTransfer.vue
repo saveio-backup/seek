@@ -2,7 +2,7 @@
 	<div class="channel-wallet-transfer">
 		<div class="flex between pl30 pr30 mb20 mt20">
 			<div
-				v-if="withDraw && channelSelected.Connected"
+				v-if="withDraw && channelSelected.IsOnline"
 				class="flex1 text-left"
 			>
 				<p class="theme-font-blue-40 transparent ft14 user-no-select">Channel(ONI)</p>
@@ -20,12 +20,12 @@
 				<i class="ofont ofont-fasong"></i>
 				<i
 					class="ofont ofont-huazhuan ft20 user-no-select"
-					:class="{'ex-change': channelSelected.Connected,'theme-font-blue-40 cursor-not-allowed':!channelSelected.Connected}"
-					:title="channelSelected.Connected?'Switchover':'Sorry, you cannot withdraw in offline status'"
+					:class="{'ex-change': channelSelected.IsOnline,'theme-font-blue-40 cursor-not-allowed':!channelSelected.IsOnline}"
+					:title="channelSelected.IsOnline?'Switchover':'Sorry, you cannot withdraw in offline status'"
 					@click="exWithDraw()"
 				></i></div>
 			<div
-				v-if="!withDraw || !channelSelected.Connected"
+				v-if="!withDraw || !channelSelected.IsOnline"
 				class="flex1 text-right"
 			>
 				<p class="theme-font-blue-40 transparent ft14 user-no-select">Channel(ONI)</p>
@@ -95,7 +95,7 @@ export default {
 				callback(new Error("Please enter the correct format"));
 				return;
 			}
-			if (this.withDraw && this.channelSelected.Connected) {
+			if (this.withDraw && this.channelSelected.IsOnline) {
 				if (value * 1 > this.channelSelected.BalanceFormat * 1) {
 					callback(new Error("Insufficient balance available"));
 					return;
@@ -140,7 +140,7 @@ export default {
 	},
 	methods: {
 		exWithDraw() {
-			if (!this.channelSelected.Connected) {
+			if (!this.channelSelected.IsOnline) {
 				this.$message({
 					message: "Sorry, you cannot withdraw in offline status"
 				});
@@ -169,7 +169,7 @@ export default {
 			this.$refs.transferForm.validate(valid => {
 				if (valid) {
 					const addr =
-						this.withDraw && this.channelSelected.Connected
+						this.withDraw && this.channelSelected.IsOnline
 							? this.$api.withdrawChannel
 							: this.$api.depositChannel;
 					this.$axios

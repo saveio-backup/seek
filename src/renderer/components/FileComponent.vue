@@ -550,7 +550,7 @@
 import util from "../assets/config/util";
 import downloadDialog from "./DownloadDialog.vue";
 import uploadFileDetailDialog from "./UploadFileDetailDialog.vue";
-import sha256 from "js-sha256";
+import crypto from 'crypto';
 import { shell, ipcRenderer } from "electron";
 export default {
 	props: {
@@ -1170,7 +1170,7 @@ export default {
 				if (waitForUploadArr.length > 0) {
 					// check password is not true
 					let passParams = {
-						Password: sha256(params.Password)
+						Password: crypto.createHash('sha256').update(params.Password).digest('hex')
 					};
 					let passwordCheck = await this.$axios.post(
 						this.$api.checkPassword,

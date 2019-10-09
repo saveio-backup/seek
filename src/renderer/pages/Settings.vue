@@ -51,6 +51,8 @@
 						:value="item"
 					></el-option>
 				</el-select>
+			</div>
+			<div class="settings-box">
 				<div class="tag">
 					<p>Download Path</p>
 					<p

@@ -30,14 +30,14 @@
 				<el-table-column
 					label='Status'
 					min-width="50"
-					prop="Connected"
+					prop="IsOnline"
 					sortable
 				>
 					<template slot-scope="scope">
 						<div
-							:title="scope.row.Connected ? 'Online' : 'Offline'"
-							:class="{'theme-font-blue-40':!scope.row.Connected}"
-						>{{scope.row.Connected ? 'online' : 'offline'}}</div>
+							:title="scope.row.IsOnline ? 'Online' : 'Offline'"
+							:class="{'theme-font-blue-40':!scope.row.IsOnline}"
+						>{{scope.row.IsOnline ? 'online' : 'offline'}}</div>
 					</template>
 				</el-table-column>
 				<el-table-column label='Balance(ONI)'

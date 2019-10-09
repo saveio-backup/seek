@@ -377,7 +377,7 @@ import { ipcRenderer } from "electron";
 import util from "../../../assets/config/util";
 import { connect } from "net";
 import fs from "fs";
-import sha256 from "js-sha256";
+import crypto from 'crypto';
 import uuid from "node-uuid";
 const DEFAULT_UPLOAD_PRICE = 0.03;
 export default {
@@ -743,7 +743,7 @@ export default {
 				});
 
 				// password check
-				let passwordEncode = sha256(vm.passwordForm.Password);
+				let passwordEncode = crypto.createHash('sha256').update(vm.passwordForm.Password).digest('hex');
 				let passwordParams = {
 					Password: passwordEncode
 				};

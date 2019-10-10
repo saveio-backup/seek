@@ -7,20 +7,24 @@ const state = {
     completeTransferList: [],
     // remote upload data
     uploadingTransferList: [],
-    downloadTransferList: [],
-    // downloadProgress: 0,
-    // uploadProgress: 0,
+    downloadingTransferList: [],
+    // downloadTransferList: [],
+
     downloadLength: 0,
     uploadLength: 0,
     realUploadingLength: 10,
+    realDownloadingLength: 10,
 
     // total data = local data + remote upload data
     uploadTransferList: [],
+    downloadTransferList: [],
 
     // local data
     waitForUploadList: [],
+    waitForDownloadList: [],
     // wait for upload order list
     waitForUploadOrderList: [],
+    waitForDownloadOrderList: [],
     // rememb local new status (remote to be updated)
     localStatus: {
         pausing: [],
@@ -29,8 +33,10 @@ const state = {
 }
 const mutations = {
     GET_DOWNLOAD_TRANSFER(state, result) {
-        state.downloadTransferList = result;
-        state.downloadLength = result.length;
+        state.downloadingTransferList = result;
+
+        state.downloadTransferList = state.downloadingTransferList.concat(state.waitForDownloadList);
+        state.downloadLength = state.downloadTransferList.length;
     },
     GET_UPLOAD_TRANSFER(state, result) {
         state.uploadingTransferList = result;
@@ -64,6 +70,31 @@ const mutations = {
     GET_WAIT_FOR_UPLOAD_ORDER_LIST(state, result) {
         state.waitForUploadOrderList = result
     },
+
+    // set downloadTask (Data is distributed api)
+    GET_WAIT_FOR_DOWNLOAD_LIST(state, result) {
+        state.waitForDownloadList = result;
+
+        // update downloadTransfer and downloadLength content
+        state.downloadTransferList = state.downloadingTransferList.concat(state.waitForDownloadList);
+        state.downloadLength = state.downloadTransferList.length;
+    },
+    GET_REAL_DOWNLOADING_LENGTH(state, result) {
+        state.realDownloadingLength = result;
+    },
+    // set downloadTask (Data set api) 
+    SET_WAIT_FOR_DOWNLOAD_LIST(state, result) {
+        localStorage.setItem(`downloadTask_${address}`,JSON.stringify(result));
+        state.waitForDownloadList = result;
+        
+        // update downloadTransfer and downloadLength content
+        state.downloadTransferList = state.downloadingTransferList.concat(state.waitForDownloadList);
+        state.downloadLength = state.downloadTransferList.length;
+    },
+    GET_WAIT_FOR_DOWNLOAD_ORDER_LIST(state, result) {
+        state.waitForDownloadOrderList = result
+    },
+
     /**
      * params:
      * result(type array)
@@ -116,6 +147,60 @@ const mutations = {
             localStorage.setItem(`waitForUploadOrderList_${address}`, JSON.stringify(state.waitForUploadOrderList));
         }
     },
+
+    /**
+     * params:
+     * result(type array)
+     *  */ 
+    PUSH_WAIT_FOR_DOWNLOAD_ORDER_LIST(state, result) {
+        let _waitForDownloadOrderList = JSON.parse(JSON.stringify(state.waitForDownloadOrderList));
+        let flag = false;
+        for(let value of result) {
+            let index = _waitForDownloadOrderList.indexOf(value);
+            if(index === -1) {
+                _waitForDownloadOrderList.push(value);
+                flag = true;
+            }
+        }
+        if(flag) {
+            state.waitForDownloadOrderList = _waitForDownloadOrderList;
+            localStorage.setItem(`waitForDownloadOrderList_${address}`, JSON.stringify(state.waitForDownloadOrderList));
+        }
+    },
+    UNSHIFT_WAIT_FOR_DOWNLOAD_ORDER_LIST(state, result) {
+        let _waitForDownloadOrderList = JSON.parse(JSON.stringify(state.waitForDownloadOrderList));
+        let flag = false;
+        for(let value of result) {
+            let index = _waitForDownloadOrderList.indexOf(value);
+            if(index === -1) {
+                _waitForDownloadOrderList.unshift(value);
+                flag = true;
+            }
+        }
+        if(flag) {
+            state.waitForDownloadOrderList = _waitForDownloadOrderList;
+            localStorage.setItem(`waitForDownloadOrderList_${address}`, JSON.stringify(state.waitForDownloadOrderList));
+        }
+    },
+    /**
+     * params:
+     * result(type array)
+     *  */ 
+    REMOVE_WAIT_FOR_DOWNLOAD_ORDER_LIST(state, result) {
+        let _waitForDownloadOrderList = JSON.parse(JSON.stringify(state.waitForDownloadOrderList));
+        let flag = false; // look for is not update
+        for(let value of result) {
+            let index = _waitForDownloadOrderList.indexOf(value);
+            if(index === -1) continue;
+            _waitForDownloadOrderList.splice(index, 1);
+            flag = true;
+        }
+        if(flag) {
+            state.waitForDownloadOrderList = _waitForDownloadOrderList
+            localStorage.setItem(`waitForDownloadOrderList_${address}`, JSON.stringify(state.waitForDownloadOrderList));
+        }
+    },
+
     GET_LOCAL_STATUS(state, result) {
         state.localStatus = result;
     },
@@ -208,7 +293,7 @@ let uploadTimer = null;
 let completeTimer = null;
 const TIME_COUNT = 3000;
 const actions = {
-    getWaitForUploadList({commit}) {
+    getWaitForTransferList({commit}) {
         address = localStorage.getItem('Address');
         let list = localStorage.getItem(`uploadTask_${address}`);
         if(list) {
@@ -221,6 +306,14 @@ const actions = {
         let list3 = localStorage.getItem(`localStatus_${address}`);
         if(list3) {
             commit('GET_LOCAL_STATUS', JSON.parse(list3));
+        }
+        let list4 = localStorage.getItem(`downloadTask_${address}`);
+        if(list4) {
+            commit('GET_WAIT_FOR_DOWNLOAD_LIST', JSON.parse(list4));
+        }
+        let list5 = localStorage.getItem(`waitForDownloadOrderList_${address}`);
+        if(list5) {
+            commit('GET_WAIT_FOR_DOWNLOAD_ORDER_LIST', JSON.parse(list5));
         }
 
     },
@@ -289,6 +382,14 @@ function downloadTransferListRequest(commit) {
                 // transferClear(downloadTimer);
             }
             commit('GET_DOWNLOAD_TRANSFER', result)
+            let num = 0;
+            for(let value of result) {
+                if(value.Status !== 0 && value.Status !== 4 && !value.Url.startsWith('oni://www')) {
+                    num ++;
+                }
+            }
+            console.log('num',num);
+            commit('GET_REAL_DOWNLOADING_LENGTH', num)
         } else {
             // transferClear(downloadTimer);
         }

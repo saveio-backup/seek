@@ -89,6 +89,18 @@
 			>
 				<!-- :data="fileList" -->
 				<el-table-column
+					width="30"
+					label=""
+					class-name="download-type"
+					v-if="transferType === 2"
+				>
+					<template slot-scope="scope">
+						<div class="ft16 theme-font-blue">
+							<i class="ofont ofont-wangye" title="Third-party Websites Resources" v-if="scope.row.Url.startsWith('oni://www')"></i>
+						</div>
+					</template>
+				</el-table-column>
+				<el-table-column
 					min-width="200"
 					label="File Name"
 					class-name="rowName"
@@ -711,7 +723,7 @@ export default {
 						transferSize += (file.UploadSize || 0);
 						transferTotal += (file.FileSize * ((file.CopyNum || 2) + 1));
 					} else {
-						transferSize += file.DownloadSize;
+						transferSize += file.DownloadSize || 0;
 						transferTotal += file.FileSize;
 					}
 				}
@@ -721,6 +733,9 @@ export default {
 		waitForUploadOrderList: function() {
 			return this.$store.state.Transfer.waitForUploadOrderList;
 		},
+		waitForDownloadOrderList: function() {
+			return this.$store.state.Transfer.waitForDownloadOrderList;
+		},
 		fileList: function() {
 			// return this.mockFileList;
 			this.taskSpeedNum = 0;
@@ -729,6 +744,9 @@ export default {
 				[];
 			if(this.transferType === 1) {
 				let newArr = this.filterUploadArr(arr);
+				return newArr;
+			} else if(this.transferType === 2) {
+				let newArr = this.filterDownloadArr(arr);
 				return newArr;
 			}
 			if (Object.keys(this.httpWaitForing).length) {
@@ -785,6 +803,9 @@ export default {
 		waitForUploadList: function() {
 			return this.$store.state.Transfer.waitForUploadList || [];
 		},
+		waitForDownloadList: function() {
+			return this.$store.state.Transfer.waitForDownloadList || [];
+		},
 		localStatus: function() {
 			// console.log(this.$store.state.Transfer.localStatus);
 			return this.$store.state.Transfer.localStatus;
@@ -805,6 +826,25 @@ export default {
 				if(this.localStatus.uploading.indexOf(value.Id) >= 0) {
 					value.Status = 2;
 					value.DetailStatus = 'uploadLoading';
+					continue;
+				}
+			}
+			return newArr;
+		},
+		filterDownloadArr(arr) {
+			let newArr = JSON.parse(JSON.stringify(arr))
+			if(this.localStatus.pausing.length === 0 && this.localStatus.uploading.length === 0) {
+				return newArr;
+			}
+			for(let value of newArr) {
+				if(this.localStatus.pausing.indexOf(value.Id) >= 0) {
+					value.Status = 0;
+					value.DetailStatus = '1'
+					continue;
+				}
+				if(this.localStatus.uploading.indexOf(value.Id) >= 0) {
+					value.Status = 2;
+					value.DetailStatus = 'downloadLoading';
 					continue;
 				}
 			}
@@ -1144,6 +1184,7 @@ export default {
 			let params;
 			let arr = []; // uploading file
 			let waitForUploadArr = []; // wait for upload file, data at front
+			let waitForDownloadArr = []; // wait for download file, data at front
 			if (isArray) {
 				for (let value of row) {
 					arr.push(value.Id);
@@ -1197,6 +1238,27 @@ export default {
 					this.switchToggle.passwordDialog = false;
 					return;
 				}
+			} else {
+				for (let value of this.waitForDownloadList) {
+					if (params.Ids.indexOf(value.Id) >= 0) {
+						waitForDownloadArr.push(value.Id);
+					}
+				}
+				params.Ids = this.diffSet(params.Ids, waitForDownloadArr);
+				// is have wait for download file
+				if (waitForDownloadArr.length > 0) {
+					// wait for to delete wait for download file
+					let newWaitForDownloadList =
+						this.waitForDownloadList.filter(value => {
+							return waitForDownloadArr.indexOf(value.Id) === -1;
+						}) || [];
+					this.$store.commit("SET_WAIT_FOR_DOWNLOAD_LIST", newWaitForDownloadList);
+					ipcRenderer.send("run-dialog-event", {name: "setWaitForDownloadList", data: newWaitForDownloadList});				
+				}
+				// check is have downloading task
+				if (!params.Ids || params.Ids.length === 0) {
+					return;
+				}
 			}
 
 			// add password when current mode is upload
@@ -1211,11 +1273,12 @@ export default {
 					if (type === 1) {
 						ipcRenderer.send("run-dialog-event", {name: "setUpload"});
 						ipcRenderer.send("run-dialog-event", {name: "removeWaitForUploadOrderList", data: params.Ids});
-						ipcRenderer.send("run-dialog-event", {name: "removePausing", data: params.Ids});
-						ipcRenderer.send("run-dialog-event", {name: "removeUploading", data: params.Ids});
 					} else {
 						ipcRenderer.send("run-dialog-event", {name: "setDownload"});
+						ipcRenderer.send("run-dialog-event", {name: "removeWaitForDownloadOrderList", data: params.Ids});
 					}
+					ipcRenderer.send("run-dialog-event", {name: "removePausing", data: params.Ids});
+					ipcRenderer.send("run-dialog-event", {name: "removeUploading", data: params.Ids});
 
 					if (res.Error === 0) {
 						if (type === 1) {
@@ -1303,8 +1366,12 @@ export default {
 				ipcRenderer.send("run-dialog-event", {name: "pushWaitForUploadOrderList", data: params.Ids});
 				ipcRenderer.send("run-dialog-event", {name: "addUploading", data: params.Ids});
 				return;
+			} else {
+				ipcRenderer.send("run-dialog-event", {name: "pushWaitForDownloadOrderList", data: params.Ids});
+				ipcRenderer.send("run-dialog-event", {name: "addUploading", data: params.Ids});
+				return;
 			}
-
+			/*
 			// add wait for task and get have wait for task
 			const haveHttpWaitFor = this.addHttpWaitFor({ row: row, waitFor: "start" });
 			if (!haveHttpWaitFor) return;
@@ -1341,6 +1408,7 @@ export default {
 						this.$message.error("Network Error. Start Task Failed!");
 					}
 				});
+				*/
 		},
 		toUploadOrDownloadContinue(row, type) {
 			if (this.isSync && this.transferType === 2) {
@@ -1371,20 +1439,30 @@ export default {
 			if (!params.Ids || params.Ids.length <= 0) {
 				return;
 			}
-
-			// add wait for task and get have wait for task
-			let httpWaitForList = row.filter(item => {
-				return params.Ids.indexOf(item.Id) >= 0
-			})
 			
 			if(type === 1) {
 				ipcRenderer.send("run-dialog-event", {name: "pushWaitForUploadOrderList", data: params.Ids});
 				ipcRenderer.send("run-dialog-event", {name: "addUploading", data: params.Ids});
 				return;
+			} else {
+				ipcRenderer.send("run-dialog-event", {name: "pushWaitForDownloadOrderList", data: params.Ids});
+				ipcRenderer.send("run-dialog-event", {name: "addUploading", data: params.Ids});
+				// return;
 			}
 
+			let thirdPartyArr = [];
+			// add wait for task and get have wait for task
+			let httpWaitForList = row.filter(item => {
+				if(params.Ids.indexOf(item.Id) >= 0 && item.Url.startsWith('oni://www')) {
+					thirdPartyArr.push(item.Id);
+					return true;
+				} else {
+					return false;
+				}
+			})
 			const haveHttpWaitFor = this.addHttpWaitFor({ row: httpWaitForList, waitFor: "start" });
-			if (!haveHttpWaitFor) return;
+			if (thirdPartyArr.length === 0) return;
+			params.Ids = thirdPartyArr;
 
 			this.$axios
 				.post(url, params, {
@@ -1482,20 +1560,38 @@ export default {
 
 			params.Ids = arr;
 			if (haveWaitForFlag) {
-				let newWaitForList = JSON.parse(JSON.stringify(this.waitForUploadList));
-				newWaitForList.map(item => {
-					if(waitForArr.indexOf(item.Id) >= 0) {
-						item.Status = status;
+				if(vm.transferType === 1) {
+					let newWaitForList = JSON.parse(JSON.stringify(this.waitForUploadList));
+					newWaitForList.map(item => {
+						if(waitForArr.indexOf(item.Id) >= 0) {
+							item.Status = status;
+						}
+						return item;
+					})
+					this.$store.commit("SET_WAIT_FOR_UPLOAD_LIST", newWaitForList);
+					ipcRenderer.send("run-dialog-event", {name: "setWaitForUploadList", data: newWaitForList});
+					
+					if(status === 2) {
+						ipcRenderer.send("run-dialog-event", {name: "pushWaitForUploadOrderList", data: waitForArr});
+					} else {
+						ipcRenderer.send("run-dialog-event", {name: "removeWaitForUploadOrderList", data: waitForArr});
 					}
-					return item;
-				})
-				this.$store.commit("SET_WAIT_FOR_UPLOAD_LIST", newWaitForList);
-				ipcRenderer.send("run-dialog-event", {name: "setWaitForUploadList", data: newWaitForList});
-				
-				if(status === 2) {
-					ipcRenderer.send("run-dialog-event", {name: "pushWaitForUploadOrderList", data: waitForArr});
 				} else {
-					ipcRenderer.send("run-dialog-event", {name: "removeWaitForUploadOrderList", data: waitForArr});
+					let newWaitForList = JSON.parse(JSON.stringify(this.waitForDownloadList));
+					newWaitForList.map(item => {
+						if(waitForArr.indexOf(item.Id) >= 0) {
+							item.Status = status;
+						}
+						return item;
+					})
+					this.$store.commit("SET_WAIT_FOR_DOWNLOAD_LIST", newWaitForList);
+					ipcRenderer.send("run-dialog-event", {name: "setWaitForDownloadList", data: newWaitForList});
+					
+					if(status === 2) {
+						ipcRenderer.send("run-dialog-event", {name: "pushWaitForDownloadOrderList", data: waitForArr});
+					} else {
+						ipcRenderer.send("run-dialog-event", {name: "removeWaitForDownloadOrderList", data: waitForArr});
+					}
 				}
 			}
 			return params;
@@ -1515,8 +1611,10 @@ export default {
 
 			if(type === 1) {
 				ipcRenderer.send("run-dialog-event", {name: "removeWaitForUploadOrderList", data: params.Ids});
-				ipcRenderer.send("run-dialog-event", {name: "addPausing", data: params.Ids});
+			} else {
+				ipcRenderer.send("run-dialog-event", {name: "removeWaitForDownloadOrderList", data: params.Ids});
 			}
+			ipcRenderer.send("run-dialog-event", {name: "addPausing", data: params.Ids});
 
 			// add wait for task and get have wait for task
 			let httpWaitForList = row.filter(item => {
@@ -1759,6 +1857,11 @@ $light-grey: #f9f9fb;
 				color: #1b1e2f;
 				// font-weight: bold;
 			}
+			.download-type {
+				vertical-align: top;
+
+			}
+
 			.opera {
 				.ofont {
 					&.ofont-jixu {

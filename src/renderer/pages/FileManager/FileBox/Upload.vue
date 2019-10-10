@@ -614,6 +614,7 @@ export default {
 		},
 		// to select file for upload
 		selectUpload() {
+			const vm = this;
 			ipcRenderer.send("upload-file-dialog");
 			ipcRenderer.once("selected-upload", (event, content) => {
 				// get current select not have file list
@@ -627,13 +628,13 @@ export default {
 						arr.push(value);
 					}
 				}
-				this.uploadFormData.Files = this.uploadFormData.Files.concat(arr);
-				this.toGetFileSize();
+				vm.uploadFormData.Files = vm.uploadFormData.Files.concat(arr);
+				vm.toGetFileSize();
 				// this.fileSize = content.fileBytes;
 				// this.uploadFormData.Path = content.filePath;
 				// this.uploadFormData.Desc = content.fileName;
-				this.toGetPrice();
-				this.$refs.uploadForm.validateField("FileSize");
+				vm.toGetPrice();
+				vm.$refs.uploadForm.validateField("FileSize");
 			});
 		},
 		handleCloseByFile(file) {
@@ -773,6 +774,7 @@ export default {
 							IsUploadAction: true,
 							Id: ('waitfor_' + uuid.v4()),
 							Nodes: []
+							// ,Url: 'oni://www.filmlabtest5.com'
 						};
 						params = this.switchToggle.advanced
 							? Object.assign({}, params, this.advancedData)
@@ -860,6 +862,7 @@ export default {
 		},
 		// Processing after the interface call is complete
 		uploadDone({ errorMsg, flag, arr = [] }) {
+			const vm = this;
 			// close loading...
 			this.switchToggle.loading && this.switchToggle.loading.close();
 			this.switchToggle.upload = true; // set toggle
@@ -885,12 +888,14 @@ export default {
 						message: errorMsg
 					});
 				}
-				if (arr.length > 0) {
-					this.addTask(arr);
-				}
 				this.passwordForm.show = false;
 				// this.$store.dispatch("setUpload");
 				ipcRenderer.send("run-dialog-event", {name: "setUpload"});
+				if (arr.length > 0) {
+					setTimeout(() => {
+						vm.addTask(arr);
+					}, 2000)
+				}
 				this.$router.push({
 					name: "transfer",
 					query: { transferType: 1 }

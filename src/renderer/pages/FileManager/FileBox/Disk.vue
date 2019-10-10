@@ -405,6 +405,7 @@ import { clipboard, shell, ipcRenderer } from "electron";
 import { effectiveNumber } from "../../../assets/config/util";
 import fs from "fs";
 import uploadFileDetailDialog from "./../../../components/UploadFileDetailDialog";
+import uuid from 'node-uuid';
 let tableElement;
 export default {
 	data() {
@@ -802,6 +803,103 @@ export default {
 				this.switchToggle.confrimDownloadDialog = true;
 			}
 		},
+		addTask(arr) {
+			let newWaitForDownloadList = this.waitForDownloadList.concat(arr);
+			this.$store.commit("SET_WAIT_FOR_DOWNLOAD_LIST", newWaitForDownloadList);
+			ipcRenderer.send("run-dialog-event", {name: "setWaitForDownloadList", data: newWaitForDownloadList});
+			// update WaitForDownloadOrderList
+			let WaitForDownloadOrderList = [];
+			for(let value of newWaitForDownloadList) {
+				WaitForDownloadOrderList.push(value.Id);
+			}
+			ipcRenderer.send("run-dialog-event", {name: "pushWaitForDownloadOrderList", data: WaitForDownloadOrderList});
+		},
+		waitForNowDownload({ arr, len, errorMsg, flag }) {
+			if (!arr || arr.length === 0 || len === 0) {
+				this.downloadDone({ arr, errorMsg, flag });
+				return;
+			}
+
+			let waitForNowDownloadList = arr.splice(
+				0,
+				len > arr.length ? arr.length : len
+			); // get now download list
+
+			let commitAll = [];
+			for (let downloadFileParam of waitForNowDownloadList) {
+				commitAll.push(this.getToDownloadFilePromise(downloadFileParam));
+			}
+
+			this.$axios.all(commitAll).then(resArr => {
+				let errorArr = [];
+				for (let res of resArr) {
+					if (res.Error === 0) {
+						flag = true;
+					} else {
+						errorArr.push(res);
+					}
+				}
+
+				if (errorArr.length === 0) {
+					this.downloadDone({ arr, errorMsg, flag });
+				} else {
+					//if have error task joint errorMsg and run me again(argumnets.callee())
+					for (let value of errorArr) {
+						errorMsg += `<p>`;
+						errorMsg += `${value.FileName || ""}`;
+						errorMsg += this.$i18n.error[value.Error]
+							? this.$i18n.error[value.Error][this.$language]
+							: `error code is ${value.Error}`;
+						errorMsg += `</p>`;
+					}
+					let errorLength = errorArr.length;
+					this.waitForNowdownload({ arr, len: errorLength, errorMsg, flag });
+				}
+			});
+		},
+		downloadDone({ errorMsg, flag, arr = [] }) {
+			const vm = this;
+			// close loading...
+			this.switchToggle.loading && this.switchToggle.loading.close();
+			if (flag === false) {
+				// is have download success task
+				if (errorMsg) {
+					this.$message.error({
+						dangerouslyUseHTMLString: true,
+						message: errorMsg
+					});
+				} else {
+					this.$message.error("Download Error");
+				}
+			} else {
+				if (!errorMsg) {
+					this.$message({
+						type: "success",
+						message: "Start Download"
+					});
+				} else {
+					this.$message.error({
+						dangerouslyUseHTMLString: true,
+						message: errorMsg
+					});
+				}
+				this.switchToggle.confrimDownloadDialog = false;
+				ipcRenderer.send("run-dialog-event", {name: "setDownload"});
+
+				if (arr.length > 0) {
+					setTimeout(() => {
+						vm.addTask(arr);
+					}, 2000)
+				}
+				this.$router.push({
+					name: "transfer",
+					query: { transferType: 2 }
+				});
+			}
+		},
+		getToDownloadFilePromise(data) {
+			return this.$axios.post(this.$api.download, data);
+		},
 		toDownload(downloadFiles) {
 			if (this.fileDownloadInfo.Fee > this.channelBind.BalanceFormat * 1) {
 				this.$message.error(
@@ -814,57 +912,97 @@ export default {
 				text: "File Processing....",
 				target: ".loading-content.disk-download-loading"
 			});
-			const length = downloadFiles.length;
-			const commitAll = [];
-			for (let i = 0; i < length; i++) {
-				console.log(i);
-				commitAll.push(
-					this.$axios
-						.post(this.$api.download, {
-							Url: downloadFiles[i].Url,
-							SetFileName: true,
-							MaxPeerNum: 20
-						})
-						.then(res => {
-							if (res.Error === 0) {
-								console.log("downloading");
-								console.log(res);
-							} else {
-								this.$message.error(
-									this.$i18n.error[res.Error][this.$language]
-								);
-							}
-						})
-				);
-			}
-			this.$axios
-				.all(commitAll)
-				.then(
-					this.$axios.spread(() => {
-						// this.$store.dispatch("setDownload");
-						ipcRenderer.send("run-dialog-event", { name: "setDownload" });
-						this.switchToggle.confrimDownloadDialog = false;
-						this.$message({
-							message: "Start download",
-							type: "success"
-						});
-						this.$router.push({
-							name: "transfer",
-							query: {
-								transferType: 2
-							}
-						});
-					})
-				)
-				.catch(e => {
-					if (!e.message.includes("timeout")) {
-						this.$message.error("Network Error. Download Failed!");
-					}
+
+			let arr = [];
+			for(let downloadFile of downloadFiles) {
+				arr.push({
+					Url: downloadFile.Url,
+					SetFileName: true,
+					MaxPeerNum: 20,
+					// cache upload data↓
+					FileSize: downloadFile.Size,
+					DetailStatus: "downloadLoading",
+					FileName: downloadFile.Name,
+					FileHash: downloadFile.Hash,
+					Type: 1,
+					Status: 2,
+					IsUploadAction: false,
+					Id: ('waitfor_' + uuid.v4()),
+					Nodes: []
 				})
-				.finally(() => {
-					this.switchToggle.loading.close();
-					this.switchToggle.loading = null;
+			}
+
+			let waitForNowDownloadLength = this.$config.maxNumUpload - this.$store.state.Transfer.downloadTransferList.length || 0
+			if(waitForNowDownloadLength <= 0) {
+				this.switchToggle.loading && this.switchToggle.loading.close();
+				this.switchToggle.confrimDownloadDialog = false;
+				// this.$store.dispatch("setUpload");
+				ipcRenderer.send("run-dialog-event", {name: "setDownload"});
+				this.$router.push({
+					name: "transfer",
+					query: { transferType: 2 }
 				});
+				this.addTask(arr);
+				return;
+			}
+
+			let errorMsg = ""; // error message
+			let flag = false; // is have success
+			this.waitForNowDownload({ arr, len: waitForNowDownloadLength, errorMsg, flag });
+			
+
+
+			// const length = downloadFiles.length;
+			// const commitAll = [];
+			// for (let i = 0; i < length; i++) {
+			// 	console.log(i);
+			// 	commitAll.push(
+			// 		this.$axios
+			// 			.post(this.$api.download, {
+			// 				Url: downloadFiles[i].Url,
+			// 				SetFileName: true,
+			// 				MaxPeerNum: 20
+			// 			})
+			// 			.then(res => {
+			// 				if (res.Error === 0) {
+			// 					console.log("downloading");
+			// 					console.log(res);
+			// 				} else {
+			// 					this.$message.error(
+			// 						this.$i18n.error[res.Error][this.$language]
+			// 					);
+			// 				}
+			// 			})
+			// 	);
+			// }
+			// this.$axios
+			// 	.all(commitAll)
+			// 	.then(
+			// 		this.$axios.spread(() => {
+			// 			// this.$store.dispatch("setDownload");
+			// 			ipcRenderer.send("run-dialog-event", { name: "setDownload" });
+			// 			this.switchToggle.confrimDownloadDialog = false;
+			// 			this.$message({
+			// 				message: "Start download",
+			// 				type: "success"
+			// 			});
+			// 			this.$router.push({
+			// 				name: "transfer",
+			// 				query: {
+			// 					transferType: 2
+			// 				}
+			// 			});
+			// 		})
+			// 	)
+			// 	.catch(e => {
+			// 		if (!e.message.includes("timeout")) {
+			// 			this.$message.error("Network Error. Download Failed!");
+			// 		}
+			// 	})
+			// 	.finally(() => {
+			// 		this.switchToggle.loading.close();
+			// 		this.switchToggle.loading = null;
+			// 	});
 		},
 		deleteFile(file) {
 			this.fileToDelete = [file];
@@ -1076,6 +1214,9 @@ export default {
 				return item;
 			});
 			return arr;
+		},
+		waitForDownloadList() {
+			return this.$store.state.Transfer.waitForUploadList || [];
 		}
 	},
 	beforeRouteEnter(to, from, next) {

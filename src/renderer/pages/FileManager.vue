@@ -149,7 +149,7 @@ import { ipcRenderer } from "electron";
 export default {
 	mounted() {
 		document.title = "File Manager";
-		this.$store.dispatch("getWaitForUploadList"); // get wait for upload list
+		this.$store.dispatch("getWaitForTransferList"); // get wait for upload list
 		this.$store.dispatch("setCurrentAccount"); // get login status
 		this.$store.dispatch("getDns"); // get login status
 		this.initBalanceRequest();

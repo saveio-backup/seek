@@ -3,6 +3,9 @@ const result = {
   'uploadLoading': {
     'en': 'Wait for the Upload'
   },
+  'downloadLoading': {
+    'en': 'Wait for the Download'
+  },
   '0': {
     'en': ''
   },

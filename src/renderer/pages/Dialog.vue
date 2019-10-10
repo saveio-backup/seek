@@ -88,9 +88,11 @@ export default {
 			},
 			maxNumUpload: 0,
 			isNotDonePause: true,
+			isNotDonePause2: true,
 
 			// ready upload list
-			readyUpload: []
+			readyUpload: [],
+			readyDownload: []
 		};
 	},
 	computed: {
@@ -103,13 +105,17 @@ export default {
 			let arr = this.$store.state.Transfer.uploadTransferList || [];
 			return arr;
 		},
+		// downloading file
+		downloadingTransferList() {
+			return this.$store.state.Transfer.downloadingTransferList || [];
+		},
 		// downloading file list
 		downloadTransferList: function() {
 			let arr = this.$store.state.Transfer.downloadTransferList || [];
-			this.rendToFileManage({
-				type: 'downloadList',
-				result: arr
-			});
+			// this.rendToFileManage({
+			// 	type: 'downloadList',
+			// 	result: arr
+			// });
 			return arr;
 		},
 		// complete transfer file list
@@ -121,6 +127,7 @@ export default {
 			});
 			return arr;
 		},
+
 		// wait for upload file list
 		waitForUploadList: function() {
 			let arr = this.$store.state.Transfer.waitForUploadList || [];
@@ -134,6 +141,18 @@ export default {
 		},
 		realUploadingLength: function() {
 			return this.$store.state.Transfer.realUploadingLength;
+		},
+
+		// wait for download file list
+		waitForDownloadList: function() {
+			let arr = this.$store.state.Transfer.waitForDownloadList || [];
+			return arr;
+		},
+		waitForDownloadOrderList: function() {
+			return this.$store.state.Transfer.waitForDownloadOrderList || [];
+		},
+		realDownloadingLength: function() {
+			return this.$store.state.Transfer.realDownloadingLength;
 		}
 	},
 	mounted() {
@@ -158,6 +177,15 @@ export default {
 			}
 			this.rendToFileManage({
 				type: 'uploadList',
+				result: val
+			});
+		},
+		downloadingTransferList(val, oldVal) {
+			if(this.realDownloadingLength < this.$config.maxNumUpload) {
+				this.waitForDownloadFileToDownload();
+			}
+			this.rendToFileManage({
+				type: 'downloadList',
 				result: val
 			});
 		},
@@ -191,10 +219,11 @@ export default {
 			}, 50);
 		},
 		downloadTransferList(newVal, oldVal) {
+			const vm = this;
 			clearTimeout(this.setTimeoutObj.download);
 			this.setTimeoutObj.download = setTimeout(() => {
 				for (let value of newVal) {
-					this.transferObj[value.Id] = value;
+					vm.transferObj[value.Id] = value;
 				}
 			}, 50);
 		},
@@ -237,6 +266,18 @@ export default {
 				result: val
 			});
 		},
+		waitForDownloadList(val, oldVal) {
+			this.rendToFileManage({
+				type: 'waitForDownloadList',
+				result: val
+			});
+		},
+		waitForDownloadOrderList(val, oldVal) {
+			this.rendToFileManage({
+				type: 'waitForDownloadOrderList',
+				result: val
+			});
+		},
 		localStatus(val, oldVal) {
 			this.rendToFileManage({
 				type: 'localStatus',
@@ -246,6 +287,12 @@ export default {
 		realUploadingLength(val, oldVal) {
 			this.rendToFileManage({
 				type: 'realUploadingLength',
+				result: val
+			});
+		},
+		realDownloadingLength(val, oldVal) {
+			this.rendToFileManage({
+				type: 'realDownloadingLength',
 				result: val
 			});
 		}
@@ -360,6 +407,119 @@ export default {
 		getToUploadFilePromise(data) {
 			return this.$axios.post(this.$api.upload, data);
 		},
+
+		// get wait for download promise list
+		getStartWaitForDownloadPromise(arr) {
+			// to download
+			const commitAll = []; // will to download file promise 
+			for (let file of arr) {
+				commitAll.push(this.getToDownloadFilePromise(file));
+			}
+			return commitAll;
+		},
+		// wait for download file to download when max Download length gt current Downloading length
+		waitForDownloadFileToDownload() {
+			let needDownloadLen = this.$config.maxNumUpload - this.realDownloadingLength;
+			if(this.waitForDownloadOrderList.length === 0 || this.readyDownload.length !== 0 || needDownloadLen <= 0) return;
+			// update readyDownload
+			let realDownloadLen = Math.min(needDownloadLen, this.waitForDownloadOrderList.length);
+			this.readyDownload = this.waitForDownloadOrderList.slice(0, realDownloadLen);
+
+			// get download list in the waitForDownloadList
+			let filterWaitForDownloadList = this.waitForDownloadList.filter(item => {
+				return this.readyDownload.indexOf(item.Id) !== -1;
+			})
+			// get download list in the waitForDownloadList
+			let filterDownloadingList = this.downloadingTransferList.filter(item => {
+				return this.readyDownload.indexOf(item.Id) !== -1;
+			});
+
+			let commitAll = [];
+			commitAll.concat(this.getStartWaitForDownloadPromise(filterWaitForDownloadList));
+			commitAll.concat(this.getContinueDownloadPromise(filterDownloadingList));
+			this.toStartDownload(commitAll);
+		},
+		// to download and callback
+		toStartDownload(commitAll) {
+			const vm = this;
+			this.$axios.all(commitAll).then(resArr => {
+				let newWaitForList = this.waitForDownloadList.filter(item => {
+					return this.readyDownload.indexOf(item.Id) < 0
+				})
+				this.$store.dispatch('setDownload');
+				this.$store.commit('SET_WAIT_FOR_DOWNLOAD_LIST', newWaitForList);
+				this.$store.commit('REMOVE_WAIT_FOR_DOWNLOAD_ORDER_LIST', this.readyDownload);
+				this.$store.commit('REMOVE_UPLOADING', this.readyDownload);
+				this.$store.commit('REMOVE_PAUSING', this.readyDownload);
+				this.rendToFileManage({
+					type: 'localStatus',
+					result: vm.localStatus
+				});
+
+				// to do: wait for 2s for wait for get upload file done
+				setTimeout(() => {
+					this.readyDownload = [];
+				}, 2000);
+				
+				// error message
+				let errorArr = [];
+				let errorMsg = '';
+				for (let value of resArr) {
+					if (value.Error !== 0) {
+						errorMsg += `<p>`;
+						errorMsg += `${value.FileName || ""}`;
+						errorMsg += this.$i18n.error[value.Error]
+							? this.$i18n.error[value.Error][this.$language]
+							: `error code is ${value.Error}`;
+						errorMsg += `</p>`;
+					}
+				}
+				if(errorMsg !== "") {
+					this.message({
+						info: errorMsg,
+						type: "error",
+						dangerouslyUseHTMLString: true
+					});
+				}
+			})
+		},
+		// get continue download promise list
+		getContinueDownloadPromise(arr) {
+			const commitAll = [];
+			let continueArr = [];
+			let retryArr = []
+			for(let value of arr) {
+				if(value.Status === 4) {
+					retryArr.push(value.Id);
+				} else {
+					continueArr.push(value.Id);
+				}
+			}
+			if(retryArr.length > 0) {
+				let params = {
+					Ids: retryArr
+				}
+				commitAll.push(
+					this.$axios.post(this.$api.downloadRetry, params)
+				)
+			}
+			if(continueArr.length > 0) {
+				let params = {
+					Ids: continueArr
+				}
+				commitAll.push(
+					this.$axios.post(this.$api.downloadResume, params)
+				)
+			}
+			return commitAll;
+		},
+		// get to download file ajax promise
+		getToDownloadFilePromise(data) {
+			return this.$axios.post(this.$api.download, data);
+		},
+
+
+
 		// open create channel dialog when have channel
 		toGetDns() {
 			this.$axios
@@ -582,7 +742,7 @@ export default {
 		},
 		// get polling data about transfer list 
 		getTransferPollData() {
-			this.$store.dispatch("getWaitForUploadList"); // get wait for upload list
+			this.$store.dispatch("getWaitForTransferList"); // get wait for upload list
 			this.$store.dispatch("setUpload");
 			this.$store.dispatch("setDownload");
 		},
@@ -648,6 +808,36 @@ export default {
 		setWaitForUploadList(data) {
 			this.$store.commit('GET_WAIT_FOR_UPLOAD_LIST', data);
 		},
+		// set wait for download list;
+		setWaitForDownloadList(data) {
+			this.$store.commit('GET_WAIT_FOR_DOWNLOAD_LIST', data);
+		},
+
+		/**
+		 * push data to waitForDownloadOrderList
+		 * params:
+		 * data(type array): 
+		 */
+		pushWaitForDownloadOrderList(data) {
+			this.$store.commit('PUSH_WAIT_FOR_DOWNLOAD_ORDER_LIST', data);
+		},
+		/**
+		 * unshift data to waitForDownloadOrderList
+		 * params:
+		 * data(type array): 
+		 */
+		unshiftWaitForDownloadOrderList(data) {
+			this.$store.commit('UNSHIFT_WAIT_FOR_DOWNLOAD_ORDER_LIST', data);
+		},
+		/**
+		 * remove data to waitForOrderList 
+		 * params:
+		 * data(type array): 
+		 */
+		removeWaitForDownloadOrderList(data) {
+			this.$store.commit('REMOVE_WAIT_FOR_DOWNLOAD_ORDER_LIST', data);
+		},
+
 		/**
 		 * push data to waitForUploadOrderList
 		 * params:
@@ -672,6 +862,7 @@ export default {
 		removeWaitForUploadOrderList(data) {
 			this.$store.commit('REMOVE_WAIT_FOR_UPLOAD_ORDER_LIST', data);
 		},
+
 		/**
 		 * add data to pausing 
 		 * params:
@@ -688,6 +879,7 @@ export default {
 		removePausing(data) {
 			this.$store.commit('REMOVE_PAUSING', data);
 		},
+
 		/**
 		 * add data to uploading 
 		 * params:
@@ -704,16 +896,23 @@ export default {
 		removeUploading(data) {
 			this.$store.commit('REMOVE_UPLOADING', data);
 		},
+
 		/**
 		 * set config 
 		 * params:
 		 * data(type array): 
 		 */
+		// to do 
 		settingUpdate(data) {
+			const vm = this;
 			this.maxNumUpload = data.maxNumUpload;
 			if(!this.isNotDonePause) return;
 			this.isNotDonePause = false;
 			this.__proto__.__proto__.$config.maxNumUpload = data.maxNumUpload;
+
+			// update upload list
+			let flag = false;
+			let commitAll = [];
 
 			let remoteUploadingList = [];
 			for(let value of this.uploadTransferList) {
@@ -727,12 +926,43 @@ export default {
 				let pauseList = remoteUploadingList.splice(this.$config.maxNumUpload);
 				this.addUploading(pauseList);
 				this.unshiftWaitForUploadOrderList(pauseList);
-				this.toPause(pauseList);
-			} else {
-				this.isNotDonePause = true;
-				if(this.$config.maxNumUpload !== this.maxNumUpload && this.maxNumUpload) {
-					this.settingUpdate({maxNumUpload: this.maxNumUpload});
+				commitAll.push(this.toPause(pauseList));
+				flag = true;
+			}
+
+			let remoteDownloadingList = [];
+			for(let value of this.downloadTransferList) {
+				if(value.Id.indexOf('waitfor_') !== 0 && !value.Url.startsWith('oni://www')) {
+					if(value.Status === 1 || value.Status === 2) {
+						remoteDownloadingList.push(value.Id)
+					}
 				}
+			}
+			if(remoteDownloadingList.length > this.$config.maxNumUpload) {
+				let pauseList = remoteDownloadingList.splice(this.$config.maxNumUpload);
+				this.addUploading(pauseList);
+				this.unshiftWaitForDownloadOrderList(pauseList);
+				commitAll.push(this.toPauseDownload(pauseList));
+				flag = true;
+			}
+
+			if(flag) {
+				this.$axios.all(commitAll)
+				.finally(res => {
+					vm.rendToFileManage({
+						type: 'localStatus',
+						result: vm.localStatus
+					});
+					this.isNotDonePause = true;
+					if(vm.$config.maxNumUpload !== vm.maxNumUpload && vm.maxNumUpload) {
+						vm.settingUpdate({maxNumUpload: vm.maxNumUpload});
+					}
+				})
+				return;
+			};
+			this.isNotDonePause = true;
+			if(this.$config.maxNumUpload !== this.maxNumUpload && this.maxNumUpload) {
+				this.settingUpdate({maxNumUpload: this.maxNumUpload});
 			}
 		},
 		// to pause task
@@ -741,18 +971,17 @@ export default {
 			let params = {
 				Ids: arr
 			}
-			this.$axios.post(this.$api.uploadPause, params, {
-				timeout: (this.$config.outTime * 2000 + 18000) * params.Ids.length
+		  return vm.$axios.post(vm.$api.uploadPause, params, {
+				timeout: (vm.$config.outTime * 2000 + 18000) * params.Ids.length
 			})
-			.finally(res => {
-				vm.rendToFileManage({
-					type: 'localStatus',
-					result: vm.localStatus
-				});
-				this.isNotDonePause = true;
-				if(vm.$config.maxNumUpload !== vm.maxNumUpload && vm.maxNumUpload) {
-					vm.settingUpdate({maxNumUpload: vm.maxNumUpload});
-				}
+		},
+		toPauseDownload(arr) {
+			const vm = this;
+			let params = {
+				Ids: arr
+			}
+			return vm.$axios.post(vm.$api.downloadPause, params, {
+				timeout: (vm.$config.outTime * 2000 + 18000) * params.Ids.length
 			})
 		}
 	}

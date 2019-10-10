@@ -107,7 +107,7 @@ export default {
 		stateUpdate({result}) {
 			this.$store.commit("SET_STAET", result);
 		},
-		// transfering some polling
+		// upload transfering some polling
 		uploadListUpdate({result}) {
 			this.$store.commit("GET_UPLOAD_TRANSFER", result);
 		},
@@ -120,15 +120,25 @@ export default {
 		waitForUploadListUpdate({result}) {
 			this.$store.commit("GET_WAIT_FOR_UPLOAD_LIST", result);
 		},
+		waitForDownloadListUpdate({result}) {
+			this.$store.commit("GET_WAIT_FOR_DOWNLOAD_LIST", result);
+		},
 		waitForUploadOrderListUpdate({result}) {
 			this.$store.commit("GET_WAIT_FOR_UPLOAD_ORDER_LIST", result);
 		},
-		localStatusUpdate({result}) {			
-			this.$store.commit("GET_LOCAL_STATUS", result);
+		waitForDownloadOrderListUpdate({result}) {
+			this.$store.commit("GET_WAIT_FOR_DOWNLOAD_ORDER_LIST", result);
 		},
 		realUploadingLengthUpdate({result}) {
 			this.$store.commit("GET_REAL_UPLOADING_LENGTH", result);
 		},
+		realDownloadingLengthUpdate({result}) {
+			this.$store.commit("GET_REAL_DOWNLOADING_LENGTH", result);
+		},
+		localStatusUpdate({result}) {			
+			this.$store.commit("GET_LOCAL_STATUS", result);
+		},
+
 		frontConfigUpdate({result}) {
 			this.__proto__.__proto__.$config.maxNumUpload = result.maxNumUpload;
 		},

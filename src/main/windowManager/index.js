@@ -473,7 +473,15 @@ function removeView(win, view, index) {
   view.browserView = null;
   win.views[index] = null;
   win.views.splice(index, 1);
-  win.views.length === 0 && win.destroy();
+
+  if (win.views.length === 0) {
+    console.log('win views length   === 0')
+    delete windows[win.id];
+    win.destroy();
+  }
+
+  (Object.entries(windows).length === 0) && app.quit(); // if there is no BrowserWindow in windows, quit seek.
+
 }
 
 function resizeAll(win) {

@@ -43,6 +43,7 @@ app.on('ready', function () {
 })
 
 app.on('window-all-closed', () => {
+  console.log('all closed!!!!!!!!')
   app.quit()
 })
 app.on('activate', () => {

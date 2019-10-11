@@ -78,9 +78,7 @@ export default {
 			isNeedSync: false,
 
 			// transfer correlation
-			transferObj: {
-			},
-			// timeout object
+			transferObj: {},
 			setTimeoutObj: {
 				upload: null,
 				download: null,
@@ -122,7 +120,7 @@ export default {
 		completeTransferList: function() {
 			let arr = this.$store.state.Transfer.completeTransferList || [];
 			this.rendToFileManage({
-				type: 'completeList',
+				type: "completeList",
 				result: arr
 			});
 			return arr;
@@ -163,7 +161,7 @@ export default {
 		ipcRenderer.on("setDownloadUrl", (e, url) => {
 			this.downloadUrl = url;
 		});
-		ipcRenderer.on("runDialogEvent", (e, {name, data}) => {
+		ipcRenderer.on("runDialogEvent", (e, { name, data }) => {
 			// this.downloadUrl = url;
 			this[name](data);
 		});
@@ -172,11 +170,11 @@ export default {
 	},
 	watch: {
 		uploadingTransferList(val, oldVal) {
-			if(this.realUploadingLength < this.$config.maxNumUpload) {
+			if (this.realUploadingLength < this.$config.maxNumUpload) {
 				this.waitForUploadFileToUpload();
 			}
 			this.rendToFileManage({
-				type: 'uploadList',
+				type: "uploadList",
 				result: val
 			});
 		},
@@ -194,7 +192,7 @@ export default {
 			this.channelNum = null;
 			localStorage.setItem("DNSAdress", "");
 			// this.getProcess();
-			if(newVal != '') {
+			if (newVal != "") {
 				this.getPollingData();
 			} else {
 				clearInterval(this.intervalObj.setTimeObj);
@@ -202,12 +200,12 @@ export default {
 		},
 		Balance(newVal, oldVal) {
 			if (!oldVal && newVal && this.channelNum === 0) {
-				this.toGetDns()
+				this.toGetDns();
 			}
 		},
 		channelNum(newVal, oldVal) {
 			if (this.Balance && newVal === 0 && oldVal === null) {
-				this.toGetDns()
+				this.toGetDns();
 			}
 		},
 		uploadTransferList(newVal, oldVal) {
@@ -247,7 +245,7 @@ export default {
 						});
 						haveComplete = true;
 					}
-					if(haveComplete) {
+					if (haveComplete) {
 						this.$store.dispatch("setSpace");
 					}
 					this.transferObj[value.Id] = value;
@@ -256,13 +254,13 @@ export default {
 		},
 		waitForUploadList(val, oldVal) {
 			this.rendToFileManage({
-				type: 'waitForUploadList',
+				type: "waitForUploadList",
 				result: val
 			});
 		},
 		waitForUploadOrderList(val, oldVal) {
 			this.rendToFileManage({
-				type: 'waitForUploadOrderList',
+				type: "waitForUploadOrderList",
 				result: val
 			});
 		},
@@ -280,13 +278,13 @@ export default {
 		},
 		localStatus(val, oldVal) {
 			this.rendToFileManage({
-				type: 'localStatus',
+				type: "localStatus",
 				result: val
 			});
 		},
 		realUploadingLength(val, oldVal) {
 			this.rendToFileManage({
-				type: 'realUploadingLength',
+				type: "realUploadingLength",
 				result: val
 			});
 		},
@@ -301,7 +299,7 @@ export default {
 		// get wait for upload promise list
 		getStartWaitForUploadPromise(arr) {
 			// to upload
-			const commitAll = []; // will to upload file promise 
+			const commitAll = []; // will to upload file promise
 			for (let file of arr) {
 				commitAll.push(this.getToUploadFilePromise(file));
 			}
@@ -310,22 +308,32 @@ export default {
 		// wait for upload file to upload when max Upload length gt current Uploading length
 		waitForUploadFileToUpload() {
 			let needUploadLen = this.$config.maxNumUpload - this.realUploadingLength;
-			if(this.waitForUploadOrderList.length === 0 || this.readyUpload.length !== 0 || needUploadLen <= 0) return;
+			if (
+				this.waitForUploadOrderList.length === 0 ||
+				this.readyUpload.length !== 0 ||
+				needUploadLen <= 0
+			)
+				return;
 			// update readyUpload
-			let realUploadLen = Math.min(needUploadLen, this.waitForUploadOrderList.length);
+			let realUploadLen = Math.min(
+				needUploadLen,
+				this.waitForUploadOrderList.length
+			);
 			this.readyUpload = this.waitForUploadOrderList.slice(0, realUploadLen);
 
 			// get upload list in the waitForUploadList
 			let filterWaitForUploadList = this.waitForUploadList.filter(item => {
 				return this.readyUpload.indexOf(item.Id) !== -1;
-			})
+			});
 			// get upload list in the waitForUploadList
 			let filterUploadingList = this.uploadingTransferList.filter(item => {
 				return this.readyUpload.indexOf(item.Id) !== -1;
 			});
 
 			let commitAll = [];
-			commitAll.concat(this.getStartWaitForUploadPromise(filterWaitForUploadList));
+			commitAll.concat(
+				this.getStartWaitForUploadPromise(filterWaitForUploadList)
+			);
 			commitAll.concat(this.getContinueUploadPromise(filterUploadingList));
 			this.toStartUpload(commitAll);
 		},
@@ -334,15 +342,18 @@ export default {
 			const vm = this;
 			this.$axios.all(commitAll).then(resArr => {
 				let newWaitForList = this.waitForUploadList.filter(item => {
-					return this.readyUpload.indexOf(item.Id) < 0
-				})
-				this.$store.dispatch('setUpload');
-				this.$store.commit('SET_WAIT_FOR_UPLOAD_LIST', newWaitForList);
-				this.$store.commit('REMOVE_WAIT_FOR_UPLOAD_ORDER_LIST', this.readyUpload);
-				this.$store.commit('REMOVE_UPLOADING', this.readyUpload);
-				this.$store.commit('REMOVE_PAUSING', this.readyUpload);
+					return this.readyUpload.indexOf(item.Id) < 0;
+				});
+				this.$store.dispatch("setUpload");
+				this.$store.commit("SET_WAIT_FOR_UPLOAD_LIST", newWaitForList);
+				this.$store.commit(
+					"REMOVE_WAIT_FOR_UPLOAD_ORDER_LIST",
+					this.readyUpload
+				);
+				this.$store.commit("REMOVE_UPLOADING", this.readyUpload);
+				this.$store.commit("REMOVE_PAUSING", this.readyUpload);
 				this.rendToFileManage({
-					type: 'localStatus',
+					type: "localStatus",
 					result: vm.localStatus
 				});
 
@@ -350,10 +361,10 @@ export default {
 				setTimeout(() => {
 					this.readyUpload = [];
 				}, 2000);
-				
+
 				// error message
 				let errorArr = [];
-				let errorMsg = '';
+				let errorMsg = "";
 				for (let value of resArr) {
 					if (value.Error !== 0) {
 						errorMsg += `<p>`;
@@ -364,42 +375,38 @@ export default {
 						errorMsg += `</p>`;
 					}
 				}
-				if(errorMsg !== "") {
+				if (errorMsg !== "") {
 					this.message({
 						info: errorMsg,
 						type: "error",
 						dangerouslyUseHTMLString: true
 					});
 				}
-			})
+			});
 		},
 		// get continue upload promise list
 		getContinueUploadPromise(arr) {
 			const commitAll = [];
 			let continueArr = [];
-			let retryArr = []
-			for(let value of arr) {
-				if(value.Status === 4) {
+			let retryArr = [];
+			for (let value of arr) {
+				if (value.Status === 4) {
 					retryArr.push(value.Id);
 				} else {
 					continueArr.push(value.Id);
 				}
 			}
-			if(retryArr.length > 0) {
+			if (retryArr.length > 0) {
 				let params = {
 					Ids: retryArr
-				}
-				commitAll.push(
-					this.$axios.post(this.$api.uploadRetry, params)
-				)
+				};
+				commitAll.push(this.$axios.post(this.$api.uploadRetry, params));
 			}
-			if(continueArr.length > 0) {
+			if (continueArr.length > 0) {
 				let params = {
 					Ids: continueArr
-				}
-				commitAll.push(
-					this.$axios.post(this.$api.uploadResume, params)
-				)
+				};
+				commitAll.push(this.$axios.post(this.$api.uploadResume, params));
 			}
 			return commitAll;
 		},
@@ -522,15 +529,13 @@ export default {
 
 		// open create channel dialog when have channel
 		toGetDns() {
-			this.$axios
-				.get(this.$api.getAllDns)
-				.then(res => {
-					if (res.Error === 0) {
-						if(res.Result.length > 0) {
-							ipcRenderer.send("dialog-open", "createChannel");
-						}
+			this.$axios.get(this.$api.getAllDns).then(res => {
+				if (res.Error === 0) {
+					if (res.Result.length > 0) {
+						ipcRenderer.send("dialog-open", "createChannel");
 					}
-				});
+				}
+			});
 		},
 		// close dialog
 		closeDialog({ timeout = 0 }) {
@@ -557,11 +562,19 @@ export default {
 				if (res.Error === 0) {
 					if (res.Result.Address) {
 						this.Address = res.Result.Address;
-						this.renderDateToBrowserView({ result: res.Result, type: "account", rendTo: 1 });
+						this.renderDateToBrowserView({
+							result: res.Result,
+							type: "account",
+							rendTo: 1
+						});
 					}
 				} else {
-					this.Address = '';
-					this.renderDateToBrowserView({ result: res.Result, type: "account", rendTo: 1 });
+					this.Address = "";
+					this.renderDateToBrowserView({
+						result: res.Result,
+						type: "account",
+						rendTo: 1
+					});
 				}
 			});
 		},
@@ -569,23 +582,27 @@ export default {
 		getProcess() {
 			// clearInterval(this.intervalObj.setTimeProcessObj);
 			// this.intervalObj.setTimeProcessObj = setInterval(() => {
-				this.$axios.get(this.$api.channelInitProgress).then(progressResult => {
-					if (progressResult.Error === 0) {
-						if(progressResult.Result.End - progressResult.Result.Now > 50) {
-							progressResult.Result.isSync = true;
-						} else {
-							this.isNeedSync = false;
-							progressResult.Result.isSync = false;
-						}
-						if(progressResult.Result.End - progressResult.Result.Now > 100000) {
-							this.isNeedSync = true;
-							progressResult.Result.isNeedSync = this.isNeedSync;
-						} else {
-							progressResult.Result.isNeedSync = this.isNeedSync;
-						}
-						this.renderDateToBrowserView({ result: progressResult.Result, type: "progress", rendTo: 1 });
+			this.$axios.get(this.$api.channelInitProgress).then(progressResult => {
+				if (progressResult.Error === 0) {
+					if (progressResult.Result.End - progressResult.Result.Now > 50) {
+						progressResult.Result.isSync = true;
+					} else {
+						this.isNeedSync = false;
+						progressResult.Result.isSync = false;
 					}
-				});
+					if (progressResult.Result.End - progressResult.Result.Now > 100000) {
+						this.isNeedSync = true;
+						progressResult.Result.isNeedSync = this.isNeedSync;
+					} else {
+						progressResult.Result.isNeedSync = this.isNeedSync;
+					}
+					this.renderDateToBrowserView({
+						result: progressResult.Result,
+						type: "progress",
+						rendTo: 1
+					});
+				}
+			});
 			// }, this.intervalObj.COUNT_INTERVAL);
 		},
 		// get balance for show create channel dialog
@@ -608,7 +625,7 @@ export default {
 		getRevenue() {
 			this.$axios
 				.get(this.$api.revenue, {
-					timeout: (this.$config.outTime * 5000 + 15000)
+					timeout: this.$config.outTime * 5000 + 15000
 				})
 				.then(res => {
 					if (res.Error === 0) {
@@ -623,7 +640,7 @@ export default {
 		getChannel() {
 			this.$axios
 				.get(this.$api.channel, {
-					timeout: (this.$config.outTime * 5000 + 15000)
+					timeout: this.$config.outTime * 5000 + 15000
 				})
 				.then(res => {
 					if (res.Error === 0) {
@@ -670,20 +687,20 @@ export default {
 						type: "state",
 						rendTo: 1
 					});
-				})
+				});
 		},
 		/**
 		 * params:
-		 * rendTo: send to type 
-		 * 				description: 1: browserView and browserWindow 
+		 * rendTo: send to type
+		 * 				description: 1: browserView and browserWindow
 		 * 										 0: browserView
 		 */
 		getArr() {
 			let arr = [];
-			let views = {};
+			let views = [];
 			//  remote.BrowserWindow.getAllWindows()[0].views;
-			for(let win of remote.BrowserWindow.getAllWindows()) {
-				if(win.views) {
+			for (let win of remote.BrowserWindow.getAllWindows()) {
+				if (win.views) {
 					views = win.views;
 				}
 			}
@@ -698,27 +715,33 @@ export default {
 		 * params:
 		 * result: send data
 		 * type: data type
-		 * rendTo: send to type 
-		 * 				description: 1: browserView and browserWindow 
+		 * rendTo: send to type
+		 * 				description: 1: browserView and browserWindow
 		 * 										 0: browserView
 		 */
 		renderDateToBrowserView({ result, type, rendTo = 0 }) {
 			let arr = this.getArr(rendTo);
 			for (let value of arr) {
-				ipcRenderer.sendTo(value, "get-data", { result, type, page: 'tab' });
+				ipcRenderer.sendTo(value, "get-data", { result, type, page: "tab" });
 			}
 			let arrWin = remote.BrowserWindow.getAllWindows();
-			for(let win of arrWin) {
-				if(win.webContents.getURL().indexOf("/#/navigation") > 0) {
-					if(rendTo === 1) {
-						let winRender = Object.assign({}, result, {type: 'windowRender'});//browserWindow render type is windowRender,browserView render type is browserView || undefined
+			for (let win of arrWin) {
+				if (win.webContents.getURL().indexOf("/#/navigation") > 0) {
+					if (rendTo === 1) {
+						let winRender = Object.assign({}, result, { type: "windowRender" }); //browserWindow render type is windowRender,browserView render type is browserView || undefined
 						let winContentId = win.webContents.id;
-						ipcRenderer.sendTo(winContentId, "get-data", { result:winRender, type });
+						ipcRenderer.sendTo(winContentId, "get-data", {
+							result: winRender,
+							type
+						});
 					}
 				} else {
-					let winRender = Object.assign({}, result, {type: 'windowRender'});//browserWindow render type is windowRender,browserView render type is browserView || undefined
+					let winRender = Object.assign({}, result, { type: "windowRender" }); //browserWindow render type is windowRender,browserView render type is browserView || undefined
 					let winContentId = win.webContents.id;
-					ipcRenderer.sendTo(winContentId, "get-data", { result:winRender, type });
+					ipcRenderer.sendTo(winContentId, "get-data", {
+						result: winRender,
+						type
+					});
 				}
 			}
 		},
@@ -749,37 +772,38 @@ export default {
 		// update get current main browseWindow
 		getWin() {
 			let arrWin = remote.BrowserWindow.getAllWindows();
-			for(let winItem of arrWin) {
-				if(winItem.webContents.getURL().indexOf("/#/navigation") > 0) {
-					this.win = winItem
+			for (let winItem of arrWin) {
+				if (winItem.webContents.getURL().indexOf("/#/navigation") > 0) {
+					this.win = winItem;
 				}
 			}
 		},
 		// rend to filemanage page content
 		rendToFileManage({ result, type }) {
-			if(!this.win) {
+			if (!this.win) {
 				this.getWin();
 			}
-			let views = {}
+			let views = [];
 			//  remote.BrowserWindow.getAllWindows()[0].views;
-			for(let win of remote.BrowserWindow.getAllWindows()) {
-				if(win.views) {
+			for (let win of remote.BrowserWindow.getAllWindows()) {
+				if (win.views) {
 					views = win.views;
 				}
 			}
-			
-			let activeView = views.find(view => view.displayURL.toLowerCase().startsWith('seek://filemanager'));
-			if(!activeView) return;
-			 let winContentId = activeView.webContents.id;
-			 ipcRenderer.sendTo(winContentId, 'get-data', {result, type})
+			let activeView = views.find(view =>
+				view.displayURL.toLowerCase().startsWith("seek://filemanager")
+			);
+			if (!activeView) return;
+			let winContentId = activeView.webContents.id;
+			ipcRenderer.sendTo(winContentId, "get-data", { result, type });
 		},
 		// rendTo active browser display message
 		message({ info, type, dangerouslyUseHTMLString }) {
 			// let views = this.win.views;
-			let views = {}
+			let views = [];
 			//  remote.BrowserWindow.getAllWindows()[0].views;
-			for(let win of remote.BrowserWindow.getAllWindows()) {
-				if(win.views) {
+			for (let win of remote.BrowserWindow.getAllWindows()) {
+				if (win.views) {
 					views = win.views;
 				}
 			}
@@ -806,7 +830,7 @@ export default {
 		},
 		// set wait for upload list;
 		setWaitForUploadList(data) {
-			this.$store.commit('GET_WAIT_FOR_UPLOAD_LIST', data);
+			this.$store.commit("GET_WAIT_FOR_UPLOAD_LIST", data);
 		},
 		// set wait for download list;
 		setWaitForDownloadList(data) {
@@ -841,10 +865,10 @@ export default {
 		/**
 		 * push data to waitForUploadOrderList
 		 * params:
-		 * data(type array): 
+		 * data(type array):
 		 */
 		pushWaitForUploadOrderList(data) {
-			this.$store.commit('PUSH_WAIT_FOR_UPLOAD_ORDER_LIST', data);
+			this.$store.commit("PUSH_WAIT_FOR_UPLOAD_ORDER_LIST", data);
 		},
 		/**
 		 * unshift data to waitForUploadOrderList
@@ -852,7 +876,7 @@ export default {
 		 * data(type array): 
 		 */
 		unshiftWaitForUploadOrderList(data) {
-			this.$store.commit('UNSHIFT_WAIT_FOR_UPLOAD_ORDER_LIST', data);
+			this.$store.commit("UNSHIFT_WAIT_FOR_UPLOAD_ORDER_LIST", data);
 		},
 		/**
 		 * remove data to waitForOrderList 
@@ -860,7 +884,7 @@ export default {
 		 * data(type array): 
 		 */
 		removeWaitForUploadOrderList(data) {
-			this.$store.commit('REMOVE_WAIT_FOR_UPLOAD_ORDER_LIST', data);
+			this.$store.commit("REMOVE_WAIT_FOR_UPLOAD_ORDER_LIST", data);
 		},
 
 		/**
@@ -869,7 +893,7 @@ export default {
 		 * data(type array): 
 		 */
 		addPausing(data) {
-			this.$store.commit('ADD_PAUSING', data);
+			this.$store.commit("ADD_PAUSING", data);
 		},
 		/**
 		 * remove data to pausing 
@@ -877,7 +901,7 @@ export default {
 		 * data(type array): 
 		 */
 		removePausing(data) {
-			this.$store.commit('REMOVE_PAUSING', data);
+			this.$store.commit("REMOVE_PAUSING", data);
 		},
 
 		/**
@@ -886,7 +910,7 @@ export default {
 		 * data(type array): 
 		 */
 		addUploading(data) {
-			this.$store.commit('ADD_UPLOADING', data);
+			this.$store.commit("ADD_UPLOADING", data);
 		},
 		/**
 		 * remove data to uploading 
@@ -894,7 +918,7 @@ export default {
 		 * data(type array): 
 		 */
 		removeUploading(data) {
-			this.$store.commit('REMOVE_UPLOADING', data);
+			this.$store.commit("REMOVE_UPLOADING", data);
 		},
 
 		/**
@@ -915,14 +939,14 @@ export default {
 			let commitAll = [];
 
 			let remoteUploadingList = [];
-			for(let value of this.uploadTransferList) {
-				if(value.Id.indexOf('waitfor_') !== 0) {
-					if(value.Status === 1 || value.Status === 2) {
-						remoteUploadingList.push(value.Id)
+			for (let value of this.uploadTransferList) {
+				if (value.Id.indexOf("waitfor_") !== 0) {
+					if (value.Status === 1 || value.Status === 2) {
+						remoteUploadingList.push(value.Id);
 					}
 				}
 			}
-			if(remoteUploadingList.length > this.$config.maxNumUpload) {
+			if (remoteUploadingList.length > this.$config.maxNumUpload) {
 				let pauseList = remoteUploadingList.splice(this.$config.maxNumUpload);
 				this.addUploading(pauseList);
 				this.unshiftWaitForUploadOrderList(pauseList);

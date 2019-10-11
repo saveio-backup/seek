@@ -1,5 +1,6 @@
 <template>
 	<div id="menu-window" :style="computedStyle">
+		MenuWindow
 		<div @mouseenter="setDialog" @mouseleave="hiddenDialog">
 			<div
 				class="syncInfo"

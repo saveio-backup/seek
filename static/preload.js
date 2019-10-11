@@ -8,8 +8,12 @@ import {
 } from "electron";
 const views = remote.getCurrentWindow().views;
 const Version = '00';
-ipcRenderer.on('will-load-thirdpage', (event, url) => {
-  loadThirdPage(url);
+const thirdPageUid = {};
+ipcRenderer.on('will-load-thirdpage', (event, url, uuid) => {
+  loadThirdPage(url, uuid);
+})
+ipcRenderer.on('will-cancel-downloadpage', (event, url) => {
+  cancelDownload(url);
 })
 class Seek {
   constructor() {}
@@ -87,9 +91,10 @@ function currentView() {
   return views.find(item => item.isActive);
 }
 
-async function loadThirdPage(url) {
+async function loadThirdPage(url, uuid) {
   const detail = await getTransferDetail(url);
   if (detail.data.Result) {
+    thirdPageUid[uuid] = true;
     const data = detail.data.Result;
     if (data.Progress >= 0 && data.Progress < 1) { // task has exist
       if (data.Status === 0) { // but in Pause state 
@@ -119,9 +124,30 @@ async function loadThirdPage(url) {
         downloadPage(url); // task exist but file not found
       }
     }
-  } else {
+  } else if (thirdPageUid[uuid]) {
     console.log(`no result ${url}`);
+    delete thirdPageUid[uuid]
+    ipcRenderer.send('loadErrorPage', {
+      note: 'The task has been cancelled.'
+    });
+  } else {
+    thirdPageUid[uuid] = true;
     downloadPage(url);
+  }
+}
+
+async function cancelDownload(url) {
+  const detail = await getTransferDetail(url);
+  let Id = null;
+  const data = detail.data.Result;
+  if (data && data.Progress < 1) {
+    Id = data.Id;
+    axios.post(api.downloadCancel, {
+      Ids: [Id]
+    }).then(res => {
+      console.log('download cancel');
+      console.log(res);
+    })
   }
 }
 
@@ -136,7 +162,9 @@ function downloadPage(url) {
         loadThirdPage(url);
       }, 2000);
     } else {
-      ipcRenderer.send('loadErrorPage', res.data.Error);
+      ipcRenderer.send('loadErrorPage', {
+        errorCode: res.data.Error
+      });
     }
   })
 }

@@ -241,7 +241,6 @@ export default {
 		);
 		window.vue = this;
 		return {
-			remote,
 			isMaximized: true,
 			platform: remote.process.platform,
 			inputDisplayUrl: activeView.displayURL || "",

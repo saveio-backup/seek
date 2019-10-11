@@ -7,12 +7,10 @@ import {
   getCurrentView,
   getActive
 } from '../windowManager/index'
-import fs from 'fs';
 import path from 'path';
 import AdmZip from 'adm-zip';
-import failedPage from '../../../static/html/failed/failed.js';
 import dnsErrorPage from '../../../static/html/failed/dnsError.js';
-const log = require('electron-log')
+import uuid from 'node-uuid';
 protocol.registerSchemesAsPrivileged([{
   scheme: 'seek',
   privileges: {
@@ -50,15 +48,9 @@ app.on('ready', () => {
     if (err) throw new Error('Failed to create protocol: seek. ' + err)
   })
 })
-// app.on('ready', () => {
-//   protocol.registerStreamProtocol('seek', seekStreamProtocol, err => {
-//     if (err) throw new Error('Failed to create protocol: seek. ' + err)
-//   })
-// })
 
 function seekHttpProtocol(request, callback) {
   console.log('seekProtocol!!!!');
-  // console.log(request);
   const url = request.url.replace('seek://', `${host}`);
   console.log('url now is : ', url);
   getActive(getCurrentView.browserWindow).webContents.reload();
@@ -78,6 +70,7 @@ function seekStreamProtocol(request, callback) {
 }
 
 function saveStreamProtocol(request, callback) {
+  let contents = getActive(getCurrentView.browserWindow).webContents;
   // todo  download process
   const urlFormat = new URL(request.url);
   const {
@@ -88,7 +81,12 @@ function saveStreamProtocol(request, callback) {
   } = urlFormat;
   const pathname = (urlFormat.pathname === '/' || urlFormat.pathname === '') ? '/index.html' : urlFormat.pathname;
   console.log(`will-load-thirdpage ${host}`)
-  getCurrentView.browserWindow.webContents.send('will-load-thirdpage', protocol + `//${host}`)
+  getCurrentView.browserWindow.webContents.send('will-load-thirdpage', protocol + `//${host}`, uuid.v4())
+  contents.on('destroyed', (event, input) => {
+    contents.isDestroyed() && (contents = null);
+    !(getCurrentView.browserWindow.isDestroyed()) && getCurrentView.browserWindow.webContents.send('will-cancel-downloadpage', protocol + `//${host}`, uuid.v4())
+
+  })
   ipcMain.once('load-third-page', (event, result) => {
     console.log('load-third-page!!!');
     try {
@@ -103,12 +101,22 @@ function saveStreamProtocol(request, callback) {
       console.error(error)
     }
   })
-  ipcMain.once('loadErrorPage', (event, ErrorCode) => {
-    console.log('loadErrorPage!!!');
+  ipcMain.once('loadErrorPage', (event, {
+    errorCode = '',
+    note = ''
+  }) => {
     callback({
       method: 'get',
       path: path.join(__static, 'html/failed/blank.html')
     })
-    getActive(getCurrentView.browserWindow).webContents.executeJavaScript(`document.documentElement.innerHTML = '${dnsErrorPage('',ErrorCode,'')}' `)
+    console.log('event.sender is');
+    console.log(event.sender);
+    console.log('errorCode is');
+    console.log(errorCode);
+    console.log('note is');
+    console.log(note);
+    console.log('contents is');
+    console.log(contents);
+    contents && contents.executeJavaScript(`document.documentElement.innerHTML = '${dnsErrorPage({errorCode,note})}' `)
   })
 }

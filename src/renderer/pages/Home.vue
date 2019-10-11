@@ -768,8 +768,6 @@ export default {
 			if (vm.exec) {
 				console.log("exec is exit");
 				vm[vm.exec]();
-			} else {
-				console.error("no exec");
 			}
 		});
 	},

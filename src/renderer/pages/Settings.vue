@@ -66,7 +66,7 @@
 	</div>
 </template>
 <script>
-import { ipcRenderer,remote } from "electron";
+import { ipcRenderer, remote } from "electron";
 import { DEFAULT_CHAINID } from "../../main/windowManager/defaultOption";
 export default {
 	mounted() {
@@ -93,9 +93,7 @@ export default {
 					"2": "MainNet"
 				}
 			},
-			maxUploadLimitList: [
-				1,2,3,4,5,6,7,8,9,10
-			]
+			maxUploadLimitList: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 		};
 	},
 	methods: {
@@ -105,19 +103,25 @@ export default {
 		frontConfigUploadRender() {
 			const vm = this;
 			let views = {};
-			ipcRenderer.send("run-dialog-event", {name: "settingUpdate", data: vm.settings});
-			for(let win of remote.BrowserWindow.getAllWindows()) {
-				if(win.views) {
+			ipcRenderer.send("run-dialog-event", {
+				name: "settingUpdate",
+				data: vm.settings
+			});
+			for (let win of remote.BrowserWindow.getAllWindows()) {
+				if (win.views) {
 					views = win.views;
-					for(let view of views) {
+					for (let view of views) {
 						if (view.displayURL.indexOf("seek://") === 0) {
 							let winContentId = view.browserView.webContents.id;
-							ipcRenderer.sendTo(winContentId, "get-data", { result: vm.settings, type: "frontConfig" });
+							ipcRenderer.sendTo(winContentId, "get-data", {
+								result: vm.settings,
+								type: "frontConfig"
+							});
 						}
 					}
 				}
-			};
-			this.updateSettings('maxNumUpload',this.settings.maxNumUpload);
+			}
+			this.updateSettings("maxNumUpload", this.settings.maxNumUpload);
 		},
 		updateSettings(key, value) {
 			try {

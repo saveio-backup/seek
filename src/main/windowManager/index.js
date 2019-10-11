@@ -421,7 +421,6 @@ const FIXED_KEYS = ['displayURL']; // 'displayURL' would be set while user input
 const handlerView = {
   set(view, prop, value) {
     view[prop] = value;
-    // console.log(prop, ' changed,', 'value', value, 'forceUpdate');
     view.forceUpdate();
     if (FIXED_KEYS.some(item => {
         return item === prop

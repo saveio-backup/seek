@@ -1,6 +1,10 @@
 <template>
 	<div id="menu-window" :style="computedStyle">
+<<<<<<< HEAD
 		<!-- MenuWindow -->
+=======
+		MenuWindow
+>>>>>>> bugfixed while Closing third-party pages causes errors,close last tab, child browserWindow not exit
 		<div @mouseenter="setDialog" @mouseleave="hiddenDialog">
 			<div
 				class="syncInfo"

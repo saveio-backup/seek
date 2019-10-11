@@ -120,8 +120,8 @@
 				<el-button
 					type="primary"
 					class="primary"
-					@click="rebackPage"
-				>Reback</el-button>
+					@click="goBackPage"
+				>Go Back</el-button>
 			</div>
 		</div>
 		<el-dialog
@@ -258,7 +258,7 @@ export default {
 					});
 			});
 		},
-		rebackPage() {
+		goBackPage() {
 			this.contractData.viewid &&
 				this.setActiveByContentsId(parseInt(this.contractData.viewid));
 		},

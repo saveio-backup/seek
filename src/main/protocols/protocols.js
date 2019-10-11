@@ -59,11 +59,13 @@ function seekHttpProtocol(request, callback) {
 
 function seekStreamProtocol(request, callback) {
   console.log('seek stream!!!!');
-  const headers = {
+
+  /* const headers = {
     'Cache-Control': 'no-cache',
     'Content-Type': 'text/html; charset=utf-8',
     'Access-Control-Allow-Origin': '*'
-  }
+  } */
+
   const url = request.url.replace('seek://', `${host}`);
   getCurrentView.webContents.reload();
   getCurrentView.loadURL(url)
@@ -79,16 +81,25 @@ function saveStreamProtocol(request, callback) {
     search,
     hash
   } = urlFormat;
-  const pathname = (urlFormat.pathname === '/' || urlFormat.pathname === '') ? '/index.html' : urlFormat.pathname;
-  console.log(`will-load-thirdpage ${host}`)
-  getCurrentView.browserWindow.webContents.send('will-load-thirdpage', protocol + `//${host}`, uuid.v4())
-  contents.on('destroyed', (event, input) => {
-    contents.isDestroyed() && (contents = null);
-    !(getCurrentView.browserWindow.isDestroyed()) && getCurrentView.browserWindow.webContents.send('will-cancel-downloadpage', protocol + `//${host}`, uuid.v4())
 
+  const pathname = (urlFormat.pathname === '/' || urlFormat.pathname === '') ? '/index.html' : urlFormat.pathname;
+
+  const thirdpageUid = uuid.v4(); // every thirdpage has own uuid
+  getCurrentView.browserWindow.webContents.send('will-load-thirdpage', protocol + `//${host}`, thirdpageUid)
+
+  let contents = getActive(getCurrentView.browserWindow).webContents;
+
+  contents.on('destroyed', () => {
+    contents.isDestroyed() && (contents = null);
+    !(getCurrentView.browserWindow.isDestroyed()) && getCurrentView.browserWindow.webContents.send('will-cancel-downloadpage', protocol + `//${host}`)
   })
+
+  contents.on('will-navigate', () => {
+    console.log('navigate to new url');
+    getCurrentView.browserWindow.webContents.send('will-cancel-downloadpage', protocol + `//${host}`);
+  })
+
   ipcMain.once('load-third-page', (event, result) => {
-    console.log('load-third-page!!!');
     try {
       const zip = new AdmZip(result)
       const parse = path.parse(result);
@@ -101,22 +112,19 @@ function saveStreamProtocol(request, callback) {
       console.error(error)
     }
   })
-  ipcMain.once('loadErrorPage', (event, {
+  console.log('on loadErrorPage');
+  ipcMain.once(thirdpageUid + '-loadErrorPage', (event, {
     errorCode = '',
     note = ''
   }) => {
-    callback({
-      method: 'get',
-      path: path.join(__static, 'html/failed/blank.html')
-    })
-    console.log('event.sender is');
-    console.log(event.sender);
-    console.log('errorCode is');
-    console.log(errorCode);
-    console.log('note is');
-    console.log(note);
-    console.log('contents is');
-    console.log(contents);
-    contents && contents.executeJavaScript(`document.documentElement.innerHTML = '${dnsErrorPage({errorCode,note})}' `)
+    try {
+      callback({
+        method: 'get',
+        path: path.join(__static, 'html/failed/blank.html')
+      })
+      contents && contents.executeJavaScript(`document.documentElement.innerHTML = '${dnsErrorPage({errorCode,note})}' `)
+    } catch (error) {
+      console.log(error);
+    }
   })
 }

@@ -98,19 +98,18 @@ async function loadThirdPage(url, uuid) {
     const data = detail.data.Result;
     if (data.Progress >= 0 && data.Progress < 1) { // task has exist
       if (data.Status === 0) { // but in Pause state 
-        // todo  download continue
         axios.post(api.downloadResume, {
           Ids: [data.Id]
         }).then(res => {
           if (res.data.Error === 0) {
             setTimeout(() => {
-              loadThirdPage(url);
+              loadThirdPage(url, uuid);
             }, 2000);
           }
         })
       } else { // in processing 
         setTimeout(() => {
-          loadThirdPage(url);
+          loadThirdPage(url, uuid);
         }, 2000);
       }
     } else if (data.Progress === 1) { // task has finished
@@ -121,18 +120,19 @@ async function loadThirdPage(url, uuid) {
         console.log('task finished!!!!');
       } catch (error) {
         console.error(`error ${error}`);
-        downloadPage(url); // task exist but file not found
+        downloadPage(url, uuid); // task exist but file not found
       }
     }
   } else if (thirdPageUid[uuid]) {
     console.log(`no result ${url}`);
     delete thirdPageUid[uuid]
-    ipcRenderer.send('loadErrorPage', {
+    console.log('loadErrorPage , uuid is:', uuid);
+    ipcRenderer.send(uuid +'-loadErrorPage', {
       note: 'The task has been cancelled.'
     });
   } else {
     thirdPageUid[uuid] = true;
-    downloadPage(url);
+    downloadPage(url, uuid);
   }
 }
 
@@ -151,7 +151,7 @@ async function cancelDownload(url) {
   }
 }
 
-function downloadPage(url) {
+function downloadPage(url, uuid) {
   axios.post(api.download, {
     Url: url,
     MaxPeerNum: 20,
@@ -159,10 +159,11 @@ function downloadPage(url) {
   }).then(res => {
     if (res.data.Error === 0) {
       setTimeout(() => {
-        loadThirdPage(url);
+        loadThirdPage(url, uuid);
       }, 2000);
     } else {
-      ipcRenderer.send('loadErrorPage', {
+      console.log('emit loadErrorPage')
+      ipcRenderer.send(uuid + '-loadErrorPage', {
         errorCode: res.data.Error
       });
     }

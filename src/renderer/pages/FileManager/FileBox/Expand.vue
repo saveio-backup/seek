@@ -396,13 +396,15 @@ export default {
 		expired_old() {
 			if (
 				this.$store.state.Filemanager.space.ExpiredAt &&
-				this.$store.state.Filemanager.space.ExpiredAt > _NOW.getTime()
+				this.$store.state.Filemanager.space.ExpiredAt * 1000 > _NOW.getTime()
 			) {
+				console.log('1')
 				this.expired = new Date(
 					this.$store.state.Filemanager.space.ExpiredAt * 1000
 				);
-				return this.$store.state.Filemanager.space.ExpiredAt * 1000;
+				return this.$dateFormat.formatTimeByTimestamp(this.$store.state.Filemanager.space.ExpiredAt * 1000);
 			} else {
+				console.log('2');
 				this.expired = new Date(_NOW.getTime());
 				return this.$dateFormat.formatTimeByTimestamp(_NOW.getTime());
 			}

@@ -228,10 +228,12 @@ export default {
 		}
 	},
 	watch: {
-		realUrl: function() {
+		realUrl: function(newValue) {
 			this.user = {
 				name: localStorage.getItem("Label") || ""
 			};
+			console.log('new Value is');
+			console.log(newValue);
 			this.inputDisplayUrl = this.activeView.displayURL;
 		}
 	},
@@ -278,10 +280,14 @@ export default {
 		},
 		remoteLoadURL(view) {
 			// if input url is createaccount checkout current account is not logout
-			if(this.inputDisplayUrl.toLowerCase().startsWith('seek://createaccount')) {
-				let nextString = this.inputDisplayUrl[this.inputDisplayUrl.indexOf('seek://createaccount') + 1];
-				if(nextString != '?' && nextString != '#') {
-					if(localStorage.getItem("Address") || "") {
+			if (
+				this.inputDisplayUrl.toLowerCase().startsWith("seek://createaccount")
+			) {
+				let nextString = this.inputDisplayUrl[
+					this.inputDisplayUrl.indexOf("seek://createaccount") + 1
+				];
+				if (nextString != "?" && nextString != "#") {
+					if (localStorage.getItem("Address") || "") {
 						this.inputDisplayUrl = view.displayURL;
 						return;
 					}

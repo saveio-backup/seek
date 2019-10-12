@@ -809,6 +809,9 @@ export default {
 		localStatus: function() {
 			// console.log(this.$store.state.Transfer.localStatus);
 			return this.$store.state.Transfer.localStatus;
+		},
+		uploadLength: function() {
+			return this.$store.state.Transfer.uploadLength;
 		}
 	},
 	methods: {
@@ -937,13 +940,19 @@ export default {
 				ipcRenderer.send("run-dialog-event", {name: "setWaitForUploadList", data: newWaitForUploadList});				
 				return;
 			}
-			// to do!!!!!
+
 			if (
 				file != null &&
 				(!this.show ||
 					((file.DetailStatus === 5 || file.DetailStatus === 23) &&
 						file.Status !== 4))
 			) {
+				return;
+			}
+			if(this.uploadLength === 0) {
+				this.$message({
+					message: "There are no tasks to start"
+				});
 				return;
 			}
 			this.switchToggle.passwordDialog = true;

@@ -190,7 +190,7 @@
 									</span>
 									<i
 										class="ofont ofont-fuzhi tx-copy"
-										title="Lick to Copy"
+										title="Click to Copy"
 										@click="clipText(item.To)"
 									></i></p>
 							</div>
@@ -1121,6 +1121,8 @@ $light-grey: #f7f7f7;
 				overflow-y: auto;
 				.tx-li {
 					cursor: pointer;
+					width: 100%;
+					
 					.tx-li-item {
 						display: flex;
 						align-items: center;

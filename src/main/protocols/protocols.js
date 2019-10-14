@@ -72,7 +72,6 @@ function seekStreamProtocol(request, callback) {
 }
 
 function saveStreamProtocol(request, callback) {
-  let contents = getActive(getCurrentView.browserWindow).webContents;
   // todo  download process
   const urlFormat = new URL(request.url);
   const {

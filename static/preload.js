@@ -6,7 +6,8 @@ import {
   remote,
   ipcRenderer
 } from "electron";
-const views = remote.getCurrentWindow().views;
+console.log('declar views');
+const views = remote.getCurrentWindow() ? remote.getCurrentWindow().views : null;
 const Version = '00';
 const thirdPageUid = {};
 ipcRenderer.on('will-load-thirdpage', (event, url, uuid) => {
@@ -116,6 +117,8 @@ async function loadThirdPage(url, uuid) {
       // render page
       try {
         fs.statSync(data.Path);
+        console.log('path is');
+        console.log(data.Path);
         ipcRenderer.send('load-third-page', data.Path);
         console.log('task finished!!!!');
       } catch (error) {
@@ -127,7 +130,7 @@ async function loadThirdPage(url, uuid) {
     console.log(`no result ${url}`);
     delete thirdPageUid[uuid]
     console.log('loadErrorPage , uuid is:', uuid);
-    ipcRenderer.send(uuid +'-loadErrorPage', {
+    ipcRenderer.send(uuid + '-loadErrorPage', {
       note: 'The task has been cancelled.'
     });
   } else {
@@ -185,4 +188,8 @@ function getTransferDetail(url) {
 function uniqId() {
   return Math.round(new Date().getTime() + (Math.random() * 100));
 }
-global.Seek = Seek
+process.once('loaded', () => {
+  console.log('loaded');
+  global.Seek = Seek;
+  global.remote = remote;
+})

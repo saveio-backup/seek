@@ -54,7 +54,7 @@ function seekHttpProtocol(request, callback) {
   const url = request.url.replace('seek://', `${host}`);
   console.log('url now is : ', url);
   getActive(getCurrentView.browserWindow).webContents.reload();
-  getActive(getCurrentView.browserWindow).loadURL(url)
+  getActive(getCurrentView.browserWindow).loadURL(url);
 }
 
 function seekStreamProtocol(request, callback) {
@@ -68,7 +68,7 @@ function seekStreamProtocol(request, callback) {
 
   const url = request.url.replace('seek://', `${host}`);
   getCurrentView.webContents.reload();
-  getCurrentView.loadURL(url)
+  getCurrentView.loadURL(url);
 }
 
 function saveStreamProtocol(request, callback) {
@@ -84,18 +84,38 @@ function saveStreamProtocol(request, callback) {
   const pathname = (urlFormat.pathname === '/' || urlFormat.pathname === '') ? '/index.html' : urlFormat.pathname;
 
   const thirdpageUid = uuid.v4(); // every thirdpage has own uuid
-  getCurrentView.browserWindow.webContents.send('will-load-thirdpage', protocol + `//${host}`, thirdpageUid)
+  getCurrentView.browserWindow.webContents.send('will-load-thirdpage', protocol + `//${host}`, thirdpageUid);
 
   let contents = getActive(getCurrentView.browserWindow).webContents;
 
+  contents.thirdPageLists = contents.thirdPageLists ? contents.thirdPageLists : [];
+
+  // Load a new third-party page the time you were loading previous third-party page, you must cancel previous task.
+  if (contents.thirdPageLists.length >= 1) {
+    getCurrentView.browserWindow.webContents.send('will-cancel-downloadpage', protocol + `//${contents.thirdPageLists[contents.thirdPageLists.length-1].host}`);
+    ipcMain.removeAllListeners([contents.thirdPageLists[contents.thirdPageLists.length - 1].thirdpageUid + '-loadErrorPage'])
+    contents.thirdPageLists.pop();
+  }
+  contents.thirdPageLists.push({ // record thirdpage's info  to it's webContents.thirdPagelists
+    host,
+    thirdpageUid
+  });
+
   contents.on('destroyed', () => {
     contents.isDestroyed() && (contents = null);
-    !(getCurrentView.browserWindow.isDestroyed()) && getCurrentView.browserWindow.webContents.send('will-cancel-downloadpage', protocol + `//${host}`)
+    !(getCurrentView.browserWindow.isDestroyed()) && getCurrentView.browserWindow.webContents.send('will-cancel-downloadpage', protocol + `//${host}`);
   })
 
-  contents.on('will-navigate', () => {
-    console.log('navigate to new url');
-    getCurrentView.browserWindow.webContents.send('will-cancel-downloadpage', protocol + `//${host}`);
+  contents.on('will-redirect', () => {
+    console.log('redirect to new url');
+
+    // Load a new third-party page when you load a third-party page, you must cancel Previous task.
+    if (contents.thirdPageLists.length >= 1) {
+      getCurrentView.browserWindow.webContents.send('will-cancel-downloadpage', protocol + `//${contents.thirdPageLists[contents.thirdPageLists.length-1].host}`);
+      ipcMain.removeAllListeners([contents.thirdPageLists[contents.thirdPageLists.length - 1].thirdpageUid + '-loadErrorPage']);
+      contents.thirdPageLists.pop();
+    }
+
   })
 
   ipcMain.once('load-third-page', (event, result) => {
@@ -107,15 +127,16 @@ function saveStreamProtocol(request, callback) {
         method: 'get',
         path: path.join(parse.dir, parse.name, pathname)
       })
+
     } catch (error) {
       console.error(error)
     }
   })
-  console.log('on loadErrorPage');
   ipcMain.once(thirdpageUid + '-loadErrorPage', (event, {
     errorCode = '',
     note = ''
   }) => {
+    console.log('on loadErrorPage');
     try {
       callback({
         method: 'get',

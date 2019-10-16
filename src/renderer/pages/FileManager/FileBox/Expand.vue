@@ -134,6 +134,7 @@
 								<el-date-picker
 									v-model="expired"
 									@change='setDateValue'
+									format='yyyy-MM-dd-HH:mm:ss'
 									:picker-options="pickerOptions"
 									type="date"
 									placeholder="Choose Date"
@@ -212,6 +213,7 @@
 </template>
 <script>
 import util from "../../../assets/config/util";
+import $date from "../../../assets/tool/date";
 const _NOW = new Date();
 // const nextDay = new Date(now.setDate(now.getDate() + 1));
 // nextDay.setHours(23);
@@ -272,99 +274,7 @@ export default {
 			expandDialogVisible: false,
 			linkUploadDialogVisible: false,
 			Records: [],
-			limit: 20,
-			mockRecords: [
-				{
-					Size: 20480,
-					ExpiredAt: 1558600673,
-					Cost: 276480027
-				},
-				{
-					Size: 10240,
-					ExpiredAt: 1558597073,
-					Cost: 110592036
-				},
-				{
-					Size: 20480,
-					ExpiredAt: 1558600673,
-					Cost: 276480027
-				},
-				{
-					Size: 10240,
-					ExpiredAt: 1558597073,
-					Cost: 110592036
-				},
-				{
-					Size: 20480,
-					ExpiredAt: 1558600673,
-					Cost: 276480027
-				},
-				{
-					Size: 10240,
-					ExpiredAt: 1558597073,
-					Cost: 110592036
-				},
-				{
-					Size: 20480,
-					ExpiredAt: 1558600673,
-					Cost: 276480027
-				},
-				{
-					Size: 10240,
-					ExpiredAt: 1558597073,
-					Cost: 110592036
-				},
-				{
-					Size: 20480,
-					ExpiredAt: 1558600673,
-					Cost: 276480027
-				},
-				{
-					Size: 10240,
-					ExpiredAt: 1558597073,
-					Cost: 110592036
-				},
-				{
-					Size: 20480,
-					ExpiredAt: 1558600673,
-					Cost: 276480027
-				},
-				{
-					Size: 10240,
-					ExpiredAt: 1558597073,
-					Cost: 110592036
-				},
-				{
-					Size: 20480,
-					ExpiredAt: 1558600673,
-					Cost: 276480027
-				},
-				{
-					Size: 10240,
-					ExpiredAt: 1558597073,
-					Cost: 110592036
-				},
-				{
-					Size: 20480,
-					ExpiredAt: 1558600673,
-					Cost: 276480027
-				},
-				{
-					Size: 10240,
-					ExpiredAt: 1558597073,
-					Cost: 110592036
-				},
-				{
-					Size: 20480,
-					ExpiredAt: 1558600673,
-					Cost: 276480027
-				},
-				{
-					Size: 10240,
-					ExpiredAt: 1558597073,
-					Cost: 110592036
-				}
-			]
+			limit: 20
 		};
 	},
 	watch: {
@@ -398,14 +308,15 @@ export default {
 				this.$store.state.Filemanager.space.ExpiredAt &&
 				this.$store.state.Filemanager.space.ExpiredAt * 1000 > _NOW.getTime()
 			) {
-				console.log('1')
 				this.expired = new Date(
 					this.$store.state.Filemanager.space.ExpiredAt * 1000
 				);
-				return this.$dateFormat.formatTimeByTimestamp(this.$store.state.Filemanager.space.ExpiredAt * 1000);
+				return this.$dateFormat.formatTimeByTimestamp(
+					this.$store.state.Filemanager.space.ExpiredAt * 1000
+				);
 			} else {
-				console.log('2');
-				this.expired = new Date(_NOW.getTime());
+				// this.expired = new Date(_NOW.getTime());
+				this.expired = $date.lastSecondByDate(_NOW);
 				return this.$dateFormat.formatTimeByTimestamp(_NOW.getTime());
 			}
 			// return (
@@ -527,6 +438,11 @@ export default {
 		},
 		setUserSpace() {
 			if (!this.submitToggle) return;
+			if (this.cost.FeeFormat === "" || this.cost.FeeFormat === undefined) {
+				this.$message.error("Please adjust your space and date.");
+				return;
+			}
+
 			const checkRes = this.setUserSpaceCheckRes();
 			if (!checkRes) return;
 			this.submitToggle = false;
@@ -591,6 +507,16 @@ export default {
 		},
 		userSpaceCost() {
 			this.setSizeValue();
+			this.addInfo.Second.Value = Math.floor(
+				(this.expired.getTime() - new Date(this.expired_old).getTime()) / 1000
+			);
+			if (this.addInfo.Second.Value === 0) {
+				this.addInfo.Second.Type = 0;
+			} else if (this.addInfo.Second.Value > 0) {
+				this.addInfo.Second.Type = 1;
+			} else {
+				this.addInfo.Second.Type = 2;
+			}
 			this.$axios
 				.post(this.$api.userspace + "cost", {
 					Addr: this.addInfo.Addr,
@@ -607,8 +533,8 @@ export default {
 					if (res.Error === 0) {
 						this.cost = res.Result;
 					} else {
-						this.cost.Fee = 0;
-						this.cost.FeeFormat = 0;
+						this.cost.Fee = "";
+						this.cost.FeeFormat = "";
 						this.cost.TransferType = 1;
 						// this.$message.error(this.$i18n.error[res.Error]?this.$i18n.error[res.Error][this.$language]:`error code is ${res.Error}`);
 					}
@@ -638,29 +564,19 @@ export default {
 				this.addInfo.Size.Type = 2;
 			}
 		},
-		setDateValue(e, opt) {
+		setDateValue(e, fixed) {
 			if (!e) {
 				this.addInfo.Second.Type = 0;
 				return;
 			}
 			console.log("expired: ", this.expired);
 			console.log("before e is :", e);
-			if (!opt) {
-				console.log("!opt");
+			if (!fixed) {
+				console.log("not fixed time, so we adjust to last second");
 				e = new Date(new Date(e).getTime() + 86399000);
-				this.expired = e;
 			}
 			console.log("e is:", e);
-			this.addInfo.Second.Value = Math.floor(
-				(e.getTime() - new Date(this.expired_old).getTime()) / 1000
-			);
-			if (this.addInfo.Second.Value === 0) {
-				this.addInfo.Second.Type = 0;
-			} else if (this.addInfo.Second.Value > 0) {
-				this.addInfo.Second.Type = 1;
-			} else {
-				this.addInfo.Second.Type = 2;
-			}
+			this.expired = e;
 			this.userSpaceCost();
 		}
 	}

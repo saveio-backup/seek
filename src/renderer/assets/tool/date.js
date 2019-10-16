@@ -31,7 +31,7 @@ const formatYearMonthDayHour = date => {
   const month = date.getMonth() + 1
   const day = date.getDate()
   const hour = date.getHours()
-  return [year, month, day].map(formatNumber).join('-') +', ' + hour + ':00';
+  return [year, month, day].map(formatNumber).join('-') + ', ' + hour + ':00';
 }
 const formatMonthDay = date => {
   const month = date.getMonth() + 1
@@ -84,7 +84,10 @@ const formatNumber = n => {
   n = n.toString()
   return n[1] ? n : '0' + n
 }
-
+const lastSecondByDate = date => {
+  // return Date
+  return new Date(new Date(date.toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1)
+}
 module.exports = {
   formatTimeByTimestamp,
   formatTime: formatTime,
@@ -94,5 +97,6 @@ module.exports = {
   formatHourMinute,
   calculateTimeLeft,
   calculateTimeFuture,
-  formatYearMonthDayHour
+  formatYearMonthDayHour,
+  lastSecondByDate
 }

@@ -24,7 +24,8 @@ const DEFAULT_USERSUMMARY_CONFIG = {
       console: false,
       devEdgeEnable: false,
       maxNumUpload: 5,
-      ChainId: DEFAULT_CHAINID
+      ChainId: DEFAULT_CHAINID,
+      lang: 'en'
     },
     modify: true
   },

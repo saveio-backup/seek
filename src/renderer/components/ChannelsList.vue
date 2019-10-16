@@ -9,13 +9,13 @@
 			<el-table
 				:data="showRadio?channelsDns:channels"
 				ref="singleTable"
-				empty-text='No Data'
+				:empty-text='$t("public.noData")'
 				height='100%'
 				:highlight-current-row='showRadio'
 				@current-change="handleCurrentChange"
 			>
 				<el-table-column
-					label='Channel'
+					:label='$t("public.channel")'
 					min-width="60px"
 					max-width="80px"
 					prop="ChannelId"
@@ -28,19 +28,19 @@
 					<!-- min-width="80px"
 					max-width="120px" -->
 				<el-table-column
-					label='Status'
+					:label='$t("public.status")'
 					min-width="50"
 					prop="IsOnline"
 					sortable
 				>
 					<template slot-scope="scope">
 						<div
-							:title="scope.row.IsOnline ? 'Online' : 'Offline'"
+							:title='scope.row.IsOnline ? $t("public.online") : $t("public.offline")'
 							:class="{'theme-font-blue-40':!scope.row.IsOnline}"
-						>{{scope.row.IsOnline ? 'online' : 'offline'}}</div>
+						>{{scope.row.IsOnline ? $t("public.online") : $t("public.offline")}}</div>
 					</template>
 				</el-table-column>
-				<el-table-column label='Balance(ONI)'
+				<el-table-column :label='$t("public.balance")+"(ONI)"'
 					prop="Balance"
 					sortable
 				>
@@ -51,7 +51,7 @@
 					</template>
 				</el-table-column>
 				<el-table-column
-					label='Address'
+					:label='$t("public.address")'
 					min-width="100"
 					prop="Address"
 					sortable
@@ -98,7 +98,7 @@
 							v-show="scope.row.Participant1State !== 0"
 							class="opeation-icon light-blue user-no-select"
 							@click="openTransfer(scope.row)"
-							title="Transfer"
+							:title="$t('public.transfer')"
 						>
 							<!-- Transfer -->
 							<i class="ofont ofont-huazhuan"></i>
@@ -107,7 +107,7 @@
 							v-show="scope.row.Participant1State !== 0"
 							class="opeation-icon light-blue ml20 user-no-select"
 							@click="openClose(scope.row)"
-							title="Close Channel"
+							:title="$t('public.closeChannel')"
 						>
 							<i class="ofont ofont-guanbi ft12"></i>
 							<!-- Close -->
@@ -115,7 +115,7 @@
 						<span
 							class="closingWrapper"
 							v-show="scope.row.Participant1State === 0"
-						>settle...</span>
+						>{{$t('public.settle')}}...</span>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -128,7 +128,7 @@
 			center
 		>
 			<div slot="title">
-				<h2>Transfer</h2>
+				<h2>{{$t('public.transfer')}}</h2>
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content loading-channel">
@@ -141,7 +141,7 @@
 					<ripper-button
 						class="primary"
 						@click="toConfirm"
-					>Confirm</ripper-button>
+					>{{$t('public.confirm')}}</ripper-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -153,7 +153,7 @@
 			center
 		>
 			<div slot="title">
-				<h2>{{channelToggle.type === 'del' ? 'Close' : 'Open'}} Channel</h2>
+				<h2>{{channelToggle.type === 'del' ? $t('public.close') : $t('public.open')}} {{$t('public.channel')}}</h2>
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content loading-content-2">
@@ -165,7 +165,7 @@
 				>
 					<el-form-item
 						class="theme-font-blue-bold"
-						label="DNS Wallet Address"
+						:label="$t('public.dnsWalletAddress')"
 						prop="partner"
 						v-show="channelToggle.type==='add'"
 					>
@@ -174,7 +174,7 @@
 							class="grey-theme"
 							v-model="channelForm.partner"
 							:fetch-suggestions="querySearchAsync"
-							placeholder="Please Input"
+							:placeholder="$t('public.pleaseInput')"
 							@select="handleSelect"
 						></el-autocomplete>
 
@@ -195,14 +195,14 @@
 					</el-form-item>
 					<el-form-item
 						class="theme-font-blue-bold form-amount"
-						label="Amount(ONI)"
+						:label="$t('public.amount')+'(ONI)'"
 						prop="amount"
 						v-if="channelToggle.type==='add'"
 					>
-						<p class="form-item-title">Recommended no less than 100 ONI</p>
+						<p class="form-item-title">{{$t('public.RecommendedNoLessThan100ONI')}}</p>
 						<el-input
 							v-model="channelForm.amount"
-							placeholder="Please Input Top Up Amount"
+							:placeholder="$t('public.pleaseInputTopUpAmount')"
 							@blur="setFixed"
 							min="0"
 							@keyup.enter.native="toPeationChannel"
@@ -214,12 +214,12 @@
 					</el-form-item>
 					<el-form-item
 						class="theme-font-blue-bold"
-						label="Wallet Password"
+						:label="$t('public.walletPassword')"
 						prop="password"
 					>
 						<el-input
 							v-model="channelForm.password"
-							placeholder="Please Input Wallet Password"
+							:placeholder="$t('public.pleaseInputWalletPassword')"
 							@keyup.enter.native="toPeationChannel"
 							class="channel-opeation-input grey-theme"
 							show-password
@@ -231,11 +231,11 @@
 				<div slot="footer">
 					<ripper-button
 						@click="channelToggle.channelCloseDialog = false"
-					>Cancel</ripper-button>
+					>{{$t('public.cancel')}}</ripper-button>
 					<ripper-button
 						class="primary"
 						@click="toPeationChannel"
-					>Confirm</ripper-button>
+					>{{$t('public.confirm')}}</ripper-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -260,14 +260,16 @@ export default {
 	},
 	data() {
 		const validateMount = (rule, value, callback) => {
+			const vm = this;
 			const reg = /^[1-9](\d{0,8})\.(\d{1,9})$|^0\.(\d{0,9})$|^[1-9](\d{0,8})$|^0$/;
 			if (!reg.test(value)) {
-				callback(new Error("Please enter the correct format"));
+				callback(new Error(vm.$t('public.pleaseEnterTheCorrectFormat')));
 				return;
 			}
 			callback();
 		};
 		return {
+			validateMount,
 			switchToggle: {
 				assetTransferDialog: false
 			},
@@ -285,7 +287,7 @@ export default {
 				amount: [
 					{
 						required: true,
-						message: "Please fill amount",
+						message: this.$t('public.pleaseFillAmount'),
 						trigger: "blur"
 					},
 					{
@@ -296,14 +298,14 @@ export default {
 				password: [
 					{
 						required: true,
-						message: "Please fill password",
+						message: this.$t('public.pleaseFillPassword'),
 						trigger: "blur"
 					}
 				],
 				partner: [
 					{
 						required: true,
-						message: "Please fill partner wallet address",
+						message: this.$t('public.pleaseFillPartnerWalletAddress'),
 						trigger: "change"
 					}
 				]
@@ -436,11 +438,7 @@ export default {
 				if (res.Error === 0) {
 					this.dns = res.Result;
 				} else {
-					this.$message.error(
-						this.$i18n.error[res.Error]
-							? this.$i18n.error[res.Error][this.$language]
-							: `error code is ${res.Error}`
-					);
+					this.$message.error(this.$t(`error[${res.Error}]`));
 				}
 			});
 		},
@@ -485,20 +483,22 @@ export default {
 			});
 		},
 		applyChange() {
+			const vm = this;
 			if(this.currentRow.ChannelId) {
 				this.$emit('toCloseDialog', this.currentRow.ChannelId);
 			} else {
 				this.$message({
 					type: "error",
-					message: "No Channel Switches are Available"
+					message: vm.$t('public.noChannelSwitchesAreAvailable')
 				});
 			}
 		},
 		openTransfer(channelSelected) {
+			const vm = this;
 			if(this.isSync) {
-				this.$confirm('Block unsynchronized completion. Are you sure to do this?', 'Notice', {
-					confirmButtonText: 'Confirm',
-					cancelButtonText: 'Cancel',
+				this.$confirm(vm.$t('public.blockUnsynchronizedCompletionAreYouSureToDoThis'), vm.$t('public.notice'), {
+					confirmButtonText: vm.$t('public.confirm'),
+					cancelButtonText: vm.$t('public.cancel'),
 				}).then(() => {
 					this.channelSelected = channelSelected;
 					this.switchToggle.assetTransferDialog = true;
@@ -556,10 +556,11 @@ export default {
 			});
 		},
 		toChannelOpen(params) {
+			const vm = this;
 			this.$axios
 				.post(this.$api.channelOPen, params, {
 					loading: {
-						text: "Processing...",
+						text: vm.$t('public.processing'),
 						target: ".loading-content-2"
 					},
 					// timeout: 60000
@@ -568,30 +569,27 @@ export default {
 				.then(res => {
 					if (res.Error === 0) {
 						this.$message({
-							message: "Open channel successed",
+							message: vm.$t('public.openChannelSuccessed'),
 							type: "success"
 						});
 						this.channelToggle.channelCloseDialog = false;
 						this.$store.dispatch("setChannelBalanceTotal");
 					} else {
-						this.$message.error(
-							this.$i18n.error[res.Error]
-								? this.$i18n.error[res.Error][this.$language]
-								: `error code is ${res.Error}`
-						);
+						this.$message.error(this.$t(`error[${res.Error}]`));
 					}
 				})
 				.catch(e => {
 					if (!e.message.includes("timeout")) {
-						this.$message.error("Network Error. Open Channel Failed!");
+						this.$message.error(vm.$t('public.networkErrorOpenChannelFailed'));
 					}
 				});
 		},
 		toChannelClose(params) {
+			const vm = this;
 			this.$axios
 				.post(this.$api.channelClose, params, {
 					loading: {
-						text: "Processing...",
+						text: vm.$t('public.processing'),
 						target: ".loading-content-2"
 					},
 					timeout: (this.$config.outTime * 10000 + 50000)
@@ -600,27 +598,57 @@ export default {
 					if (res.Error === 0) {
 						this.channelToggle.channelDialog = false;
 						this.$message({
-							message: "Close channel successed",
+							message: vm.$t('public.closeChannelSuccessed'),
 							type: "success"
 						});
 						this.channelToggle.channelCloseDialog = false;
 						this.$store.dispatch("setChannelBalanceTotal");
 					} else {
-						this.$message.error(
-							this.$i18n.error[res.Error]
-								? this.$i18n.error[res.Error][this.$language]
-								: `error code is ${res.Error}`
-						);
+						this.$message.error(this.$t(`error[${res.Error}]`));
 					}
 				})
 				.catch(e => {
 					if (!e.message.includes("timeout")) {
-						this.$message.error("Network Error. Close Channel Failed!");
+						this.$message.error(vm.$t('public.networkErrorCloseChannelFailed'));
 					}
 				});
 		}
 	},
+	watch: {
+		lang() {
+			this.dialogRules = {
+				amount: [
+					{
+						required: true,
+						message: this.$t('public.pleaseFillAmount'),
+						trigger: "blur"
+					},
+					{
+						validator: this.validateMount,
+						trigger: "blur"
+					}
+				],
+				password: [
+					{
+						required: true,
+						message: this.$t('public.pleaseFillPassword'),
+						trigger: "blur"
+					}
+				],
+				partner: [
+					{
+						required: true,
+						message: this.$t('public.pleaseFillPartnerWalletAddress'),
+						trigger: "change"
+					}
+				]
+			}
+		}
+	},
 	computed: {
+		lang() {
+			return this.$i18n.locale;
+		},
 		channels: function() {
 			// return this.mockChannels;
 			return this.$store.state.Home.channels;

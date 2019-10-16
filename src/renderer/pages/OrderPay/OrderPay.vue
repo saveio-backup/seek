@@ -5,7 +5,7 @@
 				class="trading-status"
 				v-if="tradingStatus === 0"
 			>
-				<div class="ft24 orderpay-title">Confirm Transaction</div>
+				<div class="ft24 orderpay-title">{{$t('orderpay.confirmTransaction')}}</div>
 				<div class="transfer-user">
 					<div class="transfer-avatar">
 						<p
@@ -24,18 +24,18 @@
 					</div>
 					<div class="transfer-avatar">
 						<p class="name-wrapper">C</p>
-						<p class="name-text">Contract</p>
+						<p class="name-text">{{$t('orderpay.contract')}}</p>
 					</div>
 				</div>
 				<div class="contract-text">
-					CONTRACT INTERACTION
+					{{$t('orderpay.CONTRACTINTERACTION')}}
 				</div>
 			</div>
 			<div
 				class="trading-status"
 				v-if="tradingStatus === 1"
 			>
-				<div class="ft24 orderpay-title">Transaction Successful</div>
+				<div class="ft24 orderpay-title">{{$t('orderpay.transactionSuccessful')}}</div>
 				<div class="transfer-success">
 					<i class="ofont ofont-success"></i>
 					<p class="mt10">{{round( (contractData.GasPrice*contractData.GasLimit) /powBase,9)}} ONI</p>
@@ -47,26 +47,26 @@
 						class="choose-option"
 						@click="metaType = 'Details'"
 						:class="{selected:metaType === 'Details'}"
-					>Details</p>
+					>{{$t('orderpay.details')}}</p>
 					<p
 						class="choose-option"
 						@click="metaType = 'Data'"
 						:class="{selected:metaType === 'Data'}"
-					>Data</p>
+					>{{$t('orderpay.data')}}</p>
 				</div>
 				<div
 					class="transfer-meta-box"
 					v-show="metaType === 'Details'"
 				>
 					<div class="box-item">
-						<p class="item-title">From</p>
+						<p class="item-title">{{$t('orderpay.from')}}</p>
 						<p class="item-name">{{contractData.Label}}</p>
 						<p class="item-addr">{{contractData.Address}}</p>
 					</div>
 					<div class="box-item">
-						<p class="item-title">To</p>
-						<p class="item-name">Contract</p>
-						<p class="item-addr">{{contractData.Contract||'No Address'}}</p>
+						<p class="item-title">{{$t('orderpay.to')}}</p>
+						<p class="item-name">{{$t('orderpay.contract')}}</p>
+						<p class="item-addr">{{contractData.Contract||$t('orderpay.noAddress')}}</p>
 					</div>
 					<div class="box-item flex between">
 						<p class="item-title">Gas Fee</p>
@@ -79,23 +79,23 @@
 					v-show="metaType === 'Data'"
 				>
 					<div class="box-item flex">
-						<p class="item-title mr30">Contract</p>
+						<p class="item-title mr30">{{$t('orderpay.contract')}}</p>
 						<p class="item-addr flex1">{{contractData.Contract}}</p>
 					</div>
 					<div class="box-item flex">
-						<p class="item-title mr30">Method</p>
+						<p class="item-title mr30">{{$t('orderpay.method')}}</p>
 						<p class="item-addr flex1">{{contractData.Method}}</p>
 					</div>
 				</div>
 			</div>
 			<div class="flex price-div transfer-meta-price">
 				<div class="price-div-bg user-no-select">ON</div>
-				<p class="price-gas-fee">Total
+				<p class="price-gas-fee">{{$t('orderpay.total')}}
 				</p>
 				<p
 					class="price-gas-fee"
 					v-if="contractData.Method==='FilmPublish'"
-				>{{round((contractData.GasPrice*contractData.GasLimit) /powBase,9)}} ONI (Amount + Gas)</p>
+				>{{round((contractData.GasPrice*contractData.GasLimit) /powBase,9)}} ONI ({{$t('orderpay.amountGas')}})</p>
 			</div>
 			<!-- <div
 				class="text-center whitelist-checkbox"
@@ -111,7 +111,7 @@
 					type="primary"
 					class="primary"
 					@click="OpenPasswordDialog"
-				>Confirm</el-button>
+				>{{$t('public.confirm')}}</el-button>
 			</div>
 			<div
 				class="flex jc-center submit-foot"
@@ -121,7 +121,7 @@
 					type="primary"
 					class="primary"
 					@click="goBackPage"
-				>Go Back</el-button>
+				>{{$t('orderpay.reback')}}</el-button>
 			</div>
 		</div>
 		<el-dialog
@@ -131,7 +131,7 @@
 			center
 		>
 			<div slot="title">
-				<h2>Confirm</h2>
+				<h2>{{$t('public.confirm')}}</h2>
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content upload-loading">
@@ -142,13 +142,13 @@
 					@submit.native.prevent
 				>
 					<el-form-item
-						label="Wallet Password:"
+						:label="$t('public.walletPassword')+':'"
 						prop="Password"
 					>
 						<el-input
 							type="password"
 							class="grey-theme"
-							placeholder="Please Input Wallet Password"
+							:placeholder="$t('public.pleaseInputWalletPassword')"
 							show-password
 							@keyup.native.enter='toUploadFile'
 							v-model="passwordForm.Password"
@@ -157,12 +157,12 @@
 					<!-- <p class="mb20 tr">Confirm Payment: {{uploadPrice}} ONI</p> -->
 				</el-form>
 				<div slot="footer">
-					<el-button @click="passwordForm.show = false">Cancel</el-button>
+					<el-button @click="passwordForm.show = false">{{$t('public.cancel')}}</el-button>
 					<el-button
 						type="primary"
 						class="primary"
 						@click="toUploadFile"
-					>Confirm</el-button>
+					>{{$t('public.confirm')}}</el-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -194,7 +194,7 @@ export default {
 			switchToggle: {},
 			uploadRules: {
 				Password: [
-					{ required: true, message: "Please input  password", trigger: "blur" }
+					{ required: true, message: this.$t('public.pleaseFillPassword'), trigger: "blur" }
 				]
 			},
 			passwordForm: {
@@ -204,6 +204,20 @@ export default {
 			metaType: "Details"
 		};
 	},
+	watch: {
+		lang() {
+			this.uploadRules = {
+				Password: [
+					{ required: true, message: this.$t('public.pleaseFillPassword'), trigger: "blur" }
+				]
+			}
+		}
+	},
+	computed: {
+		lang() {
+			return this.$i18n.locale;
+		}
+	},
 	methods: {
 		OpenPasswordDialog() {
 			this.passwordForm.show = true;
@@ -212,12 +226,13 @@ export default {
 			});
 		},
 		toUploadFile() {
+			const vm = this;
 			this.$refs["passwordForm"].validate(valid => {
 				// checkout
 				if (!valid) return;
 				this.switchToggle.upload = false; // set toggle
 				this.switchToggle.loading = this.$loading({
-					text: "In transaction..",
+					text: vm.$t('orderpay.inTransaction'),
 					target: ".loading-content.upload-loading"
 				});
 				const data = {
@@ -245,11 +260,7 @@ export default {
 							);
 						} else {
 							this.switchToggle.loading && this.switchToggle.loading.close();
-							this.$message.error(
-								this.$i18n.error[res.Error]
-									? this.$i18n.error[res.Error][this.$language]
-									: `error code is ${res.Error}`
-							);
+							this.$message.error(this.$t(`error[${res.Error}]`));
 							return;
 						}
 					})

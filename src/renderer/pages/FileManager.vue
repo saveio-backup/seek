@@ -5,9 +5,8 @@
 				<div
 					class="change-channel mr10"
 					@click="openChannelListDialog"
-					title="Change Channel"
+					:title="$t('fileManager.channelChannel')"
 				>
-					<!-- @click="switchToggle.channelListDialog = true" -->
 					<i class="ofont ofont-qiehuan"></i>
 				</div>
 				<div
@@ -16,8 +15,8 @@
 				>
 					<p
 						class="channel-info-first user-no-select"
-						:title="channelBind.ChannelId || 'Not Selected'"
-					>{{channelBind.ChannelId || 'Not Selected'}}</p>
+						:title="channelBind.ChannelId || $t('fileManager.notSelected')"
+					>{{channelBind.ChannelId || $t('fileManager.notSelected')}}</p>
 					<p
 						class="channel-info-last user-no-select"
 						:title="channelBind.Address"
@@ -31,7 +30,7 @@
 						active-class="active-blue"
 						class="user-no-select"
 						:replace="true"
-					>Filebox</router-link>
+					>{{$t('fileManager.filebox')}}</router-link>
 					<!-- <router-link
 					 :to="{name:'discovery'}"
 					 active-class="active-blue"
@@ -40,7 +39,7 @@
 						:to="{name:'transfer',query:{transferType: (localStorage.getItem('transferType') || 1)}}"
 						class="user-no-select"
 						active-class="active-blue"
-					>Transfer <span
+					>{{$t('fileManager.transfer')}} <span
 							class="badge"
 							v-show="transferLength>0"
 						>{{transferLength}}</span></router-link>
@@ -65,7 +64,7 @@
 				center
 			>
 				<div slot="title">
-					<h2>Transfer</h2>
+					<h2>{{$t('public.transfer')}}</h2>
 					<div class="dialog-title-border"></div>
 				</div>
 				<div class="loading-content loading-channel">
@@ -79,7 +78,7 @@
 							type="primary"
 							class="primary"
 							@click="toConfirm"
-						>Confirm</ripper-button>
+						>{{$t('public.confirm')}}</ripper-button>
 					</div>
 				</div>
 			</el-dialog>
@@ -90,7 +89,7 @@
 				width="900px"
 			>
 				<div slot="title">
-					<h2>Channel Switch</h2>
+					<h2>{{$t('fileManager.channelSwitch')}}</h2>
 					<div class="dialog-title-border"></div>
 				</div>
 				<div class="loading-content channelSwitchBind">
@@ -112,7 +111,7 @@
 						>
 							<el-form-item
 								class="theme-font-blue-bold label-input-one-col"
-								label="Password"
+								:label="$t('public.password')"
 								prop="Password"
 							>
 								<el-input 
@@ -121,17 +120,17 @@
 									show-password
 									v-model="switchChannelForm.Password"
 									@keydown.enter.native="toApplyChange"
-									placeholder="Please Input Password"
+									:placeholder="$t('public.pleaseInputPassword')"
 								></el-input>
 							</el-form-item>
 						</el-form>
 					</div>
 					<div slot="footer">
-						<ripper-button @click="toCancelChange">Cancel</ripper-button>
+						<ripper-button @click="toCancelChange">{{$t('public.cancel')}}</ripper-button>
 						<ripper-button
 							class="primary"
 							@click="toApplyChange"
-						>Apply</ripper-button>
+						>{{$t('public.apply')}}</ripper-button>
 					</div>
 				</div>
 			</el-dialog>
@@ -148,7 +147,7 @@ import channelWalletTransfer from "../components/ChannelWalletTransfer.vue";
 import { ipcRenderer } from "electron";
 export default {
 	mounted() {
-		document.title = "File Manager";
+		document.title = this.$t('fileManager.fileManager');
 		this.$store.dispatch("getWaitForTransferList"); // get wait for upload list
 		this.$store.dispatch("setCurrentAccount"); // get login status
 		this.$store.dispatch("getDns"); // get login status
@@ -175,18 +174,12 @@ export default {
 				Password: [
 					{
 						required: true,
-						message: "Please Input Password",
+						message: this.$t('public.pleaseInputPassword'),
 						trigger: "blur"
 					}				
 				]
 			},
-			location: location,
-			// transferObj: {},
-			// setTimeoutObj: {
-			// 	upload: null,
-			// 	download: null,
-			// 	complete: null
-			// }
+			location: location
 		};
 	},
 	methods: {
@@ -246,11 +239,7 @@ export default {
 						ChannelId
 					);
 				} else {
-					this.$message.error(
-						this.$i18n.error[res.Error]
-							? this.$i18n.error[res.Error][this.$language]
-							: `error code is ${res.Error}`
-					);
+					this.$message.error(this.$t(`error[${res.Error}]`));
 				}
 			})
 		},
@@ -263,55 +252,23 @@ export default {
 			this.$store.dispatch("setChannelBalanceTotal");
 		}
 	},
-	// watch: {
-	// 	// transfer api message wait for delete
-	// 	uploadTransferList(newVal, oldVal) {
-	// 		clearTimeout(this.setTimeoutObj.upload);
-	// 		this.setTimeoutObj.upload = setTimeout(() => {
-	// 			for (let value of newVal) {
-	// 				this.transferObj[value.Id] = value;
-	// 			}
-	// 		}, 50);
-	// 	},
-	// 	downloadTransferList(newVal, oldVal) {
-	// 		clearTimeout(this.setTimeoutObj.download);
-	// 		this.setTimeoutObj.download = setTimeout(() => {
-	// 			for (let value of newVal) {
-	// 				this.transferObj[value.Id] = value;
-	// 			}
-	// 		}, 50);
-	// 	},
-	// 	completeTransferList(newVal, oldVal) {
-	// 		clearTimeout(this.setTimeoutObj.complete);
-	// 		let haveComplete = false;
-	// 		this.setTimeoutObj.complete = setTimeout(() => {
-	// 			for (let value of newVal) {
-	// 				if (
-	// 					value.Id &&
-	// 					this.transferObj[value.Id] &&
-	// 					this.transferObj[value.Id].Status !== 3
-	// 				) {
-	// 					this.$message({
-	// 						message: `${value.FileName} ${
-	// 							this.transferObj[value.Id].Type === 1
-	// 								? "Upload Success"
-	// 								: "Download Success"
-	// 						}`,
-	// 						type: "success"
-	// 					});
-	// 					haveComplete = true;
-	// 				}
-	// 				if(haveComplete) {
-	// 					this.$store.dispatch("setSpace");
-	// 				}
-	// 				this.transferObj[value.Id] = value;
-	// 			}
-	// 		}, 50);
-	// 	}
-	// },
+	watch: {
+		lang(val) {
+			document.title = this.$t('fileManager.fileManager');
+			this.switchChannelRules = {
+				Password: [
+					{
+						required: true,
+						message: this.$t('public.pleaseInputPassword'),
+						trigger: "blur"
+					}				
+				]
+			}
+		}
+	},
 	computed: {
-		mainCount: function() {
-			return this.$store.state.Wallet.mainCount;
+		lang() {
+			return this.$i18n.locale;
 		},
 		channels: function() {
 			return this.$store.state.Home.channels;
@@ -324,24 +281,10 @@ export default {
 				this.$store.state.Transfer.downloadLength +
 				this.$store.state.Transfer.uploadLength
 			);
-		},
-
-		// uploadTransferList: function() {
-		// 	return this.$store.state.Transfer.uploadTransferList;
-		// },
-		// downloadTransferList: function() {
-		// 	return this.$store.state.Transfer.downloadTransferList;
-		// },
-		// completeTransferList: function() {
-		// 	return this.$store.state.Transfer.completeTransferList;
-		// },
-		// waitForUploadList: function() {
-		// 	return this.$store.state.Transfer.waitForUploadList || [];
-		// }
+		}
 	},
 	beforeRouteEnter(to, from, next) {
 		next(vm => {
-			// vm.$store.dispatch("setComplete");
 			if (to.name === "FileManager") {
 				vm.$router.push({
 					name: "disk",
@@ -350,8 +293,6 @@ export default {
 					}
 				});
 			}
-			// vm.$store.dispatch("setUpload");
-			// vm.$store.dispatch("setDownload");
 		});
 	},
 	beforeRouteUpdate(to, from, next) {
@@ -364,9 +305,6 @@ export default {
 	},
 	beforeDestroy() {
 		this.$store.dispatch("clearIntervalGetDns");
-		// this.$store.dispatch("clearIntervalSetUpload");
-		// this.$store.dispatch("clearIntervalSetDownload");
-		// this.$store.dispatch("clearIntervalSetComplete");
 	}
 };
 </script>

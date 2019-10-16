@@ -2,13 +2,13 @@
 	<div id="settings">
 		<div class="settings-content">
 			<div class="settings-box">
-				<div class="ft20">Setting</div>
+				<div class="ft20">{{$t('settings.setting')}}</div>
 				<!-- <p class="active-blue ft14">Clear browsing data</p> -->
 			</div>
 			<div class="settings-box">
 				<div class="tag">
-					<span>Chain Environment</span>
-					<div class="dark-grey">Select chain environment</div>
+					<span>{{$t('settings.chainEnvironment')}}</span>
+					<div class="dark-grey">{{$t('settings.selectChainEnvironment')}}</div>
 				</div>
 				<el-select
 					v-model="settings.ChainId"
@@ -17,29 +17,29 @@
 					<el-option
 						v-for="(item,index) in netConfig.list"
 						:key="index"
-						:label="netConfig.default[item] ||'Private'+' (' + item +')'"
+						:label='(netConfig.default[item] && $t(`settings["${netConfig.default[item]}"]`)) || $t("settings.private")+" (" + item +")"'
 						:value="item"
 					></el-option>
 				</el-select>
 			</div>
 			<div class="settings-box">
-				<div class="tag">Auto openDevTools</div>
+				<div class="tag">{{$t('settings.autoOpenDevTools')}}</div>
 				<el-select
 					v-model="settings.console"
 					@change="updateSettings('console',settings.console)"
 				>
 					<el-option
-						label="Open"
+						:label="$t('public.open')"
 						:value="true"
 					></el-option>
 					<el-option
-						label="Close"
+						:label="$t('public.close')"
 						:value="false"
 					></el-option>
 				</el-select>
 			</div>
 			<div class="settings-box">
-				<div class="tag">Max Upload Length</div>
+				<div class="tag">{{$t('settings.maxUploadLength')}}</div>
 				<el-select
 					v-model="settings.maxNumUpload"
 					@change="frontConfigUploadRender"
@@ -54,13 +54,29 @@
 			</div>
 			<div class="settings-box">
 				<div class="tag">
-					<p>Download Path</p>
+					<p>{{$t('settings.downloadPath')}}</p>
 					<p
 						:title="pathDir.DownloadPath"
 						class="pathdir dark-grey"
 					>{{pathDir.DownloadPath}}</p>
 				</div>
-				<el-button @click="setDir('DownloadPath')">Change</el-button>
+				<el-button @click="setDir('DownloadPath')">{{$t('settings.change')}}</el-button>
+			</div>
+			<div class="settings-box">
+				<div class="tag">
+					<p>{{$t('settings.language')}}</p>
+				</div>
+				<el-select
+					v-model="settings.lang"
+					@change="setLang"
+				>
+					<el-option
+						v-for="item in langList"
+						:key="item.id"
+						:label='$t(`settings["${item.label}"]`)'
+						:value="item.id"
+					></el-option>
+			</el-select>
 			</div>
 		</div>
 	</div>
@@ -70,7 +86,7 @@ import { ipcRenderer, remote } from "electron";
 import { DEFAULT_CHAINID } from "../../main/windowManager/defaultOption";
 export default {
 	mounted() {
-		document.title = "Settings";
+		document.title = this.$t('settings.settings');
 		this.getSettingsAll();
 		this.getChainList();
 		this.getChainId();
@@ -93,10 +109,27 @@ export default {
 					"2": "MainNet"
 				}
 			},
-			maxUploadLimitList: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+			maxUploadLimitList: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+			langList: [
+				{
+					id: 'en',
+					label: 'English'
+				},
+				{
+					id: 'zh',
+					label: 'Chinese'
+				}
+			]
 		};
 	},
 	methods: {
+		setLang() {
+			const vm = this;
+			vm.$i18n.locale = vm.settings.lang;
+			document.title = this.$t('settings.settings');
+			this.updateSettings("lang", vm.settings.lang);
+			ipcRenderer.send("run-dialog-event", {name:'toSetLang', data: vm.settings.lang});
+		},
 		getSettingsAll() {
 			this.settings = ipcRenderer.sendSync("getAllSettings");
 		},
@@ -146,11 +179,7 @@ export default {
 					}
 				} else {
 					if (res.Error !== 40007) {
-						this.$message.error(
-							this.$i18n.error[res.Error]
-								? this.$i18n.error[res.Error][this.$language]
-								: `error code is ${res.Error}`
-						);
+						this.$message.error(this.$t(`error[${res.Error}]`));
 					}
 				}
 			});
@@ -163,21 +192,18 @@ export default {
 			});
 		},
 		switchChainId(id) {
+			const vm = this;
 			console.log("switch chainid", id);
 			this.$axios.post(this.$api.switchChainId, { ChainId: id }).then(res => {
 				if (res.Error === 0) {
 					this.updateSettings("ChainId", id);
 					this.settings.ChainId = id;
 					this.$message({
-						message: "Switch Success",
+						message: vm.$t('settings.switchSuccess'),
 						type: "success"
 					});
 				} else {
-					this.$message.error(
-						this.$i18n.error[res.Error]
-							? this.$i18n.error[res.Error][this.$language]
-							: `error code is ${res.Error}`
-					);
+					this.$message.error(this.$t(`error[${res.Error}]`));
 				}
 			});
 		},

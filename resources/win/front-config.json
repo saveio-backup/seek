@@ -1,5 +1,6 @@
 {
   "console": false,
   "devEdgeEnable": false,
-  "maxNumUpload": 5
+  "maxNumUpload": 5,
+  "lang": "en"
 }

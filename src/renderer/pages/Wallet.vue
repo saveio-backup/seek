@@ -54,7 +54,7 @@
 						</el-select>
 					</div>
 					<div class="wallet-asset">
-						<p class="ft14 user-no-select">Total Balance:</p>
+						<p class="ft14 user-no-select">{{$t('wallet.totalBalance')}}:</p>
 						<div class="total"> <span class="symbol"></span> <span v-if="balanceLists && balanceLists.length>0">{{effectiveNumber(balanceLists[balanceSelected].BalanceFormat)}}</span></div>
 					</div>
 					<div
@@ -88,8 +88,8 @@
 						<ripper-button
 							@click="getQRCode"
 							class="primary"
-						><i class="ofont ofont-jieshou"></i> <span>Receive</span></ripper-button>
-						<ripper-button @click="switchToggle.sendDialog = true"><i class="ofont ofont-send"></i> <span>Send</span></ripper-button>
+						><i class="ofont ofont-jieshou"></i> <span>{{$t('wallet.receive')}}</span></ripper-button>
+						<ripper-button @click="switchToggle.sendDialog = true"><i class="ofont ofont-send"></i> <span>{{$t('wallet.send')}}</span></ripper-button>
 						<!-- <div @click="getQRCode"><i class="ofont ofont-jieshou"></i> <span class="theme-bold">Receive</span></div> -->
 						<!-- <div @click="switchToggle.sendDialog =true"><i class="ofont ofont-send"></i> <span class="theme-bold">Send</span></div> -->
 					</div>
@@ -101,17 +101,17 @@
 						@click="txType = 'txRecords';txDetailIndex =-1"
 						class="select-button"
 						:class="{'current-select':txType === 'txRecords'}"
-					>All Transfer</p>
+					>{{$t('wallet.allTransfer')}}</p>
 					<p
 						class="select-button"
 						@click="txType = 'transferIn';txDetailIndex =-1"
 						:class="{'current-select':txType === 'transferIn'}"
-					> Receive</p>
+					> {{$t('wallet.receive')}}</p>
 					<p
 						class="select-button"
 						@click="txType = 'transferOut';txDetailIndex =-1"
 						:class="{'current-select':txType === 'transferOut'}"
-					>Send</p>
+					>{{$t('wallet.send')}}</p>
 				</div>
 				<ul class="tx-ul">
 					<!-- this[txType] -->
@@ -149,7 +149,7 @@
 								v-if="item.ContractType == 1"
 							>
 								<div>
-									Contract
+									{{$t('wallet.contract')}}
 								</div>
 							</div>
 							<div
@@ -164,14 +164,14 @@
 							class="tx-li-item-detail"
 							v-show="index === txDetailIndex"
 						>
-							<div class="txid grey-xs user-no-select">ID:
+							<div class="txid grey-xs user-no-select">{{$t('wallet.id')}}:
 								<span :title="item.Txid || ''">
 									{{item.Txid || ''}}
 								</span>
 								<i
 									class="ofont ofont-fuzhi tx-copy"
 									@click="clipText(item.Txid || '')"
-									title="Click to Copy"
+									:title="$t('wallet.clickToCopy')"
 								></i></div>
 							<div class="towards">
 								<p class='from user-no-select'>
@@ -180,7 +180,7 @@
 									</span>
 									<i
 										class="ofont ofont-fuzhi tx-copy"
-										title="Click to Copy"
+										:title="$t('wallet.clickToCopy')"
 										@click="clipText(item.From)"
 									></i></p>
 								<i class="ofont ofont-fasong arrow ft12"></i>
@@ -190,14 +190,14 @@
 									</span>
 									<i
 										class="ofont ofont-fuzhi tx-copy"
-										title="Click to Copy"
+										:title="$t('wallet.clickToCopy')"
 										@click="clipText(item.To)"
 									></i></p>
 							</div>
 							<div class="flex between bottom-info">
-								<div class="minerfee"><span class="theme-font-color user-no-select">Miner fee:</span> <span class="theme-font-blue">{{item.FeeFormat}}</span> {{balanceLists[balanceSelected].Symbol === 'SAVE' ? 'ONI': balanceLists[balanceSelected].Symbol}}</div>
+								<div class="minerfee"><span class="theme-font-color user-no-select">{{$t('wallet.minerfee')}}:</span> <span class="theme-font-blue">{{item.FeeFormat}}</span> {{balanceLists[balanceSelected].Symbol === 'SAVE' ? 'ONI': balanceLists[balanceSelected].Symbol}}</div>
 								<div class="flex1"></div>
-								<div class="blockheight"><span class="user-no-select">Block:</span> {{item.BlockHeight}}</div>
+								<div class="blockheight"><span class="user-no-select">{{$t('wallet.block')}}:</span> {{item.BlockHeight}}</div>
 							</div>
 						</div>
 					</li>
@@ -224,12 +224,12 @@
 					class="dialog-header el-dialog__header"
 					slot="title"
 				>
-					<h2>Receive</h2>
+					<h2>{{$t('wallet.receive')}}</h2>
 					<div class="dialog-title-border"></div>
 				</div>
 				<div class="flex ai-center column">
 					<div class="flex ai-center mb10">
-						<p class="mr10 theme-font-blue-transparent ft14">{{balanceLists.length>0?balanceLists[balanceSelected].Address : 'Text Addr'}}</p>
+						<p class="mr10 theme-font-blue-transparent ft14">{{balanceLists.length>0?balanceLists[balanceSelected].Address : $t('wallet.textAddr')}}</p>
 						<i
 							class="ofont ofont-fuzhi addr_btn"
 							@click="clipText(balanceLists[balanceSelected].Address)"
@@ -246,7 +246,7 @@
 							class="done primary"
 							type="primary"
 							@click="switchToggle.receiveDialog = false"
-						>Done</ripper-button>
+						>{{$t('wallet.done')}}</ripper-button>
 					</div>
 				</div>
 			</el-dialog>
@@ -257,7 +257,7 @@
 				:close-on-click-modal='false'
 			>
 				<div slot="title">
-					<h2>Transfer</h2>
+					<h2>{{$t('public.transfer')}}</h2>
 					<div class="dialog-title-border mt10"></div>
 				</div>
 				<div class="loading-content wallet-sendtransfer-loading">
@@ -277,23 +277,23 @@
 							</div>
 							<el-form-item
 								class="theme-font-blue-bold"
-								label="Send to"
+								:label="$t('wallet.sendTo')"
 								prop="To"
 							>
 								<el-input
 									v-model="sendInfo.To"
 									class="grey-theme"
-									:placeholder="'Input ' +(balanceLists[balanceSelected].Symbol === 'SAVE' ? 'ONI' : balanceLists[balanceSelected].Symbol).toUpperCase()+' Address'"
+									:placeholder="$t('wallet.input') +(balanceLists[balanceSelected].Symbol === 'SAVE' ? 'ONI' : balanceLists[balanceSelected].Symbol).toUpperCase()+$t('wallet.address')"
 								></el-input>
 							</el-form-item>
 							<el-form-item
 								class="theme-font-blue-bold"
-								label="Amount"
+								:label="$t('public.amount')"
 								prop="Amount"
 							>
 								<el-input
 									v-model="sendInfo.Amount"
-									placeholder="Input Amount"
+									:placeholder="$t('public.inputAmount')"
 									min='0'
 									type="number"
 									class="grey-theme"
@@ -302,14 +302,14 @@
 							</el-form-item>
 							<el-form-item
 								class="theme-font-blue-bold"
-								label="Wallet Password"
+								:label="$t('public.walletPassword')"
 								prop="Password"
 							>
 								<el-input
 									v-model="sendInfo.Password"
 									@keyup.enter.native='sendTransfer'
 									show-password
-									placeholder="Input Wallet Password"
+									:placeholder="$t('public.pleaseInputWalletPassword')"
 									type="password"
 									class="grey-theme"
 								></el-input>
@@ -317,7 +317,7 @@
 						</el-form>
 						<div class="flex between">
 							<span></span>
-							<div>Miner Fee: 0.01 {{balanceLists[balanceSelected].Symbol === 'SAVE' ? 'ONI' :balanceLists[balanceSelected].Symbol}}
+							<div>{{$t('wallet.minerfee')}}: 0.01 {{balanceLists[balanceSelected].Symbol === 'SAVE' ? 'ONI' :balanceLists[balanceSelected].Symbol}}
 							</div>
 						</div>
 					</div>
@@ -326,7 +326,7 @@
 							type="primary"
 							class="primary"
 							@click="sendTransfer"
-						>Transfer</ripper-button>
+						>{{$t('public.transfer')}}</ripper-button>
 					</span>
 				</div>
 			</el-dialog>
@@ -340,7 +340,7 @@
 					class="dialog-header el-dialog__header"
 					slot="title"
 				>
-					<h2>My Assets</h2>
+					<h2>{{$t('wallet.myAssets')}}</h2>
 					<div class="dialog-title-border mt10"></div>
 				</div>
 				<div class="loading-content">
@@ -366,7 +366,7 @@
 						<ripper-button
 							class="primary"
 							@click="switchToggle.assetDialog = false"
-						>Comfirm</ripper-button>
+						>{{$t('public.confirm')}}</ripper-button>
 					</div>
 				</div>
 			</el-dialog>
@@ -381,7 +381,7 @@ import { round } from "mathjs";
 const { clipboard } = require("electron");
 export default {
 	mounted() {
-		document.title = "Wallet";
+		document.title = this.$t('wallet.wallet');
 		this.$store.dispatch("setCurrentAccount"); // get login status
 		this.$store.dispatch("setBalanceLists");
 		this.$store.dispatch("setTxRecords");
@@ -393,14 +393,16 @@ export default {
 	},
 	data() {
 		const validateMount = (rule, value, callback) => {
+			const vm = this;
 			const reg = /^[1-9](\d{0,8})\.(\d{1,9})$|^0\.(\d{0,8})[1-9]$|^[1-9](\d{0,8})$/;
 			if (!reg.test(value)) {
-				callback(new Error("Please enter the correct format"));
+				callback(new Error(vm.$t('public.pleaseEnterTheCorrectFormat')));
 				return;
 			}
 			callback();
 		};
 		return {
+			validateMount,
 			effectiveNumber,
 			round,
 			QRCode,
@@ -423,7 +425,7 @@ export default {
 				Amount: [
 					{
 						required: true,
-						message: "Please fill amount",
+						message: this.$t('public.pleaseFillAmount'),
 						trigger: "blur"
 					},
 					{
@@ -434,14 +436,14 @@ export default {
 				To: [
 					{
 						required: true,
-						message: "Please fill address",
+						message: this.$t('wallet.pleaseFillAddress'),
 						trigger: "blur"
 					}
 				],
 				Password: [
 					{
 						required: true,
-						message: "Please fill password",
+						message: this.$t('public.pleaseFillPassword'),
 						trigger: "blur"
 					}
 				]
@@ -655,17 +657,19 @@ export default {
 	},
 	methods: {
 		clipSaveAddress() {
+			const vm = this;
 			clipboard.writeText(this.user.address);
 			this.$message({
-				message: "Copied",
+				message: vm.$t('public.copied'),
 				duration: 1200,
 				type: "success"
 			});
 		},
 		clipText(content) {
+			const vm = this;
 			clipboard.writeText(content);
 			this.$message({
-				message: "Copied",
+				message: vm.$t('public.copied'),
 				duration: 1200,
 				type: "success"
 			});
@@ -687,6 +691,7 @@ export default {
 			});
 		},
 		getQRCode() {
+			const vm = this;
 			this.switchToggle.receiveDialog = true;
 			this.$nextTick(() => {
 				if (this.qrcode) {
@@ -697,7 +702,7 @@ export default {
 						text:
 							this.balanceLists.length > 0
 								? this.balanceLists[this.balanceSelected].Address
-								: "Qrcode Not Found",
+								: vm.$t('wallet.qrcodeNotFound'),
 						width: 128,
 						height: 128
 					});
@@ -710,6 +715,7 @@ export default {
 				: "";
 		},
 		sendTransfer() {
+			const vm = this;
 			if (this.switchToggle.loading) return;
 			this.$refs.transferForm.validate(valid => {
 				if (valid) {
@@ -720,7 +726,7 @@ export default {
 					this.$axios
 						.post(this.$api.transfer, sendInfo, {
 							loading: {
-								text: "Transaction processing....",
+								text: vm.$t('public.transactionProcessing'),
 								target: ".loading-content.wallet-sendtransfer-loading"
 							}
 						})
@@ -730,20 +736,16 @@ export default {
 								this.$refs.transferForm.resetFields();
 								this.switchToggle.sendDialog = false;
 								this.$message({
-									message: "Successful transfer",
+									message: vm.$t('public.transferSuccess'),
 									type: "success"
 								});
 							} else {
-								this.$message.error(
-									this.$i18n.error[res.Error]
-										? this.$i18n.error[res.Error][this.$language]
-										: `error code is ${res.Error}`
-								);
+								this.$message.error(this.$t(`error[${res.Error}]`));
 							}
 						})
 						.catch(e => {
 							if (!e.message.includes("timeout")) {
-								this.$message.error("Network Error. Transfer Failed!");
+								this.$message.error(vm.$t('public.networkErrorTransferFailed'));
 							}
 						});
 				}
@@ -835,6 +837,9 @@ export default {
 		}
 	},
 	computed: {
+		lang() {
+			return this.$i18n.locale;
+		},
 		txRecords: function() {
 			return this.$store.state.Wallet.txRecords;
 		},
@@ -849,6 +854,36 @@ export default {
 		}
 	},
 	watch: {
+		lang() {
+			document.title = this.$t('wallet.wallet');
+			this.sendRules = {
+				Amount: [
+					{
+						required: true,
+						message: this.$t('public.pleaseFillAmount'),
+						trigger: "blur"
+					},
+					{
+						validator: this.validateMount,
+						trigger: "blur"
+					}
+				],
+				To: [
+					{
+						required: true,
+						message: this.$t('wallet.pleaseFillAddress'),
+						trigger: "blur"
+					}
+				],
+				Password: [
+					{
+						required: true,
+						message: this.$t('public.pleaseFillPassword'),
+						trigger: "blur"
+					}
+				]
+			}
+		},
 		txRecords(newVal, oldVal) {
 			if (newVal.length == 0 || oldVal.length == 0) {
 				this.switchToggle.loadSwitch = true;

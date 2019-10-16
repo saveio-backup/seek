@@ -24,7 +24,7 @@
 				center
 			>
 				<div slot="title">
-					<h2>New Download</h2>
+					<h2>{{$t('dialog.newDownload')}}</h2>
 					<div class="dialog-title-border"></div>
 				</div>
 				<download-dialog
@@ -226,6 +226,7 @@ export default {
 			}, 50);
 		},
 		completeTransferList(newVal, oldVal) {
+			const vm = this;
 			clearTimeout(this.setTimeoutObj.complete);
 			let haveComplete = false;
 			this.setTimeoutObj.complete = setTimeout(() => {
@@ -238,8 +239,8 @@ export default {
 						this.message({
 							info: `${value.FileName} ${
 								this.transferObj[value.Id].Type === 1
-									? "Upload Success"
-									: "Download Success"
+									? vm.$t('dialog.uploadSuccess')
+									: vm.$t('dialog.downloadSuccess')
 							}`,
 							type: "success"
 						});
@@ -369,9 +370,7 @@ export default {
 					if (value.Error !== 0) {
 						errorMsg += `<p>`;
 						errorMsg += `${value.FileName || ""}`;
-						errorMsg += this.$i18n.error[value.Error]
-							? this.$i18n.error[value.Error][this.$language]
-							: `error code is ${value.Error}`;
+						errorMsg += this.$t(`error["${value.Error}"]`);
 						errorMsg += `</p>`;
 					}
 				}
@@ -475,9 +474,7 @@ export default {
 					if (value.Error !== 0) {
 						errorMsg += `<p>`;
 						errorMsg += `${value.FileName || ""}`;
-						errorMsg += this.$i18n.error[value.Error]
-							? this.$i18n.error[value.Error][this.$language]
-							: `error code is ${value.Error}`;
+						errorMsg += this.$t(`error["${value.Error}"]`);
 						errorMsg += `</p>`;
 					}
 				}
@@ -1007,6 +1004,15 @@ export default {
 			return vm.$axios.post(vm.$api.downloadPause, params, {
 				timeout: (vm.$config.outTime * 2000 + 18000) * params.Ids.length
 			})
+		},
+		// hand out data about lang
+		toSetLang(lang) {
+			this.$i18n.locale = lang;
+			this.renderDateToBrowserView({
+				result: {lang:lang},
+				type: "lang",
+				rendTo: 1
+			});
 		}
 	}
 };

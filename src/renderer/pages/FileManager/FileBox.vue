@@ -6,23 +6,23 @@
 					class="allfile"
 					:class="{'theme-font-blue-bold link-hover': fileType == 0}"
 					:to="{name:'disk', query:{type:0}}"
-				><span><i class="el-icon-arrow-down"></i><span class="ofont ofont-resource"></span> File</span></router-link>
+				><span><i class="el-icon-arrow-down"></i><span class="ofont ofont-resource"></span> {{$t('fileManager.file')}}</span></router-link>
 				<router-link
 					:class="{'theme-font-blue-bold link-hover': fileType == 1}"
 					:to="{name:'disk', query:{type:1}}"
-				>Image</router-link>
+				>{{$t('fileManager.image')}}</router-link>
 				<router-link
 					:class="{'theme-font-blue-bold link-hover': fileType == 2}"
 					:to="{name:'disk', query:{type:2}}"
-				>Document</router-link>
+				>{{$t('fileManager.document')}}</router-link>
 				<router-link
 					:class="{'theme-font-blue-bold link-hover': fileType == 3}"
 					:to="{name:'disk', query:{type:3}}"
-				>Video</router-link>
+				>{{$t('fileManager.video')}}</router-link>
 				<router-link
 					:class="{'theme-font-blue-bold link-hover': fileType == 4}"
 					:to="{name:'disk', query:{type:4}}"
-				>Music</router-link>
+				>{{$t('fileManager.music')}}</router-link>
 			</div>
 			<div
 				class="aside-progress"
@@ -34,7 +34,7 @@
 					<router-link
 						class="active-blue ft12 link"
 						:to="{name:'expand'}"
-					>Upgrade Storage</router-link>
+					>{{$t('fileManager.upgradeStorage')}}</router-link>
 				</p>
 			</div>
 		</div>

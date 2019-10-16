@@ -7,11 +7,11 @@
 			<h2
 				class="theme-font-blue account-title user-no-select"
 				v-if="accountStatus === 1"
-			>Block synchronization</h2>
+			>{{$t('account.blockSynchronization')}}</h2>
 			<h2
 				class="theme-font-blue account-title"
 				v-if="accountStatus === 0"
-			>{{step === 1?'Backup Your Keystore File':step === 2?'Backup Your Private Key(WIF)':step===3?'Private Key(WIF) Repeat':'Create Account'}}</h2>
+			>{{step === 1?$t('account.backupYourKeystoreFile'):step === 2?$t('account.backupYourPrivateKey'):step===3?$t('account.privateKeyRepeat'):$t('account.createAccount')}}</h2>
 			<div
 				v-if="accountStatus === 0"
 			>
@@ -24,46 +24,46 @@
 					@submit.native.prevent
 				>
 					<el-form-item
-						label="User Name"
+						:label="$t('account.userName')"
 						prop='Label'
 					>
 						<el-input
 							v-model="form.Label"
 							class="grey-theme"
-							placeholder="Input User Name"
+							:placeholder="$t('account.inputUserName')"
 						></el-input>
 					</el-form-item>
 					<el-form-item
-						label="Wallet Password"
+						:label="$t('public.walletPassword')"
 						prop='Password'
 					>
 						<el-input
 							v-model="form.Password"
 							type="password"
-							placeholder="Input Wallet Password"
+							:placeholder="$t('public.pleaseInputWalletPassword')"
 							show-password
 							class="grey-theme"
 						></el-input>
 					</el-form-item>
 					<el-form-item
-						label="Confirm Wallet Password"
+						:label="$t('account.confirmWalletPassword')"
 						prop='Confirm'
 					>
 						<el-input
 							v-model="form.Confirm"
 							@keyup.enter.native="submitForm('form')"
-							placeholder="Confirm Your Wallet Password"
+							:placeholder="$t('account.confirmYourWalletPassword')"
 							show-password
 							type="password"
 							class="grey-theme"
 						></el-input>
 					</el-form-item>
-					<p class="grey-xs ft14 break-word">This password is used to recover the account from the keystore file, and all related payment needs to be used.</p>
+					<p class="grey-xs ft14 break-word">{{$t('account.thisPasswordIsUsedToRecoverTheAccountFromTheKeystoreFile')}}</p>
 					<ripper-button
 						class="account-button text-center"
 						@click="submitForm('form')"
 					>
-						Submit
+						{{$t('account.submit')}}
 					</ripper-button>
 				</el-form>
 				<div
@@ -75,15 +75,15 @@
 						<ripper-button
 							class="primary margin-center mt20 mb20"
 							@click="$exportFile(validation.Wallet,'Wallet')"
-						>Save as File</ripper-button>
+						>{{$t('account.saveAsFile')}}</ripper-button>
 					</div>
-					<p class="stop-desc ft14 mt20 mb20 break-word">This Keystore File is an account file encrypted based on the private key(WIF). After re-importing, you need to enter a password to log in to the account. Although losing this file will not pose a direct threat to the account, please keep it safe.</p>
+					<p class="stop-desc ft14 mt20 mb20 break-word">{{$t('account.thisKeystoreFileIsAnAccountFileEncryptedBasedOnThePrivateKey')}}</p>
 					<p class="back-class ft14">
-						<a @click="setStep(0)">Back</a>
+						<a @click="setStep(0)">{{$t('account.back')}}</a>
 					</p>
 					<ripper-button
 						@click="setStep()"
-					>Next</ripper-button>
+					>{{$t('account.next')}}</ripper-button>
 				</div>
 				<div
 					class="step"
@@ -94,22 +94,22 @@
 					<ripper-button
 						class="primary"
 						@click="clip(validation.PrivateKey)"
-					>Copy</ripper-button>
+					>{{$t('account.copy')}}</ripper-button>
 					<ripper-button
 						class="primary"
 						@click="$exportFile(validation.PrivateKey,'PrivateKey')"
-					>Save as File</ripper-button>
+					>{{$t('account.saveAsFile')}}</ripper-button>
 					<p
 						class="mt20 mb20 ft14 break-word"
 						style="color:#e95464"
-					>Keep this Private Key(WIF) safe.You can always use this key to get your wallet back without any password if something happens to your browser or computer. But make sure to protect it — anyone who gets this key could steal your wallet. It’s probably safest to write it down on a piece of paper, or wherever else you keep important info.</p>
+					>{{$t('account.keepThisPrivateKeySafe')}}</p>
 					<!-- <el-button @click="setStep(1)">Return</el-button> -->
 					<p class="back-class ft14">
-						<a @click="setStep(1)">Back</a>
+						<a @click="setStep(1)">{{$t('account.back')}}</a>
 					</p>
 					<ripper-button
 						@click="setStep()"
-					>Next</ripper-button>
+					>{{$t('account.next')}}</ripper-button>
 				</div>
 				<div
 					class="step"
@@ -120,22 +120,22 @@
 						<ripper-button
 							@click="importFile"
 							class="primary margin-center mt20 mb20"
-						>Import Private Key(WIF) File</ripper-button>
+						>{{$t('account.importPrivateKeyFile')}}</ripper-button>
 					</div>
 					<el-input
 						class="mt20 mb20 ft14 back-border-input-class grey-theme"
 						type="textarea"
 						:row="4"
 						v-model="validation.confirmPrivateKey"
-						placeholder="Please input your private key(WIF)"
+						:placeholder="$t('account.pleaseInputYourPrivateKey')"
 					></el-input>
 					<!-- <el-button @click="setStep(2)">Return</el-button> -->
 					<p class="back-class ft14">
-						<a @click="setStep(2)">Back</a>
+						<a @click="setStep(2)">{{$t('account.back')}}</a>
 					</p>
 					<ripper-button
 						@click="importAccountWithPrivatekey"
-					>Done</ripper-button>
+					>{{$t('account.done')}}</ripper-button>
 				</div>
 			</div>
 			<div
@@ -162,13 +162,13 @@
 					style="text-align:center"
 				>{{prograssPercentage +'%'}} (#{{currentHeihgt}} / #{{totalHeight}})</p>
 				<p class="ft12 dark-grey bold text-center mt20 user-no-select">
-					<span :class="{'ft30 ml10 mr10':loopFontIndex === 0}">Synchronizing</span>
-					<span :class="{'ft30 ml10 mr10':loopFontIndex === 1}">blocks</span>
-					<span :class="{'ft30 ml10 mr10':loopFontIndex === 2}">at</span>
-					<span :class="{'ft30 ml10 mr10':loopFontIndex === 3}">the</span>
-					<span :class="{'ft30 ml10 mr10':loopFontIndex === 4}">speed</span>
-					<span :class="{'ft30 ml10 mr10':loopFontIndex === 5}">of </span>
-					<span :class="{'ft30 ml10 mr10':loopFontIndex === 6}">light</span> ……</p>
+					<span :class="{'ft30 ml10 mr10':loopFontIndex === 0}">{{$t('account.pr1')}}</span>
+					<span :class="{'ft30 ml10 mr10':loopFontIndex === 1}">{{$t('account.pr2')}}</span>
+					<span :class="{'ft30 ml10 mr10':loopFontIndex === 2}">{{$t('account.pr3')}}</span>
+					<span :class="{'ft30 ml10 mr10':loopFontIndex === 3}">{{$t('account.pr4')}}</span>
+					<span :class="{'ft30 ml10 mr10':loopFontIndex === 4}">{{$t('account.pr5')}}</span>
+					<span :class="{'ft30 ml10 mr10':loopFontIndex === 5}">{{$t('account.pr6')}}</span>
+					<span :class="{'ft30 ml10 mr10':loopFontIndex === 6}">{{$t('account.pr7')}}</span> ……</p>
 			</div>
 		</div>
 	</div>
@@ -178,18 +178,19 @@ import { clipboard, ipcRenderer } from "electron";
 export default {
 	mounted() {
 		document.title = localStorage.Address
-			? "CreateAccount"
-			: "Block synchronization";
+			? this.$t('account.blockSynchronization')
+			: this.$t('account.createAccount');
 
 		this.loopFont();
 		this.getAccountStatus();
 	},
 	data() {
 		let validatePassword = (rule, value, callback) => {
+			const vm = this;
 			if (this.form.Password === this.form.Confirm) {
 				callback();
 			} else {
-				callback(new Error("Inconsistent passwords filled in twice"));
+				callback(new Error(vm.$t('account.inconsistentPasswordsFilledInTwice')));
 			}
 		};
 		return {
@@ -219,13 +220,13 @@ export default {
 				Label: [
 					{
 						required: true,
-						message: "please fill your name",
+						message: this.$t('account.pleaseFillYourName'),
 						trigger: "blur"
 					}
 				],
 				Password: {
 					// validator: validatePassword,
-					message: "please fill your password",
+					message: this.$t('account.pleaseFillYourPassword'),
 					required: true,
 					trigger: ["blur", "input"]
 				},
@@ -238,7 +239,7 @@ export default {
 		};
 	},
 	computed: {
-		prograssPercentage: function() {
+		prograssPercentage() {
 			return (
 				(this.currentHeihgt / this.totalHeight
 					? this.currentHeihgt / this.totalHeight
@@ -251,20 +252,28 @@ export default {
 							: 0) * 100
 				  ).toFixed(2);
 		},
-		currentHeihgt: function() {
+		currentHeihgt() {
 			return this.$store.state.Home.currentHeight || 0;
 		},
-		totalHeight: function() {
+		totalHeight() {
 			return this.$store.state.Home.totalHeight || 0;
+		},
+		lang() {
+			return this.$i18n.locale;
 		}
 	},
 	watch: {
-		accountStatus: function(value) {
+		lang(value) {
+			document.title = localStorage.Address
+			? this.$t('account.blockSynchronization')
+			: this.$t('account.createAccount');
+		},
+		accountStatus(value) {
 			console.log("acountStatus changed!!!");
 			console.log(value);
 			if (value === 1) {
 				console.log("set Title");
-				document.title = "Block synchronization";
+				document.title = this.$t('account.blockSynchronization');
 			}
 		}
 	},
@@ -288,9 +297,10 @@ export default {
 				});
 		},
 		clip(content) {
+			const vm = this;
 			clipboard.writeText(content);
 			this.$message({
-				message: "Copied",
+				message: vm.$t('public.copied'),
 				duration: 1200,
 				type: "success"
 			});
@@ -318,6 +328,7 @@ export default {
 			}
 		},
 		submitForm(formName) {
+			const vm = this;
 			if (!this.switchToggle.submitSwitch) {
 				return;
 			}
@@ -327,7 +338,7 @@ export default {
 					this.$axios
 						.post(this.$api.account, this[formName], {
 							loading: {
-								text: "Creating",
+								text: vm.$t('account.creating'),
 								target: ".form"
 							}
 						})
@@ -339,22 +350,19 @@ export default {
 								this.switchToggle.submitSwitch = true;
 							} else {
 								this.switchToggle.submitSwitch = true;
-								// this.$message.error(
-								// 	this.$i18n.error[res.Error]
-								// 		? this.$i18n.error[res.Error][this.$language]
-								// 		: `error code is ${res.Error}`
-								// );
+								// this.$message.error(this.$t(`error[${res.Error}]`));
 							}
 						})
 						.catch(e => {
 							if (!e.message.includes("timeout")) {
-								this.$message.error("Network Error. Create Failed!");
+								this.$message.error(vm.$t('account.networkErrorCreateFailed'));
 							}
 						});
 				}
 			});
 		},
 		importAccountWithPrivatekey() {
+			const vm = this;
 			if (!this.switchToggle.submitSwitch) return;
 			this.switchToggle.submitSwitch = false;
 			this.$axios
@@ -383,17 +391,13 @@ export default {
 						this.switchToggle.submitSwitch = true;
 						// window.location.href = location.origin + location.pathname;
 					} else {
-						this.$message.error(
-							this.$i18n.error[res.Error]
-								? this.$i18n.error[res.Error][this.$language]
-								: `error code is ${res.Error}`
-						);
+						this.$message.error(this.$t(`error[${res.Error}]`));
 						this.switchToggle.submitSwitch = true;
 					}
 				})
 				.catch(e => {
 					if (!e.message.includes("timeout")) {
-						this.$message.error("Network Error. Import Private Key Failed!");
+						this.$message.error(vm.$t('account.networkErrorImportPrivateKeyFailed'));
 					}
 				});
 		}

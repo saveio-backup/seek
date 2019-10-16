@@ -5,7 +5,7 @@
 				v-if="withDraw && channelSelected.IsOnline"
 				class="flex1 text-left"
 			>
-				<p class="theme-font-blue-40 transparent ft14 user-no-select">Channel(ONI)</p>
+				<p class="theme-font-blue-40 transparent ft14 user-no-select">{{$t('public.channel')}}(ONI)</p>
 				<p class="theme-font-blue ft24 mt10">{{filterFloat(channelSelected.BalanceFormat || 0)}}</p>
 				<!-- <p class="theme-font-blue transparent ft12 bold">{{channelSelected.Address}}</p> -->
 			</div>
@@ -13,7 +13,7 @@
 				v-else
 				class="flex1 text-left"
 			>
-				<p class="theme-font-blue-40 transparent ft14 user-no-select">Wallet(ONI)</p>
+				<p class="theme-font-blue-40 transparent ft14 user-no-select">{{$t('public.wallet')}}(ONI)</p>
 				<p class="theme-font-blue ft24 mt10">{{filterFloat(mainCount)}}</p>
 			</div>
 			<div class="flex column between">
@@ -21,14 +21,14 @@
 				<i
 					class="ofont ofont-huazhuan ft20 user-no-select"
 					:class="{'ex-change': channelSelected.IsOnline,'theme-font-blue-40 cursor-not-allowed':!channelSelected.IsOnline}"
-					:title="channelSelected.IsOnline?'Switchover':'Sorry, you cannot withdraw in offline status'"
+					:title="channelSelected.IsOnline?$t('public.switchover'):$t('public.SorryYouCannotWithdrawInOfflineStatus')"
 					@click="exWithDraw()"
 				></i></div>
 			<div
 				v-if="!withDraw || !channelSelected.IsOnline"
 				class="flex1 text-right"
 			>
-				<p class="theme-font-blue-40 transparent ft14 user-no-select">Channel(ONI)</p>
+				<p class="theme-font-blue-40 transparent ft14 user-no-select">{{$t('public.channel')}}(ONI)</p>
 				<p class="theme-font-blue ft24 mt10">{{filterFloat(channelSelected.BalanceFormat || 0)}}</p>
 				<!-- <p class="theme-font-blue transparent ft12 bold">{{channelSelected.Address}}</p> -->
 			</div>
@@ -36,7 +36,7 @@
 				v-else
 				class="flex1 text-right"
 			>
-				<p class="theme-font-blue-40 transparent ft14 user-no-select">Wallet(ONI)</p>
+				<p class="theme-font-blue-40 transparent ft14 user-no-select">{{$t('public.wallet')}}(ONI)</p>
 				<p class="theme-font-blue ft24 mt10">{{filterFloat(mainCount)}}</p>
 			</div>
 		</div>
@@ -48,7 +48,7 @@
 			@submit.native.prevent
 		>
 			<el-form-item
-				label="Amount(ONI)"
+				:label="$t('public.amount')+'(ONI)'"
 				prop="Amount"
 			>
 				<el-input
@@ -57,20 +57,20 @@
 					ref="transferAmount"
 					min='0'
 					v-model="transferInfo.Amount"
-					placeholder="Input Amount"
+					:placeholder="$t('public.inputAmount')"
 					@keyup.enter.native='toTransfer'
 					@blur="setFixed"
 				>
 				</el-input>
 			</el-form-item>
 			<el-form-item
-				label="Wallet Password"
+				:label="$t('public.walletPassword')"
 				prop="Password"
 			>
 				<el-input
 					class="transfer-input grey-theme"
 					v-model="transferInfo.Password"
-					placeholder="Input Wallet Password"
+					:placeholder="$t('public.pleaseInputWalletPassword')"
 					show-password
 					@keyup.enter.native='toTransfer'
 					type="password"
@@ -90,25 +90,27 @@ export default {
 	},
 	data() {
 		const validateMount = (rule, value, callback) => {
+			const vm = this;
 			const reg = /^[1-9](\d{0,8})\.(\d{1,9})$|^0\.(\d{0,9})$|^[1-9](\d{0,8})$/;
 			if (!reg.test(value)) {
-				callback(new Error("Please enter the correct format"));
+				callback(new Error(vm.$t('public.pleaseEnterTheCorrectFormat')));
 				return;
 			}
 			if (this.withDraw && this.channelSelected.IsOnline) {
 				if (value * 1 > this.channelSelected.BalanceFormat * 1) {
-					callback(new Error("Insufficient balance available"));
+					callback(new Error(vm.$t('public.insufficientBalanceAvailable')));
 					return;
 				}
 			} else {
 				if (value * 1 > this.mainCount * 1) {
-					callback(new Error("Insufficient balance available"));
+					callback(new Error(vm.$t('public.insufficientBalanceAvailable')));
 					return;
 				}
 			}
 			callback();
 		};
 		return {
+			validateMount,
 			switchToggle: { loading: null },
 			filterFloat,
 			withDraw: true,
@@ -120,7 +122,7 @@ export default {
 				Amount: [
 					{
 						required: true,
-						message: "Please fill amount",
+						message: this.$t('public.pleaseFillAmount'),
 						trigger: "blur"
 					},
 					{
@@ -131,7 +133,7 @@ export default {
 				Password: [
 					{
 						required: true,
-						message: "Please fill password",
+						message: this.$t('public.pleaseFillPassword'),
 						trigger: "blur"
 					}
 				]
@@ -140,9 +142,10 @@ export default {
 	},
 	methods: {
 		exWithDraw() {
+			const vm = this;
 			if (!this.channelSelected.IsOnline) {
 				this.$message({
-					message: "Sorry, you cannot withdraw in offline status"
+					message: vm.$t('public.SorryYouCannotWithdrawInOfflineStatus')
 				});
 				return;
 			}
@@ -161,9 +164,10 @@ export default {
 				: "";
 		},
 		toTransfer() {
+			const vm = this;
 			if (this.switchToggle.loading) return;
 			if (!this.channelSelected) {
-				this.emitMessage("Please Choose Channel Address", "error");
+				this.emitMessage(vm.$t('public.pleaseChooseChannelAddress'), "error");
 				return;
 			}
 			this.$refs.transferForm.validate(valid => {
@@ -183,7 +187,7 @@ export default {
 							{
 								loading: {
 									target: ".loading-content.loading-channel",
-									text: "Transaction processing...."
+									text: vm.$t('public.transactionProcessing')
 								},
 								timeout: (this.$config.outTime * 10000 + 50000)
 							}
@@ -194,22 +198,18 @@ export default {
 								// this.transferInfo.Password = ""; // reset
 								this.$refs.transferForm.resetFields();
 								this.$message({
-									message: "Transfer Success!",
+									message: vm.$t('public.transferSuccess'),
 									type: "success"
 								});
 								this.$emit("closeDialog");
 								this.initBalanceRequest();
 							} else {
-								this.$message.error(
-									this.$i18n.error[res.Error]
-										? this.$i18n.error[res.Error][this.$language]
-										: `error code is ${res.Error}`
-								);
+								this.$message.error(this.$t(`error[${res.Error}]`));
 							}
 						})
 						.catch(e => {
 							if (!e.message.includes("timeout")) {
-								this.$message.error("Network Error. Transfer Failed!");
+								this.$message.error(vm.$t('public.networkErrorTransferFailed'));
 							}
 						});
 				}
@@ -220,7 +220,34 @@ export default {
 			this.$store.dispatch("setChannelBalanceTotal");
 		}
 	},
+	watch: {
+		lang() {
+			this.transferRules = {
+				Amount: [
+					{
+						required: true,
+						message: this.$t('public.pleaseFillAmount'),
+						trigger: "blur"
+					},
+					{
+						validator: this.validateMount,
+						trigger: "blur"
+					}
+				],
+				Password: [
+					{
+						required: true,
+						message: this.$t('public.pleaseFillPassword'),
+						trigger: "blur"
+					}
+				]
+			}
+		}
+	},
 	computed: {
+		lang() {
+			return this.$i18n.locale;
+		},
 		mainCount: function() {
 			return this.$store.state.Wallet.mainCount;
 		}

@@ -10,27 +10,27 @@
 				<ripper-button
 					class="primary theme-font-blue"
 					@click="goUpload"
-				>Upload</ripper-button>
+				>{{$t('fileManager.upload')}}</ripper-button>
 
 				<!-- </router-link> -->
 				<ripper-button
 					class="ml10 bt-download theme-font-blue"
 					@click="batchDownload"
 				>
-					Download
+					{{$t('fileManager.download')}}
 				</ripper-button>
 				<ripper-button
 					class="ml10 bt-download theme-font-blue"
 					@click="batchDelete"
 				>
-					Delete
+					{{$t('fileManager.delete')}}
 				</ripper-button>
 			</div>
 			<div class="fun-search">
 				<el-input
 					v-model="filterInput"
 					prefix-icon="el-icon-search"
-					placeholder="Search by Name"
+					:placeholder="$t('fileManager.searchByName')"
 					class="grey-theme-at-grey"
 				></el-input>
 			</div>
@@ -40,13 +40,13 @@
 			v-else
 		>
 			<p class='light-theme-title user-no-select'>
-				Miner Control
+				{{$t('fileManager.minerControl')}}
 			</p>
 			<div class="fun-search">
 				<el-input
 					v-model="filterInput"
 					prefix-icon="el-icon-search"
-					placeholder="Search by Name"
+					:placeholder="$t('fileManager.searchByName')"
 					class="grey-theme-at-grey"
 				></el-input>
 			</div>
@@ -57,6 +57,7 @@
 				<el-table
 					ref='table'
 					:data="filterListData"
+					:empty-text="$t('public.noData')"
 					@row-click="clickRow"
 					height="100%"
 					@selection-change="selectFile"
@@ -70,7 +71,7 @@
 						width="30"
 					></el-table-column>
 					<el-table-column
-						label="File Name"
+						:label="$t('fileManager.fileName')"
 						class-name="rowName"
 						prop="Name"
 						sortable
@@ -89,7 +90,7 @@
 								>
 									<span
 										@click.stop="shareFile(scope.row)"
-										title="Share"
+										:title="$t('fileManager.fileName')"
 										v-if="scope.row.Privilege != 0"
 										class="active-blue cursor-pointer"
 									>
@@ -98,14 +99,14 @@
 									<span
 										v-if="page === 'filebox'"
 										class="active-blue cursor-pointer"
-										title="Download"
+										:title="$t('fileManager.download')"
 										@click.stop="downloadFile(scope.row)"
 									>
 										<i class="el-icon-download ft18"></i>
 									</span>
 									<span
 										v-if="page === 'filebox'"
-										title="Delete"
+										:title="$t('fileManager.delete')"
 										@click.stop="deleteFile(scope.row)"
 										class="active-blue cursor-pointer"
 									>
@@ -114,14 +115,14 @@
 									<span
 										@click.stop="showInFolder(scope.row.Path)"
 										v-if="page === 'miner' && scope.row.Path"
-										title="Open Folder"
+										:title="$t('fileManager.openFolder')"
 										class="active-blue cursor-pointer"
 									>
 										<i class="ofont ofont-wenjianxiangqing ft14"></i>
 									</span>
 									<span
 										v-if="page === 'filebox'"
-										title="Look Detail"
+										:title="$t('fileManager.lookDetail')"
 										@click.stop="openDetailDialog(scope.row)"
 										class="active-blue cursor-pointer"
 									>
@@ -134,7 +135,7 @@
 						</template>
 					</el-table-column>
 					<el-table-column
-						label="Model"
+						:label="$t('fileManager.model')"
 						width="100"
 						v-if="page === 'filebox'"
 						prop="StoreTypeNum"
@@ -142,24 +143,24 @@
 					>
 						<template slot-scope="scope">
 							<div :class="scope.row.Undone?'theme-font-blue-40':''">
-								{{scope.row.StoreType === 1 ? 'Advance' : scope.row.StoreType === 0 ? 'Primary' : ''}}
+								{{scope.row.StoreType === 1 ? $t('fileManager.advance') : scope.row.StoreType === 0 ? $t('fileManager.primary') : ''}}
 							</div>
 						</template>
 					</el-table-column>
 					<el-table-column
-						label="Owner"
+						:label="$t('fileManager.owner')"
 						v-if="page ==='miner'"
 						min-width="120"
 						prop="OwnerAddress"
 						sortable
 					>
 						<template slot-scope="scope">
-							<span class="td-grey">{{scope.row.OwnerAddress || 'Nameless'}}</span>
+							<span class="td-grey">{{scope.row.OwnerAddress || $t('fileManager.nameless')}}</span>
 						</template>
 					</el-table-column>
 					<!-- api return 'KB' unit -->
 					<el-table-column
-						label="Size"
+						:label="$t('fileManager.size')"
 						column-key="RealFileSize"
 						min-width="70"
 						prop="RealFileSize"
@@ -176,7 +177,7 @@
 					</el-table-column>
 					<el-table-column
 						v-if="true"
-						label="Date"
+						:label="$t('fileManager.date')"
 						width="170"
 						:prop="page ==='filebox'?'UpdatedAt':'DownloadAt'"
 						sortable
@@ -192,7 +193,7 @@
 					</el-table-column>
 					<el-table-column
 						v-if="page ==='miner'"
-						label="Profit"
+						:label="$t('fileManager.profit')"
 						min-width="70"
 						prop="Profit"
 						sortable
@@ -205,7 +206,7 @@
 					</el-table-column>
 					<el-table-column
 						v-if="page ==='miner'"
-						label="Contributions"
+						:label="$t('fileManager.contributions')"
 						prop="DownloadCount"
 						width="150"
 						sortable
@@ -213,7 +214,7 @@
 
 					</el-table-column>
 					<el-table-column
-						label="Type"
+						:label="$t('fileManager.type')"
 						v-if="page === 'filebox'"
 						width="150"
 						sortable
@@ -235,13 +236,13 @@
 			center
 		>
 			<div slot="title">
-				<h2>Share</h2>
+				<h2>{{$t('fileManager.share')}}</h2>
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content">
-				<p class="mt10 mb10 tl">File name: {{executedFile.Name}}</p>
+				<p class="mt10 mb10 tl">{{$t('fileManager.fileName')}}: {{executedFile.Name}}</p>
 				<el-form @submit.native.prevent>
-					<el-form-item label="Link:">
+					<el-form-item :label="$t('fileManager.link')+':'">
 						<el-input
 							readonly
 							:value="executedFile.Url || executedFile.Hash"
@@ -263,7 +264,7 @@
 						type="primer"
 						class="primary"
 						@click="switchToggle.shareDialog = false"
-					>Close</ripper-button>
+					>{{$t('public.close')}}</ripper-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -274,49 +275,49 @@
 			center
 		>
 			<div slot="title">
-				<h2>Download File</h2>
+				<h2>{{$t('fileManager.downloadFile')}}</h2>
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content disk-download-loading">
 				<div class="adjust">
 					<div class="adjust-item">
-						<p class="adjust-title theme-font-blue ft14">File Name:</p>
+						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.fileName')}}</p>
 						<div class="adjust-info">
 							<p class="theme-font-blue ft14 mr20">{{fileDownloadInfo.Name}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
-						<p class="adjust-title theme-font-blue ft14">File Size:</p>
+						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.fileSize')}}:</p>
 						<div class="adjust-info">
 							<p class="theme-font-blue ft14 mr20">{{fileDownloadInfo.Size}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
-						<p class="adjust-title theme-font-blue ft14">Save Path:</p>
+						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.savePath')}}:</p>
 						<div class="adjust-info">
 							<p class="ft14 mr20">{{fileDownloadInfo.DownloadDir || ''}}</p>
 						</div>
 					</div>
 					<div class="dialog-title-border"></div>
 					<div class="adjust-item">
-						<p class="adjust-title ft14">Cost:</p>
+						<p class="adjust-title ft14">{{$t('fileManager.cost')}}:</p>
 						<div class="adjust-info">
 							<p class="ft14 mr20">{{fileDownloadInfo.Fee ? fileDownloadInfo.Fee + ' ONI': ''}} </p>
 						</div>
 					</div>
 					<div class="adjust-item">
-						<p class="adjust-title theme-font-blue ft14">Channel balance:</p>
+						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.channelBalance')}}:</p>
 						<div class="adjust-info">
 							<p class="ft14 mr20">{{channelBind.BalanceFormat}}</p>
 						</div>
 					</div>
 				</div>
 				<div slot="footer">
-					<ripper-button @click="switchToggle.confrimDownloadDialog = false">Cancel</ripper-button>
+					<ripper-button @click="switchToggle.confrimDownloadDialog = false">{{$t('public.cancel')}}</ripper-button>
 					<ripper-button
 						class="primary"
 						@click="toDownload(fileToDownload)"
-					>Download</ripper-button>
+					>{{$t('fileManager.download')}}</ripper-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -328,23 +329,23 @@
 			center
 		>
 			<div slot="title">
-				<h2>Notice</h2>
+				<h2>{{$t('public.notice')}}</h2>
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content">
-				<p class="mt10 mb10 ft14 tl break-word">Sorry, you don't have any storage yet. Please get storage before the Primary Upload. Or you can do an Advanced Upload without having to purchase storage in advance.</p>
+				<p class="mt10 mb10 ft14 tl break-word">{{$t('fileManager.onStorageNotice')}}</p>
 				<p class="tr mt10 mb10">
 					<el-checkbox
 						@change="linkUpdateAllowRemind"
 						v-model="linkRemindToggle.noAllowRemind"
-					>No Longer remind, only do advanced uploads</el-checkbox>
+					>{{$t('fileManager.noLongerRemindOnlyDoAdvancedUploads')}}</el-checkbox>
 				</p>
 				<div slot="footer">
-					<ripper-button @click="goStorage">Get Storage</ripper-button>
+					<ripper-button @click="goStorage">{{$t('fileManager.getStorage')}}</ripper-button>
 					<ripper-button
 						class="primary"
 						@click="goAdvanceUpload"
-					>Advance Upload</ripper-button>
+					>{{$t('fileManager.advanceUpload')}}</ripper-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -355,11 +356,11 @@
 			center
 		>
 			<div slot="title">
-				<h2>Delete File</h2>
+				<h2>{{$t('fileManager.deleteFile')}}</h2>
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content disk-delete-loading">
-				<p class="mt10 mb10">Are you sure you want to <span>delete</span> the selected file?</p>
+				<p class="mt10 mb10">{{$t('fileManager.areYouSureYouWantTo')}} <span>{{$t('fileManager.delete2')}}</span> {{$t('fileManager.theSelectedFile')}}</p>
 				<p class="mb20">{{fileDeleteInfo.Name}}</p>
 				<el-form
 					ref="extraParamsForm"
@@ -369,13 +370,13 @@
 					class="mb20"
 				>
 					<el-form-item
-						label="Wallet Password:"
+						:label="$t('public.walletPassword')+':'"
 						prop="Password"
 					>
 						<el-input
 							type="password"
 							class="grey-theme"
-							placeholder="Please Input Wallet Password"
+							:placeholder="$t('public.pleaseInputWalletPassword')"
 							show-password
 							@keyup.native.enter='toDeleteFileNew(fileToDelete)'
 							v-model="extraParams.Password"
@@ -383,12 +384,12 @@
 					</el-form-item>
 				</el-form>
 				<div slot="footer">
-					<ripper-button @click="switchToggle.deleteDialog = false">Cancel</ripper-button>
+					<ripper-button @click="switchToggle.deleteDialog = false">{{$t('public.cancel')}}</ripper-button>
 					<ripper-button
 						type="danger"
 						class="primary"
 						@click="toDeleteFileNew(fileToDelete)"
-					>Delete</ripper-button>
+					>{{$t('fileManager.delete')}}</ripper-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -574,7 +575,7 @@ export default {
 			},
 			extraParamsRules: {
 				Password: [
-					{ required: true, message: "Please input  password", trigger: "blur" }
+					{ required: true, message: this.$t('public.pleaseInputPassword'), trigger: "blur" }
 				]
 			},
 			fileListData: [],
@@ -645,17 +646,19 @@ export default {
 			this.$router.push({ name: "upload" });
 		},
 		clipText(el) {
+			const vm = this;
 			clipboard.writeText(this.executedFile.Hash);
 			this.$message({
-				message: "Copied",
+				message: vm.$t('public.copied'),
 				duration: 1200,
 				type: "success"
 			});
 		},
 		toClipboard(text) {
+			const vm = this;
 			clipboard.writeText(text);
 			this.$message({
-				message: "Copied",
+				message: vm.$t('public.copied'),
 				duration: 1200,
 				type: "success"
 			});
@@ -738,11 +741,7 @@ export default {
 						this.switchToggle.load = true;
 					} else {
 						if (res.Error === 40007) return;
-						this.$message.error(
-							this.$i18n.error[res.Error]
-								? this.$i18n.error[res.Error][this.$language]
-								: `error code is ${res.Error}`
-						);
+						this.$message.error(this.$t(`error[${res.Error}]`));
 						this.switchToggle.load = true;
 					}
 				})
@@ -756,13 +755,14 @@ export default {
 			this.switchToggle.shareDialog = true;
 		},
 		downloadFile(file) {
+			const vm = this;
 			if (this.isSync) {
 				this.$confirm(
-					"Block unsynchronized completion. Are you sure to do this?",
-					"Notice",
+					vm.$t('public.blockUnsynchronizedCompletionAreYouSureToDoThis'),
+					vm.$t('public.notice'),
 					{
-						confirmButtonText: "Confirm",
-						cancelButtonText: "Cancel"
+						confirmButtonText: vm.$t('public.confirm'),
+						cancelButtonText: vm.$t('public.cancel')
 					}
 				)
 					.then(() => {
@@ -776,8 +776,9 @@ export default {
 			}
 		},
 		batchDownload() {
+			const vm = this;
 			const NO_DOWNLOAD_FILE_MSG =
-				"Please select the file you want to download.";
+				this.$t('fileManager.pleaseSelectTheFileYouWantToDownload');
 			if (!this.fileSelected || this.fileSelected.length === 0) {
 				this.$message({
 					message: NO_DOWNLOAD_FILE_MSG
@@ -786,11 +787,11 @@ export default {
 			}
 			if (this.isSync) {
 				this.$confirm(
-					"Block unsynchronized completion. Are you sure to do this?",
-					"Notice",
+					vm.$t('fileManager.blockUnsynchronizedCompletionAreYouSureToDoThis'),
+					vm.$t('fileManager.notice'),
 					{
-						confirmButtonText: "Confirm",
-						cancelButtonText: "Cancel"
+						confirmButtonText: vm.$t('fileManager.confirm'),
+						cancelButtonText: vm.$t('fileManager.cancel')
 					}
 				)
 					.then(() => {
@@ -847,9 +848,7 @@ export default {
 					for (let value of errorArr) {
 						errorMsg += `<p>`;
 						errorMsg += `${value.FileName || ""}`;
-						errorMsg += this.$i18n.error[value.Error]
-							? this.$i18n.error[value.Error][this.$language]
-							: `error code is ${value.Error}`;
+						errorMsg += this.$t(`error[${value.Error}]`);
 						errorMsg += `</p>`;
 					}
 					let errorLength = errorArr.length;
@@ -869,13 +868,13 @@ export default {
 						message: errorMsg
 					});
 				} else {
-					this.$message.error("Download Error");
+					this.$message.error(vm.$t('fileManager.downloadError'));
 				}
 			} else {
 				if (!errorMsg) {
 					this.$message({
 						type: "success",
-						message: "Start Download"
+						message: vm.$t('fileManager.startDownload')
 					});
 				} else {
 					this.$message.error({
@@ -901,15 +900,16 @@ export default {
 			return this.$axios.post(this.$api.download, data);
 		},
 		toDownload(downloadFiles) {
+			const vm = this;
 			if (this.fileDownloadInfo.Fee > this.channelBind.BalanceFormat * 1) {
 				this.$message.error(
-					"The channel balance is insufficient. Please try again after topup"
+					vm.$t('fileManager.theChannelBalanceIsInsufficientPleaseTryAgainAfterTopup')
 				);
 				return;
 			}
 			this.switchToggle.loading = this.$loading({
 				lock: true,
-				text: "File Processing....",
+				text: vm.$t('fileManager.fileProcessing'),
 				target: ".loading-content.disk-download-loading"
 			});
 
@@ -949,67 +949,13 @@ export default {
 			let errorMsg = ""; // error message
 			let flag = false; // is have success
 			this.waitForNowDownload({ arr, len: waitForNowDownloadLength, errorMsg, flag });
-			
-
-
-			// const length = downloadFiles.length;
-			// const commitAll = [];
-			// for (let i = 0; i < length; i++) {
-			// 	console.log(i);
-			// 	commitAll.push(
-			// 		this.$axios
-			// 			.post(this.$api.download, {
-			// 				Url: downloadFiles[i].Url,
-			// 				SetFileName: true,
-			// 				MaxPeerNum: 20
-			// 			})
-			// 			.then(res => {
-			// 				if (res.Error === 0) {
-			// 					console.log("downloading");
-			// 					console.log(res);
-			// 				} else {
-			// 					this.$message.error(
-			// 						this.$i18n.error[res.Error][this.$language]
-			// 					);
-			// 				}
-			// 			})
-			// 	);
-			// }
-			// this.$axios
-			// 	.all(commitAll)
-			// 	.then(
-			// 		this.$axios.spread(() => {
-			// 			// this.$store.dispatch("setDownload");
-			// 			ipcRenderer.send("run-dialog-event", { name: "setDownload" });
-			// 			this.switchToggle.confrimDownloadDialog = false;
-			// 			this.$message({
-			// 				message: "Start download",
-			// 				type: "success"
-			// 			});
-			// 			this.$router.push({
-			// 				name: "transfer",
-			// 				query: {
-			// 					transferType: 2
-			// 				}
-			// 			});
-			// 		})
-			// 	)
-			// 	.catch(e => {
-			// 		if (!e.message.includes("timeout")) {
-			// 			this.$message.error("Network Error. Download Failed!");
-			// 		}
-			// 	})
-			// 	.finally(() => {
-			// 		this.switchToggle.loading.close();
-			// 		this.switchToggle.loading = null;
-			// 	});
 		},
 		deleteFile(file) {
 			this.fileToDelete = [file];
 			this.switchToggle.deleteDialog = true;
 		},
 		batchDelete() {
-			const NO_DELETE_FILE_MSG = "Please select the file you want to Delete.";
+			const NO_DELETE_FILE_MSG = this.$t('fileManager.pleaseSelectTheFileYouWantToDelete');
 			if (!this.fileSelected || this.fileSelected.length === 0) {
 				this.$message({
 					message: NO_DELETE_FILE_MSG
@@ -1036,6 +982,7 @@ export default {
 			}
 		},
 		toDeleteFileNew(deleteFiles) {
+			const vm = this;
 			this.$refs.extraParamsForm.validate(valid => {
 				if (!valid) return;
 				let arr = [];
@@ -1051,7 +998,7 @@ export default {
 						{
 							timeout: 20000 * arr.length + this.$outTime * 2000,
 							loading: {
-								text: "Deleting....",
+								text: vm.$t('fileManager.deleting'),
 								target: ".loading-content.disk-delete-loading"
 							}
 						}
@@ -1062,7 +1009,7 @@ export default {
 						this.switchToggle.deleteDialog = false;
 						if (res.Error === 0) {
 							this.$message({
-								message: "Delete Successful",
+								message: vm.$t('fileManager.deleteSuccessful'),
 								type: "success"
 							});
 							this.syncDeleteFile(res.Result);
@@ -1074,19 +1021,20 @@ export default {
 					})
 					.catch(e => {
 						if (!e.message.includes("timeout")) {
-							this.$message.error("Network Error. Delete Failed.");
+							this.$message.error(vm.$t('fileManager.networkErrorDeleteFailed'));
 						}
 					});
 			});
 		},
 		toDeleteFile(dataList, hash) {
+			const vm = this;
 			this.$axios
 				.post(
 					this.$api.delete,
 					{ Hash: hash },
 					{
 						loading: {
-							text: "Deleting....",
+							text: vm.$t('fileManager.deleting'),
 							target: ".loading-content.disk-delete-loading"
 						}
 					}
@@ -1094,7 +1042,7 @@ export default {
 				.then(res => {
 					if (res.Error === 0) {
 						this.$message({
-							message: "Delete Successful",
+							message: vm.$t('fileManager.deleteSuccessful'),
 							type: "success"
 						});
 						dataList.some((item, index) => {
@@ -1107,11 +1055,7 @@ export default {
 						});
 						this.switchToggle.deleteDialog = false;
 					} else {
-						this.$message.error(
-							this.$i18n.error[res.Error]
-								? this.$i18n.error[res.Error][this.$language]
-								: `error code is ${res.Error}`
-						);
+						this.$message.error(this.$t(`error[${res.Error}]`));
 					}
 				});
 		}
@@ -1150,11 +1094,7 @@ export default {
 								(cost / 1000000000).toFixed(9)
 							);
 						} else {
-							this.$message.error(
-								this.$i18n.error[res.Error]
-									? this.$i18n.error[res.Error][this.$language]
-									: `error code is ${res.Error}`
-							);
+							this.$message.error(this.$t(`error[${res.Error}]`));
 						}
 						// }
 					})
@@ -1180,9 +1120,19 @@ export default {
 					this.fileDeleteInfo.Name = name;
 				}
 			});
+		},
+		lang() {
+			this.extraParamsRules = {
+				Password: [
+					{ required: true, message: this.$t('public.pleaseInputPassword'), trigger: "blur" }
+				]
+			}
 		}
 	},
 	computed: {
+		lang() {
+			return this.$i18n.locale;
+		},
 		space() {
 			return this.$store.state.Filemanager.space;
 		},

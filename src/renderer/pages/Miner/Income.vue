@@ -1,19 +1,19 @@
 <template>
 	<div id="income">
 		<div class="header">
-			<p class="light-theme-title mb10 user-no-select">Profit Detail</p>
+			<p class="light-theme-title mb10 user-no-select">{{$t('miner.profitDetail')}}</p>
 			<el-date-picker
 				class="common-el-input"
 				v-model="dateRange"
 				type="daterange"
 				@change="dateChanageGetIncom"
 				unlink-panels
-				range-separator="to"
-				start-placeholder="Start"
-				end-placeholder="End"
+				:range-separator="$t('miner.to')"
+				:start-placeholder="$t('miner.start')"
+				:end-placeholder="$t('miner.end')"
 			>
 			</el-date-picker>
-			<div class="total-income ft14">Total Profit: <span>{{filterFloat(result.TotalIncomeFormat).toLocaleString('en-US') || 0}} ONI</span></div>
+			<div class="total-income ft14">{{$t('miner.totalProfit')}}: <span>{{filterFloat(result.TotalIncomeFormat).toLocaleString('en-US') || 0}} ONI</span></div>
 		</div>
 
 		<!-- border -->
@@ -21,16 +21,16 @@
 			class="flex1 incomeTable"
 			ref="incomeTable"
 			:data="result.Incomes"
-			empty-text="No Data"
+			:empty-text="$t('public.noData')"
 			height='100%'
 		>
 			<el-table-column
-				label="File Name"
+				:label="$t('miner.fileName')"
 				prop="Name"
 				sortable
 			></el-table-column>
 			<el-table-column
-				label="Profit(ONI)"
+				:label="$t('miner.profit') + '(ONI)'"
 				sortable
 				prop="Profit"
 			>
@@ -41,7 +41,7 @@
 				</template>
 			</el-table-column>
 			<el-table-column
-				label="Time"
+				:label="$t('miner.time')"
 				sortable
 				prop="SharedAt"
 			>
@@ -192,11 +192,7 @@ export default {
 						}
 						this.loadSwitch = true;
 					} else {
-						this.$message.error(
-							this.$i18n.error[res.Error]
-								? this.$i18n.error[res.Error][this.$language]
-								: `error code is ${res.Error}`
-						);
+						this.$message.error(this.$t(`error[${res.Error}]`));
 						this.loadSwitch = true;
 					}
 				})

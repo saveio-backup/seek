@@ -145,6 +145,10 @@ export default {
 		init() {
 			let settings = ipcRenderer.sendSync("getAllSettings");
 			this.__proto__.__proto__.$config.maxNumUpload = settings.maxNumUpload;
+			this.$i18n.locale = settings.lang;
+		},
+		langUpdate({result}) {
+			this.$i18n.locale = result.lang;
 		}
 	}
 };

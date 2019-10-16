@@ -9,11 +9,11 @@
 				<p
 					class="ft20 mb10"
 					v-if="fileList.length>0"
-				>{{transferTypeConfig[transferType]}} Progress</p>
+				>{{$t(`fileManager["${transferTypeConfig[transferType]}"]`)}}{{$t('fileManager.progress')}}</p>
 				<p
 					class="grey-xs user-no-select"
 					v-else
-				>No task</p>
+				>{{$t('fileManager.noTask')}}</p>
 				<el-progress
 					v-if="fileList.length>0"
 					class="progress"
@@ -23,8 +23,8 @@
 				<p
 					class="ft14 mt10"
 					v-if="fileList.length>0"
-				>complete {{Math.ceil(totalProgress * 100)}}%,
-					<span class="ml10 light-blue">{{util.bytesToSize(getAllTaskSpeedTotal*1024)}}/s</span>
+				>{{$t('fileManager.complete')}} {{Math.ceil(totalProgress * 100)}}%,
+					<span class="ml10 light-blue">{{util.bytesToSize(getAllTaskSpeedTotal*1024)}}/{{$t('fileManager.s')}}</span>
 				</p>
 			</div>
 
@@ -34,45 +34,45 @@
 				v-if="transferType === 1"
 				class="batch-button"
 				@click="openPassword()"
-			>Cancel All</ripper-button>
+			>{{$t('fileManager.cancelAll')}}</ripper-button>
 
 			<!-- download cancel -->
 			<ripper-button
 				v-if="transferType === 2"
 				class="batch-button"
 				@click="openConfirmCancelDownload('all')"
-			>Cancel All</ripper-button>
+			>{{$t('fileManager.cancelAll')}}</ripper-button>
 			<!-- title="Comming Soon..." -->
 			<ripper-button
 				v-if="transferType !== 0"
 				class="batch-button"
 				:class="{'not-allow-opeation':!show}"
 				@click="continueAll"
-			>Start All</ripper-button>
+			>{{$t('fileManager.startAll')}}</ripper-button>
 			<!-- title="Comming Soon..." -->
 			<ripper-button
 				v-if="transferType !== 0"
 				class="batch-button"
 				:class="{'not-allow-opeation':!show}"
 				@click="pauseAll"
-			>Pause All</ripper-button>
+			>{{$t('fileManager.pauseAll')}}</ripper-button>
 			<!--@click="switchToggle.newTaskDialog=true"-->
 			<ripper-button
 				v-if="transferType === 2"
 				class="primary batch-button"
 				@click="openNewTaskDialog"
-			>New Task</ripper-button>
+			>{{$t('fileManager.newTask')}}</ripper-button>
 		</div>
 		<!-- delete all -->
 		<div
 			v-else
 			class="top-progress mr50 ml20"
 		>
-			<p class="theme-font-blue ft14 user-no-select flex1">Finished {{fileList.length}} Files</p>
+			<p class="theme-font-blue ft14 user-no-select flex1">{{$t('fileManager.finished')}} {{fileList.length}} {{$t('fileManager.files')}}</p>
 			<ripper-button
 				v-if="transferType === 0"
 				@click="deleteAll"
-			>Delete All</ripper-button>
+			>{{$t('fileManager.deleteAll')}}</ripper-button>
 		</div>
 		<!-- table -->
 		<div
@@ -82,7 +82,7 @@
 			<!-- border -->
 			<el-table
 				:data="fileList"
-				empty-text='No Data'
+				:empty-text='$t("public.noData")'
 				height="100%"
 				:show-header="false"
 				row-key="Id"
@@ -96,13 +96,13 @@
 				>
 					<template slot-scope="scope">
 						<div class="ft16 theme-font-blue">
-							<i class="ofont ofont-wangye" title="Third-party Websites Resources" v-if="scope.row.Url.startsWith('oni://www')"></i>
+							<i class="ofont ofont-wangye" :title="$t('fileManager.thirdPartyWebsitesResources')" v-if="scope.row.Url.startsWith('oni://www')"></i>
 						</div>
 					</template>
 				</el-table-column>
 				<el-table-column
 					min-width="200"
-					label="File Name"
+					:label="$t('fileManager.fileName')"
 					class-name="rowName"
 				>
 					<template slot-scope="scope">
@@ -114,7 +114,7 @@
 					</template>
 				</el-table-column>
 				<el-table-column
-					label="Status"
+					:label="$t('public.status')"
 					v-if="transferType === 0"
 					min-width="180"
 				>
@@ -127,13 +127,13 @@
 								class="ofont mr10 ft16"
 								:class="scope.row.IsUploadAction ? 'ofont-shangchuan':'ofont-xiazai2'"
 							></i>
-							<span v-if="!scope.row.IsUploadAction">Download Completed</span>
-							<span v-else>Upload Completed</span>
+							<span v-if="!scope.row.IsUploadAction">{{$t('fileManager.downloadCompleted')}}</span>
+							<span v-else>{{$t('fileManager.uploadCompleted')}}</span>
 						</div>
 					</template>
 				</el-table-column>
 				<el-table-column
-					label="Progress"
+					:label="$t('fileManager.progress')"
 					v-if="transferType !== 0"
 					min-width="250"
 				>
@@ -151,7 +151,7 @@
 									{{Math.ceil((scope.row.Progress||0)*100)}}%
 								</span>
 								<span class="theme-font-blue-40">
-									({{taskSpeed[scope.row.Id] && util.bytesToSize((taskSpeed[scope.row.Id].speed * 1024 || 0)) || '0 Byte'}}/s)
+									({{taskSpeed[scope.row.Id] && util.bytesToSize((taskSpeed[scope.row.Id].speed * 1024 || 0)) || '0 Byte'}}/{{$t('fileManager.s')}})
 								</span>
 							</span>
 						</div>
@@ -159,29 +159,29 @@
 							class="flex break-word mr20"
 							v-if="httpWaitForing[scope.row.Id]"
 						>
-							waiting for {{httpWaitForing[scope.row.Id].waitFor}}
+							{{$t('fileManager.waitingFor')}} {{httpWaitForing[scope.row.Id].waitFor}}
 						</div>
 						<div
 							class="flex ai-center break-word mr20"
 							v-else
 						>
 							<div v-if="scope.row.Status === 0">
-								<span class="light-blue">Task Pause</span>
+								<span class="light-blue">{{$t('fileManager.taskPause')}}</span>
 							</div>
 							<div v-else-if="scope.row.Status === 4">
-								<span class="light-error">{{scope.row.ErrMsg || (transferType === 1? 'Upload failed':transferType === 2?'Download failed':'')}}</span>
+								<span class="light-error">{{scope.row.ErrMsg || (transferType === 1? $t('fileManager.uploadFailed'):transferType === 2?$t('fileManager.downloadFailed'):'')}}</span>
 							</div>
 							<div
 								class="light-blue"
 								v-else
 							>
-								{{ getDetailStatus(scope.row.DetailStatus) }}
+								{{ $t(`error['${scope.row.DetailStatus}']`) }}
 							</div>
 						</div>
 					</template>
 				</el-table-column>
 				<el-table-column
-					label="Date"
+					:label="$t('fileManager.date')"
 					v-if="transferType === 0"
 					min-width="150"
 				>
@@ -198,13 +198,13 @@
 					<template slot-scope="scope">
 						<div class="action ft18 opera">
 							<span
-								title="Open folder"
+								:title="$t('fileManager.openFolder')"
 								v-if="scope.row.Path"
 								class="active-blue cursor-pointer"
 								@click="showInFolder(scope.row.Path)"
 							><i class="ofont ofont-wenjianxiangqing ft14"></i></span>
 							<span
-								title="Decrypt"
+								:title="$t('fileManager.decrypt')"
 								class="active-blue cursor-pointer"
 								@click="setFileSelected(scope.row)"
 								v-if="(!scope.row.IsUploadAction) && scope.row.Path && scope.row.Status === 3 && scope.row.Encrypted"
@@ -212,7 +212,7 @@
 							<span
 								class="active-blue cursor-pointer"
 								:class="{'not-allow-opeation':!show || ((scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4)}"
-								:title="(!show || ((scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4)) ? 'Comming Soon...' : scope.row.IsUploadAction ? 'Start to Upload':'Start to Download'"
+								:title="(!show || ((scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4)) ? $t('fileManager.commingSoon') : scope.row.IsUploadAction ? $t('fileManager.startToUpload'):$t('fileManager.startToDownload')"
 								v-show="scope.row.Status === 4"
 								@click="toUploadOrDownloadAgain([scope.row], transferType)"
 							><i
@@ -221,7 +221,7 @@
 								></i></span>
 							<span
 								class="active-blue cursor-pointer"
-								:title="!show  ? 'Comming Soon...' : scope.row.IsUploadAction ? 'Start to Upload':'Start to Download'"
+								:title="!show  ? $t('fileManager.commingSoon') : scope.row.IsUploadAction ? $t('fileManager.startToUpload'):$t('fileManager.startToDownload')"
 								:class="{'not-allow-opeation':!show}"
 								v-show="scope.row.Status === 0"
 								@click="toUploadOrDownloadContinue([scope.row], transferType)"
@@ -229,33 +229,33 @@
 							<span
 								class="active-blue cursor-pointer"
 								:class="{'not-allow-opeation':!show || ((scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4)}"
-								:title="(!show || ((scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4)) ? 'Comming Soon...' : scope.row.IsUploadAction ? 'Pause to Upload':'Pause to Download'"
+								:title="(!show || ((scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4)) ? $t('fileManager.commingSoon') : scope.row.IsUploadAction ? $t('fileManager.pauseToUpload'):$t('fileManager.pauseToDownload')"
 								v-show="(scope.row.Status === 1 || scope.row.Status === 2)"
 								@click="uploadOrDownloadPause([scope.row], transferType)"
 							><i class="ofont ofont-zanting"></i></span>
 							<span
 								class="active-blue cursor-pointer"
 								:class="{'not-allow-opeation':!show || ((scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4)}"
-								:title="(!show || ((scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4)) ? 'Comming Soon...' : scope.row.IsUploadAction ? 'Cancel to Upload':'Cancel to Download'"
+								:title="(!show || ((scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4)) ? $t('fileManager.commingSoon') : scope.row.IsUploadAction ? $t('fileManager.cancelToUpload'):$t('fileManager.cancelToDownload')"
 								v-show="transferType === 1"
 								@click="openPassword(scope.row)"
 							><i class="ofont ofont-guanbi"></i></span>
 							<span
 								class="active-blue cursor-pointer"
 								:class="{'not-allow-opeation':!show || ((scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4)}"
-								:title="(!show || ((scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4)) ? 'Comming Soon...' : scope.row.IsUploadAction ? 'Cancel to Upload':'Cancel to Download'"
+								:title="(!show || ((scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4)) ? $t('fileManager.commingSoon') : scope.row.IsUploadAction ? $t('fileManager.cancelToUpload'):$t('fileManager.cancelToDownload')"
 								v-show="transferType === 2"
 								@click="openConfirmCancelDownload(scope.row)"
 							><i class="ofont ofont-guanbi"></i></span>
 							<span
 								class="active-blue cursor-pointer"
-								title="Look Detail"
+								:title="$t('fileManager.lookDetail')"
 								@click="openDetailDialog(scope.row)"
 							><i class="ofont ofont-xiangqing"></i></span>
 							<!-- v-show="(scope.row.Nodes && scope.row.Nodes.length > 0) || scope.row.Status === 3" -->
 							<span
 								class="active-blue cursor-pointer"
-								title="Delete Record"
+								:title="$t('fileManager.deleteRecord')"
 								@click="deleteRecord(scope.row)"
 								v-show="transferType === 0"
 							><i class="ofont ofont-shanchu"></i></span>
@@ -272,7 +272,7 @@
 			:visible.sync="switchToggle.newTaskDialog"
 		>
 			<div slot="title">
-				<h2>New Download</h2>
+				<h2>{{$t('fileManager.newDownload')}}</h2>
 				<div class="dialog-title-border"></div>
 			</div>
 			<download-dialog
@@ -288,7 +288,7 @@
 			:visible.sync="switchToggle.passwordDialog"
 		>
 			<div slot="title">
-				<h2>Confirm</h2>
+				<h2>{{$t('public.confirm')}}</h2>
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content password-cancel-dialog">
@@ -299,7 +299,7 @@
 					@submit.native.prevent
 				>
 					<el-form-item
-						label="Password:"
+						:label="$t('public.password')+':'"
 						prop="Password"
 					>
 						<el-input
@@ -307,7 +307,7 @@
 							show-password
 							type="password"
 							@keyup.native.enter='toCancel'
-							placeholder="Input Password"
+							:placeholder="$t('public.pleaseInputPassword')"
 							class="grey-theme mb10"
 						></el-input>
 					</el-form-item>
@@ -317,7 +317,7 @@
 						class="primary"
 						type="primary"
 						@click="toCancel"
-					>Confirm</ripper-button>
+					>{{$t('public.confirm')}}</ripper-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -329,16 +329,16 @@
 			center
 		>
 			<div slot="title">
-				<h2>Confirm</h2>
+				<h2>{{$t('public.confirm')}}</h2>
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content decrypt">
 				<el-form>
-					<el-form-item label="File Password:">
+					<el-form-item :label="$t('fileManager.filePassword')+':'">
 						<el-input
 							v-model="fileSelected.Password"
 							@keyup.native.enter='toDecrypt'
-							placeholder="Input File Password"
+							:placeholder="$t('public.pleaseInputPassword')"
 							class="grey-theme mb10"
 						></el-input>
 					</el-form-item>
@@ -348,7 +348,7 @@
 						class="primary"
 						type="primary"
 						@click="toDecrypt"
-					>Confirm</ripper-button>
+					>{{$t('public.confirm')}}</ripper-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -360,17 +360,17 @@
 			center
 		>
 			<div slot="title">
-				<h2>Notice</h2>
+				<h2>{{$t('public.notice')}}</h2>
 				<div class="dialog-title-border"></div>
 			</div>
-			<p>Are your Sure to Delete this File?</p>
+			<p>{{$t('fileManager.areYourSureToDeleteThisFile')}}</p>
 			<p>{{executedFile.FileName}}</p>
 			<div slot="footer">
-				<ripper-button @click="switchToggle.deleteDialog = false">Cancel</ripper-button>
+				<ripper-button @click="switchToggle.deleteDialog = false">{{$t('public.cancel')}}</ripper-button>
 				<ripper-button
 					class="primary"
 					@click="toDeleteFile(executedFile.FileHash)"
-				>Delete</ripper-button>
+				>{{$t('fileManager.delete')}}</ripper-button>
 			</div>
 		</el-dialog>
 		<!-- upload page upload dialog -->
@@ -381,7 +381,7 @@
 			center
 		>
 			<div slot="title">
-				<h2>{{transferType === 1?'Upload Detail':'Download Detail'}}</h2>
+				<h2>{{transferType === 1?$t('fileManager.uploadDetail'):$t('fileManager.downloadDetail')}}</h2>
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content node-wrapper">
@@ -393,19 +393,19 @@
 						v-if="transferType === 1"
 						class="flex tr no-border pb0"
 					>
-						<div class="node-name pr30">Upload Model:</div>
+						<div class="node-name pr30">{{$t('fileManager.uploadModel')}}:</div>
 						<div
 							class="theme-font-blue-40 node-value"
 							v-if="fileObjById[detailId]"
 						>
-							{{fileObjById[detailId].StoreType === 1 ? 'Advance' : fileObjById[detailId].StoreType === 0 ? 'Primary' : ''}}
+							{{fileObjById[detailId].StoreType === 1 ? $t('fileManager.advance') : fileObjById[detailId].StoreType === 0 ? $t('fileManager.primary') : ''}}
 						</div>
 					</li>
 					<li
 						class="flex tr"
 						:class="{'no-border': fileDetailNodes.length === 0 || transferType !== 1}"
 					>
-						<div class="node-name pr30">File Hash:</div>
+						<div class="node-name pr30">{{$t('fileManager.fileHash')}}:</div>
 						<div
 							class="theme-font-blue-40 node-value"
 							v-if="fileObjById[detailId]"
@@ -415,7 +415,7 @@
 						v-if="transferType !== 1"
 						class="flex tr no-border"
 					>
-						<div class="node-name pr30">Consumption:</div>
+						<div class="node-name pr30">{{$t('fileManager.Consumption')}}:</div>
 						<div
 							class="theme-font-blue-40 node-value"
 							v-if="fileObjById[detailId]"
@@ -427,7 +427,7 @@
 							v-for="(item, index) in fileDetailNodes"
 							:key="item.HostAddr"
 						>
-							<div class="node-name pr30">Node{{index+1}}:</div>
+							<div class="node-name pr30">{{$t('fileManager.node')}}{{index+1}}:</div>
 							<!-- more-than-5 class: gt text color is white lt text color is #202020-->
 							<div class="node-process">
 								<el-progress
@@ -438,7 +438,7 @@
 									:class="{'more-than-5': (((item.UploadSize?item.UploadSize:item.DownloadSize)/fileObjById[detailId].FileSize) < 0.15),'progressAnimate': fileObjById[detailId].Status != 4 && fileObjById[detailId].Status != 0}"
 								></el-progress>
 							</div>
-							<div class="ml10 tl node-speed ft14 theme-font-blue-40">{{nodeSpeed[item.HostAddr] && util.bytesToSize(nodeSpeed[item.HostAddr].speed*1024) || '0 Byte'}}/s</div>
+							<div class="ml10 tl node-speed ft14 theme-font-blue-40">{{nodeSpeed[item.HostAddr] && util.bytesToSize(nodeSpeed[item.HostAddr].speed*1024) || '0 Byte'}}/{{$t('fileManager.s')}}</div>
 							<div
 								class="file-size tr theme-font-blue-40"
 								v-if="fileObjById[detailId]"
@@ -447,7 +447,7 @@
 					</template>
 					<template v-else-if="transferType === 2">
 						<li class="flex tr no-border">
-							<div class="node-name pr30">Source Node:</div>
+							<div class="node-name pr30">{{$t('fileManager.sourceNode')}}:</div>
 							<div>
 								<div
 									class="tl flex mb10"
@@ -455,13 +455,13 @@
 									:key="item.HostAddr"
 								>
 									<div class="node-content-first theme-font-blue-70">
-										Node{{index+1}}
+										{{$t('fileManager.node')}}{{index+1}}
 									</div>
 									<div class="node-content-second theme-font-blue-40">
 										{{util.bytesToSize(item.UploadSize*1024 || item.DownloadSize*1024)}}
 									</div>
 									<div class="node-content-third theme-font-blue-40">
-										{{nodeSpeed[item.HostAddr] && util.bytesToSize(nodeSpeed[item.HostAddr].speed*1024) || '0 Byte'}}/s
+										{{nodeSpeed[item.HostAddr] && util.bytesToSize(nodeSpeed[item.HostAddr].speed*1024) || '0 Byte'}}/{{$t('fileManager.s')}}
 									</div>
 								</div>
 							</div>
@@ -472,7 +472,7 @@
 					<ripper-button
 						class="primary"
 						@click="switchToggle.detailDialog = false"
-					>OK</ripper-button>
+					>{{$t('fileManager.ok')}}</ripper-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -485,23 +485,23 @@
 			center
 		>
 			<div slot="title">
-				<h2>Task Delete</h2>
+				<h2>{{$t('fileManager.taskDelete')}}</h2>
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content">
 				<p class="mb20 mt10">
-					Are you sure you want to delete the selected task?
+					{{$t('fileManager.areYouSureYouWantToDeleteTheSelectedTask')}}
 				</p>
 				<div slot="footer">
 					<ripper-button
 						type="primary"
 						@click="switchToggle.confirmCancelDownloadDialog=false"
-					>Cancel</ripper-button>
+					>{{$t('fileManager.cancel')}}</ripper-button>
 					<ripper-button
 						class="primary"
 						type="primary"
 						@click="cancelDownload"
-					>Confirm</ripper-button>
+					>{{$t('fileManager.confirm')}}</ripper-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -520,7 +520,7 @@
 			center
 		>
 			<div slot="title">
-				<h2>File Detail</h2>
+				<h2>{{$t('fileManager.fileDetail')}}</h2>
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content download-file-detail-loading">
@@ -529,19 +529,19 @@
 					v-if="fileObjById[detailId]"
 				>
 					<div class="adjust-item">
-						<p class="adjust-title theme-font-blue ft14">File Hash:</p>
+						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.fileHash')}}:</p>
 						<div class="adjust-info">
 							<p class="theme-font-blue ft14 mr20">{{fileObjById[detailId].FileHash || ''}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
-						<p class="adjust-title theme-font-blue ft14">Download Date:</p>
+						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.downloadDate')}}:</p>
 						<div class="adjust-info">
 							<p class="theme-font-blue ft14 mr20">{{$dateFormat.formatTimeByTimestamp(fileObjById[detailId].UpdatedAt*1000) || ''}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
-						<p class="adjust-title theme-font-blue ft14">Fee:</p>
+						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.fee')}}:</p>
 						<div class="adjust-info">
 							<p class="theme-font-blue ft14 mr20">{{fileObjById[detailId].DownloadSize * 1024 / Math.pow(10, 9) || '0'}} ONI</p>
 						</div>
@@ -552,7 +552,7 @@
 						class="primary"
 						type="primary"
 						@click="switchToggle.downloadDetailDialog=false"
-					>Close</ripper-button>
+					>{{$t('public.close')}}</ripper-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -618,7 +618,7 @@ export default {
 				Password: [
 					{
 						required: true,
-						message: "Please fill password",
+						message: this.$t('public.pleaseFillPassword'),
 						trigger: "blur"
 					}
 				]
@@ -710,7 +710,23 @@ export default {
 			taskSpeedNum: 1 // computed fileList change max time（3s）
 		};
 	},
+	watch: {
+		lang() {
+			this.passwordCancelRules = {
+				Password: [
+					{
+						required: true,
+						message: this.$t('public.pleaseFillPassword'),
+						trigger: "blur"
+					}
+				]
+			}
+		}
+	},
 	computed: {
+		lang() {
+			return this.$i18n.locale;
+		},
 		totalProgress: function() {
 			// let progress = 0;
 			// let fileList = 0;
@@ -785,11 +801,11 @@ export default {
 			});
 			return arr;
 		},
-		getDetailStatus: function() {
-			return function(detailStatus) {
-				return this.$i18n.error[detailStatus][this.$language];
-			};
-		},
+		// getDetailStatus: function() {
+		// 	return function(detailStatus) {
+		// 		return this.$i18n.error[detailStatus][this.$language];
+		// 	};
+		// },
 		getAllTaskSpeedTotal: function() {
 			let speedTotal = 0;
 			for (let value of Object.keys(this.taskSpeed)) {
@@ -855,13 +871,14 @@ export default {
 		},
 		//open new task dilaog for to download task
 		openNewTaskDialog() {
+			const vm = this;
 			if (this.isSync && this.transferType === 2) {
 				this.$confirm(
-					"Block unsynchronized completion. Are you sure to do this?",
-					"Notice",
+					vm.$t('public.blockUnsynchronizedCompletionAreYouSureToDoThis'),
+					vm.$t('public.notice'),
 					{
-						confirmButtonText: "Confirm",
-						cancelButtonText: "Cancel"
+						confirmButtonText: vm.$t('public.confirm'),
+						cancelButtonText: vm.$t('public.cancel')
 					}
 				)
 					.then(() => {
@@ -887,12 +904,13 @@ export default {
 		 * task 'all':cancel all task  task: cancel the task
 		 */
 		openConfirmCancelDownload(task) {
+			const vm = this;
 			const type = this.transferType;
 			if (task === "all") {
 				const arr = this.getTask(type, 0, 1, 2, 4);
 				if (arr.length === 0) {
 					this.$message({
-						message: "There are no tasks to cancel"
+						message: vm.$t('fileManager.thereAreNoTasksToCancel')
 					});
 					return;
 				}
@@ -914,9 +932,10 @@ export default {
 			// to do!!!!!
 			// if (!this.show) return;
 			// add loading
+			const vm = this;
 			this.passwordCancel.loadingObj = this.$loading({
 				target: ".password-cancel-dialog.loading-content",
-				text: "Loading...",
+				text: vm.$t('fileManager.loading'),
 				lock: true
 			});
 			if (this.passwordCancel.File === null) {
@@ -932,6 +951,7 @@ export default {
 		},
 		// upload file open cancel task dialog to input password
 		openPassword(file = null) {
+			const vm = this;
 			if (file && file.DetailStatus === -1) {
 				let newWaitForUploadList = this.WaitForUploadList.filter(value => {
 					return value.Id !== file.Id;
@@ -951,7 +971,7 @@ export default {
 			}
 			if(this.uploadLength === 0) {
 				this.$message({
-					message: "There are no tasks to start"
+					message: vm.$t('fileManager.thereAreNoTasksToStart')
 				});
 				return;
 			}
@@ -986,11 +1006,12 @@ export default {
 		cancelAll() {
 			// to do!!!!!
 			// if (!this.show) return;
+			const vm = this;
 			const type = this.transferType;
 			const arr = this.getTask(type, 0, 1, 2, 3, 4);
 			if (arr.length === 0) {
 				this.$message({
-					message: "There are no tasks to cancel"
+					message: vm.$t('fileManager.thereAreNoTasksToCancel')
 				});
 				this.passwordCancel.loadingObj &&
 					this.passwordCancel.loadingObj.close();
@@ -999,6 +1020,7 @@ export default {
 			this.uploadOrDownloadCancel(arr, type);
 		},
 		toContinueAll() {
+			const vm = this;
 			const type = this.transferType;
 			let flag = false;
 			//get pause task to continue
@@ -1016,21 +1038,22 @@ export default {
 			//if no task message
 			if (!flag) {
 				this.$message({
-					message: "There are no tasks to start"
+					message: vm.$t('fileManager.thereAreNoTasksToStart')
 				});
 			}
 		},
 		// continue all task
 		continueAll() {
 			// to do!!!!!
+			const vm = this;
 			if (!this.show) return;
 			if (this.isSync && this.transferType === 2) {
 				this.$confirm(
-					"Block unsynchronized completion. Are you sure to do this?",
-					"Notice",
+					vm.$t('public.blockUnsynchronizedCompletionAreYouSureToDoThis'),
+					vm.$t('public.notice'),
 					{
-						confirmButtonText: "Confirm",
-						cancelButtonText: "Cancel"
+						confirmButtonText: vm.$t('public.confirm'),
+						cancelButtonText: vm.$t('public.cancel')
 					}
 				)
 					.then(() => {
@@ -1044,12 +1067,13 @@ export default {
 		// pause all task
 		pauseAll() {
 			// to do!!!!!
+			const vm = this;
 			if (!this.show) return;
 			const type = this.transferType;
 			const arr = this.getTask(type, 1, 2);
 			if (arr.length === 0) {
 				this.$message({
-					message: "There are no tasks to pause"
+					message: vm.$t('fileManager.thereAreNoTasksToPause')
 				});
 				return;
 			}
@@ -1057,17 +1081,18 @@ export default {
 		},
 		// delete complete all task record
 		deleteAll() {
+			const vm = this;
 			const type = this.transferType;
 			const arr = this.getTask(type, 3);
 			if (arr.length === 0) {
 				this.$message({
-					message: "There are no record to delete"
+					message: vm.$t('fileManager.thereAreNoRecordToDelete')
 				});
 				return;
 			}
-			this.$confirm("Are you sure to delete all records?", "Delete All", {
-				confirmButtonText: "Confirm",
-				cancelButtonText: "Cancel"
+			this.$confirm(vm.$t('fileManager.areYouSureToDeleteAllRecords'), vm.$t('fileManager.deleteAll'), {
+				confirmButtonText: vm.$t('public.confirm'),
+				cancelButtonText: vm.$t('public.cancel')
 			})
 				.then(() => {
 					this.deleteRecord(arr);
@@ -1101,6 +1126,7 @@ export default {
 		},
 		// delete complete record!!!!!
 		deleteRecord(row) {
+			const vm = this;
 			// get params
 			let isArray = this.isArray(row);
 			let params;
@@ -1121,7 +1147,7 @@ export default {
 			// add wait for task and get have wait for task
 			const haveHttpWaitFor = this.addHttpWaitFor({
 				row: row,
-				waitFor: "delete record"
+				waitFor: this.$t('fileManager.deleteRecord')
 			});
 			if (!haveHttpWaitFor) return;
 
@@ -1145,22 +1171,18 @@ export default {
 						//if no err
 						if (errorArr.length === 0) {
 							this.$message({
-								message: "Opeation Success",
+								message: vm.$t('fileManager.opeationSuccess'),
 								type: "success"
 							});
 						}
 					} else {
-						this.$message.error(
-							this.$i18n.error[res.Error]
-								? this.$i18n.error[res.Error][this.$language]
-								: `error code is ${res.Error}`
-						);
+						this.$message.error(this.$t(`error["${res.Error}"]`));
 					}
 				})
 				.catch(e => {
 					this.removeHttpWaitFor({ Ids: params.Ids });
 					if (!e.message.includes("timeout")) {
-						this.$message.error("Network Error. Delete Record Failed!");
+						this.$message.error(vm.$t('fileManager.networkErrorDeleteRecordFailed'));
 					}
 				});
 		},
@@ -1183,7 +1205,7 @@ export default {
 		 * type: 0:upload    1:download
 		 */
 		async uploadOrDownloadCancel(row, type) {
-			// to do!!!!!
+			const vm = this;
 			// if (!this.show) return;
 			// get http url
 			let url = type === 1 ? this.$api.uploadCancel : this.$api.downloadCancel;
@@ -1229,7 +1251,7 @@ export default {
 					if (passwordCheck.Error !== 0) {
 						this.passwordCancel.loadingObj &&
 							this.passwordCancel.loadingObj.close();
-						this.$message.error("Password Check Failed");
+						this.$message.error(vm.$t('fileManager.passwordCheckFailed'));
 						return;
 					}
 					// pass password check wait for to delete wait for upload file
@@ -1299,16 +1321,14 @@ export default {
 							if (value && value.Code) {
 								errorMsg += `<p>`;
 								errorMsg += `${value.FileName || ""}`;
-								errorMsg += this.$i18n.error[value.Error]
-									? this.$i18n.error[value.Error][this.$language]
-									: `error code is ${value.Error}`;
+								errorMsg += vm.$t(`error["${value.Error}"]`);
 								errorMsg += `</p>`;
 							}
 						}
 						//if no err
 						if (errorMsg.length === 0) {
 							this.$message({
-								message: "Opeation Success",
+								message: vm.$t('fileManager.opeationSuccess'),
 								type: "success"
 							});
 						} else {
@@ -1318,29 +1338,26 @@ export default {
 							});
 						}
 					} else {
-						this.$message.error(
-							this.$i18n.error[res.Error]
-								? this.$i18n.error[res.Error][this.$language]
-								: `error code is ${res.Error}`
-						);
+						this.$message.error(this.$t(`error["${res.Error}"]`));
 					}
 				})
 				.catch(e => {
 					this.passwordCancel.loadingObj &&
 						this.passwordCancel.loadingObj.close();
 					if (!e.message.includes("timeout")) {
-						this.$message.error("Network Error. Cancel Task Failed!");
+						this.$message.error(vm.$t('fileManager.networkErrorCancelTaskFailed'));
 					}
 				});
 		},
 		toUploadOrDownloadAgain(row, type) {
+			const vm = this;
 			if (this.isSync && this.transferType === 2) {
 				this.$confirm(
-					"Block unsynchronized completion. Are you sure to do this?",
-					"Notice",
+					vm.$t('public.blockUnsynchronizedCompletionAreYouSureToDoThis'),
+					vm.$t('public.notice'),
 					{
-						confirmButtonText: "Confirm",
-						cancelButtonText: "Cancel"
+						confirmButtonText: vm.$t('public.confirm'),
+						cancelButtonText: vm.$t('public.cancel')
 					}
 				)
 					.then(() => {
@@ -1404,11 +1421,7 @@ export default {
 
 					if (res.Error === 0) {
 					} else {
-						this.$message.error(
-							this.$i18n.error[res.Error]
-								? this.$i18n.error[res.Error][this.$language]
-								: `error code is ${res.Error}`
-						);
+						this.$message.error(this.$t(`error[${res.Error}]`));
 					}
 				})
 				.catch(e => {
@@ -1422,11 +1435,11 @@ export default {
 		toUploadOrDownloadContinue(row, type) {
 			if (this.isSync && this.transferType === 2) {
 				this.$confirm(
-					"Block unsynchronized completion. Are you sure to do this?",
-					"Notice",
+					vm.$t('public.blockUnsynchronizedCompletionAreYouSureToDoThis'),
+					vm.$t('public.notice'),
 					{
-						confirmButtonText: "Confirm",
-						cancelButtonText: "Cancel"
+						confirmButtonText: vm.$t('public.confirm'),
+						cancelButtonText: vm.$t('public.cancel')
 					}
 				)
 					.then(() => {
@@ -1443,6 +1456,7 @@ export default {
 		 * type: 0:upload    1:download
 		 */
 		uploadOrDownloadContinue(row, type) {
+			const vm = this;
 			let url = type === 1 ? this.$api.uploadResume : this.$api.downloadResume;
 			let params = this.getParams(row, 2);
 			if (!params.Ids || params.Ids.length <= 0) {
@@ -1491,17 +1505,13 @@ export default {
 
 					if (res.Error === 0) {
 					} else {
-						this.$message.error(
-							this.$i18n.error[res.Error]
-								? this.$i18n.error[res.Error][this.$language]
-								: `error code is ${res.Error}`
-						);
+						this.$message.error(this.$t(`error["${res.Error}"]`));
 					}
 				})
 				.catch(e => {
 					this.removeHttpWaitFor({ Ids: params.Ids });
 					if (!e.message.includes("timeout")) {
-						this.$message.error("Network Error. Start Task Failed!");
+						this.$message.error(vm.$t('fileManager.networkErrorStartTaskFailed'));
 					}
 				});
 		},
@@ -1611,6 +1621,7 @@ export default {
 		 * type: 0:upload    1:download
 		 */
 		uploadOrDownloadPause(row, type) {
+			const vm = this;
 			// get http url
 			let url = type === 1 ? this.$api.uploadPause : this.$api.downloadPause;
 			let params = this.getParams(row, 0);
@@ -1664,17 +1675,13 @@ export default {
 						// 	});
 						// }
 					} else {
-						this.$message.error(
-							this.$i18n.error[res.Error]
-								? this.$i18n.error[res.Error][this.$language]
-								: `error code is ${res.Error}`
-						);
+						this.$message.error(this.$t(`error["${res.Error}"]`));
 					}
 				})
 				.catch(e => {
 					this.removeHttpWaitFor({ Ids: params.Ids });
 					if (!e.message.includes("timeout")) {
-						this.$message.error("Network Error. Pause Task Failed!");
+						this.$message.error(vm.$t('fileManager.networkErrorPauseTaskFailed'));
 					}
 				});
 		},
@@ -1693,58 +1700,52 @@ export default {
 			this.switchToggle.deleteDialog = true;
 		},
 		toDeleteFile(hash) {
+			const vm = this;
 			this.switchToggle.deleteDialog = false;
 			this.$axios
 				.post(this.$api.delete, { Hash: hash })
 				.then(res => {
 					if (res.Error === 0) {
 						this.$message({
-							message: "Delete Completed",
+							message: vm.$t('fileManager.deleteCompleted'),
 							type: "success"
 						});
 					} else {
-						this.$message.error(
-							this.$i18n.error[res.Error]
-								? this.$i18n.error[res.Error][this.$language]
-								: `error code is ${res.Error}`
-						);
+						this.$message.error(this.$t(`error["${res.Error}"]`));
 					}
 				})
 				.catch(e => {
 					if (!e.message.includes("timeout")) {
-						this.$message.error("Network Error. Delete File Failed!");
+						this.$message.error(vm.$t('fileManager.networkErrorDeleteFileFailed'));
 					}
 				});
 		},
 		toDecrypt() {
+			const vm = this;
 			if (this.switchToggle.loading) return;
 			this.$axios
 				.post(this.$api.decrypt, this.fileSelected, {
 					loading: {
-						text: "Processing..",
+						text: vm.$t('public.processing'),
 						target: ".loading-content.decrypt"
 					}
 				})
 				.then(res => {
 					if (res.Error === 0) {
 						this.$message({
-							message: "Decryption successed",
+							message: vm.$t('fileManager.downloadError'),
 							type: "success"
 						});
 						this.fileList.Password = "";
 						this.fileList.Path = "";
 						this.switchToggle.decryptDialog = false;
 					} else {
-						this.$message.error(
-							this.$i18n.error[res.Error]
-								? this.$i18n.error[res.Error][this.$language]
-								: `error code is ${res.Error}`
-						);
+						this.$message.error(this.$t(`error["${res.Error}"]`));
 					}
 				})
 				.catch(e => {
 					if (!e.message.includes("timeout")) {
-						this.$message.error("Network Error. Decrypt Failed!");
+						this.$message.error(vm.$t('fileManager.networkErrorDecryptFailed'));
 					}
 				});
 		},

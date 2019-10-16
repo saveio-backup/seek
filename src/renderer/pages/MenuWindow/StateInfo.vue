@@ -8,13 +8,13 @@
 				<i
 					class="process-status"
 					:class="{'process-all-error': statusList.Chain.State === 0}"
-				></i> Chain State
+				></i> {{$t('menuWindow.chainState')}}
 			</li>
 			<li class="flex">
 				<i
 					class="process-status"
 					:class="{'process-all-error': statusList.DNS.State === 0}"
-				></i> DNS State
+				></i> {{$t('menuWindow.dnsState')}}
 				<i
 					v-show="statusList.DNS.State === 0 && statusList.DNS.HostAddr && UpdatedAt(statusList.DNS.UpdatedAt)"
 					class="ofont ofont-chonglian ft18 ml10 light-blue cursor-click cursor-pointer"
@@ -26,13 +26,13 @@
 				<i
 					class="process-status"
 					:class="{'process-all-error': statusList.DspProxy.State === 0}"
-				></i> Dsp Proxy State
+				></i> {{$t('menuWindow.dspProxyState')}}
 			</li>
 			<li class="flex">
 				<i
 					class="process-status"
 					:class="{'process-all-error': statusList.ChannelProxy.State === 0}"
-				></i> Channel Proxy State
+				></i> {{$t('menuWindow.channelProxyState')}}
 			</li>
 		</ul>
 	</div>

@@ -2,17 +2,17 @@
 	<div id="upload">
 		<div class="content">
 			<div class="upload-header">
-				<h1 class="user-no-select">Upload File</h1>
+				<h1 class="user-no-select">{{$t('fileManager.uploadFile')}}</h1>
 				<el-button
 					class="primary small"
 					@click="toAdvanced"
 					v-show="!switchToggle.advanced"
-				><i class="ofont ofont-gaoji"></i> Advanced</el-button>
+				><i class="ofont ofont-gaoji"></i> {{$t('fileManager.advanced')}}</el-button>
 				<el-button
 					class="primary small"
 					@click="hiddenAdvanced"
 					v-show="switchToggle.advanced"
-				><i class="ofont ofont-jiandan"></i> Primary</el-button>
+				><i class="ofont ofont-jiandan"></i> {{$t('fileManager.primary')}}</el-button>
 			</div>
 			<!-- <span @click="resetFileList">asda</span> -->
 			<div class="upload-params">
@@ -26,7 +26,7 @@
 					label-width="200px"
 				>
 					<el-form-item
-						label="Select File:"
+						:label="$t('fileManager.selectFile')+':'"
 						class="form-vertical select-file-wrapper"
 						prop="FileSize"
 					>
@@ -34,13 +34,13 @@
 						<span
 							class="form-right browser-layout-reset light-blue"
 							@click="resetFileList"
-							title="clear all add file"
+							:title="$t('fileManager.clearAllAddFile')"
 							v-if="uploadFormData.Files && uploadFormData.Files.length !== 0"
-						>Clear</span>
+						>{{$t('fileManager.clear')}}</span>
 						<ripper-button
 							class="form-right browser-layout"
 							@click="selectUpload"
-						>Browser</ripper-button>
+						>{{$t('fileManager.browser')}}</ripper-button>
 						<el-upload
 							class="path-wrapper"
 							ref="upload"
@@ -76,8 +76,8 @@
 										class="path-no-data-title"
 										v-if="uploadFormData.Files.length === 0"
 									>
-										<p class="text-center mt60 user-no-select break-word">Drag your file here or browse</p>
-										<p class="text-center mt10 user-no-select break-word">A single file cannot be larger than 4GB</p>
+										<p class="text-center mt60 user-no-select break-word">{{$t('fileManager.dragYourFileHereOrBrowse')}}</p>
+										<p class="text-center mt10 user-no-select break-word">{{$t('fileManager.aSingleFileCannotBeLargerThan4GB')}}</p>
 									</div>
 								</div>
 							</div>
@@ -85,22 +85,22 @@
 					</el-form-item>
 					<el-form-item
 						class="form-vertical"
-						label="File Size:"
+						:label="$t('fileManager.fileSize')+':'"
 					>
 						<p class="light-blue">{{util.bytesToSize(fileSize) || '0.00 GB'}}</p>
 					</el-form-item>
-					<el-form-item label="Encryption:">
+					<el-form-item :label="$t('fileManager.encryption')+':'">
 						<el-select
 							v-model="encryptionToggle"
 							class="form-right"
 							@change="setEncryptPassword"
 						>
 							<el-option
-								label="Yes"
+								:label="$t('fileManager.yes')"
 								:value='true'
 							></el-option>
 							<el-option
-								label="NO"
+								:label="$t('fileManager.no')"
 								:value='false'
 							></el-option>
 						</el-select>
@@ -111,7 +111,7 @@
 						>
 							<el-input
 								v-model="uploadFormData.EncryptPassword"
-								placeholder="File Password"
+								:placeholder="$t('fileManager.filePassword')"
 								class="encrypt-input"
 							></el-input>
 						</el-form-item>
@@ -129,8 +129,8 @@
 					label-width="210px"
 					@submit.native.prevent
 				>
-					<el-form-item label="Storage Cycle:">
-						<p class="dark-grey tootips">Expired Time: {{expiredDate}} </p>
+					<el-form-item :label="$t('fileManager.storageCycle')+':'">
+						<p class="dark-grey tootips">{{$t('fileManager.expiredTime')}}: {{expiredDate}} </p>
 						<el-input
 							v-model="storageCycleNumber"
 							:min="1"
@@ -147,16 +147,16 @@
 								v-for="(item,index) in baseKeys"
 								v-show="index !== 0"
 								:key="item"
-								:label="item"
+								:label="$t(`fileManager['${item}']`)"
 								:value="item"
 							></el-option>
 						</el-select>
 					</el-form-item>
 					<el-form-item
-						label="Integrity Verification Cycle:"
+						:label="$t('fileManager.integrityVerificationCycle')+':'"
 						prop="Interval"
 					>
-						<p class="dark-grey tootips break-word">Integrity Verification Cycle cannot be longer than Storage Cycle</p>
+						<p class="dark-grey tootips break-word">{{$t('fileManager.integrityVerificationCycleCannotBeLongerThanStorageCycle')}}</p>
 						<el-input
 							:precision='0'
 							v-model="verificationCycleNumber"
@@ -174,14 +174,14 @@
 							<el-option
 								v-for="(item,index) in baseKeys"
 								:key="item"
-								:label="item"
+								:label="$t(`fileManager['${item}']`)"
 								:value="item"
 								v-show="index < baseKeys.length-1"
 							></el-option>
 						</el-select>
 					</el-form-item>
 					<el-form-item
-						label="Backups"
+						:label="$t('fileManager.backups')"
 						prop="CopyNum"
 					>
 						<el-input
@@ -193,7 +193,7 @@
 						></el-input>
 					</el-form-item>
 					<el-form-item
-						label="Authority"
+						:label="$t('fileManager.authority')"
 						prop="Privilege"
 					>
 						<el-select
@@ -202,21 +202,21 @@
 							@change='toGetPrice'
 						>
 							<el-option
-								label="private"
+								:label="$t('fileManager.private')"
 								:value="0"
 							></el-option>
 							<el-option
-								label="public"
+								:label="$t('fileManager.public')"
 								:value="1"
 							></el-option>
 							<el-option
-								label="whitelist"
+								:label="$t('fileManager.whitelist')"
 								:value="2"
 							></el-option>
 						</el-select>
 					</el-form-item>
 					<el-form-item
-						label="whitelist"
+						:label="$t('fileManager.whitelist')"
 						prop="wihteListString"
 						class="no-bottom-border"
 						v-if="advancedData.Privilege === 2"
@@ -225,7 +225,7 @@
 							<el-input
 								v-if="switchToggle.whiteListInput"
 								v-model="advancedData.wihteListString"
-								placeholder="Input one wallet address"
+								:placeholder="$t('fileManager.inputOneWalletAddress')"
 								class="save-tag-input form-right"
 								ref="saveTagInput"
 								size="small"
@@ -237,7 +237,7 @@
 								size="small"
 								class="form-right"
 								@click="showWhitelistInput"
-							> + Add WhiteList</ripper-button>
+							> + {{$t('fileManager.addWhiteList')}}</ripper-button>
 						</div>
 					</el-form-item>
 					<el-form-item
@@ -257,27 +257,27 @@
 				</el-form>
 				<div class="flex price-div">
 					<div class="price-div-bg user-no-select">ON</div>
-					<p class="price-gas-fee">Gas Fee: {{uploadPrice}} ONI
+					<p class="price-gas-fee">{{$t('fileManager.gasFee')}}: {{uploadPrice}} ONI
 						<el-popover
 							placement="bottom"
-							title="Fee Detail"
+							:title="$t('fileManager.feeDetail')"
 							trigger="hover"
 						>
-							<p>Contract Fee: {{uploadPriceInfo && uploadPriceInfo.TxFeeFormat || parseFloat((0.03 * (this.uploadFormData.Files.length || 1)).toFixed(2))}} ONI</p>
-							<p>Storage Fee: {{uploadPriceInfo && uploadPriceInfo.StorageFeeFormat || 0}} ONI</p>
-							<p>Validate Fee: {{uploadPriceInfo && uploadPriceInfo.ValidFeeFormat || 0}} ONI</p>
+							<p>{{$t('fileManager.contractFee')}}: {{uploadPriceInfo && uploadPriceInfo.TxFeeFormat || parseFloat((0.03 * (this.uploadFormData.Files.length || 1)).toFixed(2))}} ONI</p>
+							<p>{{$t('fileManager.storageFee')}}: {{uploadPriceInfo && uploadPriceInfo.StorageFeeFormat || 0}} ONI</p>
+							<p>{{$t('fileManager.validateFee')}}: {{uploadPriceInfo && uploadPriceInfo.ValidFeeFormat || 0}} ONI</p>
 							<span slot="reference"><i class="el-icon-question"></i></span>
 						</el-popover>
 					</p>
-					<p class="price-balance">Available: {{mainCount}} ONI</p>
+					<p class="price-balance">{{$t('fileManager.available')}}: {{mainCount}} ONI</p>
 				</div>
 				<div class="flex jc-center submit-foot mb10">
-					<ripper-button @click="toEmptyUpload">Cancel</ripper-button>
+					<ripper-button @click="toEmptyUpload">{{$t('public.cancel')}}</ripper-button>
 					<ripper-button
 						type="primary"
 						class="primary"
 						@click="OpenPasswordDialog"
-					>Pay & Upload</ripper-button>
+					>{{$t('fileManager.pay')}} & {{$t('fileManager.upload')}}</ripper-button>
 				</div>
 			</div>
 		</div>
@@ -288,7 +288,7 @@
 			center
 		>
 			<div slot="title">
-				<h2>Confirm</h2>
+				<h2>{{$t('public.confirm')}}</h2>
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content upload-loading">
@@ -299,27 +299,27 @@
 					@submit.native.prevent
 				>
 					<el-form-item
-						label="Wallet Password:"
+						:label="$t('public.walletPassword')+':'"
 						prop="Password"
 					>
 						<el-input
 							type="password"
 							class="grey-theme"
-							placeholder="Please Input Wallet Password"
+							:placeholder="$t('public.pleaseInputWalletPassword')"
 							show-password
 							@keyup.native.enter='toUploadFile'
 							v-model="passwordForm.Password"
 						></el-input>
 					</el-form-item>
-					<p class="mb20 tr">Confirm Payment: {{uploadPrice}} ONI</p>
+					<p class="mb20 tr">{{$t('fileManager.confirmPayment')}}: {{uploadPrice}} ONI</p>
 				</el-form>
 				<div slot="footer">
-					<ripper-button @click="passwordForm.show = false">Cancel</ripper-button>
+					<ripper-button @click="passwordForm.show = false">{{$t('public.cancel')}}</ripper-button>
 					<ripper-button
 						type="primary"
 						class="primary"
 						@click="toUploadFile"
-					>Confirm</ripper-button>
+					>{{$t('public.confirm')}}</ripper-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -329,22 +329,22 @@
 			center
 		>
 			<div slot="title">
-				<h2>Remind</h2>
+				<h2>{{$t('fileManager.Remind')}}</h2>
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content">
-				<p class="tl mt10 break-word">The files uploaded by the advance mode will not occupy the space you have purchased, but you will need to pay separately according to the uploaded file conditions and parameter configuration.</p>
+				<p class="tl mt10 break-word">{{$t('fileManager.remindDesc')}}</p>
 				<p class="tr mt10 mb10">
 					<el-checkbox
 						@change="updateAllowRemind"
 						v-model="remindToggle.noAllowRemind"
-					>No longer remind</el-checkbox>
+					>{{$t('fileManager.noLongerRemind')}}</el-checkbox>
 				</p>
 				<div slot="footer">
 					<ripper-button
 						class="primary"
 						@click="remindToggle.show = false"
-					>Close</ripper-button>
+					>{{$t('public.close')}}</ripper-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -356,17 +356,17 @@
 			center
 		>
 			<div slot="title">
-				<h2>Notice</h2>
+				<h2>{{$t('public.notice')}}</h2>
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content">
-				<p class="mt10 mb20 ft14 tl break-word">Sorry, you don't have any storage yet. Please get storage before the Primary Upload.</p>
+				<p class="mt10 mb20 ft14 tl break-word">{{$t('fileManager.noStorageDesc')}}</p>
 				<div slot="footer">
-					<ripper-button @click="noStorageDialog.show = false">Cancel</ripper-button>
+					<ripper-button @click="noStorageDialog.show = false">{{$t('public.cancel')}}</ripper-button>
 					<ripper-button
 						class="primary"
 						@click="goStorage"
-					>Get Storage</ripper-button>
+					>{{$t('fileManager.getStorage')}}</ripper-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -383,23 +383,24 @@ const DEFAULT_UPLOAD_PRICE = 0.03;
 export default {
 	data() {
 		let validateEncryptFileSize = (rule, value, callback) => {
+			const vm = this;
 			if (this.uploadFormData.Files.length === 0) {
-				callback(new Error(`Please select a file.`));
+				callback(new Error(vm.$t('fileManager.pleaseSelectAFile')));
 			} else if (
 				!this.switchToggle.advanced &&
 				(!this.space || this.space.Remain * 1024 < this.fileSize)
 			) {
 				callback(
 					new Error(
-						`Insufficient remaining storage space, currently ${this.util.bytesToSize(
+						`${vm.$t('fileManager.insufficientRemainingStorageSpaceCurrently')} ${this.util.bytesToSize(
 							this.space.Remain * 1024
-						)} remaining.`
+						)} ${vm.$t('fileManager.remaining')}`
 					)
 				);
 			} else {
 				for (let file of this.uploadFormData.Files) {
 					if (file.fileBytes > 4 * 1024 * 1024 * 1024) {
-						callback(new Error(`A single file cannot be larger than 4GB`));
+						callback(new Error(vm.$t('fileManager.aSingleFileCannotBeLargerThan4GB')));
 						return;
 					}
 				}
@@ -407,13 +408,14 @@ export default {
 			callback();
 		};
 		let validateEncryptPassword = (rule, value, callback) => {
+			const vm = this;
 			// encryptionToggle
 			if (!this.encryptionToggle) {
 				callback();
 			} else if (this.uploadFormData.EncryptPassword.trim()) {
 				callback();
 			} else {
-				callback(new Error("Please fill encryption passcode "));
+				callback(new Error(vm.$t('fileManager.pleaseFillEncryptionPasscode')));
 			}
 		};
 		let validateWhiteListRex = (rule, value, callback) => {
@@ -425,7 +427,7 @@ export default {
 			) {
 				callback();
 			} else {
-				callback(new Error("Wrong Wallet Address Format"));
+				callback(new Error(vm.$t('fileManager.wrongWalletAddressFormat')));
 			}
 		};
 		const BASE = {
@@ -438,6 +440,9 @@ export default {
 		const DEFAULT_KEY = "Year";
 		const DEFAULT_STORAGE_CYCLE = BASE[DEFAULT_KEY];
 		return {
+			validateEncryptFileSize,
+			validateEncryptPassword,
+			validateWhiteListRex,
 			util,
 			baseKeys,
 			BASE,
@@ -452,7 +457,7 @@ export default {
 			},
 			uploadRules: {
 				Password: [
-					{ required: true, message: "Please input  password", trigger: "blur" }
+					{ required: true, message: this.$t('public.pleaseInputPassword'), trigger: "blur" }
 				]
 			},
 			switchToggle: {
@@ -474,7 +479,7 @@ export default {
 			},
 			rules: {
 				Path: [
-					{ required: true, message: "Please select a file", trigger: "blur" }
+					{ required: true, message: this.$t('public.pleaseSelectAFile'), trigger: "blur" }
 				],
 				FileSize: [
 					{
@@ -604,11 +609,7 @@ export default {
 					this.DefaultCopyNum = res.Result.DefaultCopyNum;
 					this.advancedData.CopyNum = this.DefaultCopyNum;
 				} else {
-					this.$message.error(
-						this.$i18n.error[res.Error]
-							? this.$i18n.error[res.Error][this.$language]
-							: `error code is ${res.Error}`
-					);
+					this.$message.error(this.$t(`error[${res.Error}]`));
 				}
 			});
 		},
@@ -739,7 +740,7 @@ export default {
 				if (!valid) return;
 				this.switchToggle.upload = false; // set toggle
 				this.switchToggle.loading = this.$loading({
-					text: "Uploading..",
+					text: `${vm.$t('fileManager.uploading')}....`,
 					target: ".loading-content.upload-loading"
 				});
 
@@ -752,7 +753,7 @@ export default {
 					if (passwordCheck.Error !== 0) {
 						this.switchToggle.upload = true; // set toggle
 						this.switchToggle.loading && this.switchToggle.loading.close();
-						this.$message.error("Password Check Failed");
+						this.$message.error(vm.$t('fileManager.passwordCheckFailed'));
 					}
 	
 					// get all upload file params
@@ -850,9 +851,7 @@ export default {
 					for (let value of errorArr) {
 						errorMsg += `<p>`;
 						errorMsg += `${value.FileName || ""}`;
-						errorMsg += this.$i18n.error[value.Error]
-							? this.$i18n.error[value.Error][this.$language]
-							: `error code is ${value.Error}`;
+						errorMsg += this.$t(`error["${value.Error}"]`);
 						errorMsg += `</p>`;
 					}
 					let errorLength = errorArr.length;
@@ -874,13 +873,13 @@ export default {
 						message: errorMsg
 					});
 				} else {
-					this.$message.error("Upload Error");
+					this.$message.error(vm.$t('fileManager.uploadError'));
 				}
 			} else {
 				if (!errorMsg) {
 					this.$message({
 						type: "success",
-						message: "Start Upload"
+						message: vm.$t('fileManager.startUpload')
 					});
 				} else {
 					this.$message.error({
@@ -933,6 +932,7 @@ export default {
 		},
 		// get price
 		toGetPrice() {
+			const vm = this;
 			if (!this.switchToggle.advanced) {
 				this.uploadPrice = parseFloat(
 					(
@@ -961,11 +961,7 @@ export default {
 							validateFee += res.Result.ValidFee;
 							contractFee += res.Result.TxFee;
 						} else {
-							this.$message.error(
-								this.$i18n.error[res.Error]
-									? this.$i18n.error[res.Error][this.$language]
-									: `error code is ${res.Error}`
-							);
+							this.$message.error(this.$t(`error[${res.Error}]`));
 							return;
 						}
 					}
@@ -984,7 +980,7 @@ export default {
 					};
 				})
 				.catch(e => {
-					this.$message.error("Get Price Failes");
+					this.$message.error(vm.$t('fileManager.getPriceFailes'));
 				});
 		},
 		hiddenAdvanced() {
@@ -997,7 +993,45 @@ export default {
 			this.$refs.uploadForm.validateField("FileSize");
 		}
 	},
+	watch: {
+		lang() {
+			this.uploadRules = {
+				Password: [
+					{ required: true, message: this.$t('public.pleaseInputPassword'), trigger: "blur" }
+				]
+			}
+			this.rules = {
+				Path: [
+					{ required: true, message: this.$t('public.pleaseSelectAFile'), trigger: "blur" }
+				],
+				FileSize: [
+					{
+						validator: this.validateEncryptFileSize,
+						trigger: "change"
+					}
+				],
+				EncryptPassword: [
+					{
+						required: true,
+						validator: this.validateEncryptPassword,
+						trigger: "blur"
+					}
+				]
+			}
+			this.advancedRulus = {
+				wihteListString: [
+					{
+						validator: this.validateWhiteListRex,
+						trigger: "blur"
+					}
+				]
+			}
+		}		
+	},
 	computed: {
+		lang() {
+			return this.$i18n.locale;
+		},
 		mainCount() {
 			return this.$store.state.Wallet.mainCount;
 		},

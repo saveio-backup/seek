@@ -32,7 +32,7 @@
 						<p
 							class="window-tab-item-title"
 							@mousedown="remoteSetActive(item,index)"
-						>{{item.title || 'loading...'}}</p>
+						>{{item.title || $t('window.loading')}}</p>
 
 						<p
 							class="flex ai-center close"
@@ -68,20 +68,20 @@
 							<div
 								@click="remoteGoBack"
 								:class="{'disable': !activeView.canGoBack}"
-								title="Go Back"
+								:title="$t('window.goBack')"
 							>
 								<i class="el-icon-arrow-left"></i>
 							</div>
 							<div
 								@click="remoteGoForward"
 								:class="{'disable': !activeView.canGoForward}"
-								title="Go Forward"
+								:title="$t('window.goForward')"
 							>
 								<i class="el-icon-arrow-right"></i>
 							</div>
 							<div
 								@click="remoteReload"
-								title="Refresh"
+								:title="$t('window.refresh')"
 							>
 								<i class="el-icon-refresh"></i>
 							</div>
@@ -89,7 +89,7 @@
 						<el-input
 							ref="inputUrl"
 							class="input-url"
-							placeholder="Input URL"
+							:placeholder="$t('window.inputURL')"
 							v-model="inputDisplayUrl"
 							@keyup.esc.native='inputDisplayUrl=activeView.displayURL'
 							@keyup.enter.native='remoteLoadURL(activeView)'
@@ -114,7 +114,7 @@
 								class="ft12 theme-font-blue-70"
 								v-if="isSync"
 							>
-								Syncing...
+								{{$t('window.syncing')}}
 							</span>
 							<span
 								v-if="!isSync"

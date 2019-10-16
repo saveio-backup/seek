@@ -8,7 +8,7 @@
 			center
 		>
 			<div slot="title">
-				<h2>Export Private Key(WIF)</h2>
+				<h2>{{$t('dialog.exportPrivateKey')}}</h2>
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content">
@@ -20,12 +20,12 @@
 				>
 					<el-form-item
 						class="theme-font-blue-bold"
-						label="Wallet Password"
+						:label="$t('public.walletPassword')"
 						prop="password"
 					>
 						<el-input
 							v-model="dialogForm.password"
-							placeholder="Input Wallet Password"
+							:placeholder="$t('public.pleaseInputWalletPassword')"
 							class="grey-theme"
 							@keyup.enter.native='exportPrivateKey'
 							show-password
@@ -34,11 +34,11 @@
 					</el-form-item>
 				</el-form>
 				<div slot="footer">
-					<ripper-button @click="closeDialog">Cancel</ripper-button>
+					<ripper-button @click="closeDialog">{{$t('public.cancel')}}</ripper-button>
 					<ripper-button
 						class="primary"
 						@click="exportPrivateKey"
-					>Export</ripper-button>
+					>{{$t('dialog.export')}}</ripper-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -59,7 +59,7 @@ export default {
 				password: [
 					{
 						required: true,
-						message: "Please fill password",
+						message: this.$t('public.pleaseFillPassword'),
 						trigger: "blur"
 					}
 				]
@@ -81,6 +81,7 @@ export default {
 			});
 		},
 		exportPrivateKey() {
+			const vm = this;
 			this.$refs.dialogForm.validate(valid => {
 				if (!valid) return;
 				let params = {
@@ -96,16 +97,12 @@ export default {
 						ipcRenderer.once("export-finished", () => {
 							// ipcRenderer.send("open-info-dialog", { info: "Export Success!" });
 							this.$refs.dialogForm.resetFields();
-							this.message({ type: "success", info: "Export Success!" });
+							this.message({ type: "success", info: vm.$t('dialog.exportSuccess')});
 							this.closeDialog();
 							// this.exportPrivateKeyToggle = false;
 						});
 					} else {
-						this.$message.error(
-							this.$i18n.error[res.Error]
-								? this.$i18n.error[res.Error][this.$language]
-								: `error code is ${res.Error}`
-						);
+						this.$message.error(this.$t(`error[${res.Error}]`));
 					}
 				});
 			});
@@ -114,6 +111,24 @@ export default {
 			return this.$axios.get(
 				this.$api.exportPrivateKey + "/" + params.password
 			);
+		}
+	},
+	watch: {
+		lang() {
+			this.dialogRules = {
+				password: [
+					{
+						required: true,
+						message: this.$t('public.pleaseFillPassword'),
+						trigger: "blur"
+					}
+				]
+			}
+		}
+	},
+	computed: {
+		lang() {
+			return this.$i18n.locale;
 		}
 	},
 	mounted() {

@@ -5,7 +5,7 @@
 				<ul class="action-container">
 					<li class="action-item">
 						<div
-							title="FileManager"
+							:title="$t('window.fileManager')"
 							class="nav-button"
 							@click="remoteOpenComponent('FileManager')"
 							active-class="slidebar-active"
@@ -16,7 +16,7 @@
 					</li>
 					<li class="action-item">
 						<div
-							title="Wallet"
+							:title="$t('window.wallet')"
 							class="nav-button"
 							@click="remoteOpenComponent('Wallet')"
 							:class="{'theme-color-yellow':activeView.displayURL.toLowerCase().indexOf('seek://wallet')>=0}"
@@ -26,7 +26,7 @@
 					</li>
 					<li class="action-item item-bottom-line">
 						<div
-							title="Miner"
+							:title="$t('window.miner')"
 							class="nav-button"
 							@click="remoteOpenComponent('Miner')"
 							active-class="slidebar-active"
@@ -47,7 +47,7 @@
 					</li>
 					<li class="action-item">
 						<div
-							title="Coming Soon.."
+							:title="$t('window.comingSoon')"
 							class="nav-button"
 							style="background:none;"
 						>
@@ -59,7 +59,7 @@
 					</li>
 					<li class="action-item">
 						<div
-							title="Coming Soon.."
+							:title="$t('window.comingSoon')"
 							class="nav-button"
 							style="background:none;"
 						>
@@ -171,48 +171,42 @@ export default {
 			const that = this;
 			const customControlMenuItems = [
 				{
-					label: "Export Keystore File",
+					label: that.$t('window.exportKeystoreFile'),
 					// visible: new Boolean(user.name),
 					click() {
 						that.exportWallet();
 					}
 				},
 				{
-					label: "Export Private Key(WIF)",
+					label: that.$t('window.exportPrivateKey'),
 					// visible: new Boolean(user.name),
 					click() {
 						that.exportPrivateKey();
 					}
 				},
 				{
-					label: "Help Document",
+					label: that.$t('window.helpDocument'),
 					click() {
 						that.showHelpDocument();
 					}
 				},
 				{
-					label: "Log Out",
+					label: that.$t('window.logOut'),
 					// visible: new Boolean(user.name),
 					click() {
 						that.logout();
 					}
 				},
 				{
-					label:'Settings',
+					label: that.$t('window.settings'),
 					click(){
 						that.remoteOpenComponent('settings');
 					}
 				},
 				{
-					label: "Version",
+					label: that.$t('window.version'),
 					click() {
 						that.showVersion();
-					}
-				},
-				{
-					label: "Filmlab",
-					click() {
-						that.showFilmlab();
 					}
 				}
 			];
@@ -221,9 +215,6 @@ export default {
 		},
 		showHelpDocument() {
 			this.activeView.createHelpDocument({ isActive: true, focus: true });
-		},
-		showFilmlab() {
-			this.activeView.onNewUrl('http://192.168.1.178:9999');
 		},
 		remoteOpenComponent(path) {
 			this.activeView.openComponent(path);

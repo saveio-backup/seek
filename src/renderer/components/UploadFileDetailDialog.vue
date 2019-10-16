@@ -7,58 +7,58 @@
 			center
 		>
 			<div slot="title">
-				<h2>File Detail</h2>
+				<h2>{{$t('fileManager.fileDetail')}}</h2>
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content upload-file-detail-loading">
 				<div class="adjust">
 					<div class="adjust-item">
-						<p class="adjust-title theme-font-blue ft14">File Hash:</p>
+						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.fileHash')}}:</p>
 						<div class="adjust-info">
 							<p class="ft14 mr20">{{fileDetail && fileDetail.FileHash || ''}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
-						<p class="adjust-title theme-font-blue ft14">Create Date:</p>
+						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.createDate')}}:</p>
 						<div class="adjust-info">
 							<p class="ft14 mr20">{{fileDetail && $dateFormat.formatTimeByTimestamp(fileDetail.CreatedAt*1000) || ''}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
-						<p class="adjust-title theme-font-blue ft14">File Size:</p>
+						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.fileSize')}}:</p>
 						<div class="adjust-info">
 							<p class="ft14 mr20">{{fileDetail && util.bytesToSize(fileDetail.Size*1024 || 0) || ''}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
-						<p class="adjust-title theme-font-blue ft14">Node Number:</p>
+						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.nodeNumber')}}:</p>
 						<div class="adjust-info">
 							<p class="ft14 mr20">{{fileDetail && (fileDetail.CopyNum + 1) || ''}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
-						<p class="adjust-title theme-font-blue ft14">Verification Cycle:</p>
+						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.verificationCycle')}}:</p>
 						<div class="adjust-info">
 							<p class="ft14 mr20">{{fileDetail && timeTofilter(fileDetail.Interval)}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
-						<p class="adjust-title theme-font-blue ft14">Expire Time:</p>
+						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.expireTime')}}:</p>
 						<div class="adjust-info">
 							<p class="ft14 mr20">{{fileDetail && $dateFormat.formatTimeByTimestamp(fileDetail.ExpiredAt*1000) || ''}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
-						<p class="adjust-title theme-font-blue ft14">Authority:</p>
+						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.authority')}}:</p>
 						<div class="adjust-info">
-							<p class="ft14 mr20">{{fileDetail && (fileDetail.Privilege===0?'private':fileDetail.Privilege===1?'public':fileDetail.Privilege===2?'whitelist':'') || ''}}</p>
+							<p class="ft14 mr20">{{fileDetail && (fileDetail.Privilege===0?$t('fileManager.private'):fileDetail.Privilege===1?$t('fileManager.public'):fileDetail.Privilege===2?$t('fileManager.whitelist'):'') || ''}}</p>
 						</div>
 					</div>
 					<div
 						v-if="fileDetail && fileDetail.Privilege === 2"
 						class="adjust-item"
 					>
-						<p class="adjust-title theme-font-blue ft14">Whitelist:</p>
+						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.whitelist2')}}:</p>
 						<div class="adjust-info">
 							<ul>
 								<li
@@ -76,7 +76,7 @@
 						class="primary"
 						type="primary"
 						@click="fileDetailDialogToggle=false"
-					>Close</ripper-button>
+					>{{$t('public.close')}}</ripper-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -119,16 +119,17 @@ export default {
 	},
 	computed: {
 		timeTofilter() {
+			const vm = this;
 			return function(value) {
 				if (!value) {
 					return "";
 				}
 				if (value / BASE["Month"] >= 1) {
-					return `${parseFloat((value / BASE["Month"]).toFixed(3))} Month`;
+					return `${parseFloat((value / BASE["Month"]).toFixed(3))} ${vm.$t('fileManager.Month')}`;
 				} else if (value / BASE["Day"] >= 1) {
-					return `${parseFloat((value / BASE["Day"]).toFixed(3))} Day`;
+					return `${parseFloat((value / BASE["Day"]).toFixed(3))} ${vm.$t('fileManager.Day')}`;
 				} else {
-					return `${value / BASE["Second"]} Second`;
+					return `${value / BASE["Second"]} ${vm.$t('fileManager.Second')}`;
 				}
 			};
 		}
@@ -145,10 +146,11 @@ export default {
 			}
 		},
 		getFileDetail(hash) {
+			const vm = this;
 			this.$axios
 				.get(this.$api.getUploadFileInfo + hash, {
 					loading: {
-						text: "loading...",
+						text: vm.$t('fileManager.loading'),
 						target: ".loading-content.upload-file-detail-loading"
 					}
 				})
@@ -156,16 +158,12 @@ export default {
 					if (res.Error === 0) {
 						this.fileDetail = res.Result;
 					} else {
-						this.$message.error(
-							this.$i18n.error[res.Error]
-								? this.$i18n.error[res.Error][this.$language]
-								: `error code is ${res.Error}`
-						);
+						this.$message.error(this.$t(`error[${res.Error}]`));
 					}
 				})
 				.catch(e => {
 					if (!e.message.includes("timeout")) {
-						this.$message.error("Network Error. Get File Detail Failed!");
+						this.$message.error(vm.$t('fileManager.networkErrorGetFileDetailFailed'));
 					}
 				});
 		},

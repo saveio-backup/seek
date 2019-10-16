@@ -8,20 +8,20 @@
 			:visible.sync="isCreateChannelToggle"
 		>
 			<div slot="title">
-				<h2>Notice</h2>
+				<h2>{{$t('public.notice')}}</h2>
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content isCreateChannelDialog">
 				<div class="mb20">
-					<p class="mt20 tl break-word">The system detecets that you have not open a Channel,you can create a new channel based on the DNS Wallet address recommended by the current network.</p>
-					<p class="mt20 tl">Recommend DNS: {{dns && dns.WalletAddr || ''}}</p>
+					<p class="mt20 tl break-word">{{$t('dialog.theSystemDetecetsThatYouHaveNotOpenAChannel')}}</p>
+					<p class="mt20 tl">{{$t('dialog.recommendDNS')}}: {{dns && dns.WalletAddr || ''}}</p>
 				</div>
 				<div slot="footer">
 					<ripper-button
 						type="primary"
 						class="primary"
 						@click="confirmCreateChannel"
-					>Open</ripper-button>
+					>{{$t('public.open')}}</ripper-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -98,10 +98,11 @@ export default {
 			});
 		},
 		getDns() {
+			const vm = this;
 			this.$axios
 				.get(this.$api.getAllDns, {
 					loading: {
-						text: "loading...",
+						text: vm.$t('dialog.loading'),
 						target: ".isCreateChannelDialog.loading-content"
 					}
 				})
@@ -109,11 +110,7 @@ export default {
 					if (res.Error === 0) {
 						this.dns = res.Result[0];
 					} else {
-						this.$message.error(
-							this.$i18n.error[res.Error]
-								? this.$i18n.error[res.Error][this.$language]
-								: `error code is ${res.Error}`
-						);
+						this.$message.error(this.$t(`error[${res.Error}]`));
 					}
 				});
 		}

@@ -41,13 +41,13 @@
 										class="theme1"
 										@click="exportPrivateKey"
 									>
-										<i class="user-name-btn-icon ofont ofont-daochu"></i> <span class="user-name-btn-content">Private Key(WIF)</span>
+										<i class="user-name-btn-icon ofont ofont-daochu"></i> <span class="user-name-btn-content">{{$t('home.privateKey')}}</span>
 									</ripper-button>
 									<ripper-button
 										class="theme1"
 										@click="$exportWallet"
 									>
-										<i class="user-name-btn-icon ofont ofont-daochu"></i> <span class="user-name-btn-content">Keystore File</span>
+										<i class="user-name-btn-icon ofont ofont-daochu"></i> <span class="user-name-btn-content">{{$t('home.keystoreFile')}}</span>
 									</ripper-button>
 								</div>
 							</div>
@@ -55,7 +55,7 @@
 					</div>
 					<!-- pause !!! -->
 					<div class="user-revenue">
-						<p class="grey-xs bold ft14">Your Profit:</p>
+						<p class="grey-xs bold ft14">{{$t('home.yourProfit')}}:</p>
 						<div class="flex between ai-center">
 							<span class="theme-bold ft36">{{revenueFormat.toLocaleString('en-US')}}</span>
 							<span class="bold ft16 unit">ONI</span>
@@ -63,7 +63,7 @@
 					</div>
 				</div>
 				<div class="user-meta-center">
-					<p class="grey-xs bold ft14 user-meta-title">Total Balance:</p>
+					<p class="grey-xs bold ft14 user-meta-title">{{$t('home.totalBalance')}}:</p>
 					<p class="total-num"> {{balanceLists.length>0?filterFloat(balanceLists[0].BalanceFormat).toLocaleString('en-US'):'0'}}<span> ONI</span></p>
 					<div
 						id="balance-view"
@@ -71,7 +71,7 @@
 					></div>
 				</div>
 				<div class="user-meta-right">
-					<p class="grey-xs bold ft14 user-meta-title">Channel Asset:</p>
+					<p class="grey-xs bold ft14 user-meta-title">{{$t('home.channelAsset')}}:</p>
 					<div
 						id="channel-view"
 						class="channelView"
@@ -83,7 +83,7 @@
 				@click="openAddChannel"
 				class="openAddChannel primary"
 			>
-				<i class="el-icon-plus"></i> New Channel
+				<i class="el-icon-plus"></i> {{$t('home.newChannel')}}
 			</ripper-button>
 			<channels-list
 				ref="channelListObj"
@@ -113,11 +113,11 @@
 						<ripper-button
 							class="button"
 							@click="goPage('/CreateAccount')"
-						>Create Account</ripper-button>
+						>{{$t('home.createAccount')}}</ripper-button>
 						<ripper-button
 							class="primary button"
 							@click="goPage('/ImportAccount')"
-						>Import Account</ripper-button>
+						>{{$t('home.importAccount')}}</ripper-button>
 					</div>
 				</div>
 			</div>
@@ -136,8 +136,9 @@ export default {
 		canvasBg
 	},
 	mounted() {
-		document.title = "Home";
+		document.title = this.$t('home.home');
 		const vm = this;
+		
 		this.chartInit();
 		this.$store.dispatch("setCurrentAccount"); // get login status
 		// open channel callback form createChannel of browserView dialog
@@ -360,11 +361,7 @@ export default {
 							}
 						});
 					} else {
-						this.$message.error(
-							this.$i18n.error[res.Error]
-								? this.$i18n.error[res.Error][this.$language]
-								: `error code is ${res.Error}`
-						);
+						this.$message.error(this.$t(`error${[res.Error]}`));
 					}
 				});
 		},
@@ -404,7 +401,7 @@ export default {
 			this.chartsChannelDom = echarts.init(channelDom);
 			const currentChannelData =
 				this.currentChannelData.length === 0
-					? [{ value: 0, name: "No Channel" }]
+					? [{ value: 0, name: that.$t('home.noChannel') }]
 					: this.currentChannelData;
 			const color =
 				this.currentChannelData.length === 0
@@ -589,10 +586,11 @@ export default {
 			balanceDom.style.width = document.body.clientWidth * 0.6 - 395 + "px";
 		},
 		clipText(el) {
+			const vm = this;
 			console.log("clip");
 			clipboard.writeText(localStorage.getItem("Address") || "");
 			this.$message({
-				message: "Copied",
+				message: vm.$t('public.copied'),
 				duration: 1200,
 				type: "success"
 			});
@@ -610,11 +608,7 @@ export default {
 							});
 						});
 					} else {
-						this.$message.error(
-							this.$i18n.error[res.Error]
-								? this.$i18n.error[res.Error][this.$language]
-								: `error code is ${res.Error}`
-						);
+						this.$message.error(this.$t(`error[${res.Error}]`));
 					}
 				})
 				.catch(err => {
@@ -633,17 +627,21 @@ export default {
 					newVal.length === 0
 						? ["#D4DDEB"]
 						: ["#3E6695", "#3B81EB", "#FF607B", "#D3E84E", "#E15C91"];
-				this.chartsChannelDom.setOption({
-					series: {
-						data: newVal,
-						color: color
-					}
-				});
-				this.chartsChannelDom.dispatchAction({
-					type: "highlight",
-					seriesIndex: 0,
-					dataIndex: this.index
-				});
+				if(this.chartsChannelDom) {
+					this.chartsChannelDom.setOption({
+						series: {
+							data: newVal,
+							color: color
+						}
+					});
+				};
+				if(this.chartsChannelDom) {
+					this.chartsChannelDom.dispatchAction({
+						type: "highlight",
+						seriesIndex: 0,
+						dataIndex: this.index
+					});
+				}
 				return;
 			}
 			for (let value of oldVal) {
@@ -676,27 +674,28 @@ export default {
 			} catch (e) {
 				console.log(e);
 			}
+		},
+		lang(newVal, oldVal) {
+			document.title = this.$t('home.home');
 		}
-		// loginStatus(newVal, oldVal) {
-		// 	if (newVal === 1) {
-		// 		this.chartInit();
-		// 	}
-		// }
 	},
 	computed: {
-		loginStatus: function() {
+		lang() {
+			return this.$i18n.locale;
+		},
+		loginStatus() {
 			return this.$store.state.Home.loginStatus;
 		},
-		balanceLists: function() {
+		balanceLists() {
 			return this.$store.state.Wallet.balanceLists;
 		},
-		revenue: function() {
+		revenue() {
 			return this.$store.state.Home.revenue;
 		},
-		revenueFormat: function() {
+		revenueFormat() {
 			return this.$store.state.Home.revenueFormat;
 		},
-		channels: function() {
+		channels() {
 			return this.$store.state.Home.channels;
 		},
 		currentBalanceFormat() {
@@ -708,11 +707,11 @@ export default {
 				}
 			}
 		},
-		currentChannelTotal() {
-			return parseFloat(this.currentBalanceFormat).toFixed(9);
-		},
+		// currentChannelTotal() {
+		// 	return parseFloat(this.currentBalanceFormat).toFixed(9);
+		// },
 		// get [max, max - 1, max - 2, [min array]]
-		currentChannelData: function() {
+		currentChannelData() {
 			if (!this.channels) return [];
 			const maxNum = 4; // default show alone channel number
 			let arr = [];

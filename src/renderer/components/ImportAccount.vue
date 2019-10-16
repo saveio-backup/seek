@@ -4,31 +4,31 @@
 		class="account-wrap"
 	>
 		<div class="account-box">
-			<h2 class="account-title">Import Account</h2>
+			<h2 class="account-title">{{$t('account.importAccount')}}</h2>
 			<ul class="account-type ft14">
 				<li>
 					<a
 						:class="{'account-select':importWay == 0}"
 						@click="importWay = 0"
-					>Keystore File</a>
+					>{{$t('account.keystoreFile')}}</a>
 				</li>
 				<li>
 					<a
 						:class="{'account-select':importWay == 1}"
 						@click="importWay = 1"
-					>Private Key</a>
+					>{{$t('account.privateKey')}}</a>
 				</li>
 			</ul>
 			<div class="el-form loading textarea">
 				<div v-if="importWay == 0">
 					<el-form @submit.native.prevent>
-						<el-form-item label="Keystore File:">
+						<el-form-item :label="$t('account.keystoreFile')+':'">
 							<el-input
 								type="textarea"
 								v-model="data.Wallet"
 								cols="30"
 								rows="10"
-								placeholder="Key"
+								:placeholder="$t('account.key')"
 								class="grey-theme"
 							>
 							</el-input>
@@ -41,14 +41,14 @@
 									@click='importWallet'
 									class="primary ft12"
 								>
-									<i class="ofont ofont-DAT"></i> Select Keystore File
+									<i class="ofont ofont-DAT"></i> {{$t('account.selectKeystoreFile')}}
 								</ripper-button>
 							</div>
 						</el-form-item>
-						<el-form-item label="Wallet Password:">
+						<el-form-item :label="$t('public.walletPassword')+':'">
 							<el-input
 								v-model="data.Password"
-								placeholder="Input Wallet Password"
+								:placeholder="$t('public.pleaseInputWalletPassword')"
 								type="password"
 								:rows="2"
 								class="grey-theme"
@@ -70,12 +70,12 @@
 						@submit.native.prevent
 					>
 						<el-form-item
-							label="PrivateKey"
+							:label="$t('account.privateKey')"
 							prop='PrivateKey'
 						>
 							<el-input
 								v-model="privateKeyForm.PrivateKey"
-								placeholder="Input/Import privatekey here"
+								:placeholder="$t('account.inputImportPrivatekeyHere')"
 								class="grey-theme"
 							></el-input>
 							<!-- <div class="tr"><a
@@ -87,34 +87,34 @@
 								@click='importPrivateKey'
 							>
 								<ripper-button class="primary ft12">
-									<i class="ofont ofont-DAT"></i> Select Private Key File
+									<i class="ofont ofont-DAT"></i> {{$t('account.selectPrivateKeyFile')}}
 								</ripper-button>
 							</div>
 						</el-form-item>
 						<el-form-item
-							label="User Name"
+							:label="$t('account.userName')"
 							prop='Label'
 						>
 							<el-input
 								v-model="privateKeyForm.Label"
-								placeholder="Input User Name"
+								:placeholder="$t('account.inputUserName')"
 								class="grey-theme"
 							></el-input>
 						</el-form-item>
 						<el-form-item
-							label="Wallet Password"
+							:label="$t('public.walletPassword')"
 							prop='Password'
 						>
 							<el-input
 								v-model="privateKeyForm.Password"
-								placeholder="Input New Wallet Password"
+								:placeholder="$t('account.inputNewWalletPassword')"
 								show-password
 								type="password"
 								class="grey-theme"
 							></el-input>
 						</el-form-item>
 						<el-form-item
-							label="Confirm Wallet Password"
+							:label="$t('account.confirmWalletPassword')"
 							prop='Confirm'
 						>
 							<el-input
@@ -123,7 +123,7 @@
 								show-password
 								type="password"
 								class="grey-theme"
-								placeholder="Confirm Your Wallet Password"
+								:placeholder="$t('account.confirmYourWalletPassword')"
 							></el-input>
 						</el-form-item>
 					</el-form>
@@ -133,7 +133,7 @@
 						@click="importAccount"
 						class="import-button account-button text-center"
 						type="primary"
-					>Import</ripper-button>
+					>{{$t('account.import')}}</ripper-button>
 				</div>
 			</div>
 		</div>
@@ -144,10 +144,11 @@ const { ipcRenderer } = require("electron");
 export default {
 	data() {
 		let validatePassword = (rule, value, callback) => {
+			const vm = this;
 			if (this.privateKeyForm.Password === this.privateKeyForm.Confirm) {
 				callback();
 			} else {
-				callback(new Error("Inconsistent passwords filled in twice."));
+				callback(new Error(vm.$t('account.inconsistentPasswordsFilledInTwice')));
 			}
 		};
 		return {
@@ -165,20 +166,20 @@ export default {
 				PrivateKey: [
 					{
 						required: true,
-						message: "please fill your Private Key",
+						message: this.$t('account.pleaseFillYourPrivateKey'),
 						trigger: "blur"
 					}
 				],
 				Label: [
 					{
 						required: true,
-						message: "please fill your name",
+						message: this.$t('account.pleaseFillYourName'),
 						trigger: "blur"
 					}
 				],
 				Password: {
 					// validator: validatePassword,
-					message: "please fill your password",
+					message: this.$t('account.pleaseFillYourPassword'),
 					required: true,
 					trigger: ["blur", "input"]
 				},
@@ -219,11 +220,12 @@ export default {
 			}
 		},
 		importAccountWithWalletFile() {
+			const vm = this;
 			if (this.switchToggle.loading) return;
 			this.$axios
 				.post(this.$api.account + "/import/walletfile", this.data, {
 					loading: {
-						text: "Importing",
+						text: vm.$t('account.importing'),
 						target: ".loading"
 					}
 				})
@@ -235,20 +237,17 @@ export default {
 						}
 						window.location.href = location.origin + location.pathname; // success login link to home page
 					} else {
-						this.$message.error(
-							this.$i18n.error[res.Error]
-								? this.$i18n.error[res.Error][this.$language]
-								: `error code is ${res.Error}`
-						);
+						this.$message.error(this.$t(`error[${res.Error}]`));
 					}
 				})
 				.catch(e => {
 					if (!e.message.includes("timeout")) {
-						this.$message.error("Network Error. Import Wallet File Failed!");
+						this.$message.error(vm.$t('account.networkErrorImportWalletFileFailed'));
 					}
 				});
 		},
 		importAccountWithPrivateKey() {
+			const vm = this;
 			if (this.switchToggle.loading) return;
 			this.$refs.privatekeyform.validate(valid => {
 				if (valid) {
@@ -259,7 +258,7 @@ export default {
 							{
 								loading: {
 									lock: true,
-									text: "Importing",
+									text: vm.$t('account.importing'),
 									target: ".loading"
 								}
 							}
@@ -272,16 +271,12 @@ export default {
 								}
 								window.location.href = location.origin + location.pathname; // success login link to home page
 							} else {
-								this.$message.error(
-									this.$i18n.error[res.Error]
-										? this.$i18n.error[res.Error][this.$language]
-										: `error code is ${res.Error}`
-								);
+								this.$message.error(this.$t(`error[${res.Error}]`));
 							}
 						})
 						.catch(e => {
 							if (!e.message.includes("timeout")) {
-								this.$message.error("Network Error. Import Private Key Failed!");
+								this.$message.error(vm.$t('account.networkErrorImportPrivateKeyFailed'));
 							}
 						});
 				}

@@ -6,7 +6,7 @@
 					class="transform-link"
 					:to="{name:'transfer',query:{transferType:1}}"
 					:class="{'theme-font-blue-bold hover-link': transferType == 1}"
-				><span><i class="ofont ofont-shangchuan"></i>Upload</span> <span
+				><span><i class="ofont ofont-shangchuan"></i>{{$t('fileManager.transfer')}}</span> <span
 						class="badge"
 						v-show="uploadLength>0"
 					>{{uploadLength}}</span></router-link>
@@ -14,7 +14,7 @@
 					class="transform-link"
 					:to="{name:'transfer',query:{transferType:2}}"
 					:class="{'theme-font-blue-bold hover-link': transferType == 2}"
-				><i class="ofont ofont-xiazai2"></i>Download <span
+				><i class="ofont ofont-xiazai2"></i>{{$t('fileManager.download')}} <span
 						class="badge"
 						v-show="downloadLength>0"
 					>{{downloadLength}}</span></router-link>
@@ -22,28 +22,7 @@
 					class="transform-link"
 					:to="{name:'transfer',query:{transferType:0}}"
 					:class="{'theme-font-blue-bold hover-link': transferType == 0}"
-				><i class="ofont ofont-wancheng"></i>Complete</router-link>
-				<!-- <p
-					class="transform-link"
-					:class="{'theme-font-blue-bold hover-link': transferType == 1}"
-					@click="transferType = 1"
-				><span><i class="ofont ofont-shangchuan"></i>Upload</span> <span
-						class="badge"
-						v-show="uploadLength>0"
-					>{{uploadLength}}</span></p>
-				<p
-					class="transform-link"
-					:class="{'theme-font-blue-bold hover-link': transferType == 2}"
-					@click="transferType = 2 "
-				><i class="ofont ofont-xiazai2"></i>Download <span
-						class="badge"
-						v-show="downloadLength>0"
-					>{{downloadLength}}</span></p>
-				<p
-					class="transform-link"
-					:class="{'theme-font-blue-bold hover-link': transferType == 0}"
-					@click="transferType = 0"
-				><i class="ofont ofont-wancheng"></i>Complete</p> -->
+				><i class="ofont ofont-wancheng"></i>{{$t('fileManager.complete')}}</router-link>
 			</div>
 		</div>
 		<div class="layout-main">

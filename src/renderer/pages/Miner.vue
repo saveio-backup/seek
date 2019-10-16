@@ -6,11 +6,11 @@
 					<router-link
 						:class="{'link-hover': fileType == 0}"
 						:to="{name:'minerdisk', query:{type:0, page:'miner',controlBar:'close'}}"
-					><span>File</span></router-link>
+					><span>{{$t('miner.file')}}</span></router-link>
 					<router-link
 						:class="{'link-hover': fileType == 1}"
 						:to="{name:'income', query:{type:1}}"
-					><span>Profit</span></router-link>
+					><span>{{$t('miner.profit')}}</span></router-link>
 					<!-- <i class="el-icon-tickets"></i>  -->
 				</div>
 			</div>
@@ -23,13 +23,23 @@
 <script>
 export default {
 	mounted() {
-		document.title = "Miner";
+		document.title = this.$t('miner.miner');
 		this.$store.dispatch("setCurrentAccount"); // get login status
 	},
 	data() {
 		return {
 			fileType: 0
 		};
+	},
+	watch: {
+		lang() {
+			document.title = this.$t('miner.miner');
+		}
+	},
+	computed: {
+		lang() {
+			return this.$i18n.locale;
+		}
 	},
 	beforeRouteEnter(to, from, next) {
 		next(vm => {

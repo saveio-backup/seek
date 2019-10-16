@@ -8,20 +8,20 @@
 			:visible.sync="logoutToggle"
 		>
 			<div slot="title">
-				<h2>Warning</h2>
+				<h2>{{$t('dialog.warning')}}</h2>
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content logout-loading">
 				<div class="mb20">
-					<p class="mt20 text-center break-word">Please ensure that the private key(WIF) file is properly stored before exiting.</p>
+					<p class="mt20 text-center break-word">{{$t('dialog.pleaseEnsureThatThePrivateKeyFileIsProperlyStoredBeforeExiting')}}</p>
 				</div>
 				<div slot="footer">
-					<ripper-button @click="closeDialog">Cancel</ripper-button>
+					<ripper-button @click="closeDialog">{{$t('public.cancel')}}</ripper-button>
 					<ripper-button
 						type="primary"
 						class="primary"
 						@click="logout"
-					>Logout</ripper-button>
+					>{{$t('dialog.logout')}}</ripper-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -44,13 +44,14 @@ export default {
 			this.$emit("closeDialog", { timeout: 0 });
 		},
 		logout() {
+			const vm = this;
 			this.$axios
 				.post(
 					this.$api.account + "/logout",
 					{},
 					{
 						loading: {
-							text: "logging out",
+							text: vm.$t('dialog.loggingOut'),
 							target: ".loading-content.logout-loading"
 						}
 					}
@@ -71,11 +72,7 @@ export default {
 						this.logoutUploadViews();
 						this.closeDialog();
 					} else {
-						this.$message.error(
-							this.$i18n.error[res.Error]
-								? this.$i18n.error[res.Error][this.$language]
-								: `error code is ${res.Error}`
-						);
+						this.$message.error(this.$t(`error[${res.Error}]`));
 					}
 				})
 				.catch(err => {

@@ -3,7 +3,7 @@
 		<div class="content">
 			<div class="space-header">
 				<div class="space-progress">
-					<div class="theme-font-blue bold mb10 ft14 user-no-select">Used: {{util.bytesToSize(space.Used * 1024)}} / {{util.bytesToSize((space.Used + space.Remain) *1024)}} <span class="theme-font-blue-40 bold ft14 ">ExpiredAt :{{expired_old}}</span> </div>
+					<div class="theme-font-blue bold mb10 ft14 user-no-select">{{$t('fileManager.used')}}: {{util.bytesToSize(space.Used * 1024)}} / {{util.bytesToSize((space.Used + space.Remain) *1024)}} <span class="theme-font-blue-40 bold ft14 ">{{$t('fileManager.expiredTime')}} :{{expired_old}}</span> </div>
 					<el-progress
 						:stroke-width="30"
 						:percentage="takeSpace"
@@ -12,19 +12,20 @@
 				<ripper-button
 					ref='getspace'
 					@click="openExpandDialog"
-				>Storage</ripper-button>
+					class="storage"
+				>{{$t('fileManager.storage')}}</ripper-button>
 			</div>
-			<p class="theme-font-blue bold mt40 mb10 ft14 user-no-select">Space Adjust Record</p>
+			<p class="theme-font-blue bold mt40 mb10 ft14 user-no-select">{{$t('fileManager.spaceAdjustRecord')}}</p>
 			<div class="space-record">
 				<!-- border -->
 				<el-table
 					:data='Records'
 					ref='recordTable'
-					empty-text='No Data'
+					:empty-text="$t('public.noData')"
 					height='100%'
 				>
 					<el-table-column
-						label='Size'
+						:label="$t('fileManager.size')"
 						prop="Size"
 						sortable
 					>
@@ -35,7 +36,7 @@
 						</template>
 					</el-table-column>
 					<el-table-column
-						label='Expired Time'
+						:label="$t('fileManager.expiredTime')"
 						prop="ExpiredAt"
 						sortable
 					>
@@ -48,7 +49,7 @@
 						</template>
 					</el-table-column>
 					<el-table-column
-						label='Cost'
+						:label="$t('fileManager.cost')"
 						prop="Cost"
 						sortable
 					>
@@ -69,24 +70,24 @@
 				:visible.sync="expandDialogVisible"
 			>
 				<div slot="title">
-					<h2>Storage</h2>
+					<h2>{{$t('fileManager.storage')}}</h2>
 					<div class="dialog-title-border"></div>
 				</div>
 				<div class="loading-content expand-setspace-loading">
 					<div class="adjust">
 						<div class="adjust-item">
-							<div class="adjust-title bold ft14 tl theme-font-blue-40">Space Size:</div>
+							<div class="adjust-title bold ft14 tl theme-font-blue-40">{{$t('fileManager.spaceSize')}}:</div>
 						</div>
 						<!-- <h3 class="theme-font-blue transparent bold ft12">Space Size:</h3> -->
 						<div class="adjust-item">
-							<p class="adjust-title theme-font-blue ft14">Current:</p>
+							<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.current')}}:</p>
 							<div class="adjust-info">
 								<p class="theme-font-blue ft14 mr20">{{util.bytesToSize( (space.Used + space.Remain)*1024)}}</p>
 								<p class="theme-font-blue-40 ft14 ml20">{{util.bytesToSize(space.Used *1024)}} / {{util.bytesToSize( (space.Used + space.Remain)*1024)}}</p>
 							</div>
 						</div>
 						<div class="adjust-item">
-							<div class="adjust-title theme-font-blue ft14">Adjust to:</div>
+							<div class="adjust-title theme-font-blue ft14">{{$t('fileManager.adjustTo')}}:</div>
 							<div class="adjust-info">
 								<el-input-number
 									ref="spaceNumberInput"
@@ -120,16 +121,16 @@
 					</div>
 					<div class="adjust">
 						<div class="adjust-item">
-							<div class="adjust-title  theme-font-blue-40 bold ft14 tl">Space Date:</div>
+							<div class="adjust-title  theme-font-blue-40 bold ft14 tl">{{$t('fileManager.spaceDate')}}:</div>
 						</div>
 						<div class="adjust-item">
-							<p class="adjust-title theme-font-blue ft14">Expiry Date:</p>
+							<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.expiryDate')}}:</p>
 							<div class="adjust-info">
 								<p class="theme-font-blue">{{expired_old}}</p>
 							</div>
 						</div>
 						<div class="adjust-item">
-							<div class="adjust-title theme-font-blue ft14">Adjust to:</div>
+							<div class="adjust-title theme-font-blue ft14">{{$t('fileManager.adjustTo')}}:</div>
 							<div class="adjust-info">
 								<el-date-picker
 									v-model="expired"
@@ -137,7 +138,7 @@
 									format='yyyy-MM-dd-HH:mm:ss'
 									:picker-options="pickerOptions"
 									type="date"
-									placeholder="Choose Date"
+									:placeholder="$t('fileManager.chooseDate')"
 								>
 								</el-date-picker>
 							</div>
@@ -145,7 +146,7 @@
 					</div>
 					<div class="adjust">
 						<div class="adjust-item">
-							<p class="adjust-title theme-font-blue ft14">{{cost.TransferType === 2?'Pledge Refund':'Pledge Payment'}}:</p>
+							<p class="adjust-title theme-font-blue ft14">{{cost.TransferType === 2?$t('fileManager.pledgeRefund'):$t('fileManager.pledgePayment')}}:</p>
 							<div class="adjust-info theme-font-blue ft14">
 								<div v-if="cost.TransferType !== 2">
 									{{cost.FeeFormat?util.effectiveNumber(cost.FeeFormat):0}} ONI
@@ -158,18 +159,18 @@
 						<div class="adjust-item">
 							<p class="adjust-title theme-font-blue ft14"></p>
 							<div class="adjust-info theme-font-blue-40 ft14">
-								<span class="mr10">Available</span> {{mainCount? util.effectiveNumber(mainCount):0}} ONI
+								<span class="mr10">{{$t('fileManager.available')}}</span> {{mainCount? util.effectiveNumber(mainCount):0}} ONI
 							</div>
 						</div>
 					</div>
 					<div class="adjust">
 						<div class="adjust-item">
-							<div class="adjust-title theme-font-blue ft14">Wallet Password:</div>
+							<div class="adjust-title theme-font-blue ft14">{{$t('public.walletPassword')}}:</div>
 							<div class="adjust-info theme-font-blue-40 ft14 mr20">
 								<el-input
 									v-model="Password"
 									@keyup.enter.native='setUserSpace'
-									placeholder="Please Input Wallet Password"
+									:placeholder="$t('public.pleaseInputWalletPassword')"
 									class="grey-theme"
 									show-password
 									type="password"
@@ -178,12 +179,12 @@
 						</div>
 					</div>
 					<div slot="footer">
-						<ripper-button @click="expandDialogVisible = false">Cancel</ripper-button>
+						<ripper-button @click="expandDialogVisible = false">{{$t('public.cancel')}}</ripper-button>
 						<ripper-button
 							type="primary"
 							class="primary"
 							@click="setUserSpace"
-						>Update</ripper-button>
+						>{{$t('fileManager.update')}}</ripper-button>
 					</div>
 				</div>
 			</el-dialog>
@@ -194,17 +195,17 @@
 				:visible.sync="linkUploadDialogVisible"
 			>
 				<div slot="title">
-					<h2>Go Upload</h2>
+					<h2>{{$t('fileManager.goUpload')}}</h2>
 					<div class="dialog-title-border"></div>
 				</div>
 				<div class="loading-content">
-					<p class="mt10 mb30 ft14 break-word">You can now upload files via Primary mode.</p>
+					<p class="mt10 mb30 ft14 break-word">{{$t('fileManager.youCanNowUploadFilesViaPrimaryMode')}}</p>
 					<div slot="footer">
-						<ripper-button @click="linkUploadDialogVisible = false">Cancel</ripper-button>
+						<ripper-button @click="linkUploadDialogVisible = false">{{$t('public.cancel')}}</ripper-button>
 						<ripper-button
 							class="primary"
 							@click="linkUpload"
-						>Upload</ripper-button>
+						>{{$t('fileManager.update')}}</ripper-button>
 					</div>
 				</div>
 			</el-dialog>
@@ -408,11 +409,7 @@ export default {
 							return;
 						}
 					} else {
-						this.$message.error(
-							this.$i18n.error[res.Error]
-								? this.$i18n.error[res.Error][this.$language]
-								: `error code is ${res.Error}`
-						);
+						this.$message.error(this.$t(`error[${res.Error}]`));
 						this.switchToggle.loadSwitch = true;
 					}
 				})
@@ -425,8 +422,9 @@ export default {
 			this.expandDialogVisible = true;
 		},
 		setUserSpaceCheckRes() {
+			const vm = this;
 			if (this.Password.length === 0) {
-				this.$message("Please input wallet password");
+				this.$message(vm.$t('public.pleaseInputWalletPassword'));
 				return false;
 			}
 			return true;
@@ -437,6 +435,7 @@ export default {
 			});
 		},
 		setUserSpace() {
+			const vm = this;
 			if (!this.submitToggle) return;
 			if (this.cost.FeeFormat === "" || this.cost.FeeFormat === undefined) {
 				this.$message.error("Please adjust your space and date.");
@@ -466,7 +465,7 @@ export default {
 					},
 					{
 						loading: {
-							text: "Upgrading",
+							text: vm.$t('fileManager.upgrading'),
 							target: ".loading-content.expand-setspace-loading"
 						}
 					}
@@ -480,7 +479,7 @@ export default {
 						setTimeout(() => {
 							this.$nextTick(() => {
 								this.$message({
-									message: "Get storage successed.",
+									message: vm.$t('fileManager.getStorageSuccessed'),
 									type: "success"
 								});
 								this.$store.dispatch("setSpace");
@@ -491,17 +490,13 @@ export default {
 							});
 						}, 50);
 					} else {
-						this.$message.error(
-							this.$i18n.error[res.Error]
-								? this.$i18n.error[res.Error][this.$language]
-								: `error code is ${res.Error}`
-						);
+						this.$message.error(this.$t(`error[${res.Error}]`));
 						this.submitToggle = true;
 					}
 				})
 				.catch(e => {
 					if (!e.message.includes("timeout")) {
-						this.$message.error("Network Error. Set User Space Failed!");
+						this.$message.error(vm.$t('fileManager.networkErrorSetUserSpaceFailed'));
 					}
 				});
 		},
@@ -597,6 +592,10 @@ $grey: #ccc;
 			padding-top: 30px;
 			display: flex;
 			align-items: flex-end;
+			& > .storage {
+				min-width: 90px;
+			}
+
 			.space-progress {
 				.el-progress-bar__outer,
 				.el-progress-bar__inner {

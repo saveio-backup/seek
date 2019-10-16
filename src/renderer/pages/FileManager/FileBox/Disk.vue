@@ -308,7 +308,7 @@
 					<div class="adjust-item">
 						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.channelBalance')}}:</p>
 						<div class="adjust-info">
-							<p class="ft14 mr20">{{channelBind.BalanceFormat}}</p>
+							<p class="ft14 mr20">{{channelBind.BalanceFormat}} ONI</p>
 						</div>
 					</div>
 				</div>

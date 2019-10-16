@@ -90,7 +90,7 @@ const result = {
   'backups': '备份',
   'authority': '权限',
   'private': '私有',
-  'public': '公共',
+  'public': '公开',
   'whitelist': '白名单',
   'inputOneWalletAddress': '输入一个钱包地址',
   'addWhiteList': '添加白名单',

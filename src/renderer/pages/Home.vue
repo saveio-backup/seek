@@ -617,6 +617,92 @@ export default {
 		},
 		exportPrivateKey() {
 			ipcRenderer.send("dialog-open", "exportPrivateKey");
+		},
+		generateChannelView() {
+			const that = this;
+			if(this.currentChannelData.length === 0) {
+				const currentChannelData = [{ value: 0, name: that.$t('home.noChannel') }];
+					const color =
+				this.currentChannelData.length === 0
+					? ["#D4DDEB"]
+					: ["#3E6695", "#3B81EB", "#FF607B", "#D3E84E", "#E15C91"];
+				this.chartsChannelDom.setOption({
+					series: [
+						{
+							name: "channel info:",
+							type: "pie",
+							radius: ["77%", "88%"],
+							avoidLabelOverlap: false,
+							backgroundColor: "#000111",
+							label: {
+								normal: {
+									show: false,
+									position: "center",
+									formatter: ["{a|{b}}", "{c|{c} ONI}", "{b|{d}%}"].join("\n"),
+									rich: {
+										a: {
+											color: "#2F8FF0",
+											fontFamily: "Montserrat-Medium",
+											fontSize: 16,
+											padding: [10, 0, 10, 0]
+										},
+										b: {
+											color: "rgba(32, 32, 32, .4)",
+											fontFamily: "Montserrat-Medium",
+											fontSize: 14,
+											padding: [5, 0, 0, 0]
+										},
+										c: {
+											color: "rgba(32, 32, 32, .4)",
+											fontFamily: "Montserrat-Medium",
+											fontSize: 14
+										}
+									}
+								},
+								emphasis: {
+									show: true,
+									textStyle: {
+										fontSize: "12",
+										fontWeight: "bold"
+									}
+								}
+							},
+							labelLine: {
+								show: true
+								// normal: {
+								// 	show: false
+								// }
+							},
+							data: currentChannelData,
+							color: color,
+							selectedOffset: 5
+						}
+					]
+				});
+				// default selcet and bind select event
+				this.chartsChannelDom.dispatchAction({
+					type: "highlight",
+					seriesIndex: 0,
+					dataIndex: 0
+				});
+				this.chartsChannelDom.on("mouseover", function(e) {
+					if (e.dataIndex != that.index) {
+						that.chartsChannelDom.dispatchAction({
+							type: "downplay",
+							seriesIndex: 0,
+							dataIndex: that.index
+						});
+					}
+				});
+				this.chartsChannelDom.on("mouseout", function(e) {
+					that.index = e.dataIndex;
+					that.chartsChannelDom.dispatchAction({
+						type: "highlight",
+						seriesIndex: 0,
+						dataIndex: e.dataIndex
+					});
+				});
+			}			
 		}
 	},
 	watch: {
@@ -677,6 +763,7 @@ export default {
 		},
 		lang(newVal, oldVal) {
 			document.title = this.$t('home.home');
+			this.generateChannelView();			
 		}
 	},
 	computed: {

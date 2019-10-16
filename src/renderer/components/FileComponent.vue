@@ -496,12 +496,12 @@
 					<ripper-button
 						type="primary"
 						@click="switchToggle.confirmCancelDownloadDialog=false"
-					>{{$t('fileManager.cancel')}}</ripper-button>
+					>{{$t('public.cancel')}}</ripper-button>
 					<ripper-button
 						class="primary"
 						type="primary"
 						@click="cancelDownload"
-					>{{$t('fileManager.confirm')}}</ripper-button>
+					>{{$t('public.confirm')}}</ripper-button>
 				</div>
 			</div>
 		</el-dialog>

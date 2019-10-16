@@ -153,7 +153,7 @@
 			center
 		>
 			<div slot="title">
-				<h2>{{channelToggle.type === 'del' ? $t('public.close') : $t('public.open')}} {{$t('public.channel')}}</h2>
+				<h2>{{channelToggle.type === 'del' ? $t('public.closeChannel') : $t('public.openChannel')}}</h2>
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content loading-content-2">

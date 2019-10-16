@@ -122,6 +122,16 @@ export default {
 			]
 		};
 	},
+	watch: {
+		lang() {
+			document.title = this.$t('settings.settings');
+		}
+	},
+	computed: {
+		lang() {
+			return this.$i18n.locale;
+		}
+	},
 	methods: {
 		setLang() {
 			const vm = this;

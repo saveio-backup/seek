@@ -8,6 +8,7 @@ const result = {
   'offline': '离线',
   'transfer': '转存',
   'closeChannel': '关闭通道',
+  'openChannel': '新建通道',
   'settle': '结算中',
   'confirm': '确认',
   'cancel': '取消',

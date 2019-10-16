@@ -8,6 +8,7 @@ const result = {
   'offline': 'offline',
   'transfer': 'Transfer',
   'closeChannel': 'Close Channel',
+  'openChannel': 'Open Channel',
   'settle': 'settle',
   'confirm': 'Confirm',
   'cancel': 'Cancel',

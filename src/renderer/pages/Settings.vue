@@ -218,12 +218,12 @@ export default {
 			});
 		},
 		setDir(pathType) {
-			console.log("setdirrrrrr");
 			ipcRenderer.send("will-set-dir");
 			ipcRenderer.once("did-set-dir", (event, dir) => {
 				this.$axios.post(this.$api.config, { [pathType]: dir }).then(res => {
-					console.log("did-set");
-					console.log(res);
+					if(res.Error === 0){
+						this.pathDir[pathType] = dir;
+					}
 				});
 			});
 		}

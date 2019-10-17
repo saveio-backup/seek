@@ -118,14 +118,14 @@ function saveStreamProtocol(request, callback) {
 
   })
 
-  ipcMain.once('load-third-page', (event, result) => {
+  ipcMain.once('load-third-page', (event, result, fileName) => {
     try {
       const zip = new AdmZip(result)
       const parse = path.parse(result);
       zip.extractAllTo(path.join(parse.dir));
       callback({
         method: 'get',
-        path: path.join(parse.dir, parse.name, pathname)
+        path: path.join(parse.dir, path.parse(fileName).name, pathname)
       })
 
     } catch (error) {

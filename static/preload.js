@@ -6,8 +6,6 @@ import {
   remote,
   ipcRenderer
 } from "electron";
-console.log('declar views');
-const views = remote.getCurrentWindow() ? remote.getCurrentWindow().views : null;
 const Version = '00';
 const thirdPageUid = {};
 ipcRenderer.on('will-load-thirdpage', (event, url, uuid) => {
@@ -71,25 +69,25 @@ class Seek {
   static openNewUrl({
     path
   }) {
-    let view = views.find(item => item.isActive)
+    let view = remote.getCurrentWindow().views.find(item => item.isActive)
     view.url = path;
     view.onNewUrl(path);
   }
   static openChannel(flag) {
     const path = 'seek://Home?exec=openAddChannel'
-    let view = views.find(item => item.isActive)
+    let view = remote.getCurrentWindow().views.find(item => item.isActive)
     view.url = path;
     view.onNewUrl(path);
   }
   static openComponent({
     path
   }) {
-    views.find(item => item.isActive).openComponent(path)
+    remote.getCurrentWindow().views.find(item => item.isActive).openComponent(path)
   }
 }
 
 function currentView() {
-  return views.find(item => item.isActive);
+  return remote.getCurrentWindow().views.find(item => item.isActive);
 }
 
 async function loadThirdPage(url, uuid) {
@@ -119,7 +117,7 @@ async function loadThirdPage(url, uuid) {
         fs.statSync(data.Path);
         console.log('path is');
         console.log(data.Path);
-        ipcRenderer.send('load-third-page', data.Path);
+        ipcRenderer.send('load-third-page', data.Path, data.FileName);
         console.log('task finished!!!!');
       } catch (error) {
         console.error(`error ${error}`);
@@ -191,5 +189,4 @@ function uniqId() {
 process.once('loaded', () => {
   console.log('loaded');
   global.Seek = Seek;
-  global.remote = remote;
 })

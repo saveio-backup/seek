@@ -1015,7 +1015,7 @@ export default {
 							this.syncDeleteFile(res.Result);
 							// console.log("delete");
 						} else {
-							this.$message.error(this.$i18n.error[res.Error][this.$language]);
+							this.$message.error(this.$t(`error["${res.Error}"]`));
 							this.syncDeleteFile(res.Result);
 						}
 					})

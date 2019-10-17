@@ -135,7 +135,7 @@ export default {
 	methods: {
 		setLang() {
 			const vm = this;
-			vm.$i18n.locale = vm.settings.lang;
+			vm.$i18n.locale = vm.settings.lang || 'en';
 			document.title = this.$t('settings.settings');
 			this.updateSettings("lang", vm.settings.lang);
 			ipcRenderer.send("run-dialog-event", {name:'toSetLang', data: vm.settings.lang});

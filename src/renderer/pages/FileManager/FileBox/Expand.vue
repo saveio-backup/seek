@@ -354,7 +354,7 @@ export default {
 					this.isUploadedFile = false;
 				}
 			} else {
-				this.$message.error(this.$i18n.error[this.$language][result.Error]);
+				this.$message.error(this.$t(`error["${result.Error}"]`));
 			}
 		},
 		addListenScroll(element, distance, callback) {
@@ -531,7 +531,6 @@ export default {
 						this.cost.Fee = "";
 						this.cost.FeeFormat = "";
 						this.cost.TransferType = 1;
-						// this.$message.error(this.$i18n.error[res.Error]?this.$i18n.error[res.Error][this.$language]:`error code is ${res.Error}`);
 					}
 				});
 		},

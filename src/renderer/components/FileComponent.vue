@@ -801,11 +801,6 @@ export default {
 			});
 			return arr;
 		},
-		// getDetailStatus: function() {
-		// 	return function(detailStatus) {
-		// 		return this.$i18n.error[detailStatus][this.$language];
-		// 	};
-		// },
 		getAllTaskSpeedTotal: function() {
 			let speedTotal = 0;
 			for (let value of Object.keys(this.taskSpeed)) {

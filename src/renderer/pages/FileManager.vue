@@ -213,6 +213,7 @@ export default {
 			}
 		},
 		toCloseDialog(ChannelId) {
+			const vm = this;
 			let partnerId = ChannelId;
 			let partnerAddress = this.getDnsAddressById(partnerId);
 
@@ -222,7 +223,7 @@ export default {
 			},
 			{
 				loading: {
-					text: "Loading...",
+					text: vm.$t('fileManager.loading'),
 					target: ".channelSwitchBind.loading-content"
 				},
 				timeout: (this.$config.outTime * 10000 + 50000)

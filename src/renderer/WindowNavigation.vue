@@ -111,8 +111,8 @@
 								v-if="isSync"
 							></el-progress>
 							<span
-								class="ft12 theme-font-blue-70"
 								v-if="isSync"
+								class="ft12 theme-font-blue-70 syncing"
 							>
 								{{$t('window.syncing')}}
 							</span>
@@ -609,6 +609,10 @@ $tabs-height: 62px;
 			margin-left: 8px;
 			& > .sync-progress {
 				margin-right: 7px;
+			}
+
+			& > .syncing {
+				white-space: nowrap;
 			}
 			& > .currentBlock {
 				padding: 0 10px;

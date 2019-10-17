@@ -225,8 +225,18 @@ export default {
 		exportPrivateKey() {
 			ipcRenderer.send("dialog-open", "exportPrivateKey");
 		},
+		activeMessage({ info, type }) {
+			const webContentsId = this.activeView.browserView.webContents.id;
+			ipcRenderer.sendTo(webContentsId, 'current-active-show-message', { info: info, type: type })
+		},
 		exportWallet() {
-			this.$exportWallet();
+			const vm = this;
+			this.$exportWallet('',function() {
+				vm.$message({
+					message: vm.$t('dialog.exportSuccess'),
+					type: "success"
+				});
+			});
 		},
 		showVersion() {
 			ipcRenderer.send(

@@ -45,7 +45,7 @@
 									</ripper-button>
 									<ripper-button
 										class="theme1"
-										@click="$exportWallet"
+										@click="exportWallet"
 									>
 										<i class="user-name-btn-icon ofont ofont-daochu"></i> <span class="user-name-btn-content">{{$t('home.keystoreFile')}}</span>
 									</ripper-button>
@@ -596,6 +596,7 @@ export default {
 			});
 		},
 		exportWallet() {
+			const vm = this;
 			this.$axios
 				.get(this.$api.account + "/export/walletfile")
 				.then(res => {
@@ -603,7 +604,7 @@ export default {
 						ipcRenderer.send("export-file-dialog", res.Result.Wallet, "Wallet");
 						ipcRenderer.once("export-finished", () => {
 							this.$message({
-								message: "Export Success!",
+								message: vm.$t('dialog.exportSuccess'),
 								type: "success"
 							});
 						});

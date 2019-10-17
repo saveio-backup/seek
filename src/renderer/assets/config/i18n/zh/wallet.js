@@ -6,7 +6,7 @@ const result = {
   'contract': '合约',
   'id': 'ID',
   'clickToCopy': '点击进行复制',
-  'minerfee': '挖矿费用',
+  'minerfee': '矿工费用',
   'block': '块',
   'textAddr': '地址',
   'done': '完成',

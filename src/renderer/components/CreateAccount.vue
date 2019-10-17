@@ -74,7 +74,7 @@
 						<!-- <p> Backup your </p> -->
 						<ripper-button
 							class="primary margin-center mt20 mb20"
-							@click="$exportFile(validation.Wallet,'Wallet')"
+							@click="exportFile(validation.Wallet,'Wallet')"
 						>{{$t('account.saveAsFile')}}</ripper-button>
 					</div>
 					<p class="stop-desc ft14 mt20 mb20 break-word">{{$t('account.thisKeystoreFileIsAnAccountFileEncryptedBasedOnThePrivateKey')}}</p>
@@ -97,7 +97,7 @@
 					>{{$t('account.copy')}}</ripper-button>
 					<ripper-button
 						class="primary"
-						@click="$exportFile(validation.PrivateKey,'PrivateKey')"
+						@click="exportFile(validation.PrivateKey,'PrivateKey')"
 					>{{$t('account.saveAsFile')}}</ripper-button>
 					<p
 						class="mt20 mb20 ft14 break-word"
@@ -278,6 +278,15 @@ export default {
 		}
 	},
 	methods: {
+		exportFile(contents, fileName) {
+			const vm = this;
+			this.$exportFile(contents, fileName, function() {
+				vm.$message({
+					message: vm.$t('dialog.exportSuccess'),
+					type: "success"
+				});
+			});
+		},
 		getAccountStatus() {
 			this.$axios
 				.get(this.$api.account)

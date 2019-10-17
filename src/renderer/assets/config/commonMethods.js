@@ -12,6 +12,8 @@ const methods = {
   install(Vue) {
     const vm = this;
     Vue.prototype.$exportWallet = function (event, cb) {
+      console.log('event, cb');
+      console.log(event, cb);
       Vue.prototype.$axios
         .get(Vue.prototype.$api.account + "/export/walletfile")
         .then(res => {
@@ -22,10 +24,11 @@ const methods = {
                 console.log(cb);
                 cb();
               } else {
-                vm.activeMessage({
-                  info: "Export Success!",
-                  type: "success"
-                });
+                console.log(vm);
+                // vm.activeMessage({
+                //   info: Vue.prototype.$t('dialog.exportSuccess'),
+                //   type: "success"
+                // });
               }
             });
           }
@@ -34,17 +37,18 @@ const methods = {
           console.error(err);
         });
     };
-    Vue.prototype.$exportFile = function (contents, fileName) {
+    Vue.prototype.$exportFile = function (contents, fileName, cb) {
       ipcRenderer.send("export-file-dialog", contents, fileName);
       ipcRenderer.once("export-finished", () => {
         if (cb) {
           cb();
-        } else {
-          vm.activeMessage({
-            info: "Export Success!",
-            type: "success"
-          });
-        }
+        } 
+        // else {
+        //   vm.activeMessage({
+        //     info: "Export Success!",
+        //     type: "success"
+        //   });
+        // }
       });
     };
     Vue.prototype.$exportPrivatekey = function () {

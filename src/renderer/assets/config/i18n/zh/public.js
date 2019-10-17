@@ -33,7 +33,7 @@ const result = {
   'networkErrorOpenChannelFailed': '网络错误。开通道失败!',
   'closeChannelSuccessed': '关闭通道成功',
   'networkErrorCloseChannelFailed': '网络错误。关通道失败!',
-  'copied': '复杂成功',
+  'copied': '复制成功',
   'wallet': '钱包',
   'inputAmount': '输入总量',
   'insufficientBalanceAvailable': '可用余额不足',

@@ -222,7 +222,7 @@
 					>
 						<template slot-scope="scope">
 							<span class="td-grey">
-								{{privilegeConfig[scope.row.Privilege]}}
+								{{$t(`fileManager["${privilegeConfig[scope.row.Privilege]}"]`)}}
 							</span>
 						</template>
 					</el-table-column>

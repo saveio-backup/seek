@@ -128,7 +128,7 @@
 					<div slot="footer">
 						<ripper-button @click="toCancelChange">{{$t('public.cancel')}}</ripper-button>
 						<ripper-button
-							class="primary"
+							class="primary ml10"
 							@click="toApplyChange"
 						>{{$t('public.apply')}}</ripper-button>
 					</div>

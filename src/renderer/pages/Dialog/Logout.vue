@@ -19,7 +19,7 @@
 					<ripper-button @click="closeDialog">{{$t('public.cancel')}}</ripper-button>
 					<ripper-button
 						type="primary"
-						class="primary"
+						class="primary ml10"
 						@click="logout"
 					>{{$t('dialog.logout')}}</ripper-button>
 				</div>

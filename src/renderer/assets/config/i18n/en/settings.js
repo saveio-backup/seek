@@ -12,7 +12,7 @@ const result = {
   'TestNet': 'TestNet',
   'MainNet': 'MainNet',
   'English': 'English',
-  'Chinese': 'Chinese',
+  'Chinese': '中 文',
   'switchSuccess': 'Switch Success',
   'settings': 'Settings'
 }

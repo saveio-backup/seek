@@ -11,11 +11,11 @@ const result = {
   'textAddr': 'Text Addr',
   'done': 'Done',
   'sendTo': 'Send to',
-  'input': 'Input ',
+  'input': 'Please Fill ',
   'address': ' Address',
   'myAssets': 'My Assets',
   'wallet': 'Wallet',
-  'pleaseFillAddress': 'Please fill address',
+  'pleaseFillAddress': 'Please Fill Address',
   'qrcodeNotFound': 'Qrcode Not Found',
 }
 export default result;

@@ -9,7 +9,7 @@
 				<p
 					class="ft20 mb10"
 					v-if="fileList.length>0"
-				>{{$t(`fileManager["${transferTypeConfig[transferType]}"]`)}}{{$t('fileManager.progress')}}</p>
+				>{{$t(`fileManager["${transferTypeConfig[transferType]}"]`)}} {{$t('fileManager.progress')}}</p>
 				<p
 					class="grey-xs user-no-select"
 					v-else
@@ -368,9 +368,9 @@
 			<div slot="footer">
 				<ripper-button @click="switchToggle.deleteDialog = false">{{$t('public.cancel')}}</ripper-button>
 				<ripper-button
-					class="primary"
+					class="primary ml10"
 					@click="toDeleteFile(executedFile.FileHash)"
-				>{{$t('fileManager.delete')}}</ripper-button>
+				>{{$t('fileManager.deleteButton')}}</ripper-button>
 			</div>
 		</el-dialog>
 		<!-- upload page upload dialog -->
@@ -498,7 +498,7 @@
 						@click="switchToggle.confirmCancelDownloadDialog=false"
 					>{{$t('public.cancel')}}</ripper-button>
 					<ripper-button
-						class="primary"
+						class="primary ml10"
 						type="primary"
 						@click="cancelDownload"
 					>{{$t('public.confirm')}}</ripper-button>

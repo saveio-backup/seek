@@ -6,15 +6,15 @@ const result = {
   'inputURL': '输入链接',
   'syncing': '同步中...',
   'fileManager': '文件管理',
-  'wallet': '钱包',
-  'miner': '挖矿',
+  'wallet': '钱 包',
+  'miner': '挖 矿',
   'comingSoon': '敬请期待..',
   'exportKeystoreFile': '导出密钥',
   'exportPrivateKey': '导出私钥',
   'helpDocument': '帮助文档',
-  'logOut': '登出',
-  'settings': '配置',
-  'version': '版本'
+  'logOut': '登 出',
+  'settings': '设 置',
+  'version': '版 本'
 }
 
 export default result;

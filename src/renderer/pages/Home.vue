@@ -44,7 +44,7 @@
 										<i class="user-name-btn-icon ofont ofont-daochu"></i> <span class="user-name-btn-content">{{$t('home.privateKey')}}</span>
 									</ripper-button>
 									<ripper-button
-										class="theme1"
+										class="theme1 user-name-button-right"
 										@click="exportWallet"
 									>
 										<i class="user-name-btn-icon ofont ofont-daochu"></i> <span class="user-name-btn-content">{{$t('home.keystoreFile')}}</span>
@@ -115,7 +115,7 @@
 							@click="goPage('/CreateAccount')"
 						>{{$t('home.createAccount')}}</ripper-button>
 						<ripper-button
-							class="primary button"
+							class="primary button importAccount"
 							@click="goPage('/ImportAccount')"
 						>{{$t('home.importAccount')}}</ripper-button>
 					</div>
@@ -377,13 +377,14 @@ export default {
 			return timestamp;
 		},
 		openAddChannel() {
+			const vm = this;
 			if (this.isSync) {
 				this.$confirm(
-					"Block unsynchronized completion. Are you sure to do this?",
-					"Notice",
+					vm.$t('public.blockUnsynchronizedCompletionAreYouSureToDoThis'),
+					vm.$t('public.notice'),
 					{
-						confirmButtonText: "Confirm",
-						cancelButtonText: "Cancel"
+						confirmButtonText: vm.$t('public.confirm'),
+						cancelButtonText: vm.$t('public.cancel')
 					}
 				)
 					.then(() => {
@@ -953,19 +954,13 @@ $input-color: rgba(203, 203, 203, 1);
 				position: relative;
 				z-index: 999;
 
+
+
 				& > .button {
 					padding: 10px;
 					color: #fff;
 					font-size: 14px;
 					margin: 0 40px;
-
-					// .el-button {
-					// 	border-radius: 0px;
-					// }
-					// .el-button--default {
-					// color: #040f39;
-					// border-color: rgba(4, 15, 57, 0.5);
-					// }
 				}
 			}
 		}
@@ -1097,6 +1092,9 @@ $input-color: rgba(203, 203, 203, 1);
 						.user-name-btn-content {
 							position: relative;
 							top: -1px;
+						}
+
+						.user-name-button-right {
 							margin-left: 3px;
 						}
 					}

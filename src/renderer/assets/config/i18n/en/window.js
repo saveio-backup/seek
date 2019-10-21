@@ -3,7 +3,7 @@ const result = {
   'goBack': 'Go Back',
   'goForward': 'Go Forward',
   'refresh': 'Refresh',
-  'inputURL': 'Input URL',
+  'inputURL': 'Please Fill URL',
   'syncing': 'Syncing...',
   'fileManager': 'FileManager',
   'wallet': 'Wallet',

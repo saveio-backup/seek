@@ -160,7 +160,7 @@
 					<el-button @click="passwordForm.show = false">{{$t('public.cancel')}}</el-button>
 					<el-button
 						type="primary"
-						class="primary"
+						class="primary ml10"
 						@click="toUploadFile"
 					>{{$t('public.confirm')}}</el-button>
 				</div>

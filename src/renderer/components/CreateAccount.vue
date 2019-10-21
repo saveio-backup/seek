@@ -52,7 +52,7 @@
 						<el-input
 							v-model="form.Confirm"
 							@keyup.enter.native="submitForm('form')"
-							:placeholder="$t('account.confirmYourWalletPassword')"
+							:placeholder="$t('account.confirmWalletPassword')"
 							show-password
 							type="password"
 							class="grey-theme"

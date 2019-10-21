@@ -123,7 +123,7 @@
 								show-password
 								type="password"
 								class="grey-theme"
-								:placeholder="$t('account.confirmYourWalletPassword')"
+								:placeholder="$t('account.confirmWalletPassword')"
 							></el-input>
 						</el-form-item>
 					</el-form>

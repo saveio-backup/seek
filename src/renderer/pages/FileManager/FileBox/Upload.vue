@@ -55,10 +55,11 @@
 								<!-- <el-button class="browser-layout" type="primary">Browser</el-button> -->
 								<div
 									class="path-content"
-									@click.stop=""
 								>
+									<!-- @click.stop="" -->
 									<ul>
 										<el-tag
+											@click.stop=""
 											:type="(file.fileBytes > (4 * 1024 * 1024 * 1024 )) ?'danger':''"
 											:key="file.filePath"
 											:disable-transitions="false"
@@ -275,7 +276,7 @@
 					<ripper-button @click="toEmptyUpload">{{$t('public.cancel')}}</ripper-button>
 					<ripper-button
 						type="primary"
-						class="primary"
+						class="primary ml10"
 						@click="OpenPasswordDialog"
 					>{{$t('fileManager.pay')}} & {{$t('fileManager.upload')}}</ripper-button>
 				</div>
@@ -317,7 +318,7 @@
 					<ripper-button @click="passwordForm.show = false">{{$t('public.cancel')}}</ripper-button>
 					<ripper-button
 						type="primary"
-						class="primary"
+						class="primary ml10"
 						@click="toUploadFile"
 					>{{$t('public.confirm')}}</ripper-button>
 				</div>
@@ -364,7 +365,7 @@
 				<div slot="footer">
 					<ripper-button @click="noStorageDialog.show = false">{{$t('public.cancel')}}</ripper-button>
 					<ripper-button
-						class="primary"
+						class="primary ml10"
 						@click="goStorage"
 					>{{$t('fileManager.getStorage')}}</ripper-button>
 				</div>

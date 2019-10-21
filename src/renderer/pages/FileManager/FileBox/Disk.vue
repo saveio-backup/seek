@@ -10,20 +10,20 @@
 				<ripper-button
 					class="primary theme-font-blue"
 					@click="goUpload"
-				>{{$t('fileManager.upload')}}</ripper-button>
+				>{{$t('fileManager.uploadButton')}}</ripper-button>
 
 				<!-- </router-link> -->
 				<ripper-button
 					class="ml10 bt-download theme-font-blue"
 					@click="batchDownload"
 				>
-					{{$t('fileManager.download')}}
+					{{$t('fileManager.downloadButton')}}
 				</ripper-button>
 				<ripper-button
 					class="ml10 bt-download theme-font-blue"
 					@click="batchDelete"
 				>
-					{{$t('fileManager.delete')}}
+					{{$t('fileManager.deleteButton')}}
 				</ripper-button>
 			</div>
 			<div class="fun-search">
@@ -90,7 +90,7 @@
 								>
 									<span
 										@click.stop="shareFile(scope.row)"
-										:title="$t('fileManager.fileName')"
+										:title="$t('fileManager.share')"
 										v-if="scope.row.Privilege != 0"
 										class="active-blue cursor-pointer"
 									>
@@ -315,9 +315,9 @@
 				<div slot="footer">
 					<ripper-button @click="switchToggle.confrimDownloadDialog = false">{{$t('public.cancel')}}</ripper-button>
 					<ripper-button
-						class="primary"
+						class="primary ml10"
 						@click="toDownload(fileToDownload)"
-					>{{$t('fileManager.download')}}</ripper-button>
+					>{{$t('fileManager.uploadButton')}}</ripper-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -343,7 +343,7 @@
 				<div slot="footer">
 					<ripper-button @click="goStorage">{{$t('fileManager.getStorage')}}</ripper-button>
 					<ripper-button
-						class="primary"
+						class="primary ml10"
 						@click="goAdvanceUpload"
 					>{{$t('fileManager.advanceUpload')}}</ripper-button>
 				</div>
@@ -387,7 +387,7 @@
 					<ripper-button @click="switchToggle.deleteDialog = false">{{$t('public.cancel')}}</ripper-button>
 					<ripper-button
 						type="danger"
-						class="primary"
+						class="primary ml10"
 						@click="toDeleteFileNew(fileToDelete)"
 					>{{$t('fileManager.delete')}}</ripper-button>
 				</div>

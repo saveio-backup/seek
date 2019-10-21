@@ -36,7 +36,7 @@
 				<div slot="footer">
 					<ripper-button @click="closeDialog">{{$t('public.cancel')}}</ripper-button>
 					<ripper-button
-						class="primary"
+						class="primary ml10"
 						@click="exportPrivateKey"
 					>{{$t('dialog.export')}}</ripper-button>
 				</div>

@@ -182,7 +182,7 @@
 						<ripper-button @click="expandDialogVisible = false">{{$t('public.cancel')}}</ripper-button>
 						<ripper-button
 							type="primary"
-							class="primary"
+							class="primary ml10"
 							@click="setUserSpace"
 						>{{$t('fileManager.update')}}</ripper-button>
 					</div>
@@ -203,7 +203,7 @@
 					<div slot="footer">
 						<ripper-button @click="linkUploadDialogVisible = false">{{$t('public.cancel')}}</ripper-button>
 						<ripper-button
-							class="primary"
+							class="primary ml10"
 							@click="linkUpload"
 						>{{$t('fileManager.update')}}</ripper-button>
 					</div>

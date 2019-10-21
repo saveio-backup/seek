@@ -174,7 +174,7 @@
 							class="grey-theme"
 							v-model="channelForm.partner"
 							:fetch-suggestions="querySearchAsync"
-							:placeholder="$t('public.pleaseInput')"
+							:placeholder="$t('public.pleaseFillPartnerWalletAddress')"
 							@select="handleSelect"
 						></el-autocomplete>
 
@@ -202,7 +202,7 @@
 						<p class="form-item-title">{{$t('public.RecommendedNoLessThan100ONI')}}</p>
 						<el-input
 							v-model="channelForm.amount"
-							:placeholder="$t('public.pleaseInputTopUpAmount')"
+							:placeholder="$t('public.pleaseFillAmount')"
 							@blur="setFixed"
 							min="0"
 							@keyup.enter.native="toPeationChannel"
@@ -233,7 +233,7 @@
 						@click="channelToggle.channelCloseDialog = false"
 					>{{$t('public.cancel')}}</ripper-button>
 					<ripper-button
-						class="primary"
+						class="primary ml10"
 						@click="toPeationChannel"
 					>{{$t('public.confirm')}}</ripper-button>
 				</div>

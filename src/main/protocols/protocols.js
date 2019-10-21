@@ -74,6 +74,8 @@ function seekStreamProtocol(request, callback) {
 function saveStreamProtocol(request, callback) {
   // todo  download process
   const urlFormat = new URL(request.url);
+  console.log('request url is');
+  console.log(request.url);
   const {
     protocol,
     host,
@@ -84,7 +86,7 @@ function saveStreamProtocol(request, callback) {
   const pathname = (urlFormat.pathname === '/' || urlFormat.pathname === '') ? '/index.html' : urlFormat.pathname;
 
   const thirdpageUid = uuid.v4(); // every thirdpage has own uuid
-  getCurrentView.browserWindow.webContents.send('will-load-thirdpage', protocol + `//${host}`, thirdpageUid);
+  getCurrentView.browserWindow.webContents.send('will-load-thirdpage', protocol + `//${host}`, thirdpageUid, getActive(getCurrentView.browserWindow).browserView.id);
 
   let contents = getActive(getCurrentView.browserWindow).webContents;
 

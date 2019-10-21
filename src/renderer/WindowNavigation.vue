@@ -125,6 +125,12 @@
 						</div>
 					</div>
 					<!-- <div @click="setDialog('netstate')" v-if="true">Syning...</div> -->
+					<el-progress
+						v-show="activeView.pageLoadProgress<1"
+						class="page-load-progress"
+						:stroke-width='2'
+						:percentage="activeView.pageLoadProgress?activeView.pageLoadProgress * 100:0"
+					></el-progress>
 				</div>
 				<div
 					v-if="platform === 'win32'"
@@ -171,6 +177,7 @@ export default {
 	},
 	mounted() {
 		ipcRenderer.on("forceUpdate", () => {
+			console.log('forceUpdate!!!!!');
 			this.$forceUpdate();
 			this.views = remote.getCurrentWindow().views;
 		});
@@ -232,7 +239,7 @@ export default {
 			this.user = {
 				name: localStorage.getItem("Label") || ""
 			};
-			console.log('new Value is');
+			console.log("new Value is");
 			console.log(newValue);
 			this.inputDisplayUrl = this.activeView.displayURL;
 		}
@@ -529,6 +536,7 @@ $tabs-height: 62px;
 	}
 	.window-navbar {
 		display: flex;
+		position: relative;
 		height: 32px;
 		padding: 4px 16px 4px 6px;
 		background: $theme-color-opacity;
@@ -621,6 +629,16 @@ $tabs-height: 62px;
 				background: rgba(223, 226, 233, 0.5);
 				border-radius: 11px;
 				display: inline-block;
+			}
+		}
+		.page-load-progress {
+			position: absolute;
+			width: 100%;
+			bottom: 0px;
+			left: 0px;
+			height: 2px;
+			.el-progress-bar {
+				display: block;
 			}
 		}
 	}

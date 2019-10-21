@@ -8,8 +8,9 @@ import {
 } from "electron";
 const Version = '00';
 const thirdPageUid = {};
-ipcRenderer.on('will-load-thirdpage', (event, url, uuid) => {
-  loadThirdPage(url, uuid);
+ipcRenderer.on('will-load-thirdpage', (event, url, uuid, loadViewId) => {
+  const loadView = remote.getCurrentWindow().views.find(item => item.browserView.id === loadViewId);
+  loadThirdPage(url, uuid, loadView);
 })
 ipcRenderer.on('will-cancel-downloadpage', (event, url) => {
   cancelDownload(url);
@@ -90,8 +91,9 @@ function currentView() {
   return remote.getCurrentWindow().views.find(item => item.isActive);
 }
 
-async function loadThirdPage(url, uuid) {
+async function loadThirdPage(url, uuid, loadView) {
   const detail = await getTransferDetail(url);
+  // const view = remote.getCurrentWindow().views.find(item => item.isActive)
   if (detail.data.Result) {
     thirdPageUid[uuid] = true;
     const data = detail.data.Result;
@@ -102,38 +104,40 @@ async function loadThirdPage(url, uuid) {
         }).then(res => {
           if (res.data.Error === 0) {
             setTimeout(() => {
-              loadThirdPage(url, uuid);
+              loadThirdPage(url, uuid, loadView);
             }, 2000);
           }
         })
       } else { // in processing 
+        loadView.pageLoadProgress = data.Progress; // set load progress
         setTimeout(() => {
-          loadThirdPage(url, uuid);
+          loadThirdPage(url, uuid, loadView);
         }, 2000);
       }
     } else if (data.Progress === 1) { // task has finished
       // render page
+      loadView.pageLoadProgress = data.Progress; // set load progress
       try {
         fs.statSync(data.Path);
-        console.log('path is');
-        console.log(data.Path);
         ipcRenderer.send('load-third-page', data.Path, data.FileName);
         console.log('task finished!!!!');
       } catch (error) {
         console.error(`error ${error}`);
-        downloadPage(url, uuid); // task exist but file not found
+        loadView.pageLoadProgress = 0;
+        downloadPage(url, uuid, loadView); // task exist but file not found
       }
     }
   } else if (thirdPageUid[uuid]) {
     console.log(`no result ${url}`);
     delete thirdPageUid[uuid]
     console.log('loadErrorPage , uuid is:', uuid);
+    loadView.pageLoadProgress = 0;
     ipcRenderer.send(uuid + '-loadErrorPage', {
       note: 'The task has been cancelled.'
     });
   } else {
     thirdPageUid[uuid] = true;
-    downloadPage(url, uuid);
+    downloadPage(url, uuid, loadView);
   }
 }
 
@@ -152,7 +156,7 @@ async function cancelDownload(url) {
   }
 }
 
-function downloadPage(url, uuid) {
+function downloadPage(url, uuid, loadView) {
   axios.post(api.download, {
     Url: url,
     MaxPeerNum: 20,
@@ -160,7 +164,7 @@ function downloadPage(url, uuid) {
   }).then(res => {
     if (res.data.Error === 0) {
       setTimeout(() => {
-        loadThirdPage(url, uuid);
+        loadThirdPage(url, uuid, loadView);
       }, 2000);
     } else {
       console.log('emit loadErrorPage')

@@ -47,6 +47,7 @@ const result = {
   'theSelectedFile': 'the selected file?',
   'pleaseSelectTheFileYouWantToDownload': 'Please select the file you want to download.',
   'downloadError': 'Download Error',
+  'downloadSuccess': 'Download Success',
   'startDownload': 'Start Download',
   'theChannelBalanceIsInsufficientPleaseTryAgainAfterTopup': 'The channel balance is insufficient. Please try again after topup',
   'fileProcessing': 'File Processing....',

@@ -47,6 +47,7 @@ const result = {
   'theSelectedFile': '选定的文件吗?',
   'pleaseSelectTheFileYouWantToDownload': '请选择您要下载的文件。',
   'downloadError': '下载失败',
+  'downloadSuccess': '下载成功',
   'startDownload': '开始下载',
   'theChannelBalanceIsInsufficientPleaseTryAgainAfterTopup': '通道余额不足。请充值后再试一次',
   'fileProcessing': '文件处理中....',

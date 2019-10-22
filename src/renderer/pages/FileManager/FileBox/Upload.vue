@@ -755,6 +755,7 @@ export default {
 						this.switchToggle.upload = true; // set toggle
 						this.switchToggle.loading && this.switchToggle.loading.close();
 						this.$message.error(vm.$t('fileManager.passwordCheckFailed'));
+						return;
 					}
 	
 					// get all upload file params

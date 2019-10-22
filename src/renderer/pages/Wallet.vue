@@ -398,6 +398,9 @@ export default {
 			if (!reg.test(value)) {
 				callback(new Error(vm.$t('public.pleaseEnterTheCorrectFormat')));
 				return;
+			} else if(parseFloat(value) > vm.balanceLists[vm.balanceSelected].BalanceFormat) {
+				callback(new Error(vm.$t('public.insufficientBalanceAvailable')));
+				return;
 			}
 			callback();
 		};

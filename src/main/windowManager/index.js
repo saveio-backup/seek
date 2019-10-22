@@ -40,6 +40,7 @@ class View {
     this.initBrowserView();
     this.isActive = Boolean(option.isActive)
     this.option = option;
+    this.willLoadUrl = '';
 
     // event
     this.updateEvent();
@@ -115,7 +116,7 @@ class View {
       const urlReg = new RegExp(/(file:.+#)(\/?.*$)/);
       this.displayURL = (hrefFormated.replace((hrefFormated.match(urlReg) || [])[1], DEFAULT_PROTOCOL + '://').replace('\/\/\/', '\/\/'));
     } else {
-      this.displayURL = (this.url);
+      this.displayURL = (this.url || this.willLoadUrl || '');
     }
   }
   updateEvent() {
@@ -227,6 +228,7 @@ class View {
       // this.browserView = null;
       this.isSave = newIsSave;
       // this.url = url; // Set this.url will not take effect, because forceUpdate will reset
+      this.willLoadUrl = url; // store new url which we will load while we load new url but WebContents is not ready
       this.initBrowserView({
         sandbox: !newIsSave
       });

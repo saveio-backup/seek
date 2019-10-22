@@ -54,11 +54,6 @@ export default {
 		};
 	},
 	mounted() {
-		ipcRenderer.on("queryto", (sender, query) => {
-			console.log("query is ");
-			console.log(query);
-			this.$router.push({ name: "transfer", query: query });
-		});
 	},
 	watch: {
 		transferType(newVal, oldVal) {

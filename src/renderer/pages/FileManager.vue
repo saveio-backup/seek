@@ -114,7 +114,7 @@
 								:label="$t('public.password')"
 								prop="Password"
 							>
-								<el-input 
+								<el-input
 									class="grey-theme"
 									type="password"
 									show-password
@@ -147,7 +147,12 @@ import channelWalletTransfer from "../components/ChannelWalletTransfer.vue";
 import { ipcRenderer } from "electron";
 export default {
 	mounted() {
-		document.title = this.$t('fileManager.fileManager');
+		document.title = this.$t("fileManager.fileManager");
+		ipcRenderer.on("queryto", (sender, query) => {
+			console.log("query is ");
+			console.log(query);
+			this.$router.push({ name: "transfer", query: query });
+		});
 		this.$store.dispatch("getWaitForTransferList"); // get wait for upload list
 		this.$store.dispatch("setCurrentAccount"); // get login status
 		this.$store.dispatch("getDns"); // get login status
@@ -174,9 +179,9 @@ export default {
 				Password: [
 					{
 						required: true,
-						message: this.$t('public.pleaseInputPassword'),
+						message: this.$t("public.pleaseInputPassword"),
 						trigger: "blur"
-					}				
+					}
 				]
 			},
 			location: location
@@ -201,13 +206,13 @@ export default {
 		},
 		toApplyChange() {
 			this.$refs.switchChannelForm.validate(valid => {
-				if(!valid) return;
+				if (!valid) return;
 				this.$refs.channellist.applyChange();
 			});
 		},
 		getDnsAddressById(id) {
-			for(let dns of this.channels) {
-				if(dns.ChannelId == id) {
+			for (let dns of this.channels) {
+				if (dns.ChannelId == id) {
 					return dns.Address;
 				}
 			}
@@ -217,32 +222,34 @@ export default {
 			let partnerId = ChannelId;
 			let partnerAddress = this.getDnsAddressById(partnerId);
 
-			this.$axios.post(this.$api.channelSwitch, {
-				Partner: partnerAddress,
-				Password: this.switchChannelForm.Password
-			},
-			{
-				loading: {
-					text: vm.$t('fileManager.loading'),
-					target: ".channelSwitchBind.loading-content"
-				},
-				timeout: (this.$config.outTime * 10000 + 50000)
-			}).then(res => {
-				if(res.Error === 0) {
-					this.switchToggle.channelListDialog = false;
-					this.$message({
-						type: "success",
-						message: "Switching channel successfully"
-					});
-					localStorage.setItem("channelBindId", ChannelId);
-					this.$store.dispatch(
-						"setChannelBind",
-						ChannelId
-					);
-				} else {
-					this.$message.error(this.$t(`error[${res.Error}]`));
-				}
-			})
+			this.$axios
+				.post(
+					this.$api.channelSwitch,
+					{
+						Partner: partnerAddress,
+						Password: this.switchChannelForm.Password
+					},
+					{
+						loading: {
+							text: vm.$t("fileManager.loading"),
+							target: ".channelSwitchBind.loading-content"
+						},
+						timeout: this.$config.outTime * 10000 + 50000
+					}
+				)
+				.then(res => {
+					if (res.Error === 0) {
+						this.switchToggle.channelListDialog = false;
+						this.$message({
+							type: "success",
+							message: "Switching channel successfully"
+						});
+						localStorage.setItem("channelBindId", ChannelId);
+						this.$store.dispatch("setChannelBind", ChannelId);
+					} else {
+						this.$message.error(this.$t(`error[${res.Error}]`));
+					}
+				});
 		},
 		toCancelChange() {
 			this.$refs.channellist.initCurrentRow();
@@ -255,16 +262,16 @@ export default {
 	},
 	watch: {
 		lang(val) {
-			document.title = this.$t('fileManager.fileManager');
+			document.title = this.$t("fileManager.fileManager");
 			this.switchChannelRules = {
 				Password: [
 					{
 						required: true,
-						message: this.$t('public.pleaseInputPassword'),
+						message: this.$t("public.pleaseInputPassword"),
 						trigger: "blur"
-					}				
+					}
 				]
-			}
+			};
 		}
 	},
 	computed: {

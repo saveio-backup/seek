@@ -32,7 +32,7 @@
 						<p
 							class="window-tab-item-title"
 							@mousedown="remoteSetActive(item,index)"
-						>{{item.title || $t('window.loading')}}</p>
+						>{{item.title || item.willLoadUrl || $t('window.loading')}}</p>
 
 						<p
 							class="flex ai-center close"

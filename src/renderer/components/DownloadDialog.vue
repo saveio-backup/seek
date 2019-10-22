@@ -97,7 +97,7 @@ export default {
 						this.downloadInfo = {};
 						this.win.views
 							.find(view => view.isActive)
-							.openComponent("FileManager/transfer", {
+							.openComponent("FileManager", {
 								vueRouter: true,
 								query: {
 									transferType: 2

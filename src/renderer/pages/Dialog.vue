@@ -247,7 +247,11 @@ export default {
 						haveComplete = true;
 					}
 					if (haveComplete) {
-						this.$store.dispatch("setSpace");
+						// this.$store.dispatch("setSpace");
+						this.rendToFileManage({
+							type: "setSpace",
+							result: ""
+						});
 					}
 					this.transferObj[value.Id] = value;
 				}

@@ -153,6 +153,9 @@ export default {
 			this.$i18n.locale = result.lang || 'en';
 			let _htmlDom  = document.querySelector('html');
 			_htmlDom.style.fontSize = this.$t('fontSize');
+		},
+		setSpaceUpdate() {
+			this.$store.dispatch("setSpace");
 		}
 	}
 };

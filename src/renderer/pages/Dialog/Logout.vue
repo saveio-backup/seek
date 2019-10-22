@@ -13,7 +13,7 @@
 			</div>
 			<div class="loading-content logout-loading">
 				<div class="mb20">
-					<p class="mt20 text-center break-word">{{$t('dialog.pleaseEnsureThatThePrivateKeyFileIsProperlyStoredBeforeExiting')}}</p>
+					<p class="mt20 ft14 text-center break-word">{{$t('dialog.pleaseEnsureThatThePrivateKeyFileIsProperlyStoredBeforeExiting')}}</p>
 				</div>
 				<div slot="footer">
 					<ripper-button @click="closeDialog">{{$t('public.cancel')}}</ripper-button>

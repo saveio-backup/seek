@@ -3,7 +3,7 @@
 		id="stateInfo"
 		class="stateInfoWrappper"
 	>
-		<ul class="ft14 theme-font-blue-70">
+		<ul class="ftpx14 theme-font-blue-70">
 			<li class="flex">
 				<i
 					class="process-status"
@@ -17,7 +17,7 @@
 				></i> {{$t('menuWindow.dnsState')}}
 				<i
 					v-show="statusList.DNS.State === 0 && statusList.DNS.HostAddr && UpdatedAt(statusList.DNS.UpdatedAt)"
-					class="ofont ofont-chonglian ft18 ml10 light-blue cursor-click cursor-pointer"
+					class="ofont ofont-chonglian ftpx18 ml10 light-blue cursor-click cursor-pointer"
 					:class="{'rotate-animate': isLoading}"
 					@click="reconnect"
 				></i>

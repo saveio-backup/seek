@@ -4,10 +4,10 @@
 			<div class="wallet-aside">
 				<div class="person-info">
 					<p
-						class="person-info-name ft24"
+						class="person-info-name ftpx24"
 						:title="user.name || ''"
 					>{{user.name || ''}}</p>
-					<p class="person-info-address ft14">
+					<p class="person-info-address ftpx14">
 						<span
 							class="address"
 							:title="user.address || ''"
@@ -229,7 +229,7 @@
 				</div>
 				<div class="flex ai-center column">
 					<div class="flex ai-center mb10">
-						<p class="mr10 theme-font-blue-transparent ft14">{{balanceLists.length>0?balanceLists[balanceSelected].Address : $t('wallet.textAddr')}}</p>
+						<p class="mr10 theme-font-blue-transparent ftpx14">{{balanceLists.length>0?balanceLists[balanceSelected].Address : $t('wallet.textAddr')}}</p>
 						<i
 							class="ofont ofont-fuzhi addr_btn"
 							@click="clipText(balanceLists[balanceSelected].Address)"
@@ -269,10 +269,10 @@
 							@submit.native.prevent
 						>
 							<div class="flex between mb10 mt10">
-								<p class="theme-font-blue-bold ft14">{{balanceLists[balanceSelected].Symbol === 'SAVE' ? 'ONI' : balanceLists[balanceSelected].Symbol}}</p>
+								<p class="theme-font-blue-bold ftpx14">{{balanceLists[balanceSelected].Symbol === 'SAVE' ? 'ONI' : balanceLists[balanceSelected].Symbol}}</p>
 								<p
 									v-if="balanceLists && balanceLists.length>0"
-									class="ft14 tl theme-font-blue-70"
+									class="ftpx14 tl theme-font-blue-70"
 								>{{effectiveNumber(balanceLists[balanceSelected].BalanceFormat)}} {{balanceLists[balanceSelected].Symbol === 'SAVE' ? 'ONI' : balanceLists[balanceSelected].Symbol}}</p>
 							</div>
 							<el-form-item
@@ -985,7 +985,7 @@ $light-grey: #f7f7f7;
 					text-align: right;
 					border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 					.el-input__inner {
-						font-size: 14px;
+						font-size: 1.4rem;
 						color: $theme-font-blue;
 						font-weight: bold;
 						border-color: #fff !important;
@@ -996,7 +996,7 @@ $light-grey: #f7f7f7;
 						width: 140px;
 					}
 					.el-select .el-input .el-select__caret {
-						font-size: 16px;
+						font-size: 1.6rem;
 						font-weight: bold;
 						top: -1px;
 						position: relative;
@@ -1019,7 +1019,7 @@ $light-grey: #f7f7f7;
 						padding: 10px 0px;
 						font-size: 32px;
 						.symbol {
-							font-size: 13px;
+							font-size: 1.3rem;
 							vertical-align: text-top;
 						}
 					}
@@ -1110,7 +1110,7 @@ $light-grey: #f7f7f7;
 				.wallet-deal {
 					display: flex;
 					justify-content: space-between;
-					font-size: 16px;
+					font-size: 1.6rem;
 					padding: 15px 0px;
 					& > div {
 						cursor: pointer;
@@ -1134,7 +1134,7 @@ $light-grey: #f7f7f7;
 				}
 				display: flex;
 				align-items: center;
-				font-size: 14px;
+				font-size: 1.4rem;
 				height: 68px;
 				border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 				.select-button {
@@ -1164,7 +1164,7 @@ $light-grey: #f7f7f7;
 					.tx-li-item {
 						display: flex;
 						align-items: center;
-						font-size: 16px;
+						font-size: 1.6px;
 						padding: 10px 10px 10px 0;
 						border-top: 1px solid rgba(204, 204, 204, 0.3);
 						position: relative;

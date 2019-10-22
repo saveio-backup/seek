@@ -117,7 +117,7 @@ $light-grey: #f9f9fb;
 				border-radius: 0 50px 50px 0;
 				color: rgba(32, 32, 32, 0.7);
 				font-weight: 500;
-				font-size: 14px;
+				font-size: 1.4rem;
 				transition: all 0.3s ease;
 				cursor: pointer;
 				user-select: none;

@@ -39,7 +39,7 @@
 							@click.stop="remoteDestory(item,index)"
 						>
 							<!-- class="el-icon-close" -->
-							<span class="ofont-guanbi ofont ft8"></span>
+							<span class="ofont-guanbi ofont ftpx8"></span>
 						</p>
 					</li>
 					<li class="flex ai-center">
@@ -118,7 +118,7 @@
 							</span>
 							<span
 								v-if="!isSync"
-								class="ft12 theme-font-blue-70 ml10 currentBlock"
+								class="theme-font-blue-70 ml10 currentBlock"
 							>
 								#{{currentHeihgt}}
 							</span>
@@ -629,6 +629,7 @@ $tabs-height: 62px;
 				background: rgba(223, 226, 233, 0.5);
 				border-radius: 11px;
 				display: inline-block;
+				font-size: 12px;
 			}
 		}
 		.page-load-progress {

@@ -318,7 +318,7 @@ export default {
 			flex-direction: column;
 			align-items: center;
 			.ofont-success {
-				font-size: 100px;
+				font-size: 10rem;
 				color: #2f8ff0;
 			}
 		}
@@ -331,7 +331,7 @@ export default {
 				width: 80px;
 				height: 80px;
 				line-height: 80px;
-				font-size: 52px;
+				font-size: 5.2rem;
 				background: #8b919e;
 				color: #fff;
 				border-radius: 50%;
@@ -364,7 +364,7 @@ export default {
 			text-align: center;
 			border-radius: 13px;
 			padding: 5px 0;
-			font-size: 15px;
+			font-size: 1.5rem;
 		}
 		.transfer-meta-choose {
 			margin: 50px auto 20px;
@@ -373,7 +373,7 @@ export default {
 			color: rgba(32, 32, 32, 0.4);
 			.choose-option {
 				cursor: pointer;
-				font-size: 14px;
+				font-size: 1.4rem;
 				padding-bottom: 8px;
 				margin: 0 25px;
 			}
@@ -384,7 +384,7 @@ export default {
 		}
 		.transfer-meta-box {
 			background: rgba(237, 239, 244, 1);
-			font-size: 16px;
+			font-size: 1.6rem;
 			padding: 20px 0;
 			.box-item {
 				width: 600px;
@@ -399,7 +399,7 @@ export default {
 					width: 150px;
 				}
 				.item-addr {
-					font-size: 14px;
+					font-size: 1.4rem;
 					color: rgba(32, 32, 32, 0.7);
 					text-align: left;
 					width: 305px;

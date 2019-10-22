@@ -243,7 +243,8 @@ export default {
 			border-bottom: solid 1px rgba(125, 125, 125, 0.1);
 			padding: 20px 0px;
 			.tag {
-				font-size: 14px;
+				// font-size: 14px;
+				font-size: 1.4rem;
 				.pathdir {
 					width: 400px;
 					overflow: hidden;

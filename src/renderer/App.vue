@@ -146,9 +146,13 @@ export default {
 			let settings = ipcRenderer.sendSync("getAllSettings");
 			this.__proto__.__proto__.$config.maxNumUpload = settings.maxNumUpload;
 			this.$i18n.locale = settings.lang || 'en';
+			let _htmlDom  = document.querySelector('html');
+			_htmlDom.style.fontSize = this.$t('fontSize');
 		},
 		langUpdate({result}) {
 			this.$i18n.locale = result.lang || 'en';
+			let _htmlDom  = document.querySelector('html');
+			_htmlDom.style.fontSize = this.$t('fontSize');
 		}
 	}
 };

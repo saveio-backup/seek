@@ -10,7 +10,7 @@
 					<i class="ofont ofont-qiehuan"></i>
 				</div>
 				<div
-					class="ft14 mr10 flex column between channel-info"
+					class="ftpx14 mr10 flex column between channel-info"
 					:class="{'channel-not-have': !channelBind.ChannelId}"
 				>
 					<p
@@ -47,12 +47,12 @@
 				<div class="coin">
 					<div class="flex jc-end">
 					</div>
-					<span class="mr10 ft24">{{filterFloat(channelBind.BalanceFormat || 0).toLocaleString('en-US')}}<span class="user-no-select"> ONI</span></span>
+					<span class="mr10 ftpx24">{{filterFloat(channelBind.BalanceFormat || 0).toLocaleString('en-US')}}<span class="user-no-select"> ONI</span></span>
 					<span
 						@click="openAssetTransferDialog"
 						class="coin-icon-box cursor-pointer user-no-select"
 					>
-						<i class="ofont ofont-zhuanrang ft20 light-blue"></i>
+						<i class="ofont ofont-zhuanrang ftpx20 light-blue"></i>
 					</span>
 				</div>
 			</div>
@@ -383,7 +383,7 @@ $grey: #ccc;
 			}
 			.router {
 				color: rgba(32, 32, 32, 0.7);
-				font-size: 18px;
+				font-size: 1.8rem;
 				& > a {
 					position: relative;
 					padding-right: 48px;

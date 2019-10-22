@@ -95,7 +95,7 @@
 					v-if="transferType === 2"
 				>
 					<template slot-scope="scope">
-						<div class="ft16 theme-font-blue">
+						<div class="ftpx16 theme-font-blue">
 							<i class="ofont ofont-wangye" :title="$t('fileManager.thirdPartyWebsitesResources')" v-if="scope.row.Url.startsWith('oni://www')"></i>
 						</div>
 					</template>
@@ -106,7 +106,7 @@
 					class-name="rowName"
 				>
 					<template slot-scope="scope">
-						<div class="ft14">
+						<div class="ftpx14">
 							<p class="theme-font-blue">{{scope.row.FileName}}</p>
 							<p class="theme-font-blue-40"><span v-if="transferType != 0">{{util.bytesToSize((((scope.row.IsUploadAction ? scope.row.UploadSize : scope.row.DownloadSize )))/(scope.row.IsUploadAction ? (scope.row.CopyNum + 1) : 1) * 1024 || 0)}}/</span>{{util.bytesToSize(scope.row.FileSize * 1024)}}</p>
 							<!-- <p class="theme-font-blue-40"><span v-if="transferType != 0">{{(((scope.row.IsUploadAction ? (scope.row.UploadSize || 0) : scope.row.DownloadSize )))/(scope.row.IsUploadAction ? (scope.row.CopyNum + 1) : 1) * 1024)}}/</span>{{util.bytesToSize(scope.row.FileSize * 1024)}}</p> -->
@@ -124,7 +124,7 @@
 							class="light-blue break-word"
 						>
 							<i
-								class="ofont mr10 ft16"
+								class="ofont mr10 ftpx16"
 								:class="scope.row.IsUploadAction ? 'ofont-shangchuan':'ofont-xiazai2'"
 							></i>
 							<span v-if="!scope.row.IsUploadAction">{{$t('fileManager.downloadCompleted')}}</span>
@@ -196,13 +196,13 @@
 					width="250px"
 				>
 					<template slot-scope="scope">
-						<div class="action ft18 opera">
+						<div class="action ftpx18 opera">
 							<span
 								:title="$t('fileManager.openFolder')"
 								v-if="scope.row.Path"
 								class="active-blue cursor-pointer"
 								@click="showInFolder(scope.row.Path)"
-							><i class="ofont ofont-wenjianxiangqing ft14"></i></span>
+							><i class="ofont ofont-wenjianxiangqing ftpx14"></i></span>
 							<span
 								:title="$t('fileManager.decrypt')"
 								class="active-blue cursor-pointer"
@@ -395,7 +395,7 @@
 					>
 						<div class="node-name pr30">{{$t('fileManager.uploadModel')}}:</div>
 						<div
-							class="theme-font-blue-40 node-value"
+							class="theme-font-blue-40 node-value ft14"
 							v-if="fileObjById[detailId]"
 						>
 							{{fileObjById[detailId].StoreType === 1 ? $t('fileManager.advance') : fileObjById[detailId].StoreType === 0 ? $t('fileManager.primary') : ''}}
@@ -438,7 +438,7 @@
 									:class="{'more-than-5': (((item.UploadSize?item.UploadSize:item.DownloadSize)/fileObjById[detailId].FileSize) < 0.15),'progressAnimate': fileObjById[detailId].Status != 4 && fileObjById[detailId].Status != 0}"
 								></el-progress>
 							</div>
-							<div class="ml10 tl node-speed ft14 theme-font-blue-40">{{nodeSpeed[item.HostAddr] && util.bytesToSize(nodeSpeed[item.HostAddr].speed*1024) || '0 Byte'}}/{{$t('fileManager.s')}}</div>
+							<div class="ml10 tl node-speed ftpx14 theme-font-blue-40">{{nodeSpeed[item.HostAddr] && util.bytesToSize(nodeSpeed[item.HostAddr].speed*1024) || '0 Byte'}}/{{$t('fileManager.s')}}</div>
 							<div
 								class="file-size tr theme-font-blue-40"
 								v-if="fileObjById[detailId]"
@@ -454,7 +454,7 @@
 									v-for="(item, index) in fileDetailNodes"
 									:key="item.HostAddr"
 								>
-									<div class="node-content-first theme-font-blue-70">
+									<div class="node-content-first ft14 theme-font-blue-70">
 										{{$t('fileManager.node')}}{{index+1}}
 									</div>
 									<div class="node-content-second theme-font-blue-40">
@@ -531,19 +531,19 @@
 					<div class="adjust-item">
 						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.fileHash')}}:</p>
 						<div class="adjust-info">
-							<p class="theme-font-blue ft14 mr20">{{fileObjById[detailId].FileHash || ''}}</p>
+							<p class="theme-font-blue ftpx14 mr20">{{fileObjById[detailId].FileHash || ''}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
 						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.downloadDate')}}:</p>
 						<div class="adjust-info">
-							<p class="theme-font-blue ft14 mr20">{{$dateFormat.formatTimeByTimestamp(fileObjById[detailId].UpdatedAt*1000) || ''}}</p>
+							<p class="theme-font-blue ftpx14 mr20">{{$dateFormat.formatTimeByTimestamp(fileObjById[detailId].UpdatedAt*1000) || ''}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
 						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.fee')}}:</p>
 						<div class="adjust-info">
-							<p class="theme-font-blue ft14 mr20">{{fileObjById[detailId].DownloadSize * 1024 / Math.pow(10, 9) || '0'}} ONI</p>
+							<p class="theme-font-blue ftpx14 mr20">{{fileObjById[detailId].DownloadSize * 1024 / Math.pow(10, 9) || '0'}} ONI</p>
 						</div>
 					</div>
 				</div>
@@ -637,8 +637,9 @@ export default {
 						"C:\\Users\\qwews\\Desktop\\Seeker交互图\\交互原型图PNG版\\传输管理.png",
 					IsUploadAction: false,
 					UploadSize: 3072,
-					DownloadSize: 0,
+					DownloadSize: 1,
 					FileSize: 1024,
+					Url:'',
 					Nodes: [
 						{
 							HostAddr: "tcp://40.73.103.72:33516",
@@ -670,9 +671,10 @@ export default {
 					Status: 2,
 					DetailStatus: 23,
 					CopyNum: 2,
+					Url:'oni://www',
 					Path:
 						"C:\\Users\\qwews\\Desktop\\Seeker交互图\\交互原型图PNG版\\传输管理.png",
-					IsUploadAction: true,
+					IsUploadAction: false,
 					UploadSize: 2072,
 					DownloadSize: 3678121520,
 					FileSize: 1024,
@@ -1937,6 +1939,7 @@ $light-grey: #f9f9fb;
 				li {
 					.node-name {
 						width: 135px;
+						font-size: 1.4rem;
 					}
 				}
 			}
@@ -1948,6 +1951,7 @@ $light-grey: #f9f9fb;
 					// width: 10%;
 					width: 140px;
 					color: #202020;
+					font-size: 1.4rem;
 					// text-overflow: ellipsis;
 					// overflow: hidden;
 					// white-space: nowrap;
@@ -2031,7 +2035,7 @@ $light-grey: #f9f9fb;
 		justify-content: space-between;
 		margin: 15px 0;
 		.adjust-title {
-			font-size: 14px;
+			font-size: 1.4rem;
 			width: 160px;
 			padding-right: 30px;
 			text-align: right;

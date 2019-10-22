@@ -35,6 +35,7 @@
 				>
 					<template slot-scope="scope">
 						<div
+							class="ft14"
 							:title='scope.row.IsOnline ? $t("public.online") : $t("public.offline")'
 							:class="{'theme-font-blue-40':!scope.row.IsOnline}"
 						>{{scope.row.IsOnline ? $t("public.online") : $t("public.offline")}}</div>
@@ -45,7 +46,7 @@
 					sortable
 				>
 					<template slot-scope="scope">
-						<div class="grey-xs ft14">
+						<div class="grey-xs ftpx14">
 							{{filterFloat(scope.row.BalanceFormat).toLocaleString('en-US', { maximumFractionDigits: 9 })}}
 						</div>
 					</template>
@@ -57,7 +58,7 @@
 					sortable
 				>
 					<template slot-scope="scope">
-						<div class="grey-xs ft14">
+						<div class="grey-xs ftpx14">
 							{{scope.row.Address}}
 						</div>
 					</template>
@@ -68,7 +69,7 @@
 					sortable
 				>
 					<template slot-scope="scope">
-						<div class="grey-xs ft14">
+						<div class="grey-xs ftpx14">
 							{{scope.row.HostAddr}}
 						</div>
 					</template>
@@ -101,7 +102,7 @@
 							:title="$t('public.transfer')"
 						>
 							<!-- Transfer -->
-							<i class="ofont ofont-huazhuan"></i>
+							<i class="ofont ofont-huazhuan ftpx16"></i>
 						</span>
 						<span
 							v-show="scope.row.Participant1State !== 0"
@@ -109,7 +110,7 @@
 							@click="openClose(scope.row)"
 							:title="$t('public.closeChannel')"
 						>
-							<i class="ofont ofont-guanbi ft12"></i>
+							<i class="ofont ofont-guanbi ftpx12"></i>
 							<!-- Close -->
 						</span>
 						<span
@@ -707,7 +708,7 @@ $theme-color: #202020;
 			top: -3px;
 			right: 0;
 			text-align: right;
-			font-size: 14px;
+			font-size: 1.4rem;
 			font-weight: 500;
 			color: rgba(32, 32, 32, 0.7);
 		}

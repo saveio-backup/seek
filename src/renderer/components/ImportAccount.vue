@@ -20,7 +20,7 @@
 				</li>
 			</ul>
 			<div class="el-form loading textarea">
-				<div v-if="importWay == 0">
+				<div v-show="importWay == 0">
 					<el-form @submit.native.prevent>
 						<el-form-item :label="$t('account.keystoreFile')+':'">
 							<el-input
@@ -39,9 +39,9 @@
 							<div class="tr input-opeation">
 								<ripper-button
 									@click='importWallet'
-									class="primary ft12"
+									class="primary ftpx12"
 								>
-									<i class="ofont ofont-DAT"></i> {{$t('account.selectKeystoreFile')}}
+									<i class="ofont ofont-DAT"></i> <span class="ft14">{{$t('account.selectKeystoreFile')}}</span>
 								</ripper-button>
 							</div>
 						</el-form-item>
@@ -62,7 +62,7 @@
 					 @click="importWay = 1"
 					>Import the account with the private key(WIF)</p> -->
 				</div>
-				<div v-if="importWay ==1">
+				<div v-show="importWay ==1">
 					<el-form
 						ref='privatekeyform'
 						:model='privateKeyForm'
@@ -86,8 +86,8 @@
 								class="tr input-opeation"
 								@click='importPrivateKey'
 							>
-								<ripper-button class="primary ft12">
-									<i class="ofont ofont-DAT"></i> {{$t('account.selectPrivateKeyFile')}}
+								<ripper-button class="primary ftpx12">
+									<i class="ofont ofont-DAT"></i> <span class="ft14">{{$t('account.selectPrivateKeyFile')}}</span>
 								</ripper-button>
 							</div>
 						</el-form-item>
@@ -152,6 +152,7 @@ export default {
 			}
 		};
 		return {
+			validatePassword,
 			switchToggle: {
 				loading: null
 			},
@@ -194,6 +195,43 @@ export default {
 				Password: ""
 			}
 		};
+	},
+	computed: {
+		lang() {
+			return this.$i18n.locale;
+		}
+	},
+	watch: {
+		lang(value) {
+			const vm = this;
+			vm.privateKeyRules = {
+				PrivateKey: [
+					{
+						required: true,
+						message: vm.$t('account.pleaseFillYourPrivateKey'),
+						trigger: "blur"
+					}
+				],
+				Label: [
+					{
+						required: true,
+						message: vm.$t('account.pleaseFillYourName'),
+						trigger: "blur"
+					}
+				],
+				Password: {
+					// validator: validatePassword,
+					message: vm.$t('account.pleaseFillYourPassword'),
+					required: true,
+					trigger: ["blur", "input"]
+				},
+				Confirm: {
+					validator: vm.validatePassword,
+					required: true,
+					trigger: ["blur"]
+				}
+			}
+		}
 	},
 	methods: {
 		importWallet() {
@@ -339,7 +377,7 @@ export default {
 	// }
 	.el-form textarea {
 		padding: 15px;
-		font-size: 14px;
+		font-size: 1.4rem;
 		text-align: left;
 		height: 130px;
 		background: #edeff4;
@@ -355,10 +393,10 @@ export default {
 	}
 	.input-opeation {
 		position: absolute;
-		bottom: -40px;
+		bottom: -4rem;
 		right: 0;
 		button {
-			height: 24px;
+			height: 2.4rem;
 		}
 	}
 }

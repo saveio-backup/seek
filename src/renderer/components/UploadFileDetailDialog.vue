@@ -15,43 +15,43 @@
 					<div class="adjust-item">
 						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.fileHash')}}:</p>
 						<div class="adjust-info">
-							<p class="ft14 mr20">{{fileDetail && fileDetail.FileHash || ''}}</p>
+							<p class="ftpx14 mr20">{{fileDetail && fileDetail.FileHash || ''}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
 						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.createDate')}}:</p>
 						<div class="adjust-info">
-							<p class="ft14 mr20">{{fileDetail && $dateFormat.formatTimeByTimestamp(fileDetail.CreatedAt*1000) || ''}}</p>
+							<p class="ftpx14 mr20">{{fileDetail && $dateFormat.formatTimeByTimestamp(fileDetail.CreatedAt*1000) || ''}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
 						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.fileSize')}}:</p>
 						<div class="adjust-info">
-							<p class="ft14 mr20">{{fileDetail && util.bytesToSize(fileDetail.Size*1024 || 0) || ''}}</p>
+							<p class="ftpx14 mr20">{{fileDetail && util.bytesToSize(fileDetail.Size*1024 || 0) || ''}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
 						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.nodeNumber')}}:</p>
 						<div class="adjust-info">
-							<p class="ft14 mr20">{{fileDetail && (fileDetail.CopyNum + 1) || ''}}</p>
+							<p class="ftpx14 mr20">{{fileDetail && (fileDetail.CopyNum + 1) || ''}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
 						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.verificationCycle')}}:</p>
 						<div class="adjust-info">
-							<p class="ft14 mr20">{{fileDetail && timeTofilter(fileDetail.Interval)}}</p>
+							<p class="ftpx14 mr20">{{fileDetail && timeTofilter(fileDetail.Interval)}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
 						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.expireTime')}}:</p>
 						<div class="adjust-info">
-							<p class="ft14 mr20">{{fileDetail && $dateFormat.formatTimeByTimestamp(fileDetail.ExpiredAt*1000) || ''}}</p>
+							<p class="ftpx14 mr20">{{fileDetail && $dateFormat.formatTimeByTimestamp(fileDetail.ExpiredAt*1000) || ''}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
 						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.authority')}}:</p>
 						<div class="adjust-info">
-							<p class="ft14 mr20">{{fileDetail && (fileDetail.Privilege===0?$t('fileManager.private'):fileDetail.Privilege===1?$t('fileManager.public'):fileDetail.Privilege===2?$t('fileManager.whitelist'):'') || ''}}</p>
+							<p class="ftpx14 mr20">{{fileDetail && (fileDetail.Privilege===0?$t('fileManager.private'):fileDetail.Privilege===1?$t('fileManager.public'):fileDetail.Privilege===2?$t('fileManager.whitelist'):'') || ''}}</p>
 						</div>
 					</div>
 					<div
@@ -59,7 +59,7 @@
 						class="adjust-item"
 					>
 						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.whitelist2')}}:</p>
-						<div class="adjust-info">
+						<div class="adjust-info ftpx14">
 							<ul>
 								<li
 									v-for="item in fileDetail.Whitelist"
@@ -192,7 +192,7 @@ export default {
 		justify-content: space-between;
 		margin: 15px 0;
 		.adjust-title {
-			font-size: 14px;
+			font-size: 1.4rem;
 			width: 160px;
 			padding-right: 30px;
 			text-align: right;

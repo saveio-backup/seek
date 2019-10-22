@@ -222,13 +222,13 @@ export default {
 	}
 	.total-income {
 		color: rgba(32, 32, 32, 0.4);
-		font-size: 14px;
+		font-size: 1.4rem;
 		position: absolute;
 		bottom: 15px;
 		right: 70px;
 		span {
 			color: rgba(32, 32, 32, 1);
-			font-size: 18px;
+			font-size: 1.8rem;
 			margin-left: 10px;
 		}
 	}

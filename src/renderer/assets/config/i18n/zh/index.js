@@ -13,6 +13,7 @@ import windowObj from './window';
 import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
 
 const obj = {
+  fontSize: '71%',
   error,
   home,
   public: publicObj,

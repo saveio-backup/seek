@@ -194,6 +194,7 @@ export default {
 			}
 		};
 		return {
+			validatePassword,
 			clipboard,
 			loopFontIndex: 0,
 			accountStatus: "", // 0: no account, 1:account exist
@@ -264,9 +265,30 @@ export default {
 	},
 	watch: {
 		lang(value) {
+			const vm = this;
 			document.title = localStorage.Address
-			? this.$t('account.blockSynchronization')
-			: this.$t('account.createAccount');
+			? vm.$t('account.blockSynchronization')
+			: vm.$t('account.createAccount');
+			vm.rules = {
+				Label: [
+					{
+						required: true,
+						message: vm.$t('account.pleaseFillYourName'),
+						trigger: "blur"
+					}
+				],
+				Password: {
+					// validator: validatePassword,
+					message: vm.$t('account.pleaseFillYourPassword'),
+					required: true,
+					trigger: ["blur", "input"]
+				},
+				Confirm: {
+					validator: vm.validatePassword,
+					required: true,
+					trigger: ["blur"]
+				}
+			}
 		},
 		accountStatus(value) {
 			console.log("acountStatus changed!!!");
@@ -422,13 +444,13 @@ $theme-font-blue: #040f39;
 		width: 450px;
 		text-align: center;
 		margin: 0 auto;
-		font-size: 16px;
+		font-size: 1.6rem;
 		p {
 			text-align: left;
 			&.back-border-class {
 				margin: 20px 0;
 				padding: 15px;
-				font-size: 14px;
+				font-size: 1.4rem;
 				text-align: left;
 				height: 130px;
 				background: #edeff4;
@@ -462,7 +484,7 @@ $theme-font-blue: #040f39;
 			textarea {
 				margin: 20px 0;
 				padding: 15px;
-				font-size: 14px;
+				font-size: 1.4rem;
 				text-align: left;
 				height: 130px;
 				background: #edeff4;
@@ -483,7 +505,7 @@ $theme-font-blue: #040f39;
 		flex-direction: column;
 		justify-content: center;
 		transform: translateY(-65px);
-		font-size: 12px;
+		font-size: 1.2rem;
 		width: 600px;
 		margin: 0 auto;
 		.create-progress {
@@ -512,7 +534,7 @@ $theme-font-blue: #040f39;
 				}
 				.ofont-rocket {
 					position: absolute;
-					font-size: 35px;
+					font-size: 3.5rem;
 					height: 40px;
 					line-height: 40px;
 					transform: translate(-10px);

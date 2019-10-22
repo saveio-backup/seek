@@ -88,7 +88,7 @@
 						class="form-vertical"
 						:label="$t('fileManager.fileSize')+':'"
 					>
-						<p class="light-blue">{{util.bytesToSize(fileSize) || '0.00 GB'}}</p>
+						<p class="light-blue ftpx14">{{util.bytesToSize(fileSize) || '0.00 GB'}}</p>
 					</el-form-item>
 					<el-form-item :label="$t('fileManager.encryption')+':'">
 						<el-select
@@ -98,10 +98,12 @@
 						>
 							<el-option
 								:label="$t('fileManager.yes')"
+								class="ft14"
 								:value='true'
 							></el-option>
 							<el-option
 								:label="$t('fileManager.no')"
+								class="ft14"
 								:value='false'
 							></el-option>
 						</el-select>
@@ -334,12 +336,16 @@
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content">
-				<p class="tl mt10 break-word">{{$t('fileManager.remindDesc')}}</p>
+				<p class="tl mt10 break-word ft14">{{$t('fileManager.remindDesc')}}</p>
 				<p class="tr mt10 mb10">
 					<el-checkbox
 						@change="updateAllowRemind"
 						v-model="remindToggle.noAllowRemind"
-					>{{$t('fileManager.noLongerRemind')}}</el-checkbox>
+					>
+						<span class="ft14">
+							{{$t('fileManager.noLongerRemind')}}
+						</span>
+					</el-checkbox>
 				</p>
 				<div slot="footer">
 					<ripper-button
@@ -1065,6 +1071,7 @@ $inputFocusBg: #dee2ea;
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
+			font-size: 1.2rem;
 		}
 		.el-input__inner {
 			border-radius: 0px;
@@ -1168,7 +1175,7 @@ $inputFocusBg: #dee2ea;
 				padding-bottom: 0;
 			}
 			label {
-				font-size: 14px;
+				font-size: 1.4rem;
 				color: #202020;
 				width: 100% !important;
 			}
@@ -1177,7 +1184,7 @@ $inputFocusBg: #dee2ea;
 				p {
 					height: 18px;
 					line-height: 18px;
-					font-size: 14px;
+					// font-size: 1.4rem;
 					width: 480px;
 					overflow: hidden;
 					text-overflow: ellipsis;
@@ -1262,7 +1269,7 @@ $inputFocusBg: #dee2ea;
 			white-space: nowrap;
 		}
 		h1 {
-			font-size: 24px;
+			font-size: 2.4rem;
 			// color: #ccc;
 			color: #202020;
 			margin-top: 20px;

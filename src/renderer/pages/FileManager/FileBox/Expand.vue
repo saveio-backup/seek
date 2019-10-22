@@ -80,14 +80,14 @@
 						</div>
 						<!-- <h3 class="theme-font-blue transparent bold ft12">Space Size:</h3> -->
 						<div class="adjust-item">
-							<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.current')}}:</p>
+							<p class="adjust-title theme-font-blue ftpx14">{{$t('fileManager.current')}}:</p>
 							<div class="adjust-info">
-								<p class="theme-font-blue ft14 mr20">{{util.bytesToSize( (space.Used + space.Remain)*1024)}}</p>
-								<p class="theme-font-blue-40 ft14 ml20">{{util.bytesToSize(space.Used *1024)}} / {{util.bytesToSize( (space.Used + space.Remain)*1024)}}</p>
+								<p class="theme-font-blue ftpx14 mr20">{{util.bytesToSize( (space.Used + space.Remain)*1024)}}</p>
+								<p class="theme-font-blue-40 ftpx14 ml20">{{util.bytesToSize(space.Used *1024)}} / {{util.bytesToSize( (space.Used + space.Remain)*1024)}}</p>
 							</div>
 						</div>
 						<div class="adjust-item">
-							<div class="adjust-title theme-font-blue ft14">{{$t('fileManager.adjustTo')}}:</div>
+							<div class="adjust-title theme-font-blue ftpx14">{{$t('fileManager.adjustTo')}}:</div>
 							<div class="adjust-info">
 								<el-input-number
 									ref="spaceNumberInput"
@@ -146,8 +146,8 @@
 					</div>
 					<div class="adjust">
 						<div class="adjust-item">
-							<p class="adjust-title theme-font-blue ft14">{{cost.TransferType === 2?$t('fileManager.pledgeRefund'):$t('fileManager.pledgePayment')}}:</p>
-							<div class="adjust-info theme-font-blue ft14">
+							<p class="adjust-title theme-font-blue ftpx14">{{cost.TransferType === 2?$t('fileManager.pledgeRefund'):$t('fileManager.pledgePayment')}}:</p>
+							<div class="adjust-info theme-font-blue ftpx14">
 								<div v-if="cost.TransferType !== 2">
 									{{cost.FeeFormat?util.effectiveNumber(cost.FeeFormat):0}} ONI
 								</div>
@@ -642,7 +642,7 @@ $grey: #ccc;
 		justify-content: space-between;
 		margin: 15px 0;
 		.adjust-title {
-			font-size: 14px;
+			font-size: 1.4rem;
 			width: 160px;
 			padding-right: 30px;
 			text-align: right;

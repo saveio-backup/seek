@@ -1008,6 +1008,8 @@ export default {
 		// hand out data about lang
 		toSetLang(lang) {
 			this.$i18n.locale = lang;
+			let _htmlDom  = document.querySelector('html');
+			_htmlDom.style.fontSize = this.$t('fontSize');
 			this.renderDateToBrowserView({
 				result: {lang:lang},
 				type: "lang",

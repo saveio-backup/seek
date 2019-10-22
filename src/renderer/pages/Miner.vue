@@ -82,7 +82,7 @@ $light-grey: #f9f9fb;
 		min-height: 400px;
 		background: $light-grey;
 		color: $theme-font-blue;
-		font-size: 16px;
+		font-size: 1.6rem;
 		.aside-link {
 			display: flex;
 			margin-top: 70px;
@@ -109,7 +109,7 @@ $light-grey: #f9f9fb;
 				border-radius: 0 50px 50px 0;
 				color: rgba(32, 32, 32, 0.7);
 				font-weight: 500;
-				font-size: 14px;
+				font-size: 1.4rem;
 				transition: all 0.3s ease;
 				user-select: none;
 				&:hover {

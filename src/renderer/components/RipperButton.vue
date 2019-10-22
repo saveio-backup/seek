@@ -128,7 +128,7 @@ export default {
 <style lang="scss" scoped>
 .ripper-button {
 	/* Component styles */
-	border-radius: 16px;
+	border-radius: 20px;
 	display: inline-block;
 
 	&.primary {
@@ -146,7 +146,7 @@ export default {
 
 	&.theme1 {
 		.button {
-			font-size: 12px;
+			font-size: 1.2rem;
 			padding: 0 12px;
 			height: 32px;
 		}
@@ -164,8 +164,8 @@ export default {
 		appearance: none;
 		box-shadow: 0px 4px 6px 0px rgba(111, 139, 173, 0.21);
 		color: #2f8ff0;
-		font-size: 14px;
-		border-radius: 16px;
+		font-size: 1.4rem;
+		border-radius: 20px;
 		overflow: hidden;
 		cursor: pointer;
 		border: 1px solid #2f8ff0;
@@ -175,7 +175,7 @@ export default {
 		padding: 6px 25px;
 		position: relative;
 		display: inline-block;
-		font-size: 14px;
+		font-size: 1.4rem;
 	}
 
 	.button.styl-material {

@@ -341,7 +341,7 @@ $slidebar-active-color: linear-gradient(
 					justify-content: center;
 					cursor: pointer;
 					height: 40px;
-					// font-size: 18px;
+					// font-size: 1.8rem;
 
 					&:hover {
 						transition: all 0.2s ease;
@@ -358,7 +358,7 @@ $slidebar-active-color: linear-gradient(
 					}
 
 					// .user-first {
-					// 	font-size: 16px;
+					// 	font-size: 1.6rem;
 					// 	width: 22px;
 					// 	height: 22px;
 					// 	line-height: 22px;
@@ -444,7 +444,7 @@ $slidebar-active-color: linear-gradient(
 		}
 	}
 	.el-button {
-		border-radius: 2px;
+		border-radius: 20px;
 		padding: 10px 20px;
 	}
 }

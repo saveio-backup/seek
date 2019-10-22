@@ -13,6 +13,7 @@ import windowObj from './window';
 import enLocale from 'element-ui/lib/locale/lang/en'
 
 const obj = {
+  fontSize: '62.5%',
   error,
   home,
   public: publicObj,

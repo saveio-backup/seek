@@ -1,9 +1,9 @@
 <template>
   <div id="syncInfo" class="syncInfoWrapper flex column around">
-    <p class="ft12 text-center theme-font-blue-70">
+    <p class="ftpx12 text-center theme-font-blue-70">
       #{{currentHeihgt}} / #{{totalHeight}}
     </p>
-    <p class="ft12 text-center light-blue">
+    <p class="ftpx12 text-center light-blue">
       <span v-if="needTime">{{needTime}} / </span> {{prograssPercentage}} %
     </p>
   </div>

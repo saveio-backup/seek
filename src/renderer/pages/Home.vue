@@ -23,8 +23,8 @@
 								>{{localStorage.getItem('Label') | firstString}}</i>
 							</div>
 							<div class="user-name-content">
-								<p class="user-name-name ft24">{{localStorage.getItem('Label') || ''}}</p>
-								<p class="ft12">
+								<p class="user-name-name ftpx24">{{localStorage.getItem('Label') || ''}}</p>
+								<p class="ftpx12">
 									<span
 										class="address"
 										:title="localStorage.getItem('Address') || ''"
@@ -57,8 +57,8 @@
 					<div class="user-revenue">
 						<p class="grey-xs bold ft14">{{$t('home.yourProfit')}}:</p>
 						<div class="flex between ai-center">
-							<span class="theme-bold ft36">{{revenueFormat.toLocaleString('en-US')}}</span>
-							<span class="bold ft16 unit">ONI</span>
+							<span class="theme-bold ftpx36">{{revenueFormat.toLocaleString('en-US')}}</span>
+							<span class="bold ftpx16 unit">ONI</span>
 						</div>
 					</div>
 				</div>
@@ -83,7 +83,7 @@
 				@click="openAddChannel"
 				class="openAddChannel primary"
 			>
-				<i class="el-icon-plus"></i> {{$t('home.newChannel')}}
+				<i class="el-icon-plus ftpx14"></i> {{$t('home.newChannel')}}
 			</ripper-button>
 			<channels-list
 				ref="channelListObj"
@@ -878,7 +878,7 @@ $input-color: rgba(203, 203, 203, 1);
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	font-size: 16px;
+	font-size: 1.6rem;
 }
 .prefix-icon {
 	margin-left: 15px;
@@ -942,7 +942,7 @@ $input-color: rgba(203, 203, 203, 1);
 					& > .save-log-desc {
 						text-align: center;
 						color: #2f8ff0;
-						font-size: 40px;
+						font-size: 4rem;
 						font-weight: 600;
 						margin-top: 30px;
 					}
@@ -959,7 +959,7 @@ $input-color: rgba(203, 203, 203, 1);
 				& > .button {
 					padding: 10px;
 					color: #fff;
-					font-size: 14px;
+					font-size: 1.4rem;
 					margin: 0 40px;
 				}
 			}
@@ -991,7 +991,7 @@ $input-color: rgba(203, 203, 203, 1);
 					}
 				}
 				.ofont-yonghu {
-					font-size: 45px;
+					font-size: 4.5rem;
 				}
 				.user-name {
 					display: flex;
@@ -1013,7 +1013,7 @@ $input-color: rgba(203, 203, 203, 1);
 
 					&::before {
 						content: "S";
-						font-size: 100px;
+						font-size: 10rem;
 						color: rgba(255, 255, 255, 0.06);
 						position: absolute;
 						top: -27px;
@@ -1085,7 +1085,7 @@ $input-color: rgba(203, 203, 203, 1);
 					.user-name-bottom {
 						display: flex;
 						.user-name-btn-icon {
-							font-size: 14px;
+							font-size: 1.4rem;
 							display: inline-block;
 						}
 
@@ -1144,6 +1144,7 @@ $input-color: rgba(203, 203, 203, 1);
 				.user-meta-title {
 					margin-top: 12px;
 					user-select: none;
+					height: 18px;
 				}
 
 				.total-num {
@@ -1177,6 +1178,7 @@ $input-color: rgba(203, 203, 203, 1);
 				.user-meta-title {
 					margin-top: 12px;
 					user-select: none;
+					height: 18px;
 				}
 
 				.channelView {

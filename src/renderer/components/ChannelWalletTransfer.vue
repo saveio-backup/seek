@@ -6,7 +6,7 @@
 				class="flex1 text-left"
 			>
 				<p class="theme-font-blue-40 transparent ft14 user-no-select">{{$t('public.channel')}}(ONI)</p>
-				<p class="theme-font-blue ft24 mt10">{{filterFloat(channelSelected.BalanceFormat || 0)}}</p>
+				<p class="theme-font-blue ftpx24 mt10">{{filterFloat(channelSelected.BalanceFormat || 0)}}</p>
 				<!-- <p class="theme-font-blue transparent ft12 bold">{{channelSelected.Address}}</p> -->
 			</div>
 			<div
@@ -14,12 +14,12 @@
 				class="flex1 text-left"
 			>
 				<p class="theme-font-blue-40 transparent ft14 user-no-select">{{$t('public.wallet')}}(ONI)</p>
-				<p class="theme-font-blue ft24 mt10">{{filterFloat(mainCount)}}</p>
+				<p class="theme-font-blue ftpx24 mt10">{{filterFloat(mainCount)}}</p>
 			</div>
 			<div class="flex column between">
 				<i class="ofont ofont-fasong"></i>
 				<i
-					class="ofont ofont-huazhuan ft20 user-no-select"
+					class="ofont ofont-huazhuan ftpx20 user-no-select"
 					:class="{'ex-change': channelSelected.IsOnline,'theme-font-blue-40 cursor-not-allowed':!channelSelected.IsOnline}"
 					:title="channelSelected.IsOnline?$t('public.switchover'):$t('public.SorryYouCannotWithdrawInOfflineStatus')"
 					@click="exWithDraw()"
@@ -29,7 +29,7 @@
 				class="flex1 text-right"
 			>
 				<p class="theme-font-blue-40 transparent ft14 user-no-select">{{$t('public.channel')}}(ONI)</p>
-				<p class="theme-font-blue ft24 mt10">{{filterFloat(channelSelected.BalanceFormat || 0)}}</p>
+				<p class="theme-font-blue ftpx24 mt10">{{filterFloat(channelSelected.BalanceFormat || 0)}}</p>
 				<!-- <p class="theme-font-blue transparent ft12 bold">{{channelSelected.Address}}</p> -->
 			</div>
 			<div
@@ -37,7 +37,7 @@
 				class="flex1 text-right"
 			>
 				<p class="theme-font-blue-40 transparent ft14 user-no-select">{{$t('public.wallet')}}(ONI)</p>
-				<p class="theme-font-blue ft24 mt10">{{filterFloat(mainCount)}}</p>
+				<p class="theme-font-blue ftpx24 mt10">{{filterFloat(mainCount)}}</p>
 			</div>
 		</div>
 		<el-form

@@ -131,7 +131,7 @@ const result = {
   'Download': '下 载',
   'progress': '进 度',
   'noTask': '无任务',
-  's': '秒',
+  's': 's',
   'cancelAll': '取消全部',
   'startAll': '开始全部',
   'pauseAll': '暂停全部',

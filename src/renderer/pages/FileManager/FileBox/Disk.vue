@@ -94,7 +94,7 @@
 										v-if="scope.row.Privilege != 0"
 										class="active-blue cursor-pointer"
 									>
-										<i class="el-icon-share ft18"></i>
+										<i class="el-icon-share ftpx18"></i>
 									</span>
 									<span
 										v-if="page === 'filebox'"
@@ -102,7 +102,7 @@
 										:title="$t('fileManager.download')"
 										@click.stop="downloadFile(scope.row)"
 									>
-										<i class="el-icon-download ft18"></i>
+										<i class="el-icon-download ftpx18"></i>
 									</span>
 									<span
 										v-if="page === 'filebox'"
@@ -110,7 +110,7 @@
 										@click.stop="deleteFile(scope.row)"
 										class="active-blue cursor-pointer"
 									>
-										<i class="el-icon-delete ft18"></i>
+										<i class="el-icon-delete ftpx18"></i>
 									</span>
 									<span
 										@click.stop="showInFolder(scope.row.Path)"
@@ -118,7 +118,7 @@
 										:title="$t('fileManager.openFolder')"
 										class="active-blue cursor-pointer"
 									>
-										<i class="ofont ofont-wenjianxiangqing ft14"></i>
+										<i class="ofont ofont-wenjianxiangqing ftpx14"></i>
 									</span>
 									<span
 										v-if="page === 'filebox'"
@@ -126,7 +126,7 @@
 										@click.stop="openDetailDialog(scope.row)"
 										class="active-blue cursor-pointer"
 									>
-										<i class="ofont-xiangqing ofont ft16">
+										<i class="ofont-xiangqing ofont ftpx16">
 										</i>
 									</span>
 									<!-- @click.stop="switchToggle.deleteDialog = true" -->
@@ -142,7 +142,7 @@
 						sortable
 					>
 						<template slot-scope="scope">
-							<div :class="scope.row.Undone?'theme-font-blue-40':''">
+							<div class="ft14" :class="scope.row.Undone?'theme-font-blue-40':''">
 								{{scope.row.StoreType === 1 ? $t('fileManager.advance') : scope.row.StoreType === 0 ? $t('fileManager.primary') : ''}}
 							</div>
 						</template>
@@ -221,7 +221,7 @@
 						prop="Privilege"
 					>
 						<template slot-scope="scope">
-							<span class="td-grey">
+							<span class="td-grey ft14">
 								{{$t(`fileManager["${privilegeConfig[scope.row.Privilege]}"]`)}}
 							</span>
 						</template>
@@ -240,7 +240,7 @@
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content">
-				<p class="mt10 mb10 tl">{{$t('fileManager.fileName')}}: {{executedFile.Name}}</p>
+				<p class="mt10 mb10 tl ft14">{{$t('fileManager.fileName')}}<span class="ftpx14">: {{executedFile.Name}}</span></p>
 				<el-form @submit.native.prevent>
 					<el-form-item :label="$t('fileManager.link')+':'">
 						<el-input
@@ -283,32 +283,32 @@
 					<div class="adjust-item">
 						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.fileName')}}</p>
 						<div class="adjust-info">
-							<p class="theme-font-blue ft14 mr20">{{fileDownloadInfo.Name}}</p>
+							<p class="theme-font-blue ftpx14 mr20">{{fileDownloadInfo.Name}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
 						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.fileSize')}}:</p>
 						<div class="adjust-info">
-							<p class="theme-font-blue ft14 mr20">{{fileDownloadInfo.Size}}</p>
+							<p class="theme-font-blue ftpx14 mr20">{{fileDownloadInfo.Size}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
 						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.savePath')}}:</p>
 						<div class="adjust-info">
-							<p class="ft14 mr20">{{fileDownloadInfo.DownloadDir || ''}}</p>
+							<p class="ftpx14 mr20">{{fileDownloadInfo.DownloadDir || ''}}</p>
 						</div>
 					</div>
 					<div class="dialog-title-border"></div>
 					<div class="adjust-item">
 						<p class="adjust-title ft14">{{$t('fileManager.cost')}}:</p>
 						<div class="adjust-info">
-							<p class="ft14 mr20">{{fileDownloadInfo.Fee ? fileDownloadInfo.Fee + ' ONI': ''}} </p>
+							<p class="ftpx14 mr20">{{fileDownloadInfo.Fee ? fileDownloadInfo.Fee + ' ONI': ''}} </p>
 						</div>
 					</div>
 					<div class="adjust-item">
 						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.channelBalance')}}:</p>
 						<div class="adjust-info">
-							<p class="ft14 mr20">{{channelBind.BalanceFormat}} ONI</p>
+							<p class="ftpx14 mr20">{{channelBind.BalanceFormat}} ONI</p>
 						</div>
 					</div>
 				</div>
@@ -317,7 +317,7 @@
 					<ripper-button
 						class="primary ml10"
 						@click="toDownload(fileToDownload)"
-					>{{$t('fileManager.uploadButton')}}</ripper-button>
+					>{{$t('fileManager.downloadButton')}}</ripper-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -359,7 +359,7 @@
 				<h2>{{$t('fileManager.deleteFile')}}</h2>
 				<div class="dialog-title-border"></div>
 			</div>
-			<div class="loading-content disk-delete-loading">
+			<div class="loading-content disk-delete-loading ft14">
 				<p class="mt10 mb10">{{$t('fileManager.areYouSureYouWantTo')}} <span>{{$t('fileManager.delete2')}}</span> {{$t('fileManager.theSelectedFile')}}</p>
 				<p class="mb20">{{fileDeleteInfo.Name}}</p>
 				<el-form
@@ -1265,7 +1265,7 @@ $theme-font-blue: #040f39;
 				left: 10px;
 				.el-input__icon {
 					line-height: 34px;
-					font-size: 16px;
+					font-size: 1.6rem;
 					color: rgba(32, 32, 32, 0.4);
 				}
 			}
@@ -1352,7 +1352,7 @@ $theme-font-blue: #040f39;
 		justify-content: space-between;
 		margin: 15px 0;
 		.adjust-title {
-			font-size: 14px;
+			font-size: 1.4rem;
 			width: 160px;
 			padding-right: 30px;
 			text-align: right;
@@ -1392,7 +1392,7 @@ $theme-font-blue: #040f39;
 	}
 	.el-input-group__append {
 		[class^="el-icon-"] {
-			font-size: 18px;
+			font-size: 1.8rem;
 			cursor: pointer;
 		}
 	}

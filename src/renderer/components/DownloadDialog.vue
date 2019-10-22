@@ -132,10 +132,15 @@ export default {
 			float: left;
 			width: 55px;
 			text-align: right;
+			height: 2rem;
+			font-size: 1.4rem;
+			line-height: 2rem;
 		}
 		.new-download-right {
 			float: right;
 			width: calc(100% - 60px);
+			height: 2rem;
+			line-height: 2rem;
 		}
 	}
 }

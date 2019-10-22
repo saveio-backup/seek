@@ -283,7 +283,7 @@
 					<div class="adjust-item">
 						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.fileName')}}</p>
 						<div class="adjust-info">
-							<p class="theme-font-blue ftpx14 mr20">{{fileDownloadInfo.Name}}</p>
+							<p class="theme-font-blue ftpx14 mr20" :title="fileDownloadInfo.allName">{{fileDownloadInfo.Name}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
@@ -361,7 +361,7 @@
 			</div>
 			<div class="loading-content disk-delete-loading ft14">
 				<p class="mt10 mb10">{{$t('fileManager.areYouSureYouWantTo')}} <span>{{$t('fileManager.delete2')}}</span> {{$t('fileManager.theSelectedFile')}}</p>
-				<p class="mb20">{{fileDeleteInfo.Name}}</p>
+				<p class="mb20" :title="fileDeleteInfo.allName">{{fileDeleteInfo.Name}}</p>
 				<el-form
 					ref="extraParamsForm"
 					:model="extraParams"
@@ -418,10 +418,13 @@ export default {
 			util,
 			fileDownloadInfo: {
 				Fee: 0,
-				Size: 0
+				Size: 0,
+				Name: "",
+				allName: ""
 			},
 			fileDeleteInfo: {
-				Name: ""
+				Name: "",
+				allName: ""
 			},
 			executedFile: {}, // a file be opera
 			filterInput: "",
@@ -1081,8 +1084,10 @@ export default {
 				if (name.length > 37) {
 					// max length
 					this.fileDownloadInfo.Name = name.substring(0, 37) + " ....";
+					this.fileDownloadInfo.allName = name;
 				} else {
 					this.fileDownloadInfo.Name = name;
+					this.fileDownloadInfo.allName = name;
 				}
 				this.$axios
 					.get(this.$api.downloadInfo + path)
@@ -1116,8 +1121,10 @@ export default {
 				if (name.length > 37) {
 					// max length
 					this.fileDeleteInfo.Name = name.substring(0, 37) + " ....";
+					this.fileDeleteInfo.allName = name;
 				} else {
 					this.fileDeleteInfo.Name = name;
+					this.fileDeleteInfo.allName = name;
 				}
 			});
 		},

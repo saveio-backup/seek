@@ -8,11 +8,14 @@ import {
   DEFAULT_URL
 } from './defaultOption'
 import frontCfgObj from './frontCfgObj'
+// import {
+//   SeekDB
+// } from '../dbs/index'
 import {
-  SeekDB
-} from '../dbs/index'
-const seekDB = new SeekDB();
-seekDB.getDB();
+  SettingDB
+} from '../dbs/index_levelup';
+// const seekDB = new SeekDB();
+// seekDB.getDB();
 class dialogView {
   constructor(win) {
     this.browserView = null;
@@ -54,7 +57,7 @@ class dialogView {
     this.updateEvent();
     this.resize();
     this.loadDialog();
-    seekDB.querySettings('console').then(res => {
+    global.settingDB.queryData('console').then(async (res) => {
       if (res) {
         this.browserView.webContents.openDevTools();
       }

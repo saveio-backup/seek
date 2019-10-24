@@ -2,13 +2,16 @@ import {
   ipcMain,
   dialog
 } from 'electron'
+// import {
+//   SeekDB
+// } from '../dbs/index';
 import {
-  SeekDB
-} from '../dbs/index';
+  SettingDB
+} from '../dbs/index_levelup';
 import fs from 'fs';
 import path from 'path';
-const seekDB = new SeekDB();
-seekDB.getDB();
+// const seekDB = new SeekDB();
+// seekDB.getDB();
 
 // File operation
 ipcMain.on('open-file-dialog', (event) => {
@@ -85,21 +88,21 @@ ipcMain.on('will-set-dir', (event) => {
 
 // seekDB
 ipcMain.on('getAllSettings', event => {
-  seekDB.querySettings('All').then(res => {
+  global.settingDB.getAllData().then(async (res) => {
     event.returnValue = res;
   })
 })
 ipcMain.on('getSettings', (event, key) => {
-  seekDB.querySettings(key).then(res => {
+  global.settingDB.queryData(key).then(async (res) => {
     event.returnValue = res;
   })
 })
 ipcMain.on('updateSettings', (event, key, value) => {
-  seekDB.updateSettings(key, value).then(() => {
+  global.settingDB.updateData(key, value).then(async () => {
     event.returnValue = {
       status: true
     };
-  }).catch((reject) => {
+  }).catch(async (reject) => {
     event.returnValue = {
       status: false,
       msg: reject

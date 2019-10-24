@@ -7,11 +7,14 @@ import {
   DEFAULT_URL
 } from './defaultOption'
 import frontCfgObj from './frontCfgObj.js'
+// import {
+//   SeekDB
+// } from '../dbs/index';
 import {
-  SeekDB
-} from '../dbs/index';
-const seekDB = new SeekDB();
-seekDB.getDB();
+  SettingDB
+} from '../dbs/index_levelup';
+// const seekDB = new SeekDB();
+// seekDB.getDB();
 export default class MenuWindow {
   constructor(parentWindow) {
     this.parentWindow = parentWindow;
@@ -35,11 +38,11 @@ export default class MenuWindow {
     })
     const url = DEFAULT_URL + '#' + 'menuWindow';
     this.win.loadURL(url);
-    seekDB.querySettings('console').then(res => {
-      if (res) {
-        this.browserView.webContents.openDevTools();
-      }
-    })
+    // global.settingDB.queryData('console').then(async (res) => {
+    //   if (res) {
+    //     this.win.webContents.openDevTools();
+    //   }
+    // })
     // if (process.env.NODE_ENV === 'development' || frontCfgObj().console) {
     //   this.win.webContents.openDevTools();
     // }

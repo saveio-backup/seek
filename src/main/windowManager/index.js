@@ -18,11 +18,14 @@ import MenuWindow from './menuWindow'
 import log from 'electron-log'
 import failedPage from '../../../static/html/failed/failed.js'
 import frontCfgObj from './frontCfgObj'
+// import {
+//   SeekDB
+// } from '../dbs/index';
 import {
-  SeekDB
-} from '../dbs/index';
-const seekDB = new SeekDB();
-seekDB.getDB();
+  SettingDB
+} from '../dbs/index_levelup'
+// const seekDB = new SeekDB();
+// seekDB.getDB();
 export const windows = {}; // map of {[parentWindow.id] => BrowserWindow}
 export let getCurrentView = null;
 export let dialogViewObj = null;
@@ -83,7 +86,7 @@ class View {
         defaultEncoding: 'utf-8'
       }
     });
-    seekDB.querySettings('console').then(res => {
+    global.settingDB.queryData('console').then(async (res) => {
       if (res) {
         this.browserView.webContents.openDevTools();
       }
@@ -395,10 +398,9 @@ export function createWindow(url) {
       return true;
     }
   }
-
-  seekDB.querySettings('console').then(res => {
+  global.settingDB.queryData('console').then(async (res) => {
     if (res) {
-      this.browserView.webContents.openDevTools();
+      mainWindow.webContents.openDevTools();
     }
   })
   // if (process.env.NODE_ENV === 'development' || frontCfgObj().console) {

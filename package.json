@@ -5,7 +5,8 @@
   "license": "MIT",
   "main": "./dist/electron/main.js",
   "scripts": {
-    "i": "npm i --build-from-source --runtime=electron --target=5.0.6  --dist-url=https://atom.io/download/electron",
+    "i": "npm i",
+    "oldi": "npm i --build-from-source --runtime=electron --target=5.0.6  --dist-url=https://atom.io/download/electron",
     "rebuild": "./node_modules/.bin/electron-rebuild -w sqlite3 --dist-url=https://atom.io/download/electron",
     "preload": "npx webpack --config ./.electron-vue/webpack.preload.config.js",
     "build": "npm run preload && node .electron-vue/build.js && electron-builder",

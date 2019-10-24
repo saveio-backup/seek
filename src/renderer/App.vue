@@ -81,6 +81,7 @@ export default {
 		},
 		progressUpdate({result, page}) {
 			if(page === 'tab') {
+				if(this.routerName === 'settings') return;
 				if(result.isNeedSync) {
 					if (location.href.indexOf('CreateAccount') < 0) {
 						this.$router.replace({

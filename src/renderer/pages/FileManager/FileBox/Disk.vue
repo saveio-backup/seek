@@ -921,7 +921,7 @@ export default {
 				arr.push({
 					Url: downloadFile.Url,
 					SetFileName: true,
-					MaxPeerNum: ipcRenderer.sendSync("getSettings", "MaxPeerNum"),
+					MaxPeerNum: ipcRenderer.sendSync("getSettings", "maxPeerNum"),
 					// cache upload data↓
 					FileSize: downloadFile.Size,
 					DetailStatus: "downloadLoading",

@@ -87,7 +87,7 @@ export default {
 				.post(this.$api.download, {
 					Url: this.downloadUrl,
 					SetFileName: true,
-					MaxPeerNum: ipcRenderer.sendSync("getSettings", "MaxPeerNum")
+					MaxPeerNum: ipcRenderer.sendSync("getSettings", "maxPeerNum")
 				})
 				.then(res => {
 					if (res.Error === 0) {

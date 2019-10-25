@@ -63,10 +63,12 @@ class SeekLevelDB {
 
   queryData(key) {
     return new Promise((resolve, reject) => {
+      console.log('queryData is key');
+      console.log(key)
       this.db.get(key, (err, value) => {
         if (err) {
           if (err.notFound) {
-            reject('NotFound');
+            reject('Key NotFound');
           }
         } else {
           resolve(JSON.parse(value));

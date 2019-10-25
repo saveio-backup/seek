@@ -87,8 +87,8 @@ class Seek {
   }
   static getFilePeerCount(hash) {
     return new Promise((resolve, reject) => {
-      axios.get(api.dspFilePeersCount+'/'+hash).then(res => {
-        resolve(res.data);        
+      axios.get(api.dspFilePeersCount + '/' + hash).then(res => {
+        resolve(res.data);
       }).catch(err => {
         reject(err);
       })
@@ -101,7 +101,17 @@ function currentView() {
 }
 
 async function loadThirdPage(url, uuid, loadView) {
-  const detail = await getTransferDetail(url);
+  let detail = null;
+  try {
+    detail = await getTransferDetail(url);
+  } catch (error) {
+    console.log('loadThirdPage throw a error from await');
+    console.log(error);
+    detail = {
+      data: null
+    };
+  }
+
   // const view = remote.getCurrentWindow().views.find(item => item.isActive)
   if (detail.data.Result) {
     thirdPageUid[uuid] = true;
@@ -151,7 +161,16 @@ async function loadThirdPage(url, uuid, loadView) {
 }
 
 async function cancelDownload(url) {
-  const detail = await getTransferDetail(url);
+  let detail = null;
+  try {
+    detail = await getTransferDetail(url);
+  } catch (error) {
+    console.log('loadThirdPage throw a error from await');
+    console.log(error);
+    detail = {
+      data: null
+    };
+  }
   let Id = null;
   const data = detail.data.Result;
   if (data && data.Progress < 1) {
@@ -168,7 +187,7 @@ async function cancelDownload(url) {
 function downloadPage(url, uuid, loadView) {
   axios.post(api.download, {
     Url: url,
-    MaxPeerNum: ipcRenderer.sendSync("getSettings", "MaxPeerNum"),
+    MaxPeerNum: ipcRenderer.sendSync("getSettings", "maxPeerNum"),
     SetFileName: true
   }).then(res => {
     if (res.data.Error === 0) {
@@ -188,6 +207,8 @@ function getTransferDetail(url) {
   const hexUrl = ipcRenderer.sendSync('string-to-hex', url);
   return new Promise((resolve, reject) => {
     axios.get(api.transferDetail + `/3/${hexUrl}`).then(res => {
+      console.log('get transferDetail is!!');
+      console.log(res);
       resolve(res);
     }).catch(err => {
       reject(err);

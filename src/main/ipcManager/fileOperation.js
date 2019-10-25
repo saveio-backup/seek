@@ -90,11 +90,15 @@ ipcMain.on('will-set-dir', (event) => {
 ipcMain.on('getAllSettings', event => {
   global.settingDB.getAllData().then(async (res) => {
     event.returnValue = res;
+  }).catch(err=>{
+    event.returnValue = null;
   })
 })
 ipcMain.on('getSettings', (event, key) => {
   global.settingDB.queryData(key).then(async (res) => {
     event.returnValue = res;
+  }).catch(err => {
+    event.returnValue = null;
   })
 })
 ipcMain.on('updateSettings', (event, key, value) => {

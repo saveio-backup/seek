@@ -23,7 +23,7 @@ const {
  * that provide pure *.vue files that need compiling
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/webpack-configurations.html#white-listing-externals
  */
-let whiteListedModules = ['vue','element-ui']
+let whiteListedModules = ['vue', 'element-ui']
 
 let rendererConfig = {
   devtool: '#cheap-module-eval-source-map',
@@ -47,12 +47,11 @@ let rendererConfig = {
       },
       {
         test: /\.scss$/,
-        use: ['vue-style-loader', 'css-loader', 'sass-loader']
+        use: ['vue-style-loader', 'css-loader', 'sass-loader?data=@import "./src/renderer/assets/css/globals";']
       },
-
       {
         test: /\.sass$/,
-        use: ['vue-style-loader', 'css-loader', 'sass-loader?indentedSyntax']
+        use: ['vue-style-loader', 'css-loader', 'sass-loader?indentedSyntax=1&data=@import "./src/renderer/assets/css/globals";']
       },
       {
         test: /\.less$/,
@@ -137,8 +136,7 @@ let rendererConfig = {
         removeComments: true
       },
       nodeModules: process.env.NODE_ENV !== 'production' ?
-        path.resolve(__dirname, '../node_modules') :
-        false
+        path.resolve(__dirname, '../node_modules') : false
     }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin()

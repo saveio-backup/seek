@@ -136,9 +136,9 @@ export default {
 		canvasBg
 	},
 	mounted() {
-		document.title = this.$t('home.home');
+		document.title = this.$t("home.home");
 		const vm = this;
-		
+
 		this.chartInit();
 		this.$store.dispatch("setCurrentAccount"); // get login status
 		// open channel callback form createChannel of browserView dialog
@@ -380,11 +380,11 @@ export default {
 			const vm = this;
 			if (this.isSync) {
 				this.$confirm(
-					vm.$t('public.blockUnsynchronizedCompletionAreYouSureToDoThis'),
-					vm.$t('public.notice'),
+					vm.$t("public.blockUnsynchronizedCompletionAreYouSureToDoThis"),
+					vm.$t("public.notice"),
 					{
-						confirmButtonText: vm.$t('public.confirm'),
-						cancelButtonText: vm.$t('public.cancel')
+						confirmButtonText: vm.$t("public.confirm"),
+						cancelButtonText: vm.$t("public.cancel")
 					}
 				)
 					.then(() => {
@@ -402,7 +402,7 @@ export default {
 			this.chartsChannelDom = echarts.init(channelDom);
 			const currentChannelData =
 				this.currentChannelData.length === 0
-					? [{ value: 0, name: that.$t('home.noChannel') }]
+					? [{ value: 0, name: that.$t("home.noChannel") }]
 					: this.currentChannelData;
 			const color =
 				this.currentChannelData.length === 0
@@ -591,7 +591,7 @@ export default {
 			console.log("clip");
 			clipboard.writeText(localStorage.getItem("Address") || "");
 			this.$message({
-				message: vm.$t('public.copied'),
+				message: vm.$t("public.copied"),
 				duration: 1200,
 				type: "success"
 			});
@@ -605,7 +605,7 @@ export default {
 						ipcRenderer.send("export-file-dialog", res.Result.Wallet, "Wallet");
 						ipcRenderer.once("export-finished", () => {
 							this.$message({
-								message: vm.$t('dialog.exportSuccess'),
+								message: vm.$t("dialog.exportSuccess"),
 								type: "success"
 							});
 						});
@@ -622,12 +622,14 @@ export default {
 		},
 		generateChannelView() {
 			const that = this;
-			if(this.currentChannelData.length === 0) {
-				const currentChannelData = [{ value: 0, name: that.$t('home.noChannel') }];
-					const color =
-				this.currentChannelData.length === 0
-					? ["#D4DDEB"]
-					: ["#3E6695", "#3B81EB", "#FF607B", "#D3E84E", "#E15C91"];
+			if (this.currentChannelData.length === 0) {
+				const currentChannelData = [
+					{ value: 0, name: that.$t("home.noChannel") }
+				];
+				const color =
+					this.currentChannelData.length === 0
+						? ["#D4DDEB"]
+						: ["#3E6695", "#3B81EB", "#FF607B", "#D3E84E", "#E15C91"];
 				this.chartsChannelDom.setOption({
 					series: [
 						{
@@ -704,7 +706,7 @@ export default {
 						dataIndex: e.dataIndex
 					});
 				});
-			}			
+			}
 		}
 	},
 	watch: {
@@ -715,15 +717,15 @@ export default {
 					newVal.length === 0
 						? ["#D4DDEB"]
 						: ["#3E6695", "#3B81EB", "#FF607B", "#D3E84E", "#E15C91"];
-				if(this.chartsChannelDom) {
+				if (this.chartsChannelDom) {
 					this.chartsChannelDom.setOption({
 						series: {
 							data: newVal,
 							color: color
 						}
 					});
-				};
-				if(this.chartsChannelDom) {
+				}
+				if (this.chartsChannelDom) {
 					this.chartsChannelDom.dispatchAction({
 						type: "highlight",
 						seriesIndex: 0,
@@ -764,8 +766,8 @@ export default {
 			}
 		},
 		lang(newVal, oldVal) {
-			document.title = this.$t('home.home');
-			this.generateChannelView();			
+			document.title = this.$t("home.home");
+			this.generateChannelView();
 		}
 	},
 	computed: {
@@ -953,8 +955,6 @@ $input-color: rgba(203, 203, 203, 1);
 				justify-content: center;
 				position: relative;
 				z-index: 999;
-
-
 
 				& > .button {
 					padding: 10px;

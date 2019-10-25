@@ -5,6 +5,7 @@ const result = {
   'private': '私有链',
   'autoOpenDevTools': '自动打开开发调试',
   'maxUploadLength': '最大任务个数',
+  'maxPeerNum': '最大下载节点数',
   'downloadPath': '下载保存地址',
   'change': '选 择',
   'language': '语 言',

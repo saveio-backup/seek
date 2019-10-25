@@ -87,7 +87,7 @@ export default {
 				.post(this.$api.download, {
 					Url: this.downloadUrl,
 					SetFileName: true,
-					MaxPeerNum: 20
+					MaxPeerNum: ipcRenderer.sendSync("getSettings", "MaxPeerNum")
 				})
 				.then(res => {
 					if (res.Error === 0) {
@@ -106,7 +106,9 @@ export default {
 					} else {
 						if (res.Error === 50028) {
 							this.$message.error(
-								vm.$t('public.sorryThereAreNoValidFilesFoundTheFileMayHaveBeenDeleted')
+								vm.$t(
+									"public.sorryThereAreNoValidFilesFoundTheFileMayHaveBeenDeleted"
+								)
 							);
 						} else {
 							this.$message.error(this.$t(`error[${res.Error}]`));
@@ -115,7 +117,7 @@ export default {
 				})
 				.catch(e => {
 					if (!e.message.includes("timeout")) {
-						this.$message.error(vm.$t('public.networkErrorDownloadFailed'));
+						this.$message.error(vm.$t("public.networkErrorDownloadFailed"));
 					}
 				});
 		}

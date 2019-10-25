@@ -53,6 +53,16 @@
 				</el-select>
 			</div>
 			<div class="settings-box">
+				<div class="tag">{{$t('settings.maxPeerNum')}}</div>
+				<div>
+					<el-slider
+						v-model="settings.maxPeerNum"
+						@change="updateSettings('maxPeerNum',settings.maxPeerNum)"
+						:max="20"
+					></el-slider>
+				</div>
+			</div>
+			<div class="settings-box">
 				<div class="tag">
 					<p>{{$t('settings.downloadPath')}}</p>
 					<p
@@ -76,7 +86,7 @@
 						:label='$t(`settings["${item.label}"]`)'
 						:value="item.id"
 					></el-option>
-			</el-select>
+				</el-select>
 			</div>
 		</div>
 	</div>
@@ -86,7 +96,7 @@ import { ipcRenderer, remote } from "electron";
 import { DEFAULT_CHAINID } from "../../main/windowManager/defaultOption";
 export default {
 	mounted() {
-		document.title = this.$t('settings.settings');
+		document.title = this.$t("settings.settings");
 		this.getSettingsAll();
 		this.getChainList();
 		this.getChainId();
@@ -112,19 +122,19 @@ export default {
 			maxUploadLimitList: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
 			langList: [
 				{
-					id: 'en',
-					label: 'English'
+					id: "en",
+					label: "English"
 				},
 				{
-					id: 'zh',
-					label: 'Chinese'
+					id: "zh",
+					label: "Chinese"
 				}
 			]
 		};
 	},
 	watch: {
 		lang() {
-			document.title = this.$t('settings.settings');
+			document.title = this.$t("settings.settings");
 		}
 	},
 	computed: {
@@ -135,10 +145,13 @@ export default {
 	methods: {
 		setLang() {
 			const vm = this;
-			vm.$i18n.locale = vm.settings.lang || 'en';
-			document.title = this.$t('settings.settings');
+			vm.$i18n.locale = vm.settings.lang || "en";
+			document.title = this.$t("settings.settings");
 			this.updateSettings("lang", vm.settings.lang);
-			ipcRenderer.send("run-dialog-event", {name:'toSetLang', data: vm.settings.lang});
+			ipcRenderer.send("run-dialog-event", {
+				name: "toSetLang",
+				data: vm.settings.lang
+			});
 		},
 		getSettingsAll() {
 			this.settings = ipcRenderer.sendSync("getAllSettings");
@@ -209,7 +222,7 @@ export default {
 					this.updateSettings("ChainId", id);
 					this.settings.ChainId = id;
 					this.$message({
-						message: vm.$t('settings.switchSuccess'),
+						message: vm.$t("settings.switchSuccess"),
 						type: "success"
 					});
 				} else {
@@ -221,7 +234,7 @@ export default {
 			ipcRenderer.send("will-set-dir");
 			ipcRenderer.once("did-set-dir", (event, dir) => {
 				this.$axios.post(this.$api.config, { [pathType]: dir }).then(res => {
-					if(res.Error === 0){
+					if (res.Error === 0) {
 						this.pathDir[pathType] = dir;
 					}
 				});
@@ -251,6 +264,9 @@ export default {
 					text-overflow: ellipsis;
 					white-space: nowrap;
 				}
+			}
+			.el-slider{
+				width:200px;
 			}
 			.el-select {
 				input {

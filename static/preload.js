@@ -168,7 +168,7 @@ async function cancelDownload(url) {
 function downloadPage(url, uuid, loadView) {
   axios.post(api.download, {
     Url: url,
-    MaxPeerNum: 20,
+    MaxPeerNum: ipcRenderer.sendSync("getSettings", "MaxPeerNum"),
     SetFileName: true
   }).then(res => {
     if (res.data.Error === 0) {

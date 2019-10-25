@@ -5,6 +5,7 @@ const result = {
   'private': 'Private',
   'autoOpenDevTools': 'Auto openDevTools',
   'maxUploadLength': 'Maximum number of tasks',
+  'maxPeerNum':'Maximum number of peer',
   'downloadPath': 'Download Path',
   'change': 'Change',
   'language': 'Language',

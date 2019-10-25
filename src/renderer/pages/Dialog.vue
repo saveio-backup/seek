@@ -372,7 +372,7 @@ export default {
 				// to do: wait for 2s for wait for get upload file done
 				setTimeout(() => {
 					this.readyUpload = [];
-				}, 2000);
+				}, 3000);
 
 				// error message
 				let errorArr = [];
@@ -476,7 +476,7 @@ export default {
 				// to do: wait for 2s for wait for get upload file done
 				setTimeout(() => {
 					this.readyDownload = [];
-				}, 2000);
+				}, 3000);
 				
 				// error message
 				let errorArr = [];

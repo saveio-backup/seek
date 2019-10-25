@@ -12,7 +12,8 @@ const result = {
   'theSystemDetecetsThatYouHaveNotOpenAChannel': 'The system detecets that you have not open a Channel,you can create a new channel based on the DNS Wallet address recommended by the current network.',
   'recommendDNS': 'Recommend DNS',
   'loading': 'loading...',
-  'loggingOut': 'logging out'
+  'loggingOut': 'logging out',
+  'channelLostRemind': 'The current channel is invalid. Please create or replace another channel'
 }
 
 export default result;

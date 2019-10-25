@@ -11,7 +11,8 @@ const result = {
   'theSystemDetecetsThatYouHaveNotOpenAChannel': '系统检测到你没有打开一个通道，你可以根据当前网络推荐的DNS钱包地址创建一个新的通道。',
   'recommendDNS': '推荐DNS',
   'loading': '加载中...',
-  'loggingOut': '正在登出'
+  'loggingOut': '正在登出',
+  'channelLostRemind': '当前通道失效,请新建或者替换其他通道'
 }
 
 export default result;

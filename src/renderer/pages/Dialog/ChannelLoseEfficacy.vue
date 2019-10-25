@@ -14,7 +14,8 @@
       <div class="loading-content">
         <div class="mb20">
           <p class="mt20 ft14">
-            当前通道失效,请新建或者替换其他通道
+            {{$t('dialog.channelLostRemind')}}
+            <!-- 当前通道失效,请新建或者替换其他通道 -->
           </p>
         </div>
         <div slot="footer">

@@ -964,11 +964,14 @@ export default {
 					((file.DetailStatus === 5 || file.DetailStatus === 23) &&
 						file.Status !== 4))
 			) {
+				// this.$message({
+				// 	message: vm.$t('fileManager.thereAreNoTasksToCancel')
+				// });
 				return;
 			}
 			if(this.uploadLength === 0) {
 				this.$message({
-					message: vm.$t('fileManager.thereAreNoTasksToStart')
+					message: vm.$t('fileManager.thereAreNoTasksToCancel')
 				});
 				return;
 			}

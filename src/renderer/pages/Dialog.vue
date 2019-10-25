@@ -12,6 +12,10 @@
 			@closeDialog="closeDialog"
 			v-if="menuSelector === 'createChannel'"
 		></is-create-channel>
+		<channel-lose-efficacy
+			@closeDialog="closeDialog"
+			v-if="menuSelector === 'channelLoseEfficacy'"
+		></channel-lose-efficacy>
 		<div
 			class="downloadDialog"
 			v-if="menuSelector === 'downloadDialog'"
@@ -42,6 +46,7 @@ import { ipcRenderer, remote } from "electron";
 import exportPrivateKey from "./Dialog/ExportPrivateKey.vue";
 import logout from "./Dialog/Logout.vue";
 import isCreateChannel from "./Dialog/IsCreateChannel.vue";
+import channelLoseEfficacy from "./Dialog/ChannelLoseEfficacy.vue";
 import downloadDialog from "../components/DownloadDialog.vue";
 export default {
 	name: "Dialog",
@@ -49,7 +54,8 @@ export default {
 		exportPrivateKey,
 		logout,
 		isCreateChannel,
-		downloadDialog
+		downloadDialog,
+		channelLoseEfficacy
 	},
 	data() {
 		const COUNT_INTERVAL = 5000;
@@ -62,6 +68,7 @@ export default {
 			// current main browserWindow
 			win: null,
 			downloadUrl: "", // downloadDialog url
+			usable: true,
 
 			// polling data
 			channelNum: null,
@@ -663,6 +670,24 @@ export default {
 					}
 				});
 		},
+		getCurrentChannel() {
+			this.$axios
+				.get(this.$api.getCurrentChannel, {
+					timeout: this.$config.outTime * 5000 + 15000
+				}).then(res => {
+					if(res.Error === 0) {
+						if(res.Result.IsOnline === false) {
+							if(!this.usable) return;
+							this.usable = false;
+							ipcRenderer.send("dialog-open", "channelLoseEfficacy");
+						} else {
+							this.usable = true;
+						}
+					} else {
+						this.usable = true;
+					}
+				})
+		},
 		// get connect state
 		getState() {
 			this.$axios
@@ -756,9 +781,11 @@ export default {
 			this.getBalance();
 			this.getRevenue();
 			this.getState();
+			this.getCurrentChannel();
 			this.intervalObj.setTimeObj = setInterval(() => {
 				this.getProcess();
 				this.getChannel();
+				this.getCurrentChannel();
 				this.getBalance();
 				this.getRevenue();
 				this.getState();

@@ -205,7 +205,7 @@
 						<ripper-button
 							class="primary ml10"
 							@click="linkUpload"
-						>{{$t('fileManager.update')}}</ripper-button>
+						>{{$t('fileManager.upload')}}</ripper-button>
 					</div>
 				</div>
 			</el-dialog>

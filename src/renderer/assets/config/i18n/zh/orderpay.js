@@ -12,7 +12,7 @@ const result = {
   'total': '总 计',
   'amountGas': '总量 + 手续费',
   'reback': '返 回',
-  'inTransaction..': '在交易...'
+  'inTransaction': '交易中...'
 }
 
 export default result;

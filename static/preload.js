@@ -85,6 +85,15 @@ class Seek {
   }) {
     remote.getCurrentWindow().views.find(item => item.isActive).openComponent(path)
   }
+  static getFilePeerCount(hash) {
+    return new Promise((resolve, reject) => {
+      axios.get(api.dspFilePeersCount+'/'+hash).then(res => {
+        resolve(res.data);        
+      }).catch(err => {
+        reject(err);
+      })
+    })
+  }
 }
 
 function currentView() {

@@ -90,6 +90,7 @@ const API = {
   invokeContract: HOST + VERSION + 'smartcontract/invoke',
   preexecContract: HOST + VERSION + 'smartcontract/preexec',
   checkPassword:  HOST + VERSION + 'account/password/check',
-  config: HOST + VERSION + 'config'
+  config: HOST + VERSION + 'config',
+  dspFilePeersCount: HOST + VERSION + 'dsp/file/peers/count'
 }
 export default API;

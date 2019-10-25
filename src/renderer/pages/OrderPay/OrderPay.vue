@@ -1,5 +1,5 @@
 <template>
-	<div id="orderpay">
+	<div id="orderpay" class="ft16">
 		<div class="orderpay-content">
 			<div
 				class="trading-status"

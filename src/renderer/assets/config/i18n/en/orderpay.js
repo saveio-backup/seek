@@ -12,7 +12,7 @@ const result = {
   'total': 'Total',
   'amountGas': 'Amount + Gas',
   'reback': 'Go Back',
-  'inTransaction..': 'In transaction...'
+  'inTransaction': 'In transaction...'
 }
 
 export default result;

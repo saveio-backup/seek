@@ -245,6 +245,7 @@
 <script>
 import { filterFloat } from "../assets/config/util";
 import channelWalletTransfer from "./ChannelWalletTransfer.vue";
+import crypto from 'crypto'
 export default {
 	components: {
 		channelWalletTransfer
@@ -538,18 +539,19 @@ export default {
 			});
 		},
 		toPeationChannel() {
+			const vm = this;
 			this.$refs["channelForm"].validate(valid => {
 				if (!valid) return;
 				if (this.channelToggle.type === "add") {
 					let params = {
-						Password: this.channelForm.password,
+						Password: crypto.createHash('sha256').update(vm.channelForm.password).digest('hex'),
 						Partner: this.channelForm.partner,
 						Amount: this.channelForm.amount + ""
 					};
 					this.toChannelOpen(params);
 				} else {
 					let params = {
-						Password: this.channelForm.password,
+						Password: crypto.createHash('sha256').update(this.channelForm.password).digest('hex'),
 						Partner: this.channelForm.partner
 					};
 					this.toChannelClose(params);

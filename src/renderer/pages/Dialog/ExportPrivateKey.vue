@@ -47,6 +47,7 @@
 
 <script>
 import { ipcRenderer, dialog, remote } from "electron";
+import crypto from "crypto";
 export default {
 	name: "ExportPrivateKey",
 	data() {
@@ -85,7 +86,7 @@ export default {
 			this.$refs.dialogForm.validate(valid => {
 				if (!valid) return;
 				let params = {
-					password: this.dialogForm.password
+					password: crypto.createHash('sha256').update(this.dialogForm.password).digest('hex')
 				};
 				this.exportPrivateKeyByPassword(params).then(res => {
 					if (res.Error === 0) {

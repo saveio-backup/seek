@@ -215,6 +215,7 @@
 <script>
 import util from "../../../assets/config/util";
 import $date from "../../../assets/tool/date";
+import crypto from 'crypto'
 const _NOW = new Date();
 // const nextDay = new Date(now.setDate(now.getDate() + 1));
 // nextDay.setHours(23);
@@ -461,7 +462,7 @@ export default {
 							Value: Math.abs(this.addInfo.Size.Value),
 							Type: this.addInfo.Size.Type
 						},
-						Password: this.Password
+						Password: crypto.createHash('sha256').update(vm.Password).digest('hex')
 					},
 					{
 						loading: {

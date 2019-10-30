@@ -1231,7 +1231,7 @@ export default {
 
 			// get cancel task again when cancel type is upload
 			if (type === 1) {
-				params.Password = this.passwordCancel.Password;
+				params.Password = crypto.createHash('sha256').update(vm.passwordCancel.Password).digest('hex');
 				for (let value of this.waitForUploadList) {
 					if (params.Ids.indexOf(value.Id) >= 0) {
 						waitForUploadArr.push(value.Id);

@@ -145,6 +145,7 @@ import { filterFloat } from "../assets/config/util";
 import channelList from "../components/ChannelsList.vue";
 import channelWalletTransfer from "../components/ChannelWalletTransfer.vue";
 import { ipcRenderer } from "electron";
+import crypto from "crypto";
 export default {
 	mounted() {
 		document.title = this.$t("fileManager.fileManager");
@@ -227,7 +228,7 @@ export default {
 					this.$api.channelSwitch,
 					{
 						Partner: partnerAddress,
-						Password: this.switchChannelForm.Password
+						Password: crypto.createHash('sha256').update(vm.switchChannelForm.Password).digest('hex')
 					},
 					{
 						loading: {

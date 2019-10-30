@@ -81,6 +81,7 @@
 </template>
 <script>
 import { filterFloat } from "../assets/config/util";
+import crypto from "crypto";
 export default {
 	props: {
 		channelSelected: {
@@ -182,7 +183,7 @@ export default {
 							{
 								Partner: this.channelSelected.Address,
 								Amount: this.transferInfo.Amount,
-								Password: this.transferInfo.Password
+								Password: crypto.createHash('sha256').update(vm.transferInfo.Password).digest('hex')
 							},
 							{
 								loading: {

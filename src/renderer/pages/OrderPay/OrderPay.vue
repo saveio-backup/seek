@@ -172,6 +172,7 @@
 import { ipcRenderer, remote } from "electron";
 import { parse } from "querystring";
 import { round } from "mathjs";
+import crypto from 'crypto'
 export default {
 	mounted() {
 		Seek.getAccount().then(res => {
@@ -240,7 +241,7 @@ export default {
 					Contract: this.contractData.Contract,
 					Method: this.contractData.Method,
 					Params: this.contractData.Params,
-					Password: this.passwordForm.Password,
+					Password: crypto.createHash('sha256').update(vm.passwordForm.Password).digest('hex'),
 					GasPrice: this.contractData.GasPrice,
 					GasLimit: this.contractData.GasLimit
 				};

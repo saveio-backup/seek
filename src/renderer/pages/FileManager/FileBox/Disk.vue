@@ -407,6 +407,7 @@ import { effectiveNumber } from "../../../assets/config/util";
 import fs from "fs";
 import uploadFileDetailDialog from "./../../../components/UploadFileDetailDialog";
 import uuid from 'node-uuid';
+import crypto from 'crypto'
 let tableElement;
 export default {
 	data() {
@@ -996,7 +997,8 @@ export default {
 					.post(
 						this.$api.deletes,
 						{
-							Hash: arr
+							Hash: arr,
+							Password: crypto.createHash('sha256').update(vm.extraParams.Password).digest('hex')
 						},
 						{
 							timeout: 20000 * arr.length + this.$outTime * 2000,

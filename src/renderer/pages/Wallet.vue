@@ -378,6 +378,7 @@ import date from "../assets/tool/date";
 import QRCode from "../assets/tool/qrcode.min";
 import { effectiveNumber } from "../assets/config/util";
 import { round } from "mathjs";
+import crypto from 'crypto'
 const { clipboard } = require("electron");
 export default {
 	mounted() {
@@ -723,9 +724,10 @@ export default {
 			this.$refs.transferForm.validate(valid => {
 				if (valid) {
 					this.setFixed();
-					const sendInfo = this.sendInfo;
+					const sendInfo = Object.assign({},this.sendInfo);
 					sendInfo.Asset = this.balanceLists[this.balanceSelected].Symbol;
 					sendInfo.To = sendInfo.To.trim();
+					sendInfo.Password = crypto.createHash('sha256').update(sendInfo.Password).digest('hex');
 					this.$axios
 						.post(this.$api.transfer, sendInfo, {
 							loading: {

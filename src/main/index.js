@@ -10,7 +10,8 @@ import './protocols/protocols' // custom protocol
 //   SeekDB
 // } from './dbs/index';
 import {
-  SettingDB
+  SettingDB,
+  HistoryDB
 } from './dbs/index_levelup'
 import './dbs/index_levelup';
 import frontCfgObj from './windowManager/frontCfgObj'
@@ -44,11 +45,13 @@ app.on('ready', function () {
   //   createWindow(winURL);
   // })
   global.settingDB = new SettingDB(); // store SettingDB in global var
+  global.HistoryDB = new HistoryDB(); // store HistoryDB in global var
   global.settingDB.initDB(async () => {
     node.setupConfig(app.getPath("appData"), app.getName());
     node.setFrontConfig(app.getPath("appData"), app.getName());
     (!frontCfgObj().devEdgeEnable) && node.run(app.getPath("appData"), app.getName());
     createWindow(winURL);
+    global.HistoryDB.initDB()
   })
 })
 

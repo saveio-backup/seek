@@ -176,10 +176,12 @@
 <script>
 import { clipboard, ipcRenderer } from "electron";
 export default {
-	mounted() {
+	created() {
 		document.title = localStorage.Address
 			? this.$t('account.blockSynchronization')
 			: this.$t('account.createAccount');
+	},
+	mounted() {
 
 		this.loopFont();
 		this.getAccountStatus();

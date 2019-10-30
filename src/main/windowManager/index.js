@@ -135,7 +135,9 @@ class View {
       this.browserWindow.webContents.send('forceUpdate');
     })
     this.webContents.on('page-favicon-updated', (e, favicons) => {
-      this.favicon = favicons && favicons[0] ? favicons[0] : null
+      console.log('get-----=====---')
+      this.favicon = favicons && favicons[0] ? favicons[0] : null;
+      this.addHistory(e);
       this.browserWindow.webContents.send('forceUpdate');
     })
     this.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL, isMainFrame) => {
@@ -151,8 +153,12 @@ class View {
     this.webContents.on('new-window', (e, url) => {
       this.onNewWindow(url, e)
     })
-    this.webContents.on('dom-ready', () => {
-      // console.log('dom-ready, forceUpdate')
+    this.webContents.on('dom-ready', (e,b,c) => {     
+      console.log('dom-ready');
+      console.log(b);
+      console.log(c);
+      // this.addHistory(e);
+
       this.forceUpdate()
       if (this.option.focus) {
         this.browserWindow.webContents.send('focus');
@@ -176,6 +182,18 @@ class View {
       console.log('navigation in page');
       this.forceUpdate()
     });
+  }
+  addHistory(e) {
+    const title = e.sender.webContents.getTitle();
+    console.log(e.sender)
+    const timestamp = (new Date()).getTime();
+    const href = e.sender.history[(e.sender.history.length - 1)];
+    const src = this.favicon;
+    console.log(title, '--->', timestamp, '--->', href, '---------->', src)
+    if(href.startsWith(DEFAULT_URL + '#/history') === true) {
+      return;
+    }
+    global.HistoryDB.add({title, timestamp, href, src});
   }
   onNewWindow(url, e, framename, disposition) {
     const win = this.browserWindow;

@@ -20,6 +20,17 @@ const formatTimeByTimestamp = timestamp => {
 
   return [year, month, day].map(formatNumber).join('-') + ' ' + [hour, minute, second].map(formatNumber).join(':')
 }
+
+const formatYearMonthDayByTimestamp = timestamp => {
+  if (!timestamp) return '';
+  const date = new Date(timestamp);
+  const year = date.getFullYear()
+  const month = date.getMonth() + 1
+  const day = date.getDate()
+
+  return [year, month, day].map(formatNumber).join('-');
+}
+
 const formatYearMonthDay = date => {
   const year = date.getFullYear()
   const month = date.getMonth() + 1
@@ -98,5 +109,6 @@ module.exports = {
   calculateTimeLeft,
   calculateTimeFuture,
   formatYearMonthDayHour,
-  lastSecondByDate
+  lastSecondByDate,
+  formatYearMonthDayByTimestamp
 }

@@ -6,6 +6,7 @@ import levelup from 'levelup';
 import leveldown from 'leveldown';
 import path from 'path'
 import fs from 'fs';
+import uuid from "node-uuid";
 import {
   DEFAULT_CHAINID
 } from '../windowManager/defaultOption';
@@ -29,6 +30,13 @@ const DEFAULT_USERSUMMARY_CONFIG = {
       maxPeerNum: 20,
       ChainId: DEFAULT_CHAINID,
       lang: 'en',
+    },
+    modify: true
+  },
+  HistoryRecord: {
+    type: 'JSON',
+    value: {
+      visits: []
     },
     modify: true
   }
@@ -124,6 +132,61 @@ class SettingDB extends SeekLevelDB {
       })
   }
 }
+class HistoryDB extends SeekLevelDB {
+
+  constructor(callback) {
+    super('History');
+  }
+
+  initDB(callback) {
+    const keyLists = {};
+    this.db.createKeyStream()
+      .on('data', (key) => {
+        keyLists[key.toString()] = true;
+      }).on('end', () => {
+        for (const item in DEFAULT_USERSUMMARY_CONFIG.HistoryRecord.value) {
+          if (!keyLists.hasOwnProperty(item)) {
+            this.updateData(item, DEFAULT_USERSUMMARY_CONFIG.HistoryRecord.value[item]);
+          }
+        }
+        callback && callback();
+      })
+  }
+
+  getList({offset, limit}) {
+    const vm = this;
+    console.log('offset, limit');
+    // console.log(offset, '===============',limit);
+    return vm.queryData('visits').then(list => {
+      // if(Object.prototype.toString().call(list) !== '[Object Array]') resolve([]);
+      let resLimit = (list.length - offset) > limit ? limit : (list.length - offset)
+      let res = list.splice(offset, resLimit);
+      return res;
+    });
+  }
+
+  add({timestamp = (new Date()).getTime(), title = '--', href = '', src = ''}) {
+    const vm = this;
+    console.log('add history')
+    // console.log(timestamp)
+    // console.log(title)
+    // console.log(href)
+    vm.queryData('visits').then(list => {
+      list.unshift({
+        timestamp,
+        title,
+        href,
+        src,
+        id: uuid.v4()
+      });
+      vm.updateData('visits', list);
+    })
+  }
+
+  deleteByIds() {
+
+  }
+}
 // create dirctory if not exist
 function initDir(subDirname) {
   fs.mkdirSync(g_seekLevelDB, {
@@ -141,5 +204,6 @@ function initDir(subDirname) {
   }
 }
 export {
-  SettingDB
+  SettingDB,
+  HistoryDB
 }

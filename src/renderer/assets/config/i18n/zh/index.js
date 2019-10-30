@@ -10,6 +10,7 @@ import settings from './settings';
 import orderpay from './orderpay';
 import account from './account'
 import windowObj from './window';
+import history from './history';
 import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
 
 const obj = {
@@ -26,6 +27,7 @@ const obj = {
   orderpay,
   account,
   window: windowObj,
+  history,
   ...zhLocale
 }
 export default obj;

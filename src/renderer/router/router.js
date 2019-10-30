@@ -163,6 +163,11 @@ export default new Router({
       component: require('../pages/OrderPay/OrderPay.vue').default
     },
     {
+      path: '/history',
+      name: 'history',
+      component: require('../pages/History/History.vue').default
+    },
+    {
       path: '*',
       redirect: '/Home',
       meta: {

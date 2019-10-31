@@ -2,18 +2,18 @@
   <div id="history">
     <div class="card-container" v-for="(dayTimestamp,index) in list['allTimestampKeyList']" :key="dayTimestamp + index">
       <div class="card-title">
-        {{$dateFormat.formatYearMonthDayByTimestamp((dayTimestamp*86400000 + timezoneOffset))}}
+        {{$dateFormat.formatYearMonthDayByTimestamp(dayTimestamp*86400000)}}
       </div>
       <div class="item-container" v-for="(item,index2) in list[dayTimestamp]" :key="item.id + index2">
         <div class="item-container-time" :title="$dateFormat.formatTimeByTimestamp(item.timestamp)">
           {{$dateFormat.formatTimeByTimestamp(item.timestamp)}}
         </div>
         <div class="item-container-img">
-          <img v-if="item.src" :src="item.src" height="18" class="item-container-icon">
-          <span v-else class="el-icon-link ftpx20"></span>
+          <img v-show="item.src" :src="item.src" height="18" alt="" class="item-container-icon" @error="item.src = false;$forceUpdate()">
+          <span v-show="!item.src" class="el-icon-link ftpx20"></span>
         </div>
         <div class="item-container-name">
-          <a :href="item.href" :title="`${item.title} -- ${item.href}`">
+          <a @click="openPage(item.href)" :title="`${item.title} -- ${item.href}`">
             {{item.title}}
           </a>
         </div>
@@ -74,9 +74,11 @@ export default {
           let allTimestampKeyList = vm.list['allTimestampKeyList'] || [];
           prexTimestamp = allTimestampKeyList[allTimestampKeyList.length - 1]
         } else {
-          prexTimestamp = Math.ceil((list[i - 1].timestamp + vm.timezoneOffset)/86400000);
+          // prexTimestamp = Math.ceil((list[i - 1].timestamp)/86400000);
+          prexTimestamp = parseInt((list[i - 1].timestamp - this.timezoneOffset)/86400000)
         }
-        let currentTimestamp = Math.ceil((list[i].timestamp + vm.timezoneOffset)/86400000);
+        // let currentTimestamp = Math.ceil((list[i].timestamp)/86400000);
+        let currentTimestamp = parseInt((list[i].timestamp - this.timezoneOffset)/86400000);
 
         if(prexTimestamp != currentTimestamp) {
           vm.list[currentTimestamp] = [];
@@ -103,10 +105,23 @@ export default {
 			if (bottomwindow && !this.loading && !this.isAll) {
 				this.getList({offset: this.offset, limit: this.limit});
 			}
+    },
+    openPage(href) {
+      window.open(href);
+    }
+  },
+  computed: {
+    lang() {
+			return this.$i18n.locale;
 		}
   },
+  watch: {
+    lang() {
+      document.title = this.$t('history.historyRecord');
+    }
+  },
   mounted() {
-    document.title = 'Hisory'
+    document.title = this.$t("history.historyRecord");
     this.init();
     document.addEventListener("scroll", this.scrollInit);
   },

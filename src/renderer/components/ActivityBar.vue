@@ -191,6 +191,12 @@ export default {
 					}
 				},
 				{
+					label: that.$t('history.historyRecord'),
+					click() {
+						that.remoteOpenComponent('history');
+					}
+				},
+				{
 					label: that.$t('window.logOut'),
 					// visible: new Boolean(user.name),
 					click() {

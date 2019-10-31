@@ -4,14 +4,14 @@
 <head>
   <meta charset="utf-8">
   <title>browser</title>
-  <link rel="shortcut icon" type="image/x-icon" href="../static/images/logo/save.png" />
+  <link rel="shortcut icon" type="image/x-icon" href="static/images/logo/SAVE.png" />
   <% if (process.env.NODE_ENV === 'development') { %>
     <script src="http://localhost:8098"></script>
   <% } %>
   <% if (htmlWebpackPlugin.options.nodeModules) { %>
   <!-- Add `node_modules/` to global paths so `require` works properly in development -->
   <script>
-    require('module').globalPaths.push('<%= htmlWebpackPlugin.options.nodeModules.replace(/\\/g, '\\\\') %>')
+    require('module').globalPaths.push("<%= htmlWebpackPlugin.options.nodeModules.replace(/\\/g, '\\\\') %>")
   </script>
   <% } %>
   <!-- <script src="../static/css/buttonRipple/js/TweenMax.min.js"></script> -->

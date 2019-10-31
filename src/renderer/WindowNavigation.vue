@@ -21,8 +21,8 @@
 							class="favicon"
 							v-if="!item.isLoading && item.favicon"
 							:src="item.favicon"
-							@error='item.isLoading = false; item.favicon = false'
 							alt=""
+							@error='item.isLoading = false; item.favicon = false'
 						>
 						<span
 							v-if="!item.isLoading && !item.favicon"
@@ -53,7 +53,7 @@
 					<div class="flex flex1">
 						<div class="window-navbar-buttons">
 							<div
-								class="nav-button flex ai-center jc-center"
+							class="nav-button flex ai-center jc-center"
 								@click="remoteOpenComponent('Home')"
 							>
 								<i

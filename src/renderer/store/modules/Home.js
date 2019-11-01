@@ -151,6 +151,12 @@ const actions = {
 							window.localStorage.removeItem(value);
 						}
           }
+        } else if(res.Error === 50012) {
+          if (location.href.indexOf('Login') < 0) {
+            router.replace({
+              name: 'Login'
+            })
+          }
         } else {
           if (location.href.indexOf('Home') < 0) {
             router.replace({

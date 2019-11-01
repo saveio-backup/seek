@@ -92,8 +92,8 @@ export default {
 				.then(res => {
 					if (res.Error === 0) {
 						this.$emit("closeDialog", { timeout: 0 });
-						// this.$store.dispatch("setDownload");
-						ipcRenderer.send("run-dialog-event", { name: "setDownload" });
+						// this.$store.dispatch("getDownload");
+						ipcRenderer.send("run-dialog-event", { name: "getDownload" });
 						this.downloadInfo = {};
 						this.win.views
 							.find(view => view.isActive)

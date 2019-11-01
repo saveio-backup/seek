@@ -11,6 +11,7 @@ import orderpay from './orderpay'
 import account from './account';
 import windowObj from './window';
 import history from './history';
+import login from './login';
 import enLocale from 'element-ui/lib/locale/lang/en'
 
 const obj = {
@@ -28,6 +29,7 @@ const obj = {
   account,
   window: windowObj,
   history,
+  login,
   ...enLocale
 }
 export default obj;

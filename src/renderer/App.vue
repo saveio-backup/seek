@@ -110,6 +110,8 @@ export default {
 		},
 		// upload transfering some polling
 		uploadListUpdate({result}) {
+			console.log('uploadListUpdate')
+			console.log(result)
 			this.$store.commit("GET_UPLOAD_TRANSFER", result);
 		},
 		downloadListUpdate({result}) {
@@ -136,7 +138,7 @@ export default {
 		realDownloadingLengthUpdate({result}) {
 			this.$store.commit("GET_REAL_DOWNLOADING_LENGTH", result);
 		},
-		localStatusUpdate({result}) {			
+		localStatusUpdate({result}) {
 			this.$store.commit("GET_LOCAL_STATUS", result);
 		},
 
@@ -155,8 +157,8 @@ export default {
 			let _htmlDom  = document.querySelector('html');
 			_htmlDom.style.fontSize = this.$t('fontSize');
 		},
-		setSpaceUpdate() {
-			this.$store.dispatch("setSpace");
+		userspaceUpdate({result}) {
+			this.$store.commit('SET_SPACE', result);
 		}
 	}
 };

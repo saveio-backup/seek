@@ -954,7 +954,7 @@ export default {
 					return value.Id !== file.Id;
 				});
 				this.$store.commit("SET_WAIT_FOR_UPLOAD_LIST", newWaitForUploadList);
-				ipcRenderer.send("run-dialog-event", {name: "setWaitForUploadList", data: newWaitForUploadList});				
+				ipcRenderer.send("run-dialog-event", {name: "setWaitForUploadList", data: newWaitForUploadList});
 				return;
 			}
 
@@ -1156,8 +1156,8 @@ export default {
 					timeout: (this.$config.outTime * 2000 + 18000) * params.Ids.length
 				})
 				.then(res => {
-					// this.$store.dispatch("setComplete");
-					ipcRenderer.send("run-dialog-event", {name: "setComplete"});
+					// this.$store.dispatch("getComplete");
+					ipcRenderer.send("run-dialog-event", {name: "getComplete"});
 					this.removeHttpWaitFor({ Ids: params.Ids });
 
 					if (res.Error === 0) {
@@ -1260,7 +1260,7 @@ export default {
 							return waitForUploadArr.indexOf(value.Id) === -1;
 						}) || [];
 					this.$store.commit("SET_WAIT_FOR_UPLOAD_LIST", newWaitForUploadList);
-					ipcRenderer.send("run-dialog-event", {name: "setWaitForUploadList", data: newWaitForUploadList});				
+					ipcRenderer.send("run-dialog-event", {name: "setWaitForUploadList", data: newWaitForUploadList});
 				}
 				// check is have uploading task
 				if (!params.Ids || params.Ids.length === 0) {
@@ -1302,10 +1302,10 @@ export default {
 						this.passwordCancel.loadingObj.close();
 					// get transfer list info update status
 					if (type === 1) {
-						ipcRenderer.send("run-dialog-event", {name: "setUpload"});
+						ipcRenderer.send("run-dialog-event", {name: "getUpload"});
 						ipcRenderer.send("run-dialog-event", {name: "removeWaitForUploadOrderList", data: params.Ids});
 					} else {
-						ipcRenderer.send("run-dialog-event", {name: "setDownload"});
+						ipcRenderer.send("run-dialog-event", {name: "getDownload"});
 						ipcRenderer.send("run-dialog-event", {name: "removeWaitForDownloadOrderList", data: params.Ids});
 					}
 					ipcRenderer.send("run-dialog-event", {name: "removePausing", data: params.Ids});
@@ -1410,11 +1410,11 @@ export default {
 				.then(res => {
 					// get transfer list info update status
 					if (type === 1) {
-						// this.$store.dispatch("setUpload");
-						ipcRenderer.send("run-dialog-event", {name: "setUpload"});
+						// this.$store.dispatch("getUpload");
+						ipcRenderer.send("run-dialog-event", {name: "getUpload"});
 					} else {
-						// this.$store.dispatch("setDownload");
-						ipcRenderer.send("run-dialog-event", {name: "setDownload"});
+						// this.$store.dispatch("getDownload");
+						ipcRenderer.send("run-dialog-event", {name: "getDownload"});
 					}
 					// remove wait for task
 					this.removeHttpWaitFor({ Ids: params.Ids });
@@ -1494,11 +1494,11 @@ export default {
 				.then(res => {
 					// get transfer list info update status
 					if (type === 1) {
-						// this.$store.dispatch("setUpload");
-						ipcRenderer.send("run-dialog-event", {name: "setUpload"});
+						// this.$store.dispatch("getUpload");
+						ipcRenderer.send("run-dialog-event", {name: "getUpload"});
 					} else {
-						// this.$store.dispatch("setDownload");
-						ipcRenderer.send("run-dialog-event", {name: "setDownload"});
+						// this.$store.dispatch("getDownload");
+						ipcRenderer.send("run-dialog-event", {name: "getDownload"});
 					}
 					// remove wait for task
 					this.removeHttpWaitFor({ Ids: params.Ids });
@@ -1650,11 +1650,11 @@ export default {
 				.then(res => {
 					// get transfer list info update status
 					if (type === 1) {
-						// this.$store.dispatch("setUpload");
-						ipcRenderer.send("run-dialog-event", {name: "setUpload"});
+						// this.$store.dispatch("getUpload");
+						ipcRenderer.send("run-dialog-event", {name: "getUpload"});
 					} else {
-						// this.$store.dispatch("setDownload");
-						ipcRenderer.send("run-dialog-event", {name: "setDownload"});
+						// this.$store.dispatch("getDownload");
+						ipcRenderer.send("run-dialog-event", {name: "getDownload"});
 					}
 					// remove wait for task
 					this.removeHttpWaitFor({ Ids: params.Ids });
@@ -1827,7 +1827,7 @@ $light-grey: #f9f9fb;
 	display: flex;
 	flex-direction: column;
 	.el-progress-bar__inner {
-		transition: width 3.3s linear;
+		transition: width 1s linear;
 	}
 	.el-progress__text {
 		display: inline-block !important;
@@ -1841,7 +1841,7 @@ $light-grey: #f9f9fb;
 		.progress {
 			flex: 1;
 			.el-progress-bar__inner {
-				transition: width 0.1s linear;
+				transition: width 0.2s linear;
 			}
 		}
 		.batch-button {

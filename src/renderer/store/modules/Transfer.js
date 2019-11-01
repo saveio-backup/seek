@@ -291,7 +291,7 @@ const mutations = {
 let downloadTimer = null;
 let uploadTimer = null;
 let completeTimer = null;
-const TIME_COUNT = 3000;
+// const TIME_COUNT = 3000;
 const actions = {
     getWaitForTransferList({commit}) {
         address = localStorage.getItem('Address');
@@ -315,114 +315,133 @@ const actions = {
         if(list5) {
             commit('GET_WAIT_FOR_DOWNLOAD_ORDER_LIST', JSON.parse(list5));
         }
-
     },
-    setUpload({
+    getUpload({
         commit
     }) {
-        transferClear(uploadTimer);
-        uploadTransferListRequest.bind(this, commit)();
-        uploadTimer = setInterval(uploadTransferListRequest.bind(this, commit), TIME_COUNT);
+        // transferClear(uploadTimer);
+        clearTimeout(uploadTimer);
+        uploadTimer = setTimeout(() => {
+            uploadTransferListRequest.bind(this, commit)();
+        }, 200);
+        // uploadTimer = setInterval(uploadTransferListRequest.bind(this, commit), TIME_COUNT);
     },
-    setDownload({
+    getDownload({
         commit
     }) {
-        transferClear(downloadTimer);
-        downloadTransferListRequest.bind(this, commit)();
-        downloadTimer = setInterval(downloadTransferListRequest.bind(this, commit), TIME_COUNT)
+        // transferClear(downloadTimer);
+        clearTimeout(downloadTimer)
+        downloadTimer = setTimeout(() => {
+            downloadTransferListRequest.bind(this, commit)();
+        }, 200)
+        
+        // downloadTimer = setInterval(downloadTransferListRequest.bind(this, commit), TIME_COUNT)
     },
-    setComplete({
+    getComplete({
         commit
     }) {
-        transferClear(completeTimer);
-        completeTransferListRequest.bind(this, commit)();
-        completeTimer = setInterval(completeTransferListRequest.bind(this, commit), TIME_COUNT)
+        // transferClear(completeTimer);
+        clearTimeout(completeTimer);
+        completeTimer = setTimeout(() => {
+            completeTransferListRequest.bind(this, commit)();
+        }, 200)
+        // completeTimer = setInterval(completeTransferListRequest.bind(this, commit), TIME_COUNT)
     },
-    clearIntervalSetUpload({
-        commit
-    }) {
-        transferClear(uploadTimer);
+    setUpload({commit}, res) {
+        toUploadTransferListRequest.bind(this, {commit,res})();
     },
-    clearIntervalSetDownload({
-        commit
-    }) {
-        transferClear(downloadTimer);
+    setDownload({commit}, res) {
+        toDownloadTransferListRequest.bind(this, {commit,res})();
     },
-    clearIntervalSetComplete({
-        commit
-    }) {
-        transferClear(completeTimer);
+    setComplete({commit}, res) {
+        toCompleteTransferListRequest.bind(this, {commit,res})();
     }
-}
 
-// const getter = {
-//     uploadTransferList(state) {
-//         let result = state.needUploadList.concat(state.uploadingTransferList);
-//         state.uploadLength = result.length;        
-//         return result;
-//     }
-// }
+    // clearIntervalgetUpload({
+    //     commit
+    // }) {
+    //     transferClear(uploadTimer);
+    // },
+    // clearIntervalSetDownload({
+    //     commit
+    // }) {
+    //     transferClear(downloadTimer);
+    // },
+    // clearIntervalgetComplete({
+    //     commit
+    // }) {
+    //     transferClear(completeTimer);
+    // }
+}
 
 function completeTransferListRequest(commit) {
     axios.get(api.transferlist + '/0/0/0').then(res => {
-        if (res.Error === 0) {
-            const result = res.Result.Transfers;
-            commit('GET_COMPLETED_TRANSFER', result)
-        }
+        toCompleteTransferListRequest.bind(this,{commit, res})();
     })
+}
+
+function toCompleteTransferListRequest({commit, res}) {
+    if (res.Error === 0) {
+        const result = res.Result.Transfers;
+        commit('GET_COMPLETED_TRANSFER', result)
+    }
 }
 
 function downloadTransferListRequest(commit) {
     axios.get(api.transferlist + '/2/0/0').then(res => {
-        if (res.Error === 0) {
-            this.dispatch('setComplete');
-
-            const result = res.Result.Transfers;
-            if (res.Result.IsTransfering) {} else {
-                // transferClear(downloadTimer);
-            }
-            commit('GET_DOWNLOAD_TRANSFER', result)
-            let num = 0;
-            for(let value of result) {
-                if(value.Status !== 0 && value.Status !== 4 && !value.Url.startsWith('oni://www')) {
-                    num ++;
-                }
-            }
-            console.log('num',num);
-            commit('GET_REAL_DOWNLOADING_LENGTH', num)
-        } else {
-            // transferClear(downloadTimer);
-        }
+        toDownloadTransferListRequest.bind(this,{commit,res})();
     }).catch((error) => {
         console.error(error)
     })
 }
 
+function toDownloadTransferListRequest({commit, res}) {
+    if (res.Error === 0) {
+        // this.dispatch('getComplete');
+        const result = res.Result.Transfers;
+        if (res.Result.IsTransfering) {} else {
+            // transferClear(downloadTimer);
+        }
+        commit('GET_DOWNLOAD_TRANSFER', result)
+        let num = 0;
+        for(let value of result) {
+            if(value.Status !== 0 && value.Status !== 4 && !value.Url.startsWith('oni://www')) {
+                num ++;
+            }
+        }
+        commit('GET_REAL_DOWNLOADING_LENGTH', num)
+    } else {
+        // transferClear(downloadTimer);
+    }
+}
+
 function uploadTransferListRequest(commit) {
     axios.get(api.transferlist + '/1/0/0').then(res => {
-        if (res.Error === 0) {
-            this.dispatch('setComplete');
-            const result = res.Result.Transfers;
-            if (res.Result.IsTransfering) {} else {
-                // transferClear(uploadTimer);
-            }
-            commit('GET_UPLOAD_TRANSFER', result)
-            let num = 0;
-            for(let value of result) {
-                if(value.Status !== 0 && value.Status !== 4) {
-                    num ++;
-                }
-            }
-            console.log('num',num);
-            commit('GET_REAL_UPLOADING_LENGTH', num)
-        } else {
+        toUploadTransferListRequest.bind(this,{commit,res})();
+    })
+}
+
+function toUploadTransferListRequest({commit, res}) {
+    if (res.Error === 0) {
+        // this.dispatch('getComplete');
+        const result = res.Result.Transfers;
+        if (res.Result.IsTransfering) {} else {
             // transferClear(uploadTimer);
         }
-    })
+        commit('GET_UPLOAD_TRANSFER', result)
+        let num = 0;
+        for(let value of result) {
+            if(value.Status !== 0 && value.Status !== 4) {
+                num ++;
+            }
+        }
+        commit('GET_REAL_UPLOADING_LENGTH', num)
+    } else {
+        // transferClear(uploadTimer);
+    }
 }
 export default {
     state,
     mutations,
     actions,
-    // getter
 }

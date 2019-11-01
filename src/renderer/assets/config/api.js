@@ -91,6 +91,7 @@ const API = {
   preexecContract: HOST + VERSION + 'smartcontract/preexec',
   checkPassword:  HOST + VERSION + 'account/password/check',
   config: HOST + VERSION + 'config',
-  dspFilePeersCount: HOST + VERSION + 'dsp/file/peers/count'
+  dspFilePeersCount: HOST + VERSION + 'dsp/file/peers/count',
+  login:  HOST + VERSION + 'account/login'
 }
 export default API;

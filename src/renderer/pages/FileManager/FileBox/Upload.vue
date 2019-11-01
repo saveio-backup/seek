@@ -798,8 +798,8 @@ export default {
 					if (waitForNowUploadLength <= 0) {
 						this.switchToggle.loading && this.switchToggle.loading.close();
 						this.passwordForm.show = false;
-						// this.$store.dispatch("setUpload");
-						ipcRenderer.send("run-dialog-event", {name: "setUpload"});
+						// this.$store.dispatch("getUpload");
+						ipcRenderer.send("run-dialog-event", {name: "getUpload"});
 						this.$router.push({
 							name: "transfer",
 							query: { transferType: 1 }
@@ -896,8 +896,8 @@ export default {
 					});
 				}
 				this.passwordForm.show = false;
-				// this.$store.dispatch("setUpload");
-				ipcRenderer.send("run-dialog-event", {name: "setUpload"});
+				// this.$store.dispatch("getUpload");
+				ipcRenderer.send("run-dialog-event", {name: "getUpload"});
 				if (arr.length > 0) {
 					setTimeout(() => {
 						vm.addTask(arr);

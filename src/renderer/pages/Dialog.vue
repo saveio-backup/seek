@@ -48,6 +48,7 @@ import logout from "./Dialog/Logout.vue";
 import isCreateChannel from "./Dialog/IsCreateChannel.vue";
 import channelLoseEfficacy from "./Dialog/ChannelLoseEfficacy.vue";
 import downloadDialog from "../components/DownloadDialog.vue";
+// import io from 'socket.io-client';
 export default {
 	name: "Dialog",
 	components: {
@@ -79,7 +80,10 @@ export default {
 				setTimeObj: null,
 				setTimeAddressObj: null,
 				setTimeProcessObj: null,
-				setTimeTransferObj: null
+				setTimeTransferObj: null,
+				setTimeUploadingTransferListObj: null,
+				setTimeDownloadingTransferListObj: null,
+				setTimelocalStatusObj: null
 			},
 
 			isNeedSync: false,
@@ -97,7 +101,15 @@ export default {
 
 			// ready upload list
 			readyUpload: [],
-			readyDownload: []
+			readyDownload: [],
+			websock: null,
+			wsOpeation: {
+				reconnectNumber: 0,
+				setIntervalObj: null
+			},
+			// for force update data ↓
+			uploadingTransferListForce: 0,
+			downloadingTransferListForce: 0,
 		};
 	},
 	computed: {
@@ -173,37 +185,55 @@ export default {
 			this[name](data);
 		});
 		localStorage.setItem("DNSAdress", "");
-		this.isNeedCreateChannel();
+		// this.isNeedCreateChannel();
+		this.initWebSocket();
 	},
 	watch: {
+		uploadingTransferListForce(val) {
+			clearTimeout(this.intervalObj.setTimeUploadingTransferListObj);
+			this.intervalObj.setTimeUploadingTransferListObj = setTimeout(() => {
+				if (this.realUploadingLength < this.$config.maxNumUpload) {	
+					this.waitForUploadFileToUpload();
+				}
+			}, 200);
+		},
+		downloadingTransferListForce(val) {
+			clearTimeout(this.intervalObj.setTimeDownloadingTransferListObj);
+			this.intervalObj.setTimeDownloadingTransferListObj = setTimeout(() => {
+				if (this.realDownloadingLength < this.$config.maxNumUpload) {
+					this.waitForDownloadFileToDownload();
+				}
+			}, 200);
+		},
 		uploadingTransferList(val, oldVal) {
-			if (this.realUploadingLength < this.$config.maxNumUpload) {
-				this.waitForUploadFileToUpload();
-			}
-			this.rendToFileManage({
-				type: "uploadList",
-				result: val
-			});
+			clearTimeout(this.intervalObj.setTimeUploadingTransferListObj);
+			this.intervalObj.setTimeUploadingTransferListObj = setTimeout(() => {
+				if (this.realUploadingLength < this.$config.maxNumUpload) {
+					this.waitForUploadFileToUpload();
+				}
+				this.rendToFileManage({
+					type: "uploadList",
+					result: val
+				});
+			}, 200);
 		},
 		downloadingTransferList(val, oldVal) {
-			if(this.realDownloadingLength < this.$config.maxNumUpload) {
-				this.waitForDownloadFileToDownload();
-			}
-			this.rendToFileManage({
-				type: 'downloadList',
-				result: val
-			});
+			clearTimeout(this.intervalObj.setTimeDownloadingTransferListObj);
+			this.intervalObj.setTimeDownloadingTransferListObj = setTimeout(() => {
+				if (this.realDownloadingLength < this.$config.maxNumUpload) {
+					this.waitForDownloadFileToDownload();
+				}
+				this.rendToFileManage({
+					type: "downloadList",
+					result: val
+				});
+			}, 200);
 		},
 		Address(newVal, oldVal) {
 			this.Balance = null;
 			this.channelNum = null;
 			localStorage.setItem("DNSAdress", "");
-			// this.getProcess();
-			if (newVal != "") {
-				this.getPollingData();
-			} else {
-				clearInterval(this.intervalObj.setTimeObj);
-			}
+			this.$store.dispatch("getWaitForTransferList");
 		},
 		Balance(newVal, oldVal) {
 			if (!oldVal && newVal && this.channelNum === 0) {
@@ -235,7 +265,7 @@ export default {
 		completeTransferList(newVal, oldVal) {
 			const vm = this;
 			clearTimeout(this.setTimeoutObj.complete);
-			let haveComplete = false;
+			// let haveComplete = false;
 			this.setTimeoutObj.complete = setTimeout(() => {
 				for (let value of newVal) {
 					if (
@@ -246,20 +276,20 @@ export default {
 						this.message({
 							info: `${value.FileName} ${
 								this.transferObj[value.Id].Type === 1
-									? vm.$t('dialog.uploadSuccess')
-									: vm.$t('dialog.downloadSuccess')
+									? vm.$t("dialog.uploadSuccess")
+									: vm.$t("dialog.downloadSuccess")
 							}`,
 							type: "success"
 						});
-						haveComplete = true;
+						// haveComplete = true;
 					}
-					if (haveComplete) {
-						// this.$store.dispatch("setSpace");
-						this.rendToFileManage({
-							type: "setSpace",
-							result: ""
-						});
-					}
+					// if (haveComplete) {
+					// this.$store.dispatch("setSpace");
+					// this.rendToFileManage({
+					// 	type: "setSpace",
+					// 	result: ""
+					// });
+					// }
 					this.transferObj[value.Id] = value;
 				}
 			}, 50);
@@ -278,13 +308,13 @@ export default {
 		},
 		waitForDownloadList(val, oldVal) {
 			this.rendToFileManage({
-				type: 'waitForDownloadList',
+				type: "waitForDownloadList",
 				result: val
 			});
 		},
 		waitForDownloadOrderList(val, oldVal) {
 			this.rendToFileManage({
-				type: 'waitForDownloadOrderList',
+				type: "waitForDownloadOrderList",
 				result: val
 			});
 		},
@@ -302,12 +332,88 @@ export default {
 		},
 		realDownloadingLength(val, oldVal) {
 			this.rendToFileManage({
-				type: 'realDownloadingLength',
+				type: "realDownloadingLength",
 				result: val
 			});
 		}
 	},
 	methods: {
+		// init ws
+		initWebSocket() {
+			// clear heart beat interval
+			clearInterval(this.wsOpeation.setIntervalObj);
+			// init ws
+			const wsuri = "ws://127.0.0.1:10339";
+			this.websock = new WebSocket(wsuri);
+			this.websock.onmessage = this.websocketonmessage;
+			this.websock.onopen = this.websocketonopen;
+			this.websock.onerror = this.websocketonerror;
+			this.websock.onclose = this.websocketclose;
+		},
+		// ws connect success
+		websocketonopen() {
+			this.wsOpeation.reconnectNumber = 0;
+			console.log("connect");
+			let actions = { Action: "subscribe" };
+			this.websocketsend(JSON.stringify(actions));
+			// add heart beat;
+			clearInterval(this.wsOpeation.setIntervalObj);
+			this.wsOpeation.setIntervalObj = setInterval(() => {
+				console.log("heartbeat");
+				const hreatbeat = { Action: "heartbeat" };
+				this.websocketsend(JSON.stringify(hreatbeat));
+			}, 180000);
+		},
+		// ws connect again
+		websocketonerror() {
+			if (this.wsOpeation.reconnectNumber) this.wsOpeation.reconnectNumber = 0;
+			setTimeout(() => {
+				console.log(`it's ${++this.wsOpeation.reconnectNumber}th reconnet`);
+				this.initWebSocket();
+			}, 3000);
+		},
+		// get data from server
+		websocketonmessage(e) {
+			const redata = JSON.parse(e.data);
+			console.log(redata);
+			switch (redata.Action) {
+				case "channelinitprogress":
+					this.getProcess(redata);
+					break;
+				case "getallchannels":
+					this.getChannel(redata);
+					break;
+				case "getbalance":
+					this.getBalance(redata);
+					break;
+				case "getfilesharerevenue":
+					this.getRevenue(redata);
+					break;
+				case "networkstate":
+					this.getState(redata);
+					break;
+				case "currentchannel":
+					this.getCurrentChannel(redata);
+					break;
+				case "getuserspace":
+					this.getuserspace(redata);
+					break;
+				case "getcurrentaccount":
+					this.getAddress(redata);
+					break;
+				case "gettransferlist":
+					this.gettransferlist(redata);
+					break;
+			}
+		},
+		// send data to server
+		websocketsend(Data) {
+			this.websock.send(Data);
+		},
+		// close ws
+		websocketclose(e) {
+			console.log("close connect", e);
+		},
 		// get wait for upload promise list
 		getStartWaitForUploadPromise(arr) {
 			// to upload
@@ -319,6 +425,7 @@ export default {
 		},
 		// wait for upload file to upload when max Upload length gt current Uploading length
 		waitForUploadFileToUpload() {
+			const vm = this;
 			let needUploadLen = this.$config.maxNumUpload - this.realUploadingLength;
 			if (
 				this.waitForUploadOrderList.length === 0 ||
@@ -346,7 +453,8 @@ export default {
 			commitAll.concat(
 				this.getStartWaitForUploadPromise(filterWaitForUploadList)
 			);
-			commitAll.concat(this.getContinueUploadPromise(filterUploadingList));
+			commitAll.concat(vm.getContinueUploadPromise(filterUploadingList));
+			console.log(commitAll);
 			this.toStartUpload(commitAll);
 		},
 		// to upload and callback
@@ -356,23 +464,23 @@ export default {
 				let newWaitForList = this.waitForUploadList.filter(item => {
 					return this.readyUpload.indexOf(item.Id) < 0;
 				});
-				this.$store.dispatch("setUpload");
-				this.$store.commit("SET_WAIT_FOR_UPLOAD_LIST", newWaitForList);
-				this.$store.commit(
-					"REMOVE_WAIT_FOR_UPLOAD_ORDER_LIST",
-					this.readyUpload
-				);
-				this.$store.commit("REMOVE_UPLOADING", this.readyUpload);
-				this.$store.commit("REMOVE_PAUSING", this.readyUpload);
-				this.rendToFileManage({
-					type: "localStatus",
-					result: vm.localStatus
-				});
-
-				// to do: wait for 2s for wait for get upload file done
+				// wait for 1s for wait for get upload file done
 				setTimeout(() => {
-					this.readyUpload = [];
-				}, 3000);
+					this.$store.commit("SET_WAIT_FOR_UPLOAD_LIST", newWaitForList);
+					this.$store.commit(
+						"REMOVE_WAIT_FOR_UPLOAD_ORDER_LIST",
+						this.readyUpload
+					);
+					this.$store.commit("REMOVE_UPLOADING", this.readyUpload);
+					this.$store.commit("REMOVE_PAUSING", this.readyUpload);
+					// this.$store.dispatch("getUpload"); // force update
+					this.uploadingTransferListForce ++;
+					setTimeout(() => {
+						this.readyUpload = [];
+						// this.$store.dispatch("getUpload"); // force update
+						this.uploadingTransferListForce ++;
+					}, 2000)
+				}, 1000);
 
 				// error message
 				let errorArr = [];
@@ -428,7 +536,7 @@ export default {
 		// get wait for download promise list
 		getStartWaitForDownloadPromise(arr) {
 			// to download
-			const commitAll = []; // will to download file promise 
+			const commitAll = []; // will to download file promise
 			for (let file of arr) {
 				commitAll.push(this.getToDownloadFilePromise(file));
 			}
@@ -436,23 +544,37 @@ export default {
 		},
 		// wait for download file to download when max Download length gt current Downloading length
 		waitForDownloadFileToDownload() {
-			let needDownloadLen = this.$config.maxNumUpload - this.realDownloadingLength;
-			if(this.waitForDownloadOrderList.length === 0 || this.readyDownload.length !== 0 || needDownloadLen <= 0) return;
+			let needDownloadLen =
+				this.$config.maxNumUpload - this.realDownloadingLength;
+			if (
+				this.waitForDownloadOrderList.length === 0 ||
+				this.readyDownload.length !== 0 ||
+				needDownloadLen <= 0
+			)
+				return;
 			// update readyDownload
-			let realDownloadLen = Math.min(needDownloadLen, this.waitForDownloadOrderList.length);
-			this.readyDownload = this.waitForDownloadOrderList.slice(0, realDownloadLen);
+			let realDownloadLen = Math.min(
+				needDownloadLen,
+				this.waitForDownloadOrderList.length
+			);
+			this.readyDownload = this.waitForDownloadOrderList.slice(
+				0,
+				realDownloadLen
+			);
 
 			// get download list in the waitForDownloadList
 			let filterWaitForDownloadList = this.waitForDownloadList.filter(item => {
 				return this.readyDownload.indexOf(item.Id) !== -1;
-			})
+			});
 			// get download list in the waitForDownloadList
 			let filterDownloadingList = this.downloadingTransferList.filter(item => {
 				return this.readyDownload.indexOf(item.Id) !== -1;
 			});
 
 			let commitAll = [];
-			commitAll.concat(this.getStartWaitForDownloadPromise(filterWaitForDownloadList));
+			commitAll.concat(
+				this.getStartWaitForDownloadPromise(filterWaitForDownloadList)
+			);
 			commitAll.concat(this.getContinueDownloadPromise(filterDownloadingList));
 			this.toStartDownload(commitAll);
 		},
@@ -461,26 +583,29 @@ export default {
 			const vm = this;
 			this.$axios.all(commitAll).then(resArr => {
 				let newWaitForList = this.waitForDownloadList.filter(item => {
-					return this.readyDownload.indexOf(item.Id) < 0
-				})
-				this.$store.dispatch('setDownload');
-				this.$store.commit('SET_WAIT_FOR_DOWNLOAD_LIST', newWaitForList);
-				this.$store.commit('REMOVE_WAIT_FOR_DOWNLOAD_ORDER_LIST', this.readyDownload);
-				this.$store.commit('REMOVE_UPLOADING', this.readyDownload);
-				this.$store.commit('REMOVE_PAUSING', this.readyDownload);
-				this.rendToFileManage({
-					type: 'localStatus',
-					result: vm.localStatus
+					return this.readyDownload.indexOf(item.Id) < 0;
 				});
-
-				// to do: wait for 2s for wait for get upload file done
+				// wait for 1s for wait for get download file done
 				setTimeout(() => {
-					this.readyDownload = [];
-				}, 3000);
-				
+					this.$store.commit("SET_WAIT_FOR_DOWNLOAD_LIST", newWaitForList);
+					this.$store.commit(
+						"REMOVE_WAIT_FOR_DOWNLOAD_ORDER_LIST",
+						this.readyDownload
+					);
+					this.$store.commit("REMOVE_UPLOADING", this.readyDownload);
+					this.$store.commit("REMOVE_PAUSING", this.readyDownload);
+					// this.$store.dispatch("getDownload");
+					this.downloadingTransferListForce ++; // force update
+					setTimeout(() => {
+						this.readyDownload = [];
+						// this.$store.dispatch("getDownload");
+						this.downloadingTransferListForce ++; // force update
+					}, 2000)
+				}, 1000);
+
 				// error message
 				let errorArr = [];
-				let errorMsg = '';
+				let errorMsg = "";
 				for (let value of resArr) {
 					if (value.Error !== 0) {
 						errorMsg += `<p>`;
@@ -489,42 +614,38 @@ export default {
 						errorMsg += `</p>`;
 					}
 				}
-				if(errorMsg !== "") {
+				if (errorMsg !== "") {
 					this.message({
 						info: errorMsg,
 						type: "error",
 						dangerouslyUseHTMLString: true
 					});
 				}
-			})
+			});
 		},
 		// get continue download promise list
 		getContinueDownloadPromise(arr) {
 			const commitAll = [];
 			let continueArr = [];
-			let retryArr = []
-			for(let value of arr) {
-				if(value.Status === 4) {
+			let retryArr = [];
+			for (let value of arr) {
+				if (value.Status === 4) {
 					retryArr.push(value.Id);
 				} else {
 					continueArr.push(value.Id);
 				}
 			}
-			if(retryArr.length > 0) {
+			if (retryArr.length > 0) {
 				let params = {
 					Ids: retryArr
-				}
-				commitAll.push(
-					this.$axios.post(this.$api.downloadRetry, params)
-				)
+				};
+				commitAll.push(this.$axios.post(this.$api.downloadRetry, params));
 			}
-			if(continueArr.length > 0) {
+			if (continueArr.length > 0) {
 				let params = {
 					Ids: continueArr
-				}
-				commitAll.push(
-					this.$axios.post(this.$api.downloadResume, params)
-				)
+				};
+				commitAll.push(this.$axios.post(this.$api.downloadResume, params));
 			}
 			return commitAll;
 		},
@@ -532,9 +653,25 @@ export default {
 		getToDownloadFilePromise(data) {
 			return this.$axios.post(this.$api.download, data);
 		},
-
-
-
+		getuserspace(res) {
+			if (res.Error === 0) {
+				this.rendToFileManage({
+					type: "userspace",
+					result: res.Result
+				});
+			}
+		},
+		gettransferlist(res) {
+			if (res.Error === 0) {
+				if (res.Result.Type === 0) {
+					this.$store.dispatch("setComplete", res);
+				} else if (res.Result.Type === 1) {
+					this.$store.dispatch("setUpload", res);
+				} else if (res.Result.Type === 2) {
+					this.$store.dispatch("setDownload", res);
+				}
+			}
+		},
 		// open create channel dialog when have channel
 		toGetDns() {
 			this.$axios.get(this.$api.getAllDns).then(res => {
@@ -556,164 +693,154 @@ export default {
 				}, timeout);
 			}
 		},
-		// is not need create channel
-		isNeedCreateChannel() {
-			clearInterval(this.intervalObj.setTimeAddressObj);
-			this.getAddress();
-			this.intervalObj.setTimeAddressObj = setInterval(() => {
-				this.getAddress();
-			}, this.intervalObj.COUNT_INTERVAL);
-		},
 		// get wallet address
-		getAddress() {
-			this.$axios.get(this.$api.account).then(async res => {
-				if (res.Error === 0) {
-					if (res.Result.Address) {
-						this.Address = res.Result.Address;
-						this.renderDateToBrowserView({
-							result: res.Result,
-							type: "account",
-							rendTo: 1
-						});
-					}
-				} else {
-					this.Address = "";
+		getAddress(res) {
+			// this.$axios.get(this.$api.account).then(async res => {
+			if (res.Error === 0) {
+				if (res.Result.Address) {
+					this.Address = res.Result.Address;
 					this.renderDateToBrowserView({
 						result: res.Result,
 						type: "account",
 						rendTo: 1
 					});
 				}
-			});
+			} else {
+				this.Address = "";
+				this.renderDateToBrowserView({
+					result: res.Result,
+					type: "account",
+					rendTo: 1
+				});
+			}
+			// });
 		},
 		// get current sync process
-		getProcess() {
-			// clearInterval(this.intervalObj.setTimeProcessObj);
-			// this.intervalObj.setTimeProcessObj = setInterval(() => {
-			this.$axios.get(this.$api.channelInitProgress).then(progressResult => {
-				if (progressResult.Error === 0) {
-					if (progressResult.Result.End - progressResult.Result.Now > 50) {
-						progressResult.Result.isSync = true;
-					} else {
-						this.isNeedSync = false;
-						progressResult.Result.isSync = false;
-					}
-					if (progressResult.Result.End - progressResult.Result.Now > 100000) {
-						this.isNeedSync = true;
-						progressResult.Result.isNeedSync = this.isNeedSync;
-					} else {
-						progressResult.Result.isNeedSync = this.isNeedSync;
-					}
-					this.renderDateToBrowserView({
-						result: progressResult.Result,
-						type: "progress",
-						rendTo: 1
-					});
+		getProcess(progressResult) {
+			// this.$axios.get(this.$api.channelInitProgress).then(progressResult => {
+			if (progressResult.Error === 0) {
+				if (progressResult.Result.End - progressResult.Result.Now > 50) {
+					progressResult.Result.isSync = true;
+				} else {
+					this.isNeedSync = false;
+					progressResult.Result.isSync = false;
 				}
-			});
-			// }, this.intervalObj.COUNT_INTERVAL);
+				if (progressResult.Result.End - progressResult.Result.Now > 100000) {
+					this.isNeedSync = true;
+					progressResult.Result.isNeedSync = this.isNeedSync;
+				} else {
+					progressResult.Result.isNeedSync = this.isNeedSync;
+				}
+				this.renderDateToBrowserView({
+					result: progressResult.Result,
+					type: "progress",
+					rendTo: 1
+				});
+			}
+			// });
 		},
 		// get balance for show create channel dialog
-		getBalance() {
+		getBalance(res) {
 			const vm = this;
-			this.$axios.get(this.$api.balance + "/" + this.Address).then(res => {
-				if (res.Error === 0) {
-					this.renderDateToBrowserView({ result: res.Result, type: "balance" });
-					for (let i = 0; i < res.Result.length; i++) {
-						const item = res.Result[i];
-						if (item.Symbol === "SAVE") {
-							vm.Balance = item.Balance;
-							break;
-						}
+			// this.$axios.get(this.$api.balance + "/" + this.Address).then(res => {
+			if (res.Error === 0) {
+				this.renderDateToBrowserView({ result: res.Result, type: "balance" });
+				for (let i = 0; i < res.Result.length; i++) {
+					const item = res.Result[i];
+					if (item.Symbol === "SAVE") {
+						vm.Balance = item.Balance;
+						break;
 					}
 				}
-			});
+			}
+			// });
 		},
 		// get revenue
-		getRevenue() {
-			this.$axios
-				.get(this.$api.revenue, {
-					timeout: this.$config.outTime * 5000 + 15000
-				})
-				.then(res => {
-					if (res.Error === 0) {
-						this.renderDateToBrowserView({
-							result: res.Result,
-							type: "revence"
-						});
-					}
+		getRevenue(res) {
+			// this.$axios
+			// 	.get(this.$api.revenue, {
+			// 		timeout: this.$config.outTime * 5000 + 15000
+			// 	})
+			// .then(res => {
+			if (res.Error === 0) {
+				this.renderDateToBrowserView({
+					result: res.Result,
+					type: "revence"
 				});
+			}
+			// });
 		},
 		// get channel
-		getChannel() {
-			this.$axios
-				.get(this.$api.channel, {
-					timeout: this.$config.outTime * 5000 + 15000
-				})
-				.then(res => {
-					if (res.Error === 0) {
-						this.renderDateToBrowserView({
-							result: res.Result,
-							type: "channel"
-						});
-						if (
-							res.Result &&
-							res.Result.Channels &&
-							res.Result.Channels.length > 0
-						) {
-							this.channelNum = res.Result.Channels.length;
-							// clearInterval(this.intervalObj.setTimeObj);
-							// return;
-						}
-						this.channelNum =
-							res.Result && res.Result.Channels && res.Result.Channels.length;
-					}
+		getChannel(res) {
+			// this.$axios
+			// 	.get(this.$api.channel, {
+			// 		timeout: this.$config.outTime * 5000 + 15000
+			// 	})
+			// 	.then(res => {
+			if (res.Error === 0) {
+				this.renderDateToBrowserView({
+					result: res.Result,
+					type: "channel"
 				});
+				if (
+					res.Result &&
+					res.Result.Channels &&
+					res.Result.Channels.length > 0
+				) {
+					this.channelNum = res.Result.Channels.length;
+					// clearInterval(this.intervalObj.setTimeObj);
+					// return;
+				}
+				this.channelNum =
+					res.Result && res.Result.Channels && res.Result.Channels.length;
+			}
+			// });
 		},
-		getCurrentChannel() {
-			this.$axios
-				.get(this.$api.getCurrentChannel, {
-					timeout: this.$config.outTime * 5000 + 15000
-				}).then(res => {
-					if(res.Error === 0) {
-						if(res.Result.IsOnline === false) {
-							if(!this.usable) return;
-							this.usable = false;
-							ipcRenderer.send("dialog-open", "channelLoseEfficacy");
-						} else {
-							this.usable = true;
-						}
-					} else {
-						this.usable = true;
-					}
-				})
+		getCurrentChannel(res) {
+			// this.$axios
+			// 	.get(this.$api.getCurrentChannel, {
+			// 		timeout: this.$config.outTime * 5000 + 15000
+			// 	})
+			// 	.then(res => {
+			if (res.Error === 0) {
+				if (res.Result.IsOnline === false) {
+					if (!this.usable) return;
+					this.usable = false;
+					ipcRenderer.send("dialog-open", "channelLoseEfficacy");
+				} else {
+					this.usable = true;
+				}
+			} else {
+				this.usable = true;
+			}
+			// });
 		},
 		// get connect state
-		getState() {
-			this.$axios
-				.get(this.$api.networkStatus)
-				.then(res => {
-					if (res.Error === 0) {
-						this.renderDateToBrowserView({
-							result: res.Result,
-							type: "state",
-							rendTo: 1
-						});
-					}
-				})
-				.catch(e => {
-					let result = {
-						ChainState: 0,
-						DNSState: 0,
-						DspProxyState: 0,
-						ChannelProxyState: 0
-					};
-					this.renderDateToBrowserView({
-						result: result,
-						type: "state",
-						rendTo: 1
-					});
+		getState(res) {
+			// this.$axios
+			// 	.get(this.$api.networkStatus)
+			// 	.then(res => {
+			if (res.Error === 0) {
+				this.renderDateToBrowserView({
+					result: res.Result,
+					type: "state",
+					rendTo: 1
 				});
+			}
+			// })
+			// .catch(e => {
+			// 	let result = {
+			// 		ChainState: 0,
+			// 		DNSState: 0,
+			// 		DspProxyState: 0,
+			// 		ChannelProxyState: 0
+			// 	};
+			// 	this.renderDateToBrowserView({
+			// 		result: result,
+			// 		type: "state",
+			// 		rendTo: 1
+			// 	});
+			// });
 		},
 		/**
 		 * params:
@@ -772,31 +899,15 @@ export default {
 			}
 		},
 		// get channel、balance、revenue list data and check have channel and wallet money
-		getPollingData() {
-			this.getTransferPollData();
-
-			clearInterval(this.intervalObj.setTimeObj);
-			this.getProcess();
-			this.getChannel();
-			this.getBalance();
-			this.getRevenue();
-			this.getState();
-			this.getCurrentChannel();
-			this.intervalObj.setTimeObj = setInterval(() => {
-				this.getProcess();
-				this.getChannel();
-				this.getCurrentChannel();
-				this.getBalance();
-				this.getRevenue();
-				this.getState();
-			}, this.intervalObj.COUNT_INTERVAL);
-		},
-		// get polling data about transfer list 
-		getTransferPollData() {
-			this.$store.dispatch("getWaitForTransferList"); // get wait for upload list
-			this.$store.dispatch("setUpload");
-			this.$store.dispatch("setDownload");
-		},
+		// getPollingData() {
+		// 	this.getTransferPollData();
+		// },
+		// // get polling data about transfer list
+		// getTransferPollData() {
+		// 	this.$store.dispatch("getWaitForTransferList"); // get wait for upload list
+		// 	this.$store.dispatch("getUpload");
+		// 	this.$store.dispatch("getDownload");
+		// },
 		// update get current main browseWindow
 		getWin() {
 			let arrWin = remote.BrowserWindow.getAllWindows();
@@ -845,49 +956,54 @@ export default {
 			});
 		},
 		// immediately update upload list
-		setUpload() {
-			this.$store.dispatch("setUpload");
+		getUpload() {
+			this.$store.dispatch("getUpload");
 		},
 		// immediately update download list
-		setDownload() {
-			this.$store.dispatch("setDownload");
+		getDownload() {
+			this.$store.dispatch("getDownload");
 		},
 		// immediately update complete list
-		setComplete() {
-			this.$store.dispatch("setComplete");
+		getComplete() {
+			this.$store.dispatch("getComplete");
 		},
 		// set wait for upload list;
 		setWaitForUploadList(data) {
 			this.$store.commit("GET_WAIT_FOR_UPLOAD_LIST", data);
+			this.getUpload();
 		},
 		// set wait for download list;
 		setWaitForDownloadList(data) {
-			this.$store.commit('GET_WAIT_FOR_DOWNLOAD_LIST', data);
+			this.$store.commit("GET_WAIT_FOR_DOWNLOAD_LIST", data);
+			this.getDownload();
 		},
 
 		/**
 		 * push data to waitForDownloadOrderList
 		 * params:
-		 * data(type array): 
+		 * data(type array):
 		 */
 		pushWaitForDownloadOrderList(data) {
-			this.$store.commit('PUSH_WAIT_FOR_DOWNLOAD_ORDER_LIST', data);
+			this.$store.commit("PUSH_WAIT_FOR_DOWNLOAD_ORDER_LIST", data);
+			this.getDownload();
 		},
 		/**
 		 * unshift data to waitForDownloadOrderList
 		 * params:
-		 * data(type array): 
+		 * data(type array):
 		 */
 		unshiftWaitForDownloadOrderList(data) {
-			this.$store.commit('UNSHIFT_WAIT_FOR_DOWNLOAD_ORDER_LIST', data);
+			this.$store.commit("UNSHIFT_WAIT_FOR_DOWNLOAD_ORDER_LIST", data);
+			this.getDownload();
 		},
 		/**
-		 * remove data to waitForOrderList 
+		 * remove data to waitForOrderList
 		 * params:
-		 * data(type array): 
+		 * data(type array):
 		 */
 		removeWaitForDownloadOrderList(data) {
-			this.$store.commit('REMOVE_WAIT_FOR_DOWNLOAD_ORDER_LIST', data);
+			this.$store.commit("REMOVE_WAIT_FOR_DOWNLOAD_ORDER_LIST", data);
+			this.getDownload();
 		},
 
 		/**
@@ -897,68 +1013,77 @@ export default {
 		 */
 		pushWaitForUploadOrderList(data) {
 			this.$store.commit("PUSH_WAIT_FOR_UPLOAD_ORDER_LIST", data);
+			this.getUpload();
 		},
 		/**
 		 * unshift data to waitForUploadOrderList
 		 * params:
-		 * data(type array): 
+		 * data(type array):
 		 */
 		unshiftWaitForUploadOrderList(data) {
 			this.$store.commit("UNSHIFT_WAIT_FOR_UPLOAD_ORDER_LIST", data);
+			this.getUpload();
 		},
 		/**
-		 * remove data to waitForOrderList 
+		 * remove data to waitForOrderList
 		 * params:
-		 * data(type array): 
+		 * data(type array):
 		 */
 		removeWaitForUploadOrderList(data) {
 			this.$store.commit("REMOVE_WAIT_FOR_UPLOAD_ORDER_LIST", data);
+			this.getUpload();
 		},
 
 		/**
-		 * add data to pausing 
+		 * add data to pausing
 		 * params:
-		 * data(type array): 
+		 * data(type array):
 		 */
 		addPausing(data) {
 			this.$store.commit("ADD_PAUSING", data);
+			this.getUpload();
+			this.getDownload();
 		},
 		/**
-		 * remove data to pausing 
+		 * remove data to pausing
 		 * params:
-		 * data(type array): 
+		 * data(type array):
 		 */
 		removePausing(data) {
 			this.$store.commit("REMOVE_PAUSING", data);
+			this.getUpload();
+			this.getDownload();
 		},
 
 		/**
-		 * add data to uploading 
+		 * add data to uploading
 		 * params:
-		 * data(type array): 
+		 * data(type array):
 		 */
 		addUploading(data) {
 			this.$store.commit("ADD_UPLOADING", data);
+			this.getUpload();
 		},
 		/**
-		 * remove data to uploading 
+		 * remove data to uploading
 		 * params:
-		 * data(type array): 
+		 * data(type array):
 		 */
 		removeUploading(data) {
 			this.$store.commit("REMOVE_UPLOADING", data);
+			this.getUpload();
 		},
 
 		/**
-		 * set config 
+		 * set config
 		 * params:
-		 * data(type array): 
+		 * data(type array):
 		 */
-		// to do 
+		// to do
 		settingUpdate(data) {
 			const vm = this;
 			this.maxNumUpload = data.maxNumUpload;
-			if(!this.isNotDonePause) return;
+			if (!this.isNotDonePause) return;
 			this.isNotDonePause = false;
 			this.__proto__.__proto__.$config.maxNumUpload = data.maxNumUpload;
 
@@ -983,14 +1108,17 @@ export default {
 			}
 
 			let remoteDownloadingList = [];
-			for(let value of this.downloadTransferList) {
-				if(value.Id.indexOf('waitfor_') !== 0 && !value.Url.startsWith('oni://www')) {
-					if(value.Status === 1 || value.Status === 2) {
-						remoteDownloadingList.push(value.Id)
+			for (let value of this.downloadTransferList) {
+				if (
+					value.Id.indexOf("waitfor_") !== 0 &&
+					!value.Url.startsWith("oni://www")
+				) {
+					if (value.Status === 1 || value.Status === 2) {
+						remoteDownloadingList.push(value.Id);
 					}
 				}
 			}
-			if(remoteDownloadingList.length > this.$config.maxNumUpload) {
+			if (remoteDownloadingList.length > this.$config.maxNumUpload) {
 				let pauseList = remoteDownloadingList.splice(this.$config.maxNumUpload);
 				this.addUploading(pauseList);
 				this.unshiftWaitForDownloadOrderList(pauseList);
@@ -998,23 +1126,25 @@ export default {
 				flag = true;
 			}
 
-			if(flag) {
-				this.$axios.all(commitAll)
-				.finally(res => {
+			if (flag) {
+				this.$axios.all(commitAll).finally(res => {
 					vm.rendToFileManage({
-						type: 'localStatus',
+						type: "localStatus",
 						result: vm.localStatus
 					});
 					this.isNotDonePause = true;
-					if(vm.$config.maxNumUpload !== vm.maxNumUpload && vm.maxNumUpload) {
-						vm.settingUpdate({maxNumUpload: vm.maxNumUpload});
+					if (vm.$config.maxNumUpload !== vm.maxNumUpload && vm.maxNumUpload) {
+						vm.settingUpdate({ maxNumUpload: vm.maxNumUpload });
 					}
-				})
+				});
 				return;
-			};
+			}
 			this.isNotDonePause = true;
-			if(this.$config.maxNumUpload !== this.maxNumUpload && this.maxNumUpload) {
-				this.settingUpdate({maxNumUpload: this.maxNumUpload});
+			if (
+				this.$config.maxNumUpload !== this.maxNumUpload &&
+				this.maxNumUpload
+			) {
+				this.settingUpdate({ maxNumUpload: this.maxNumUpload });
 			}
 		},
 		// to pause task
@@ -1022,27 +1152,27 @@ export default {
 			const vm = this;
 			let params = {
 				Ids: arr
-			}
-		  return vm.$axios.post(vm.$api.uploadPause, params, {
+			};
+			return vm.$axios.post(vm.$api.uploadPause, params, {
 				timeout: (vm.$config.outTime * 2000 + 18000) * params.Ids.length
-			})
+			});
 		},
 		toPauseDownload(arr) {
 			const vm = this;
 			let params = {
 				Ids: arr
-			}
+			};
 			return vm.$axios.post(vm.$api.downloadPause, params, {
 				timeout: (vm.$config.outTime * 2000 + 18000) * params.Ids.length
-			})
+			});
 		},
 		// hand out data about lang
 		toSetLang(lang) {
 			this.$i18n.locale = lang;
-			let _htmlDom  = document.querySelector('html');
-			_htmlDom.style.fontSize = this.$t('fontSize');
+			let _htmlDom = document.querySelector("html");
+			_htmlDom.style.fontSize = this.$t("fontSize");
 			this.renderDateToBrowserView({
-				result: {lang:lang},
+				result: { lang: lang },
 				type: "lang",
 				rendTo: 1
 			});

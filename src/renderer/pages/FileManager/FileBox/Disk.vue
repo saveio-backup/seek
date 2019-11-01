@@ -142,7 +142,10 @@
 						sortable
 					>
 						<template slot-scope="scope">
-							<div class="ft14" :class="scope.row.Undone?'theme-font-blue-40':''">
+							<div
+								class="ft14"
+								:class="scope.row.Undone?'theme-font-blue-40':''"
+							>
 								{{scope.row.StoreType === 1 ? $t('fileManager.advance') : scope.row.StoreType === 0 ? $t('fileManager.primary') : ''}}
 							</div>
 						</template>
@@ -283,7 +286,10 @@
 					<div class="adjust-item">
 						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.fileName')}}</p>
 						<div class="adjust-info">
-							<p class="theme-font-blue ftpx14 mr20" :title="fileDownloadInfo.allName">{{fileDownloadInfo.Name}}</p>
+							<p
+								class="theme-font-blue ftpx14 mr20"
+								:title="fileDownloadInfo.allName"
+							>{{fileDownloadInfo.Name}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
@@ -361,7 +367,10 @@
 			</div>
 			<div class="loading-content disk-delete-loading ft14">
 				<p class="mt10 mb10">{{$t('fileManager.areYouSureYouWantTo')}} <span>{{$t('fileManager.delete2')}}</span> {{$t('fileManager.theSelectedFile')}}</p>
-				<p class="mb20" :title="fileDeleteInfo.allName">{{fileDeleteInfo.Name}}</p>
+				<p
+					class="mb20"
+					:title="fileDeleteInfo.allName"
+				>{{fileDeleteInfo.Name}}</p>
 				<el-form
 					ref="extraParamsForm"
 					:model="extraParams"
@@ -406,8 +415,8 @@ import { clipboard, shell, ipcRenderer } from "electron";
 import { effectiveNumber } from "../../../assets/config/util";
 import fs from "fs";
 import uploadFileDetailDialog from "./../../../components/UploadFileDetailDialog";
-import uuid from 'node-uuid';
-import crypto from 'crypto'
+import uuid from "node-uuid";
+import crypto from "crypto";
 let tableElement;
 export default {
 	data() {
@@ -579,7 +588,11 @@ export default {
 			},
 			extraParamsRules: {
 				Password: [
-					{ required: true, message: this.$t('public.pleaseInputPassword'), trigger: "blur" }
+					{
+						required: true,
+						message: this.$t("public.pleaseInputPassword"),
+						trigger: "blur"
+					}
 				]
 			},
 			fileListData: [],
@@ -653,7 +666,7 @@ export default {
 			const vm = this;
 			clipboard.writeText(this.executedFile.Hash);
 			this.$message({
-				message: vm.$t('public.copied'),
+				message: vm.$t("public.copied"),
 				duration: 1200,
 				type: "success"
 			});
@@ -662,7 +675,7 @@ export default {
 			const vm = this;
 			clipboard.writeText(text);
 			this.$message({
-				message: vm.$t('public.copied'),
+				message: vm.$t("public.copied"),
 				duration: 1200,
 				type: "success"
 			});
@@ -762,11 +775,11 @@ export default {
 			const vm = this;
 			if (this.isSync) {
 				this.$confirm(
-					vm.$t('public.blockUnsynchronizedCompletionAreYouSureToDoThis'),
-					vm.$t('public.notice'),
+					vm.$t("public.blockUnsynchronizedCompletionAreYouSureToDoThis"),
+					vm.$t("public.notice"),
 					{
-						confirmButtonText: vm.$t('public.confirm'),
-						cancelButtonText: vm.$t('public.cancel')
+						confirmButtonText: vm.$t("public.confirm"),
+						cancelButtonText: vm.$t("public.cancel")
 					}
 				)
 					.then(() => {
@@ -781,8 +794,9 @@ export default {
 		},
 		batchDownload() {
 			const vm = this;
-			const NO_DOWNLOAD_FILE_MSG =
-				this.$t('fileManager.pleaseSelectTheFileYouWantToDownload');
+			const NO_DOWNLOAD_FILE_MSG = this.$t(
+				"fileManager.pleaseSelectTheFileYouWantToDownload"
+			);
 			if (!this.fileSelected || this.fileSelected.length === 0) {
 				this.$message({
 					message: NO_DOWNLOAD_FILE_MSG
@@ -791,11 +805,11 @@ export default {
 			}
 			if (this.isSync) {
 				this.$confirm(
-					vm.$t('fileManager.blockUnsynchronizedCompletionAreYouSureToDoThis'),
-					vm.$t('fileManager.notice'),
+					vm.$t("fileManager.blockUnsynchronizedCompletionAreYouSureToDoThis"),
+					vm.$t("fileManager.notice"),
 					{
-						confirmButtonText: vm.$t('fileManager.confirm'),
-						cancelButtonText: vm.$t('fileManager.cancel')
+						confirmButtonText: vm.$t("fileManager.confirm"),
+						cancelButtonText: vm.$t("fileManager.cancel")
 					}
 				)
 					.then(() => {
@@ -811,15 +825,22 @@ export default {
 		addTask(arr) {
 			let newWaitForDownloadList = this.waitForDownloadList.concat(arr);
 			this.$store.commit("SET_WAIT_FOR_DOWNLOAD_LIST", newWaitForDownloadList);
-			ipcRenderer.send("run-dialog-event", {name: "setWaitForDownloadList", data: newWaitForDownloadList});
+			ipcRenderer.send("run-dialog-event", {
+				name: "setWaitForDownloadList",
+				data: newWaitForDownloadList
+			});
 			// update WaitForDownloadOrderList
 			let WaitForDownloadOrderList = [];
-			for(let value of newWaitForDownloadList) {
+			for (let value of newWaitForDownloadList) {
 				WaitForDownloadOrderList.push(value.Id);
 			}
-			ipcRenderer.send("run-dialog-event", {name: "pushWaitForDownloadOrderList", data: WaitForDownloadOrderList});
+			ipcRenderer.send("run-dialog-event", {
+				name: "pushWaitForDownloadOrderList",
+				data: WaitForDownloadOrderList
+			});
 		},
 		waitForNowDownload({ arr, len, errorMsg, flag }) {
+			const vm = this;
 			if (!arr || arr.length === 0 || len === 0) {
 				this.downloadDone({ arr, errorMsg, flag });
 				return;
@@ -856,7 +877,8 @@ export default {
 						errorMsg += `</p>`;
 					}
 					let errorLength = errorArr.length;
-					this.waitForNowdownload({ arr, len: errorLength, errorMsg, flag });
+					let param = { arr: arr, len: errorLength, errorMsg: errorMsg, flag: flag }
+					vm.waitForNowDownload(param);
 				}
 			});
 		},
@@ -872,13 +894,13 @@ export default {
 						message: errorMsg
 					});
 				} else {
-					this.$message.error(vm.$t('fileManager.downloadError'));
+					this.$message.error(vm.$t("fileManager.downloadError"));
 				}
 			} else {
 				if (!errorMsg) {
 					this.$message({
 						type: "success",
-						message: vm.$t('fileManager.startDownload')
+						message: vm.$t("fileManager.startDownload")
 					});
 				} else {
 					this.$message.error({
@@ -887,12 +909,12 @@ export default {
 					});
 				}
 				this.switchToggle.confrimDownloadDialog = false;
-				ipcRenderer.send("run-dialog-event", {name: "setDownload"});
+				ipcRenderer.send("run-dialog-event", { name: "getDownload" });
 
 				if (arr.length > 0) {
 					setTimeout(() => {
 						vm.addTask(arr);
-					}, 2000)
+					}, 2000);
 				}
 				this.$router.push({
 					name: "transfer",
@@ -907,22 +929,25 @@ export default {
 			const vm = this;
 			if (this.fileDownloadInfo.Fee > this.channelBind.BalanceFormat * 1) {
 				this.$message.error(
-					vm.$t('fileManager.theChannelBalanceIsInsufficientPleaseTryAgainAfterTopup')
+					vm.$t(
+						"fileManager.theChannelBalanceIsInsufficientPleaseTryAgainAfterTopup"
+					)
 				);
 				return;
 			}
 			this.switchToggle.loading = this.$loading({
 				lock: true,
-				text: vm.$t('fileManager.fileProcessing'),
+				text: vm.$t("fileManager.fileProcessing"),
 				target: ".loading-content.disk-download-loading"
 			});
 
 			let arr = [];
-			for(let downloadFile of downloadFiles) {
+			for (let downloadFile of downloadFiles) {
 				arr.push({
 					Url: downloadFile.Url,
 					SetFileName: true,
 					MaxPeerNum: ipcRenderer.sendSync("getSettings", "maxPeerNum"),
+					Hash: downloadFile.Hash,
 					// cache upload data↓
 					FileSize: downloadFile.Size,
 					DetailStatus: "downloadLoading",
@@ -931,17 +956,19 @@ export default {
 					Type: 1,
 					Status: 2,
 					IsUploadAction: false,
-					Id: ('waitfor_' + uuid.v4()),
+					Id: "waitfor_" + uuid.v4(),
 					Nodes: []
-				})
+				});
 			}
 
-			let waitForNowDownloadLength = this.$config.maxNumUpload - this.$store.state.Transfer.downloadTransferList.length || 0
-			if(waitForNowDownloadLength <= 0) {
+			let waitForNowDownloadLength =
+				this.$config.maxNumUpload -
+					this.$store.state.Transfer.downloadTransferList.length || 0;
+			if (waitForNowDownloadLength <= 0) {
 				this.switchToggle.loading && this.switchToggle.loading.close();
 				this.switchToggle.confrimDownloadDialog = false;
-				// this.$store.dispatch("setUpload");
-				ipcRenderer.send("run-dialog-event", {name: "setDownload"});
+				// this.$store.dispatch("getUpload");
+				ipcRenderer.send("run-dialog-event", { name: "getDownload" });
 				this.$router.push({
 					name: "transfer",
 					query: { transferType: 2 }
@@ -952,14 +979,21 @@ export default {
 
 			let errorMsg = ""; // error message
 			let flag = false; // is have success
-			this.waitForNowDownload({ arr, len: waitForNowDownloadLength, errorMsg, flag });
+			this.waitForNowDownload({
+				arr,
+				len: waitForNowDownloadLength,
+				errorMsg,
+				flag
+			});
 		},
 		deleteFile(file) {
 			this.fileToDelete = [file];
 			this.switchToggle.deleteDialog = true;
 		},
 		batchDelete() {
-			const NO_DELETE_FILE_MSG = this.$t('fileManager.pleaseSelectTheFileYouWantToDelete');
+			const NO_DELETE_FILE_MSG = this.$t(
+				"fileManager.pleaseSelectTheFileYouWantToDelete"
+			);
 			if (!this.fileSelected || this.fileSelected.length === 0) {
 				this.$message({
 					message: NO_DELETE_FILE_MSG
@@ -998,12 +1032,15 @@ export default {
 						this.$api.deletes,
 						{
 							Hash: arr,
-							Password: crypto.createHash('sha256').update(vm.extraParams.Password).digest('hex')
+							Password: crypto
+								.createHash("sha256")
+								.update(vm.extraParams.Password)
+								.digest("hex")
 						},
 						{
 							timeout: 20000 * arr.length + this.$outTime * 2000,
 							loading: {
-								text: vm.$t('fileManager.deleting'),
+								text: vm.$t("fileManager.deleting"),
 								target: ".loading-content.disk-delete-loading"
 							}
 						}
@@ -1014,7 +1051,7 @@ export default {
 						this.switchToggle.deleteDialog = false;
 						if (res.Error === 0) {
 							this.$message({
-								message: vm.$t('fileManager.deleteSuccessful'),
+								message: vm.$t("fileManager.deleteSuccessful"),
 								type: "success"
 							});
 							this.syncDeleteFile(res.Result);
@@ -1026,7 +1063,9 @@ export default {
 					})
 					.catch(e => {
 						if (!e.message.includes("timeout")) {
-							this.$message.error(vm.$t('fileManager.networkErrorDeleteFailed'));
+							this.$message.error(
+								vm.$t("fileManager.networkErrorDeleteFailed")
+							);
 						}
 					});
 			});
@@ -1039,7 +1078,7 @@ export default {
 					{ Hash: hash },
 					{
 						loading: {
-							text: vm.$t('fileManager.deleting'),
+							text: vm.$t("fileManager.deleting"),
 							target: ".loading-content.disk-delete-loading"
 						}
 					}
@@ -1047,7 +1086,7 @@ export default {
 				.then(res => {
 					if (res.Error === 0) {
 						this.$message({
-							message: vm.$t('fileManager.deleteSuccessful'),
+							message: vm.$t("fileManager.deleteSuccessful"),
 							type: "success"
 						});
 						dataList.some((item, index) => {
@@ -1133,9 +1172,13 @@ export default {
 		lang() {
 			this.extraParamsRules = {
 				Password: [
-					{ required: true, message: this.$t('public.pleaseInputPassword'), trigger: "blur" }
+					{
+						required: true,
+						message: this.$t("public.pleaseInputPassword"),
+						trigger: "blur"
+					}
 				]
-			}
+			};
 		}
 	},
 	computed: {

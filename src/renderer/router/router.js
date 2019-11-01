@@ -168,6 +168,11 @@ export default new Router({
       component: require('../pages/History/History.vue').default
     },
     {
+      path: '/Login',
+      name: 'Login',
+      component: require('../pages/Login/Login.vue').default
+    },
+    {
       path: '*',
       redirect: '/Home',
       meta: {

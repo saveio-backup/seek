@@ -46,6 +46,19 @@ export default {
       }
     }
   },
+  mounted(){
+		document.title = this.$t('login.login');
+  },
+  computed: {
+    lang() {
+      return this.$i18.locale;
+    }
+  },
+  watch: {
+    lang() {
+      document.title = this.$t('login.login');
+    }
+  },
   methods: {
     login() {
       const vm = this;

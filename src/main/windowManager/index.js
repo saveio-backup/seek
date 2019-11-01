@@ -109,7 +109,7 @@ class View {
     hrefFormated = (url.href).replace(/(\\|\/)/g, '/').replace('\/\/\/', '\/\/');
     defaultURLFormated = (DEFAULT_URL).replace(/(\\|\/)/g, '/').replace('\/\/\/', '\/\/');
     if (this.url.endsWith('.pdf')) {
-      // if is pdf file change displayURL 
+      // if is pdf file change displayURL
       let index = this.url.indexOf('?file=');
       this.displayURL = (this.url.slice(index + 6));
     } else if (url.host === 'localhost:9080') {
@@ -123,6 +123,7 @@ class View {
     }
   }
   updateEvent() {
+    const vm = this;
     this.webContents.on('did-start-loading', () => {
       // console.log('did start loading !!');
       this.isLoading = true;
@@ -137,7 +138,8 @@ class View {
     this.webContents.on('page-favicon-updated', (e, favicons) => {
       console.log('get-----=====---')
       this.favicon = favicons && favicons[0] ? favicons[0] : null;
-      this.addHistory(e);
+      this.updateDisplayURL();
+      this.addHistory({e,href: vm.displayURL});
       this.browserWindow.webContents.send('forceUpdate');
     })
     this.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL, isMainFrame) => {
@@ -183,17 +185,25 @@ class View {
       this.forceUpdate()
     });
   }
-  addHistory(e) {
-    const title = e.sender.webContents.getTitle();
-    console.log(e.sender)
-    const timestamp = (new Date()).getTime();
-    const href = e.sender.history[(e.sender.history.length - 1)];
-    const src = this.favicon;
-    console.log(title, '--->', timestamp, '--->', href, '---------->', src)
-    if(href.startsWith(DEFAULT_URL + '#/history') === true) {
-      return;
-    }
-    global.HistoryDB.add({title, timestamp, href, src});
+  addHistory({e,href}) {
+    // the timeout for get title when route link change title be changed
+    setTimeout(() => {
+      // the try catch when brwoserView be closed
+      try {
+        const title = e.sender.webContents.getTitle();
+        const timestamp = (new Date()).getTime();
+        // const href = e.sender.history[(e.sender.history.length - 1)];
+        const src = this.favicon;
+        console.log(title, '--->', timestamp, '--->', href, '---------->', src);
+        let res = /^seek:\/\/(history|Login|CreateAccount|ImportAccount|settings)/.test(href)
+        if(res) {
+          return;
+        }
+        global.HistoryDB.add({title, timestamp, href, src});
+      } catch(e) {
+        
+      }
+    }, 1000);
   }
   onNewWindow(url, e, framename, disposition) {
     const win = this.browserWindow;

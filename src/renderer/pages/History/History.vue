@@ -18,7 +18,7 @@
           </a>
         </div>
         <div class="item-container-host">
-          {{url.parse(item.href).host}}
+          {{url.parse(item.href).protocol + '//' + url.parse(item.href).hostname}}
         </div>
       </div>
     </div>
@@ -107,7 +107,15 @@ export default {
 			}
     },
     openPage(href) {
-      window.open(href);
+      if(href.startsWith('seek://')) {
+        let path = href.slice(7);
+        let activeView = (remote.getCurrentWindow().views || []).find(
+          view => view.isActive
+        );
+        activeView.openComponent(path);        
+      } else {
+        window.open(href);
+      }
     }
   },
   computed: {

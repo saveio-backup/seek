@@ -74,6 +74,22 @@
 			</div>
 			<div class="settings-box">
 				<div class="tag">
+					<p>Theme</p>
+				</div>
+				<el-select
+					v-model="settings.themeColor"
+					@change="setTheme"
+				>
+					<el-option
+						v-for="item in themeList"
+						:key="item"
+						:label='item'
+						:value="item"
+					></el-option>
+				</el-select>
+			</div>
+			<div class="settings-box">
+				<div class="tag">
 					<p>{{$t('settings.language')}}</p>
 				</div>
 				<el-select
@@ -110,6 +126,7 @@ export default {
 			pathDir: {
 				DownloadPath: ""
 			},
+			themeList: ["dark", "light", "default"],
 			settings: {},
 			netConfig: {
 				list: [],
@@ -140,6 +157,9 @@ export default {
 	computed: {
 		lang() {
 			return this.$i18n.locale;
+		},
+		themeColor() {
+			return this.$store.state.Home.themeColor;
 		}
 	},
 	methods: {
@@ -152,6 +172,45 @@ export default {
 				name: "toSetLang",
 				data: vm.settings.lang
 			});
+		},
+		setTheme(theme) {
+			setTimeout(() => {
+				for (let win of remote.BrowserWindow.getAllWindows()) {
+					console.log(win.webContents.getURL());
+					ipcRenderer.sendTo(
+						win.webContents.id,
+						"set-theme",
+						this.settings.themeColor
+					);
+					if (win.views) {
+						const views = win.views;
+						for (let view of views) {
+							let viewContentId = view.browserView.webContents.id;
+							ipcRenderer.sendTo(
+								viewContentId,
+								"set-theme",
+								this.settings.themeColor
+							);
+						}
+					}
+					if (win.driftViews) {
+						const driftViews = win.driftViews;
+						for (let driftView of driftViews) {
+							try {
+								let driftViewContentId = driftView.browserView.webContents.id;
+								ipcRenderer.sendTo(
+									driftViewContentId,
+									"set-theme",
+									this.settings.themeColor
+								);
+							} catch (error) {
+								console.log(error);
+							}
+						}
+					}
+				}
+			}, 500);
+			this.updateSettings("themeColor", this.settings.themeColor);
 		},
 		getSettingsAll() {
 			this.settings = ipcRenderer.sendSync("getAllSettings");
@@ -246,10 +305,12 @@ export default {
 <style lang="scss">
 #settings {
 	padding-top: 20px;
+	min-height: 100%;
 	.settings-content {
 		width: 60%;
 		margin: 0px auto 0px;
 		.settings-box {
+			@extend .theme-font-color;
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
@@ -265,16 +326,14 @@ export default {
 					white-space: nowrap;
 				}
 			}
-			.el-slider{
-				width:200px;
+			.el-slider {
+				width: 200px;
 			}
 			.el-select {
 				input {
 					width: 200px;
 					border: 1px solid rgba(4, 15, 57, 0.2);
 					border-radius: 2px;
-					// color: rgba(32, 32, 32, 0.4);
-					color: rgba(32, 32, 32, 0.7);
 				}
 			}
 		}

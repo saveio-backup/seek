@@ -47,7 +47,7 @@
 				<div class="coin">
 					<div class="flex jc-end">
 					</div>
-					<span class="mr10 ftpx24">{{filterFloat(channelBind.BalanceFormat || 0).toLocaleString('en-US')}}<span class="user-no-select"> ONI</span></span>
+					<span class="mr10 ftpx24 number">{{filterFloat(channelBind.BalanceFormat || 0).toLocaleString('en-US')}}<span class="user-no-select"> ONI</span></span>
 					<span
 						@click="openAssetTransferDialog"
 						class="coin-icon-box cursor-pointer user-no-select"
@@ -332,11 +332,15 @@ $grey: #ccc;
 		left: 0px;
 		right: 0px;
 		.top-nav {
-			background: #fff;
+			// background: #fff;
+			// box-shadow: 0px 2px 4px 0px rgba(231, 231, 235, 0.7);
+			@include themify{
+				background-color:$card-color;
+				box-shadow: $card-shadow;
+			}
 			height: 64px;
 			position: relative;
 			z-index: 9;
-			box-shadow: 0px 2px 4px 0px rgba(231, 231, 235, 0.7);
 			padding: 10px 70px 10px 15px;
 			display: flex;
 			justify-content: space-between;
@@ -363,7 +367,9 @@ $grey: #ccc;
 			}
 			.channel-info {
 				font-weight: 400;
-				color: #202020;
+				@include themify{
+					color: $filemanager-font-color;
+				}
 				width: 140px;
 				position: relative;
 				.channel-info-first {
@@ -386,7 +392,9 @@ $grey: #ccc;
 				width: 200px;
 			}
 			.router {
-				color: rgba(32, 32, 32, 0.7);
+				@include themify{
+					color: $filemanager-font-color;
+				}
 				font-size: 1.8rem;
 				& > a {
 					position: relative;
@@ -421,6 +429,11 @@ $grey: #ccc;
 				display: flex;
 				align-items: center;
 				position: relative;
+				.number{
+					@include themify{
+						color: $font-color;
+					}
+				}
 				.coin-icon-box {
 					display: inline-block;
 					width: 36px;

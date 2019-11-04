@@ -1,6 +1,6 @@
 <template>
 	<div id="file-box">
-		<div class="aside">
+		<div class="aside theme-bg">
 			<div class="aside-link">
 				<router-link
 					class="allfile"
@@ -38,7 +38,7 @@
 				</p>
 			</div>
 		</div>
-		<div class="layout-main">
+		<div class="layout-main theme-bg">
 			<router-view></router-view>
 		</div>
 	</div>
@@ -102,7 +102,6 @@ $theme-font-blue: #040f39;
 $brand-blue: #409eff;
 $sucess: #67c23a;
 $danger: #f56c6c;
-$light-grey: #f9f9fb;
 #file-box {
 	display: flex;
 	.aside {
@@ -115,7 +114,6 @@ $light-grey: #f9f9fb;
 		bottom: 0;
 		width: 200px;
 		min-height: 400px;
-		background: $light-grey;
 		color: $theme-font-blue;
 		font-size: 1.6rem;
 		.aside-link {
@@ -145,18 +143,23 @@ $light-grey: #f9f9fb;
 				display: flex;
 				padding: 10px 0 10px 60px;
 				border-radius: 0 50px 50px 0;
-				color: rgba(32, 32, 32, 0.7);
+				@include themify {
+					color: $filemanager-font-color;
+				}
 				font-weight: 500;
 				font-size: 1.4rem;
 				transition: all 0.3s ease;
 				user-select: none;
 				& > span {
-					& > i,& > span {
+					& > i,
+					& > span {
 						font-size: 14px;
 					}
 				}
 				&:hover {
-					background: #edeff4;
+					@include themify {
+						background-color: $filemanager-aside-hover-color;
+					}
 					color: #2f8ff0;
 					// background: rgba(231, 231, 235, 1);
 				}
@@ -164,7 +167,9 @@ $light-grey: #f9f9fb;
 					opacity: 0.7;
 				}
 				&.link-hover {
-					background: #edeff4;
+					@include themify {
+						background-color: $filemanager-aside-hover-color;
+					}
 					color: #2f8ff0;
 					// background: rgba(231, 231, 235, 1);
 				}
@@ -186,7 +191,9 @@ $light-grey: #f9f9fb;
 			}
 			.aside-progress-num {
 				font-size: 12px;
-				color: rgba(32, 32, 32, 0.7);
+				@include themify{
+					color: $filemanager-font-color;
+				}
 				position: relative;
 				i {
 					position: absolute;

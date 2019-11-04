@@ -9,7 +9,7 @@
 							class="nav-button"
 							@click="remoteOpenComponent('FileManager')"
 							active-class="slidebar-active"
-							:class="{'theme-color-yellow':activeView.displayURL.toLowerCase().indexOf('seek://filemanager')>=0}"
+							:class="{'nav-active':activeView.displayURL.toLowerCase().indexOf('seek://filemanager')>=0}"
 						>
 							<i class="ofont ofont-wenjianjia-"></i>
 						</div>
@@ -19,7 +19,7 @@
 							:title="$t('window.wallet')"
 							class="nav-button"
 							@click="remoteOpenComponent('Wallet')"
-							:class="{'theme-color-yellow':activeView.displayURL.toLowerCase().indexOf('seek://wallet')>=0}"
+							:class="{'nav-active':activeView.displayURL.toLowerCase().indexOf('seek://wallet')>=0}"
 						>
 							<i class="ofont ofont-qianbao"></i>
 						</div>
@@ -30,7 +30,7 @@
 							class="nav-button"
 							@click="remoteOpenComponent('Miner')"
 							active-class="slidebar-active"
-							:class="{'theme-color-yellow':activeView.displayURL.toLowerCase().indexOf('seek://miner')>=0}"
+							:class="{'nav-active':activeView.displayURL.toLowerCase().indexOf('seek://miner')>=0}"
 						>
 							<i class="ofont ofont-kuanggong"></i>
 							<!-- <img
@@ -51,10 +51,7 @@
 							class="nav-button"
 							style="background:none;"
 						>
-							<span
-								class="ofont ofont-dapp1"
-								style='color:#C7CAD0;background:none;cursor:not-allowed;'
-							></span>
+							<span class="ofont ofont-dapp1 not-allowed"></span>
 						</div>
 					</li>
 					<li class="action-item">
@@ -64,8 +61,8 @@
 							style="background:none;"
 						>
 							<span
-								class="ofont ofont-tianjia"
-								style='color:#C7CAD0;cursor:not-allowed;'
+								class="ofont ofont-tianjia not-allowed"
+								style='cursor:not-allowed;'
 							></span>
 						</div>
 					</li>
@@ -84,12 +81,15 @@
 						class="process-status-wrapper"
 					>
 						<i
-							class="process-status"	
+							class="process-status"
 							:class="{'process-all-error': status === 0, 'process-some-error': status === 2}"
 						>
 						</i>
 					</span>
-					<span class="process-status-wrapper" v-else>
+					<span
+						class="process-status-wrapper"
+						v-else
+					>
 					</span>
 				</div>
 			</div>
@@ -144,14 +144,13 @@ export default {
 		status: function() {
 			let online = false;
 			let offline = false;
-			let statusKey = [
-				"Chain",
-				"DNS",
-				"DspProxy",
-				"ChannelProxy"
-			];
+			let statusKey = ["Chain", "DNS", "DspProxy", "ChannelProxy"];
 			for (let value of statusKey) {
-				if (this.statusList && this.statusList[value] && this.statusList[value].State === 1) {
+				if (
+					this.statusList &&
+					this.statusList[value] &&
+					this.statusList[value].State === 1
+				) {
 					online = true;
 				} else {
 					offline = true;
@@ -171,21 +170,21 @@ export default {
 			const that = this;
 			const customControlMenuItems = [
 				{
-					label: that.$t('window.exportKeystoreFile'),
+					label: that.$t("window.exportKeystoreFile"),
 					// visible: new Boolean(user.name),
 					click() {
 						that.exportWallet();
 					}
 				},
 				{
-					label: that.$t('window.exportPrivateKey'),
+					label: that.$t("window.exportPrivateKey"),
 					// visible: new Boolean(user.name),
 					click() {
 						that.exportPrivateKey();
 					}
 				},
 				{
-					label: that.$t('window.helpDocument'),
+					label: that.$t("window.helpDocument"),
 					click() {
 						that.showHelpDocument();
 					}
@@ -204,13 +203,13 @@ export default {
 					}
 				},
 				{
-					label: that.$t('window.settings'),
-					click(){
-						that.remoteOpenComponent('settings');
+					label: that.$t("window.settings"),
+					click() {
+						that.remoteOpenComponent("settings");
 					}
 				},
 				{
-					label: that.$t('window.version'),
+					label: that.$t("window.version"),
 					click() {
 						that.showVersion();
 					}
@@ -233,13 +232,16 @@ export default {
 		},
 		activeMessage({ info, type }) {
 			const webContentsId = this.activeView.browserView.webContents.id;
-			ipcRenderer.sendTo(webContentsId, 'current-active-show-message', { info: info, type: type })
+			ipcRenderer.sendTo(webContentsId, "current-active-show-message", {
+				info: info,
+				type: type
+			});
 		},
 		exportWallet() {
 			const vm = this;
-			this.$exportWallet('',function() {
+			this.$exportWallet("", function() {
 				vm.$message({
-					message: vm.$t('dialog.exportSuccess'),
+					message: vm.$t("dialog.exportSuccess"),
 					type: "success"
 				});
 			});
@@ -263,8 +265,6 @@ export default {
 };
 </script>
 <style lang="scss">
-$theme-color-yellow: #4f5154;
-// $theme-color: #1b1e2f;
 $theme-color: #dfe2e9;
 
 $slidebar-active-color: linear-gradient(
@@ -273,8 +273,10 @@ $slidebar-active-color: linear-gradient(
 	rgba(138, 247, 255, 1) 100%
 );
 #activity-bar {
+	@include themify {
+		background-color: $navigation-bg;
+	}
 	width: 40px;
-	color: $theme-color;
 	background: $theme-color;
 	height: calc(100% - 62px);
 
@@ -287,11 +289,12 @@ $slidebar-active-color: linear-gradient(
 		z-index: 999;
 		height: 100%;
 		color: #808185;
-		box-shadow: inset -15px 0px 10px -15px rgba(182, 182, 182, 0.3);
 
-		.theme-color-yellow {
-			color: $theme-color-yellow;
-			background: #c0c6d1;
+		.nav-active {
+			@include themify {
+				color: $nav-hover-color;
+				background-color: $nav-button-bg;
+			}
 		}
 		.action-container {
 			text-align: center;
@@ -312,9 +315,17 @@ $slidebar-active-color: linear-gradient(
 					}
 					&.ofont-dapp1 {
 						font-size: 26px;
+						@include themify {
+							color: $nav-button-disabled;
+						}
+						background: none;
+						cursor: not-allowed;
 					}
 					&.ofont-tianjia {
 						font-size: 20px;
+						@include themify {
+							color: $nav-button-disabled;
+						}
 					}
 				}
 				&.item-user {
@@ -351,8 +362,10 @@ $slidebar-active-color: linear-gradient(
 
 					&:hover {
 						transition: all 0.2s ease;
-						color: $theme-color-yellow;
-						background: #c0c6d1;
+						@include themify {
+							color: $nav-hover-color;
+							background-color: $nav-button-bg;
+						}
 					}
 
 					&:active {
@@ -382,7 +395,6 @@ $slidebar-active-color: linear-gradient(
 		.setting-bar {
 			position: relative;
 			text-align: center;
-			color: #202020;
 			font-size: 30px;
 			top: -30px;
 
@@ -406,10 +418,6 @@ $slidebar-active-color: linear-gradient(
 				}
 			}
 
-			.ofont-caidan {
-				color: rgba(32, 32, 32, 0.5);
-			}
-
 			.process-status-wrapper {
 				// padding: 5px;
 				height: 10px;
@@ -422,10 +430,14 @@ $slidebar-active-color: linear-gradient(
 					border-radius: 50%;
 					display: block;
 					border: 2px solid white;
-					background: linear-gradient(180deg,rgba(61,227,86,1) 0%,rgba(23,173,44,1) 100%);
+					background: linear-gradient(
+						180deg,
+						rgba(61, 227, 86, 1) 0%,
+						rgba(23, 173, 44, 1) 100%
+					);
 					box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.3);
 					border: 1px solid rgba(237, 237, 237, 1);
-	
+
 					&.process-some-error {
 						background: linear-gradient(
 							180deg,
@@ -435,7 +447,7 @@ $slidebar-active-color: linear-gradient(
 						box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.3);
 						border: 1px solid rgba(237, 237, 237, 1);
 					}
-	
+
 					&.process-all-error {
 						background: linear-gradient(
 							180deg,

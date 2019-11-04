@@ -30,6 +30,7 @@ const DEFAULT_USERSUMMARY_CONFIG = {
       maxPeerNum: 20,
       ChainId: DEFAULT_CHAINID,
       lang: 'en',
+      themeColor: 'default'
     },
     modify: true
   },
@@ -63,6 +64,9 @@ class SeekLevelDB {
         if (err) {
           reject('Update Failed');
         } else {
+          console.log('modified ok');
+          console.log('modifed key is', key);
+          console.log('value is', value);
           resolve('OK');
         }
       })
@@ -71,8 +75,6 @@ class SeekLevelDB {
 
   queryData(key) {
     return new Promise((resolve, reject) => {
-      console.log('queryData is key');
-      console.log(key)
       this.db.get(key, (err, value) => {
         if (err) {
           if (err.notFound) {
@@ -113,7 +115,7 @@ class SeekLevelDB {
 
 class SettingDB extends SeekLevelDB {
 
-  constructor(callback) {
+  constructor() {
     super('Setting');
   }
 
@@ -125,6 +127,7 @@ class SettingDB extends SeekLevelDB {
       }).on('end', () => {
         for (const item in DEFAULT_USERSUMMARY_CONFIG.Settings.value) {
           if (!keyLists.hasOwnProperty(item)) {
+            console.log('keyLists has no item: ', item);
             this.updateData(item, DEFAULT_USERSUMMARY_CONFIG.Settings.value[item]);
           }
         }

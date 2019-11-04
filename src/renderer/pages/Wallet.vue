@@ -90,8 +90,6 @@
 							class="primary"
 						><i class="ofont ofont-jieshou"></i> <span>{{$t('wallet.receive')}}</span></ripper-button>
 						<ripper-button @click="switchToggle.sendDialog = true"><i class="ofont ofont-send"></i> <span>{{$t('wallet.send')}}</span></ripper-button>
-						<!-- <div @click="getQRCode"><i class="ofont ofont-jieshou"></i> <span class="theme-bold">Receive</span></div> -->
-						<!-- <div @click="switchToggle.sendDialog =true"><i class="ofont ofont-send"></i> <span class="theme-bold">Send</span></div> -->
 					</div>
 				</div>
 			</div>
@@ -269,10 +267,10 @@
 							@submit.native.prevent
 						>
 							<div class="flex between mb10 mt10">
-								<p class="theme-font-blue-bold ftpx14">{{balanceLists[balanceSelected].Symbol === 'SAVE' ? 'ONI' : balanceLists[balanceSelected].Symbol}}</p>
+								<p class="ftpx14">{{balanceLists[balanceSelected].Symbol === 'SAVE' ? 'ONI' : balanceLists[balanceSelected].Symbol}}</p>
 								<p
 									v-if="balanceLists && balanceLists.length>0"
-									class="ftpx14 tl theme-font-blue-70"
+									class="ftpx14 tl"
 								>{{effectiveNumber(balanceLists[balanceSelected].BalanceFormat)}} {{balanceLists[balanceSelected].Symbol === 'SAVE' ? 'ONI' : balanceLists[balanceSelected].Symbol}}</p>
 							</div>
 							<el-form-item
@@ -352,8 +350,8 @@
 								alt=""
 							>
 							<div class="flex1 ml10 tl">
-								<p class="theme-font-blue ft18"><span class="bold">{{balanceLists[balanceSelected].Symbol === 'SAVE' ? 'ONI' : balanceLists[balanceSelected].Symbol}}</span> <span class="theme-font-blue-40 ft14 ml10 balance-select-name"> {{balanceLists[balanceSelected].Name === 'Save Power' ? 'Oni Power' : balanceLists[balanceSelected].Name}}</span></p>
-								<p class="theme-font-blue-40 ft14">{{balanceLists[balanceSelected].Address}}</p>
+								<p class="ft18"><span class="bold">{{balanceLists[balanceSelected].Symbol === 'SAVE' ? 'ONI' : balanceLists[balanceSelected].Symbol}}</span> <span class="ft14 ml10 balance-select-name"> {{balanceLists[balanceSelected].Name === 'Save Power' ? 'Oni Power' : balanceLists[balanceSelected].Name}}</span></p>
+								<p class="ft14">{{balanceLists[balanceSelected].Address}}</p>
 							</div>
 							<el-switch
 								disabled
@@ -382,7 +380,7 @@ import crypto from 'crypto'
 const { clipboard } = require("electron");
 export default {
 	mounted() {
-		document.title = this.$t('wallet.wallet');
+		document.title = this.$t("wallet.wallet");
 		this.$store.dispatch("setCurrentAccount"); // get login status
 		this.$store.dispatch("setBalanceLists");
 		this.$store.dispatch("setTxRecords");
@@ -397,10 +395,12 @@ export default {
 			const vm = this;
 			const reg = /^[1-9](\d{0,8})\.(\d{1,9})$|^0\.(\d{0,8})[1-9]$|^[1-9](\d{0,8})$/;
 			if (!reg.test(value)) {
-				callback(new Error(vm.$t('public.pleaseEnterTheCorrectFormat')));
+				callback(new Error(vm.$t("public.pleaseEnterTheCorrectFormat")));
 				return;
-			} else if(parseFloat(value) > vm.balanceLists[vm.balanceSelected].BalanceFormat) {
-				callback(new Error(vm.$t('public.insufficientBalanceAvailable')));
+			} else if (
+				parseFloat(value) > vm.balanceLists[vm.balanceSelected].BalanceFormat
+			) {
+				callback(new Error(vm.$t("public.insufficientBalanceAvailable")));
 				return;
 			}
 			callback();
@@ -429,7 +429,7 @@ export default {
 				Amount: [
 					{
 						required: true,
-						message: this.$t('public.pleaseFillAmount'),
+						message: this.$t("public.pleaseFillAmount"),
 						trigger: "blur"
 					},
 					{
@@ -440,14 +440,14 @@ export default {
 				To: [
 					{
 						required: true,
-						message: this.$t('wallet.pleaseFillAddress'),
+						message: this.$t("wallet.pleaseFillAddress"),
 						trigger: "blur"
 					}
 				],
 				Password: [
 					{
 						required: true,
-						message: this.$t('public.pleaseFillPassword'),
+						message: this.$t("public.pleaseFillPassword"),
 						trigger: "blur"
 					}
 				]
@@ -664,7 +664,7 @@ export default {
 			const vm = this;
 			clipboard.writeText(this.user.address);
 			this.$message({
-				message: vm.$t('public.copied'),
+				message: vm.$t("public.copied"),
 				duration: 1200,
 				type: "success"
 			});
@@ -673,7 +673,7 @@ export default {
 			const vm = this;
 			clipboard.writeText(content);
 			this.$message({
-				message: vm.$t('public.copied'),
+				message: vm.$t("public.copied"),
 				duration: 1200,
 				type: "success"
 			});
@@ -706,7 +706,7 @@ export default {
 						text:
 							this.balanceLists.length > 0
 								? this.balanceLists[this.balanceSelected].Address
-								: vm.$t('wallet.qrcodeNotFound'),
+								: vm.$t("wallet.qrcodeNotFound"),
 						width: 128,
 						height: 128
 					});
@@ -731,7 +731,7 @@ export default {
 					this.$axios
 						.post(this.$api.transfer, sendInfo, {
 							loading: {
-								text: vm.$t('public.transactionProcessing'),
+								text: vm.$t("public.transactionProcessing"),
 								target: ".loading-content.wallet-sendtransfer-loading"
 							}
 						})
@@ -741,7 +741,7 @@ export default {
 								this.$refs.transferForm.resetFields();
 								this.switchToggle.sendDialog = false;
 								this.$message({
-									message: vm.$t('public.transferSuccess'),
+									message: vm.$t("public.transferSuccess"),
 									type: "success"
 								});
 							} else {
@@ -750,7 +750,7 @@ export default {
 						})
 						.catch(e => {
 							if (!e.message.includes("timeout")) {
-								this.$message.error(vm.$t('public.networkErrorTransferFailed'));
+								this.$message.error(vm.$t("public.networkErrorTransferFailed"));
 							}
 						});
 				}
@@ -860,12 +860,12 @@ export default {
 	},
 	watch: {
 		lang() {
-			document.title = this.$t('wallet.wallet');
+			document.title = this.$t("wallet.wallet");
 			this.sendRules = {
 				Amount: [
 					{
 						required: true,
-						message: this.$t('public.pleaseFillAmount'),
+						message: this.$t("public.pleaseFillAmount"),
 						trigger: "blur"
 					},
 					{
@@ -876,18 +876,18 @@ export default {
 				To: [
 					{
 						required: true,
-						message: this.$t('wallet.pleaseFillAddress'),
+						message: this.$t("wallet.pleaseFillAddress"),
 						trigger: "blur"
 					}
 				],
 				Password: [
 					{
 						required: true,
-						message: this.$t('public.pleaseFillPassword'),
+						message: this.$t("public.pleaseFillPassword"),
 						trigger: "blur"
 					}
 				]
-			}
+			};
 		},
 		txRecords(newVal, oldVal) {
 			if (newVal.length == 0 || oldVal.length == 0) {
@@ -923,7 +923,6 @@ $light-grey: #f7f7f7;
 	flex: 1;
 	height: 100%;
 	flex-direction: column;
-	background: #f9f9fb;
 	& > .content {
 		width: 100%;
 		// height: calc(100% - 60px);
@@ -976,7 +975,10 @@ $light-grey: #f7f7f7;
 				}
 			}
 			.balance-content-wrapper {
-				background: #fff;
+				@include themify {
+					background-color: $card-color;
+					box-shadow: $card-shadow;
+				}
 				margin-top: 26px;
 				max-height: calc(100% - 135px);
 				box-shadow: 0px 2px 20px 0px rgba(196, 196, 196, 0.24);
@@ -987,8 +989,12 @@ $light-grey: #f7f7f7;
 					text-align: right;
 					border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 					.el-input__inner {
+						@include themify {
+							color: $font-color;
+							background-color:$card-color;
+						}
+						border:none;
 						font-size: 1.4rem;
-						color: $theme-font-blue;
 						font-weight: bold;
 						border-color: #fff !important;
 						text-align: center;
@@ -1015,9 +1021,12 @@ $light-grey: #f7f7f7;
 					padding: 15px 0px;
 					border-radius: 2px;
 					& > p {
-						color: rgba(32, 32, 32, 0.4);
+						@extend .grey-xs;
 					}
 					.total {
+						@include themify{
+							color: $font-color;
+						}
 						padding: 10px 0px;
 						font-size: 32px;
 						.symbol {
@@ -1030,31 +1039,12 @@ $light-grey: #f7f7f7;
 					flex: 1;
 					display: flex;
 					flex-direction: column;
-					// .child-ul {
-					// 	flex: 1;
-					// 	min-height: 90px;
-					// 	.child-list {
-					// 		display: flex;
-					// 		justify-content: space-between;
-					// 		padding: 8px 20px;
-					// 		border-bottom: solid 1px rgba(204, 204, 204, 0.3);
-					// 		.name {
-					// 			font-size: 16px;
-					// 		}
-					// 		.balance {
-					// 			font-size: 16px;
-					// 		}
-					// 		&.selected {
-					// 			// background-color: rgba(204, 204, 204, 0.3);
-					// 		}
-					// 	}
-					// }
 					.asset-display-li {
+						@extend .theme-bg;
+						@extend .theme-font-color;
 						cursor: pointer;
 						user-select: none;
-						background: #f8f9fa;
 						text-align: center;
-						color: #202020;
 						height: 60px;
 						width: 100%;
 						line-height: 60px;
@@ -1090,22 +1080,19 @@ $light-grey: #f7f7f7;
 									text-overflow: ellipsis;
 									white-space: nowrap;
 									&.asset-display-grey {
-										color: rgba(32, 32, 32, 0.4);
+										@extend .grey-xs;
 									}
 								}
 							}
 						}
 						&.set-asset-display {
-							color: rgba(32, 32, 32, 0.4);
+							// color: rgba(32, 32, 32, 0.4);
 							&:hover {
 								opacity: 0.7;
 							}
 							&.set-asset-display:active {
 								opacity: 1;
 							}
-						}
-						&.asset-display-li-select {
-							background: #e7e9ef;
 						}
 					}
 				}
@@ -1124,7 +1111,10 @@ $light-grey: #f7f7f7;
 			display: flex;
 			flex-direction: column;
 			flex: 1;
-			background: #fff;
+			@include themify{
+				background-color:$card-color;
+				box-shadow: $card-shadow;
+			}
 			margin-left: 30px;
 			overflow: auto;
 			box-shadow: 0px 2px 20px 0px rgba(196, 196, 196, 0.24);
@@ -1143,7 +1133,7 @@ $light-grey: #f7f7f7;
 					margin-right: 35px;
 					cursor: pointer;
 					user-select: none;
-					color: rgba(32, 32, 32, 0.7);
+					@extend .theme-font-color;
 					&:hover {
 						color: #2f8ff0;
 					}
@@ -1162,7 +1152,7 @@ $light-grey: #f7f7f7;
 				.tx-li {
 					cursor: pointer;
 					width: 100%;
-					
+
 					.tx-li-item {
 						display: flex;
 						align-items: center;
@@ -1174,6 +1164,7 @@ $light-grey: #f7f7f7;
 							position: absolute;
 							top: 12px;
 							left: 45px;
+							@extend .theme-font-color;
 						}
 						// width: calc(100% - 20px);
 						// margin: 0 auto;
@@ -1231,6 +1222,7 @@ $light-grey: #f7f7f7;
 							width: 80px;
 							height: 20px;
 							& > div {
+								@extend .theme-font-color;
 								width: 100%;
 								height: 100%;
 								border: 1px solid rgba(237, 239, 244, 1);

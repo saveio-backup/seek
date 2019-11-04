@@ -13,8 +13,3 @@ ipcMain.on('hex-to-string', (event, content) => {
   buf = buf.toString('utf-8');
   event.returnValue = buf;
 })
-ipcMain.on('testUnzip', (path,dir) => {
-  const zip = new AdmZip('/Users/ridesky/Downloads/electron-v5.0.8-darwin-x64.zip')
-  zip.extractAllTo('/Users/ridesky/Downloads/electron-v5.0.8-darwin-x64')
-  console.log('unzip success');
-})

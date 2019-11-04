@@ -2,16 +2,8 @@ import {
   ipcMain,
   dialog
 } from 'electron'
-// import {
-//   SeekDB
-// } from '../dbs/index';
-import {
-  SettingDB
-} from '../dbs/index_levelup';
 import fs from 'fs';
 import path from 'path';
-// const seekDB = new SeekDB();
-// seekDB.getDB();
 
 // File operation
 ipcMain.on('open-file-dialog', (event) => {

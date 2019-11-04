@@ -1,6 +1,6 @@
 <template>
 	<div id="transfer">
-		<div class="aside">
+		<div class="aside theme-bg">
 			<div class="aside-link">
 				<router-link
 					class="transform-link"
@@ -25,7 +25,7 @@
 				><i class="ofont ofont-wancheng"></i>{{$t('fileManager.complete')}}</router-link>
 			</div>
 		</div>
-		<div class="layout-main">
+		<div class="layout-main theme-bg">
 			<file-component
 				v-show="transferType == 0"
 				:transferType='0'
@@ -104,7 +104,6 @@ $light-grey: #f9f9fb;
 		bottom: 0;
 		width: 200px;
 		min-height: 400px;
-		background: $light-grey;
 		color: $theme-font-blue;
 		.aside-link {
 			margin-top: 20px;
@@ -115,7 +114,9 @@ $light-grey: #f9f9fb;
 				display: flex;
 				padding: 10px 0 10px 60px;
 				border-radius: 0 50px 50px 0;
-				color: rgba(32, 32, 32, 0.7);
+				@include themify{
+					color: $filemanager-font-color;
+				}
 				font-weight: 500;
 				font-size: 1.4rem;
 				transition: all 0.3s ease;
@@ -136,7 +137,9 @@ $light-grey: #f9f9fb;
 					opacity: 0.7;
 				}
 				&.hover-link {
-					background: #edeff4;
+					@include themify{
+						background-color: $filemanager-aside-hover-color;
+					}
 					color: #2f8ff0;
 				}
 				.badge {

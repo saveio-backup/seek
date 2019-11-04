@@ -18,14 +18,6 @@ import MenuWindow from './menuWindow'
 import log from 'electron-log'
 import failedPage from '../../../static/html/failed/failed.js'
 import frontCfgObj from './frontCfgObj'
-// import {
-//   SeekDB
-// } from '../dbs/index';
-import {
-  SettingDB
-} from '../dbs/index_levelup'
-// const seekDB = new SeekDB();
-// seekDB.getDB();
 export const windows = {}; // map of {[parentWindow.id] => BrowserWindow}
 export let getCurrentView = null;
 export let dialogViewObj = null;
@@ -444,8 +436,13 @@ export function createWindow(url) {
   // createView(mainWindow, 'https://ont.io');
   // createView(mainWindow,'https://telegram.org/');
   // createView(mainWindow, 'http://127.0.0.1:8080/')
+
   createView(mainWindow);
+
   dialogViewObj = new dialogView(mainWindow);
+
+  mainWindow.driftViews = []; // add lists to manage drift BrowserView (eg: dialogView)
+  mainWindow.driftViews.push(dialogViewObj);
 }
 
 // seam as handlerViews

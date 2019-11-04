@@ -1,7 +1,7 @@
 <template>
 	<div id="miner">
 		<div class="content">
-			<div class="aside">
+			<div class="aside theme-bg">
 				<div class="aside-link">
 					<router-link
 						:class="{'link-hover': fileType == 0}"
@@ -14,7 +14,7 @@
 					<!-- <i class="el-icon-tickets"></i>  -->
 				</div>
 			</div>
-			<div class="layout-main">
+			<div class="layout-main theme-bg">
 				<router-view></router-view>
 			</div>
 		</div>
@@ -23,7 +23,7 @@
 <script>
 export default {
 	mounted() {
-		document.title = this.$t('miner.miner');
+		document.title = this.$t("miner.miner");
 		this.$store.dispatch("setCurrentAccount"); // get login status
 	},
 	data() {
@@ -33,7 +33,7 @@ export default {
 	},
 	watch: {
 		lang() {
-			document.title = this.$t('miner.miner');
+			document.title = this.$t("miner.miner");
 		}
 	},
 	computed: {
@@ -53,11 +53,9 @@ export default {
 };
 </script>
 <style lang="scss">
-$theme-font-blue: #040f39;
 $brand-blue: #409eff;
 $sucess: #67c23a;
 $danger: #f56c6c;
-$light-grey: #f9f9fb;
 #miner {
 	display: flex;
 	.layout-main {
@@ -71,6 +69,9 @@ $light-grey: #f9f9fb;
 		bottom: 0px;
 	}
 	.aside {
+		@include themify {
+			color: $filemanager-font-color;
+		}
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
@@ -80,40 +81,24 @@ $light-grey: #f9f9fb;
 		bottom: 0;
 		width: 200px;
 		min-height: 400px;
-		background: $light-grey;
-		color: $theme-font-blue;
 		font-size: 1.6rem;
 		.aside-link {
 			display: flex;
 			margin-top: 70px;
 			flex-direction: column;
 			width: 100%;
-			// & > a {
-			// 	position: relative;
-			// 	display: flex;
-			// 	align-items: center;
-			// 	padding: 10px 0 10px 50px;
-			// 	i {
-			// 		position: absolute;
-			// 		top: 50%;
-			// 		left: 0px;
-			// 		transform: translateX(100%) translateY(-50%);
-			// 	}
-			// 	&:hover {
-			// 		background: rgba(231, 231, 235, 1);
-			// 	}
-			// }
 			& > a {
 				display: flex;
 				padding: 10px 0 10px 60px;
 				border-radius: 0 50px 50px 0;
-				color: rgba(32, 32, 32, 0.7);
 				font-weight: 500;
 				font-size: 1.4rem;
 				transition: all 0.3s ease;
 				user-select: none;
 				&:hover {
-					background: #edeff4;
+					@include themify {
+						background-color: $filemanager-aside-hover-color;
+					}
 					color: #2f8ff0;
 					// background: rgba(231, 231, 235, 1);
 				}
@@ -121,9 +106,10 @@ $light-grey: #f9f9fb;
 					opacity: 0.7;
 				}
 				&.link-hover {
-					background: #edeff4;
+					@include themify {
+						background-color: $filemanager-aside-hover-color;
+					}
 					color: #2f8ff0;
-					// background: rgba(231, 231, 235, 1);
 				}
 				// &.link-hover{
 				// 	background: rgba(231, 231, 235, 1);

@@ -1,0 +1,74 @@
+$themes: ( // no coment, just for format code
+  'default': ( // same as above
+    'color':#f9f9fb, // bgcolor
+    'navigation-bg':#dfe2e9,
+    'nav-button-bg':#c0c6d1,
+    'nav-button-disabled':#C7CAD0,
+    'nav-hover-color':#4f5154,
+    'table-border-color':#EBEEF5,
+    'card-color': #fff,
+    'card-shadow':0px 2px 20px 0px rgba(196, 196, 196, 0.24),
+    'filemanager-font-color':rgba(32, 32, 32, 0.7),
+    'filemanager-aside-hover-color':#edeff4,
+    'progress-bar-bg':#EBEEF5,
+    'table-hover-bg':#F5F7FA,
+    'font-color': #000 // General font color
+  ),
+
+  'dark': ( //
+    'color':#2A2B30,
+    'navigation-bg':#1c1d21,
+    'nav-button-bg':#2A2B30,
+    'nav-hover-color':#fff,
+    'nav-button-disabled':#323436,
+    'table-border-color':#1c1d21,
+    'card-color':#35363c,
+    'card-shadow':none,
+    'filemanager-font-color':#fff,
+    'filemanager-aside-hover-color':#202125,
+    'progress-bar-bg':#1c1d21,
+    'table-hover-bg':#303036,
+    'font-color': #fff)) !default;
+$color: null;
+$card-color:null;
+$font-color:null;
+
+@mixin themify($themes:$themes) {
+
+  @each $theme,
+  $props in $themes {
+
+    &,
+    .theme-#{$theme} & {
+      $color: map-get($props, 'color') !global;
+      $card-color: map-get($props, 'card-color') !global;
+      $card-shadow: map-get($props, 'card-shadow') !global;
+      $font-color: map-get($props, 'font-color') !global;
+      $navigation-bg: map-get($props, 'navigation-bg') !global;
+      $nav-button-bg: map-get($props, 'nav-button-bg') !global;
+      $nav-button-disabled: map-get($props, 'nav-button-disabled') !global;
+      $nav-hover-color: map-get($props, 'nav-hover-color') !global;
+      $table-border-color: map-get($props, 'table-border-color') !global;
+      $filemanager-font-color: map-get($props, 'filemanager-font-color') !global;
+      $filemanager-aside-hover-color: map-get($props, 'filemanager-aside-hover-color') !global;
+      $progress-bar-bg: map-get($props, 'progress-bar-bg') !global;
+      $table-hover-bg: map-get($props, 'table-hover-bg') !global;
+      @content;
+
+      $color: null !global;
+      $card-color: null !global;
+      $card-shadow: null !global;
+      $font-color: null !global;
+      $navigation-bg: null !global;
+      $nav-button-bg: null !global;
+      $nav-button-disabled: null !global;
+      $nav-hover-color: null !global;
+      $table-border-color: null !global;
+      $filemanager-font-color: null !global;
+      $filemanager-aside-hover-color: null !global;
+      $progress-bar-bg: null !global;
+      $table-hover-bg: null !global;
+    }
+
+  }
+}

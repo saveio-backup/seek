@@ -848,13 +848,13 @@ export default {
 		 * 				description: 1: browserView and browserWindow
 		 * 										 0: browserView
 		 */
-		getArr() {
+		getAllBrowserViewId() {
 			let arr = [];
 			let views = [];
 			//  remote.BrowserWindow.getAllWindows()[0].views;
 			for (let win of remote.BrowserWindow.getAllWindows()) {
 				if (win.views) {
-					views = win.views;
+					views.concat(win.views);
 				}
 			}
 			for (let view of views) {
@@ -873,8 +873,8 @@ export default {
 		 * 										 0: browserView
 		 */
 		renderDateToBrowserView({ result, type, rendTo = 0 }) {
-			let arr = this.getArr(rendTo);
-			for (let value of arr) {
+			let browserViewIdLists = this.getAllBrowserViewId(rendTo);
+			for (let value of browserViewIdLists) {
 				ipcRenderer.sendTo(value, "get-data", { result, type, page: "tab" });
 			}
 			let arrWin = remote.BrowserWindow.getAllWindows();

@@ -177,7 +177,7 @@ export default {
 	},
 	mounted() {
 		ipcRenderer.on("forceUpdate", () => {
-			console.log('forceUpdate!!!!!');
+			console.log("forceUpdate!!!!!");
 			this.$forceUpdate();
 			this.views = remote.getCurrentWindow().views;
 		});
@@ -354,11 +354,8 @@ export default {
 };
 </script>
 <style lang="scss">
-$theme-color: #dfe2e9;
 // $theme-input-color: #2c2f44;
 $theme-input-color: #dfe2e9;
-// $theme-color-opacity: rgba(73, 77, 94, 1);
-$theme-color-opacity: rgba(246, 246, 248, 1);
 $theme-color-opacity-hover: rgba(246, 246, 248, 0.5);
 $light-grey: #f2f2f2;
 $tabs-height: 62px;
@@ -367,7 +364,10 @@ $tabs-height: 62px;
 }
 .window-control-wrapper {
 	height: $tabs-height;
-	background: $theme-color;
+	@include themify {
+		background-color: $navigation-bg;
+		color: $nav-hover-color;
+	}
 	.window-tabs {
 		-webkit-app-region: drag;
 		position: relative;
@@ -378,19 +378,26 @@ $tabs-height: 62px;
 		.window-tab-item {
 			padding: 0px 20px 0 5px;
 			&.is-active {
-				background: $theme-color-opacity;
+				@include themify {
+					background-color: $card-color;
+				}
 				&::after {
 					opacity: 0;
 				}
 
 				&:hover {
-					background: $theme-color-opacity;
+					@include themify {
+						background-color: $card-color;
+					}
 					transition: all 0 ease;
 				}
 			}
 
 			&:hover {
-				background: $theme-color-opacity-hover;
+				@include themify {
+					background-color: $card-color;
+				}
+				// background: $theme-color-opacity-hover;
 				transition: all 0.3s ease;
 			}
 
@@ -419,8 +426,7 @@ $tabs-height: 62px;
 			min-width: 50px;
 			font-size: 12px;
 			// color: #fff;
-			color: #202020;
-			// background: $theme-color;
+			// @extend .grey-xs;
 			.favicon {
 				width: 16px;
 				height: 16px;
@@ -445,8 +451,7 @@ $tabs-height: 62px;
 				right: 7px;
 				top: 50%;
 				transform: translateY(-50%);
-				// color: #fff;
-				color: #202020;
+				color: rgba(125, 125, 125, 0.7);
 				border-radius: 50%;
 				padding: 4px;
 
@@ -468,7 +473,6 @@ $tabs-height: 62px;
 			width: 18px;
 			line-height: 18px;
 			text-align: center;
-			color: #202020;
 			font-weight: 900;
 			opacity: 0.7;
 			border-radius: 50%;
@@ -535,25 +539,25 @@ $tabs-height: 62px;
 		}
 	}
 	.window-navbar {
+		@include themify {
+			background-color: $card-color;
+		}
 		display: flex;
 		position: relative;
 		height: 32px;
 		padding: 4px 16px 4px 6px;
-		background: $theme-color-opacity;
 		box-sizing: border-box;
 		align-items: center;
-		border-bottom: 1px solid #cfd2d9;
 		.input-url {
 			height: 22px;
 			.el-input__inner {
+				@include themify {
+					background-color: $color;
+				}
+				@extend .grey-xs;
 				outline: none;
 				border-radius: 15px;
-				// color: #fff;
-				// color: #202020;
 				font-size: 12px;
-				// opacity: .7;
-				color: rgba(32, 32, 32, 0.7);
-				background-color: rgba(223, 226, 233, 0.5);
 				border: 1px solid rgba(223, 226, 233, 0);
 				&:focus {
 					box-shadow: 0px 0px 2px 0px rgba(62, 133, 205, 1);
@@ -590,7 +594,9 @@ $tabs-height: 62px;
 
 			display: flex;
 			align-items: center;
-			color: #202020;
+			@include themify {
+				color: $font-color;
+			}
 
 			.nav-button {
 				width: 20px;
@@ -640,6 +646,9 @@ $tabs-height: 62px;
 			height: 2px;
 			.el-progress-bar {
 				display: block;
+				.el-progress-bar__outer {
+					background: none;
+				}
 			}
 		}
 	}

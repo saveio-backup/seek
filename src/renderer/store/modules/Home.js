@@ -1,9 +1,13 @@
 import axios from 'axios';
 import api from '../../assets/config/api'
 import router from '../../router/router';
+import {
+  ipcRenderer
+} from 'electron';
 const state = {
   balanceTotal: 0,
   balanceAddress: '',
+  themeColor: ipcRenderer.sendSync('getSettings', 'themeColor'),
   channels: [],
   channelBind: {},
   revenue: 0,
@@ -82,6 +86,9 @@ const mutations = {
   },
   'SET_DNS'(state, result) {
     state.dns = result;
+  },
+  'SET_THEME_COLOR'(state, result) {
+    state.themeColor = result;
   }
 }
 const timer = {
@@ -111,45 +118,45 @@ const actions = {
       .then((res) => {
         if (res.Error === 0) {
           if (res.Result.Address) { // Wallet(Account) exist
-              const result = res.Result;
-              for (let key in result) {
-                window.localStorage.setItem(key, result[key]);
-              }
-              commit('SET_CURRENT_ACCOUNT', 1) // login success
-              this.dispatch("setBalanceLists"); // getBalance
-              this.dispatch("setChannelBalanceTotal"); // getAllChannels
-              this.dispatch("setRevenue");
-              this.dispatch("setCurrentChannel");
-              try {
-                axios.get(api.channelInitProgress).then(progress => {
-                  if (progress.Error === 0) {
-                    if (progress.Result.End - progress.Result.Now > 100000) { // but no Channel
-                      if (location.href.indexOf('CreateAccount') < 0) {
-                        router.replace({
-                          name: 'CreateAccount'
-                        })
-                        commit('SET_CURRENT_HEIGHT', progress.Result.Now);
-                        commit('SET_TOTAL_HEIGHT', progress.Result.End);
-                      }
+            const result = res.Result;
+            for (let key in result) {
+              window.localStorage.setItem(key, result[key]);
+            }
+            commit('SET_CURRENT_ACCOUNT', 1) // login success
+            this.dispatch("setBalanceLists"); // getBalance
+            this.dispatch("setChannelBalanceTotal"); // getAllChannels
+            this.dispatch("setRevenue");
+            this.dispatch("setCurrentChannel");
+            try {
+              axios.get(api.channelInitProgress).then(progress => {
+                if (progress.Error === 0) {
+                  if (progress.Result.End - progress.Result.Now > 100000) { // but no Channel
+                    if (location.href.indexOf('CreateAccount') < 0) {
+                      router.replace({
+                        name: 'CreateAccount'
+                      })
+                      commit('SET_CURRENT_HEIGHT', progress.Result.Now);
+                      commit('SET_TOTAL_HEIGHT', progress.Result.End);
                     }
                   }
-                })
-              } catch(e) {
-                console.log(e);
-              }
+                }
+              })
+            } catch (e) {
+              console.log(e);
+            }
           } else {
             commit('SET_CURRENT_ACCOUNT', 0) // login fail
             // window.localStorage.clear(); // remove all local infomation
             const notClear = ['waitForUploadOrderList', 'uploadTask', 'localStatus']
-						outer: for(let value of window.localStorage) {
-							if(!window.localStorage.propertyIsEnumerable(value)) continue;
-							for(let notClearItem of notClear) {
-								if(value.startsWith(notClearItem)) {
-									continue outer;
-								}
-							}
-							window.localStorage.removeItem(value);
-						}
+            outer: for (let value of window.localStorage) {
+              if (!window.localStorage.propertyIsEnumerable(value)) continue;
+              for (let notClearItem of notClear) {
+                if (value.startsWith(notClearItem)) {
+                  continue outer;
+                }
+              }
+              window.localStorage.removeItem(value);
+            }
           }
         } else if(res.Error === 50012) {
           if (location.href.indexOf('Login') < 0) {
@@ -190,14 +197,16 @@ const actions = {
       getAllDns(commit);
     }, timer.COUNT_INTERVAL)
   },
-  clearIntervalGetDns({commit}) {
+  clearIntervalGetDns({
+    commit
+  }) {
     clearInterval(timer.dns);
   },
   setCurrentChannel({
     commit
   }) {
     axios.get(api.getCurrentChannel).then(res => {
-      if(res.Error === 0) {
+      if (res.Error === 0) {
         this.dispatch('setChannelBind', res.Result.ChannelId);
       }
     });

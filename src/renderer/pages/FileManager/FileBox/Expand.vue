@@ -3,7 +3,7 @@
 		<div class="content">
 			<div class="space-header">
 				<div class="space-progress">
-					<div class="theme-font-blue bold mb10 ft14 user-no-select">{{$t('fileManager.used')}}: {{util.bytesToSize(space.Used * 1024)}} / {{util.bytesToSize((space.Used + space.Remain) *1024)}} <span class="theme-font-blue-40 bold ft14 ">{{$t('fileManager.expiredTime')}} :{{expired_old}}</span> </div>
+					<div class="theme-font-color bold mb10 ft14 user-no-select">{{$t('fileManager.used')}}: {{util.bytesToSize(space.Used * 1024)}} / {{util.bytesToSize((space.Used + space.Remain) *1024)}} <span class="grey-xs bold ft14 ">{{$t('fileManager.expiredTime')}} :{{expired_old}}</span> </div>
 					<el-progress
 						:stroke-width="30"
 						:percentage="takeSpace"
@@ -15,7 +15,7 @@
 					class="storage"
 				>{{$t('fileManager.storage')}}</ripper-button>
 			</div>
-			<p class="theme-font-blue bold mt40 mb10 ft14 user-no-select">{{$t('fileManager.spaceAdjustRecord')}}</p>
+			<p class="theme-font-color bold mt40 mb10 ft14 user-no-select">{{$t('fileManager.spaceAdjustRecord')}}</p>
 			<div class="space-record">
 				<!-- border -->
 				<el-table
@@ -76,18 +76,18 @@
 				<div class="loading-content expand-setspace-loading">
 					<div class="adjust">
 						<div class="adjust-item">
-							<div class="adjust-title bold ft14 tl theme-font-blue-40">{{$t('fileManager.spaceSize')}}:</div>
+							<div class="adjust-title bold ft14 tl">{{$t('fileManager.spaceSize')}}:</div>
 						</div>
 						<!-- <h3 class="theme-font-blue transparent bold ft12">Space Size:</h3> -->
 						<div class="adjust-item">
-							<p class="adjust-title theme-font-blue ftpx14">{{$t('fileManager.current')}}:</p>
+							<p class="adjust-title ftpx14">{{$t('fileManager.current')}}:</p>
 							<div class="adjust-info">
-								<p class="theme-font-blue ftpx14 mr20">{{util.bytesToSize( (space.Used + space.Remain)*1024)}}</p>
-								<p class="theme-font-blue-40 ftpx14 ml20">{{util.bytesToSize(space.Used *1024)}} / {{util.bytesToSize( (space.Used + space.Remain)*1024)}}</p>
+								<p class="ftpx14 mr20">{{util.bytesToSize( (space.Used + space.Remain)*1024)}}</p>
+								<p class="ftpx14 ml20">{{util.bytesToSize(space.Used *1024)}} / {{util.bytesToSize( (space.Used + space.Remain)*1024)}}</p>
 							</div>
 						</div>
 						<div class="adjust-item">
-							<div class="adjust-title theme-font-blue ftpx14">{{$t('fileManager.adjustTo')}}:</div>
+							<div class="adjust-title ftpx14">{{$t('fileManager.adjustTo')}}:</div>
 							<div class="adjust-info">
 								<el-input-number
 									ref="spaceNumberInput"
@@ -121,16 +121,16 @@
 					</div>
 					<div class="adjust">
 						<div class="adjust-item">
-							<div class="adjust-title  theme-font-blue-40 bold ft14 tl">{{$t('fileManager.spaceDate')}}:</div>
+							<div class="adjust-title  bold ft14 tl">{{$t('fileManager.spaceDate')}}:</div>
 						</div>
 						<div class="adjust-item">
-							<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.expiryDate')}}:</p>
+							<p class="adjust-title ft14">{{$t('fileManager.expiryDate')}}:</p>
 							<div class="adjust-info">
-								<p class="theme-font-blue">{{expired_old}}</p>
+								<p class="theme-font-color">{{expired_old}}</p>
 							</div>
 						</div>
 						<div class="adjust-item">
-							<div class="adjust-title theme-font-blue ft14">{{$t('fileManager.adjustTo')}}:</div>
+							<div class="adjust-title ft14">{{$t('fileManager.adjustTo')}}:</div>
 							<div class="adjust-info">
 								<el-date-picker
 									v-model="expired"
@@ -146,8 +146,8 @@
 					</div>
 					<div class="adjust">
 						<div class="adjust-item">
-							<p class="adjust-title theme-font-blue ftpx14">{{cost.TransferType === 2?$t('fileManager.pledgeRefund'):$t('fileManager.pledgePayment')}}:</p>
-							<div class="adjust-info theme-font-blue ftpx14">
+							<p class="adjust-title ftpx14">{{cost.TransferType === 2?$t('fileManager.pledgeRefund'):$t('fileManager.pledgePayment')}}:</p>
+							<div class="adjust-info ftpx14">
 								<div v-if="cost.TransferType !== 2">
 									{{cost.FeeFormat?util.effectiveNumber(cost.FeeFormat):0}} ONI
 								</div>
@@ -157,16 +157,16 @@
 							</div>
 						</div>
 						<div class="adjust-item">
-							<p class="adjust-title theme-font-blue ft14"></p>
-							<div class="adjust-info theme-font-blue-40 ft14">
+							<p class="adjust-title ft14"></p>
+							<div class="adjust-info ft14">
 								<span class="mr10">{{$t('fileManager.available')}}</span> {{mainCount? util.effectiveNumber(mainCount):0}} ONI
 							</div>
 						</div>
 					</div>
 					<div class="adjust">
 						<div class="adjust-item">
-							<div class="adjust-title theme-font-blue ft14">{{$t('public.walletPassword')}}:</div>
-							<div class="adjust-info theme-font-blue-40 ft14 mr20">
+							<div class="adjust-title ft14">{{$t('public.walletPassword')}}:</div>
+							<div class="adjust-info  ft14 mr20">
 								<el-input
 									v-model="Password"
 									@keyup.enter.native='setUserSpace'
@@ -587,7 +587,6 @@ $grey: #ccc;
 		padding: 0 50px 10px;
 		display: flex;
 		flex-direction: column;
-		background: #f9f9fb;
 		.space-header {
 			padding-top: 30px;
 			display: flex;
@@ -617,11 +616,6 @@ $grey: #ccc;
 			.el-table {
 				color: $theme-font-blue;
 				font-weight: bold;
-				thead th {
-					background: #f9f9fb;
-					color: #1b1e2f;
-					// font-weight: bold;
-				}
 			}
 		}
 	}
@@ -629,7 +623,10 @@ $grey: #ccc;
 		padding: 20px 60px;
 	}
 	.adjust {
-		border-bottom: solid 1px #ebecef;
+		border-bottom: solid 1px;
+		@include themify{
+			border-color:$table-border-color;
+		}
 		margin-bottom: 20px;
 		padding-bottom: 20px;
 		.el-input-number__increase,

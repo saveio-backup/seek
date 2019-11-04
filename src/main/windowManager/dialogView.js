@@ -8,14 +8,6 @@ import {
   DEFAULT_URL
 } from './defaultOption'
 import frontCfgObj from './frontCfgObj'
-// import {
-//   SeekDB
-// } from '../dbs/index'
-import {
-  SettingDB
-} from '../dbs/index_levelup';
-// const seekDB = new SeekDB();
-// seekDB.getDB();
 class dialogView {
   constructor(win) {
     this.browserView = null;

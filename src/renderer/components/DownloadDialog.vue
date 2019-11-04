@@ -16,16 +16,16 @@
 		</el-form>
 		<div class="mt20 text-center new-download-wrapper">
 			<div class="tl">
-				<p class="theme-font-blue new-download-left">{{$t('public.name')}}:</p>
-				<p class="theme-font-blue-70 new-download-right">{{downloadInfo.Name || ''}}</p>
+				<p class="new-download-left">{{$t('public.name')}}:</p>
+				<p class="new-download-right">{{downloadInfo.Name || ''}}</p>
 			</div>
 			<div class="tl">
-				<p class="theme-font-blue new-download-left">{{$t('public.size')}}:</p>
-				<p class="theme-font-blue-70 new-download-right">{{downloadInfo.Size? util.bytesToSize(downloadInfo.Size*1024) : '0'}}</p>
+				<p class="new-download-left">{{$t('public.size')}}:</p>
+				<p class="new-download-right">{{downloadInfo.Size? util.bytesToSize(downloadInfo.Size*1024) : '0'}}</p>
 			</div>
 			<div class="tl">
-				<p class="theme-font-blue new-download-left">{{$t('public.cost')}}:</p>
-				<p class="theme-font-blue-70 new-download-right">{{downloadInfo.FeeFormat || '0'}} ONI</p>
+				<p class="new-download-left">{{$t('public.cost')}}:</p>
+				<p class="new-download-right">{{downloadInfo.FeeFormat || '0'}} ONI</p>
 			</div>
 			<ripper-button
 				class="mt40 primary"

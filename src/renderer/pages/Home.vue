@@ -3,7 +3,6 @@
 		id="home"
 		class="common-main"
 	>
-		<!-- <p @click="testUnzip">Unzip</p> -->
 		<div
 			class="content islogin"
 			v-show="loginStatus ===1"
@@ -57,12 +56,16 @@
 					<div class="user-revenue">
 						<p class="grey-xs bold ft14">{{$t('home.yourProfit')}}:</p>
 						<div class="flex between ai-center">
-							<span class="theme-bold ftpx36">{{revenueFormat.toLocaleString('en-US')}}</span>
+							<span
+								class="ftpx36"
+							>{{revenueFormat.toLocaleString('en-US')}}</span>
 							<span class="bold ftpx16 unit">ONI</span>
 						</div>
 					</div>
 				</div>
-				<div class="user-meta-center">
+				<div
+					class="user-meta-center"
+				>
 					<p class="grey-xs bold ft14 user-meta-title">{{$t('home.totalBalance')}}:</p>
 					<p class="total-num"> {{balanceLists.length>0?filterFloat(balanceLists[0].BalanceFormat).toLocaleString('en-US'):'0'}}<span> ONI</span></p>
 					<div
@@ -70,7 +73,10 @@
 						class="balanceView"
 					></div>
 				</div>
-				<div class="user-meta-right">
+				<div
+					class="user-meta-right"
+					:class="themeColor +'-theme-card-color'"
+				>
 					<p class="grey-xs bold ft14 user-meta-title">{{$t('home.channelAsset')}}:</p>
 					<div
 						id="channel-view"
@@ -256,9 +262,6 @@ export default {
 			this.$nextTick(() => {
 				this.$refs.channelListObj.openOpen(dnsAdress, amount);
 			});
-		},
-		testUnzip() {
-			ipcRenderer.send("testUnzip");
 		},
 		// init chart dom and listening resize event to change chart
 		chartInit() {
@@ -771,6 +774,9 @@ export default {
 		}
 	},
 	computed: {
+		themeColor() {
+			return this.$store.state.Home.themeColor;
+		},
 		lang() {
 			return this.$i18n.locale;
 		},
@@ -869,7 +875,6 @@ export default {
 <style lang="scss">
 $light-grey: #f2f2f2;
 $grey: #ccc;
-$theme-color: #1b1e2f;
 $input-color: rgba(203, 203, 203, 1);
 .el-select-dropdown,
 .el-popper {
@@ -1106,13 +1111,15 @@ $input-color: rgba(203, 203, 203, 1);
 					// height: 100px;
 					height: 120px;
 					border-radius: 6px;
-					background: #fff;
 					padding: 5px 36px 5px 16px;
-					box-shadow: 0px 2px 20px 0px rgba(196, 196, 196, 0.24);
+					@include themify {
+						background-color: $card-color;
+						color:$font-color;
+						box-shadow: $card-shadow;
+					}
 
 					& > p {
 						user-select: none;
-						color: rgba(32, 32, 32, 0.4);
 					}
 
 					& > div {
@@ -1131,15 +1138,15 @@ $input-color: rgba(203, 203, 203, 1);
 				}
 			}
 			.user-meta-center {
-				// display: flex;
-				// flex-direction: column;
-				// justify-content: space-between;
+				@include themify{
+					color: $font-color;
+					background-color: $card-color;
+					box-shadow: $card-shadow;
+				}
 				width: calc(60% - 260px);
 				height: 288px;
-				background: #fff;
 				border-radius: 6px;
 				padding: 5px 16px;
-				box-shadow: 0px 2px 20px 0px rgba(196, 196, 196, 0.24);
 
 				.user-meta-title {
 					margin-top: 12px;
@@ -1164,15 +1171,15 @@ $input-color: rgba(203, 203, 203, 1);
 				}
 			}
 			.user-meta-right {
-				// display: flex;
-				// flex-direction: column;
-				// justify-content: space-between;
+				@include themify{
+					color:$font-color;
+					background: $card-color;
+					box-shadow: $card-shadow;
+				}
 				width: calc(40% - 160px);
 				height: 288px;
-				background: #fff;
 				border-radius: 6px;
 				padding: 5px 16px;
-				box-shadow: 0px 2px 20px 0px rgba(196, 196, 196, 0.24);
 				position: relative;
 
 				.user-meta-title {

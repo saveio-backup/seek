@@ -1247,7 +1247,6 @@ export default {
 </script>
 <style lang="scss">
 $light-blue: #65a6ff;
-$light-grey: #f9f9fb;
 $theme-color: #1b1e2f;
 $theme-font-blue: #040f39;
 #disk {
@@ -1257,7 +1256,9 @@ $theme-font-blue: #040f39;
 		justify-content: space-between;
 		padding: 0 30px 0 14px;
 		height: 80px;
-		background: $light-grey;
+		@include themify{
+			background-color:$color;
+		}
 		border-bottom: 1px solid rgba(32, 32, 32, 0.1);
 		.fun-button {
 			button {
@@ -1304,21 +1305,14 @@ $theme-font-blue: #040f39;
 				height: 33px;
 				line-height: 33px;
 				border-radius: 17px;
-				// color: rgba(32, 32, 32, 0.7);
 				padding-left: 40px;
-				// border: 1px solid #dee2ea;
-				// background: #EDEFF4;
-				// &:focus {
-				//  background: #DEE2EA;
-				//  border: 1px solid #dee2ea !important;
-				// }
 			}
 			.el-input__prefix {
 				left: 10px;
 				.el-input__icon {
 					line-height: 34px;
 					font-size: 1.6rem;
-					color: rgba(32, 32, 32, 0.4);
+					@extend .theme-font-color;
 				}
 			}
 		}
@@ -1328,8 +1322,9 @@ $theme-font-blue: #040f39;
 		top: 80px;
 		bottom: 0px;
 		width: 100%;
-		padding-top: 20px;
-		background: #f9f9fb;
+		@include themify{
+			background-color:$color;
+		}
 
 		.table-element {
 			// font-weight: bold;

@@ -7,7 +7,7 @@
 		>
 			<div class="flex1 mr50">
 				<p
-					class="ft20 mb10"
+					class="ft20 mb10 theme-font-color"
 					v-if="fileList.length>0"
 				>{{$t(`fileManager["${transferTypeConfig[transferType]}"]`)}} {{$t('fileManager.progress')}}</p>
 				<p
@@ -21,7 +21,7 @@
 					:show-text="false"
 				></el-progress>
 				<p
-					class="ft14 mt10"
+					class="ft14 mt10 theme-font-color"
 					v-if="fileList.length>0"
 				>{{$t('fileManager.complete')}} {{Math.ceil(totalProgress * 100)}}%,
 					<span class="ml10 light-blue">{{util.bytesToSize(getAllTaskSpeedTotal*1024)}}/{{$t('fileManager.s')}}</span>
@@ -68,7 +68,7 @@
 			v-else
 			class="top-progress mr50 ml20"
 		>
-			<p class="theme-font-blue ft14 user-no-select flex1">{{$t('fileManager.finished')}} {{fileList.length}} {{$t('fileManager.files')}}</p>
+			<p class="theme-font-color ft14 user-no-select flex1">{{$t('fileManager.finished')}} {{fileList.length}} {{$t('fileManager.files')}}</p>
 			<ripper-button
 				v-if="transferType === 0"
 				@click="deleteAll"
@@ -107,8 +107,8 @@
 				>
 					<template slot-scope="scope">
 						<div class="ftpx14">
-							<p class="theme-font-blue">{{scope.row.FileName}}</p>
-							<p class="theme-font-blue-40"><span v-if="transferType != 0">{{util.bytesToSize((((scope.row.IsUploadAction ? scope.row.UploadSize : scope.row.DownloadSize )))/(scope.row.IsUploadAction ? (scope.row.CopyNum + 1) : 1) * 1024 || 0)}}/</span>{{util.bytesToSize(scope.row.FileSize * 1024)}}</p>
+							<p class="theme-font-color">{{scope.row.FileName}}</p>
+							<p class="grey-xs"><span v-if="transferType != 0">{{util.bytesToSize((((scope.row.IsUploadAction ? scope.row.UploadSize : scope.row.DownloadSize )))/(scope.row.IsUploadAction ? (scope.row.CopyNum + 1) : 1) * 1024 || 0)}}/</span>{{util.bytesToSize(scope.row.FileSize * 1024)}}</p>
 							<!-- <p class="theme-font-blue-40"><span v-if="transferType != 0">{{(((scope.row.IsUploadAction ? (scope.row.UploadSize || 0) : scope.row.DownloadSize )))/(scope.row.IsUploadAction ? (scope.row.CopyNum + 1) : 1) * 1024)}}/</span>{{util.bytesToSize(scope.row.FileSize * 1024)}}</p> -->
 						</div>
 					</template>
@@ -529,21 +529,21 @@
 					v-if="fileObjById[detailId]"
 				>
 					<div class="adjust-item">
-						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.fileHash')}}:</p>
+						<p class="adjust-title  ft14">{{$t('fileManager.fileHash')}}:</p>
 						<div class="adjust-info">
-							<p class="theme-font-blue ftpx14 mr20">{{fileObjById[detailId].FileHash || ''}}</p>
+							<p class=" ftpx14 mr20">{{fileObjById[detailId].FileHash || ''}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
-						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.downloadDate')}}:</p>
+						<p class="adjust-title  ft14">{{$t('fileManager.downloadDate')}}:</p>
 						<div class="adjust-info">
-							<p class="theme-font-blue ftpx14 mr20">{{$dateFormat.formatTimeByTimestamp(fileObjById[detailId].UpdatedAt*1000) || ''}}</p>
+							<p class=" ftpx14 mr20">{{$dateFormat.formatTimeByTimestamp(fileObjById[detailId].UpdatedAt*1000) || ''}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
-						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.fee')}}:</p>
+						<p class="adjust-title  ft14">{{$t('fileManager.fee')}}:</p>
 						<div class="adjust-info">
-							<p class="theme-font-blue ftpx14 mr20">{{fileObjById[detailId].DownloadSize * 1024 / Math.pow(10, 9) || '0'}} ONI</p>
+							<p class=" ftpx14 mr20">{{fileObjById[detailId].DownloadSize * 1024 / Math.pow(10, 9) || '0'}} ONI</p>
 						</div>
 					</div>
 				</div>
@@ -1821,7 +1821,6 @@ $brand-blue: #409eff;
 $light-blue: #65a6ff;
 $sucess: #67c23a;
 $danger: #f56c6c;
-$light-grey: #f9f9fb;
 .file-component {
 	height: 100%;
 	display: flex;
@@ -1836,7 +1835,6 @@ $light-grey: #f9f9fb;
 		display: flex;
 		height: 140px;
 		padding: 0 20px;
-		background: $light-grey;
 		align-items: center;
 		.progress {
 			flex: 1;
@@ -1855,7 +1853,9 @@ $light-grey: #f9f9fb;
 	}
 	.file-list {
 		height: calc(100% - 80px);
-		border-top: 1px solid #ebeef5;
+		@include themify{
+			border-top: $table-border-color;
+		}
 		&.is-not-compelete-top-progress {
 			height: calc(100% - 140px);
 		}
@@ -1865,7 +1865,6 @@ $light-grey: #f9f9fb;
 			thead th {
 				background: #f9f9fb;
 				color: #1b1e2f;
-				// font-weight: bold;
 			}
 			.download-type {
 				vertical-align: top;
@@ -2042,7 +2041,6 @@ $light-grey: #f9f9fb;
 			width: 160px;
 			padding-right: 30px;
 			text-align: right;
-			color: rgba(32, 32, 32, 0.4);
 		}
 		.adjust-info {
 			flex: 1;

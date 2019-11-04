@@ -209,10 +209,17 @@ export default {
 	display: flex;
 	flex-direction: column;
 	& > .header {
-		background: #f9f9fb;
 		padding: 20px 20px;
 		border-bottom: 1px solid rgba(32, 32, 32, 0.1);
 		position: relative;
+	}
+	.common-el-input {
+		border: 1px solid rgba(4, 15, 57, 0.2);
+		.el-range-input {
+			@include themify {
+				background-color: $card-color;
+			}
+		}
 	}
 	.incomeTable {
 		height: 100%;
@@ -221,13 +228,12 @@ export default {
 		padding-top: 20px;
 	}
 	.total-income {
-		color: rgba(32, 32, 32, 0.4);
 		font-size: 1.4rem;
 		position: absolute;
 		bottom: 15px;
 		right: 70px;
 		span {
-			color: rgba(32, 32, 32, 1);
+			@extend .theme-font-color;
 			font-size: 1.8rem;
 			margin-left: 10px;
 		}

@@ -1061,8 +1061,8 @@ export default {
 $inputBg: #edeff4;
 $inputFocusBg: #dee2ea;
 #upload {
-	background: #f9f9fb;
 	& > .content {
+		@extend .theme-font-color;
 		height: 100%;
 		width: 670px;
 		margin: 0 auto;
@@ -1091,18 +1091,12 @@ $inputFocusBg: #dee2ea;
 			border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 			padding-bottom: 25px;
 		}
-		.el-form-item__label {
-			font-weight: bold;
-			color: #202020;
-		}
 		.el-select {
 			input {
 				width: 150px;
 				height: 32px;
 				border: 1px solid rgba(4, 15, 57, 0.2);
 				border-radius: 2px;
-				// color: rgba(32, 32, 32, 0.4);
-				color: rgba(32, 32, 32, 0.7);
 			}
 		}
 		.form-right {
@@ -1117,12 +1111,6 @@ $inputFocusBg: #dee2ea;
 				input {
 					border: 1px solid #dee2ea;
 					border-radius: 2px;
-					background: $inputBg;
-					// color: rgba(32, 32, 32, 0.4);
-					color: rgba(32, 32, 32, 0.7);
-					&:focus {
-						background: $inputFocusBg;
-					}
 				}
 			}
 		}
@@ -1270,8 +1258,6 @@ $inputFocusBg: #dee2ea;
 		}
 		h1 {
 			font-size: 2.4rem;
-			// color: #ccc;
-			color: #202020;
 			margin-top: 20px;
 			margin-bottom: 30px;
 		}

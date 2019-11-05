@@ -1088,14 +1088,16 @@ $inputFocusBg: #dee2ea;
 			color: #fff;
 		}
 		.el-form-item {
-			border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+			border-bottom:solid 1px;
+			@include themify{
+				border-color:$table-border-color;
+			}
 			padding-bottom: 25px;
 		}
 		.el-select {
 			input {
 				width: 150px;
 				height: 32px;
-				border: 1px solid rgba(4, 15, 57, 0.2);
 				border-radius: 2px;
 			}
 		}
@@ -1108,10 +1110,6 @@ $inputFocusBg: #dee2ea;
 			&.el-input {
 				width: 150px;
 				height: 32px;
-				input {
-					border: 1px solid #dee2ea;
-					border-radius: 2px;
-				}
 			}
 		}
 		.form-right-second {
@@ -1164,7 +1162,6 @@ $inputFocusBg: #dee2ea;
 			}
 			label {
 				font-size: 1.4rem;
-				color: #202020;
 				width: 100% !important;
 			}
 			.el-form-item__content {

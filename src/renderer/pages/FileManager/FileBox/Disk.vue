@@ -158,7 +158,7 @@
 						sortable
 					>
 						<template slot-scope="scope">
-							<span class="td-grey">{{scope.row.OwnerAddress || $t('fileManager.nameless')}}</span>
+							<span class="">{{scope.row.OwnerAddress || $t('fileManager.nameless')}}</span>
 						</template>
 					</el-table-column>
 					<!-- api return 'KB' unit -->
@@ -171,7 +171,7 @@
 					>
 						<template slot-scope="scope">
 							<span
-								class="td-grey break-word"
+								class=" break-word"
 								:class="scope.row.Undone?'theme-font-blue-40':''"
 							>
 								{{util.bytesToSize(scope.row.RealFileSize * 1024)}}
@@ -187,7 +187,7 @@
 					>
 						<template slot-scope="scope">
 							<div
-								class="td-grey break-word"
+								class=" break-word"
 								:class="scope.row.Undone?'theme-font-blue-40':''"
 							>
 								{{scope.row.Status === -1 ? '' : date.formatTime(new Date( (scope.row.DownloadAt||scope.row.UpdatedAt) * 1000))}}
@@ -224,7 +224,7 @@
 						prop="Privilege"
 					>
 						<template slot-scope="scope">
-							<span class="td-grey ft14">
+							<span class=" ft14">
 								{{$t(`fileManager["${privilegeConfig[scope.row.Privilege]}"]`)}}
 							</span>
 						</template>
@@ -1380,9 +1380,6 @@ $theme-font-blue: #040f39;
 					}
 				}
 			}
-		}
-		.td-grey {
-			color: rgba(32, 32, 32, 0.4);
 		}
 	}
 	.adjust {

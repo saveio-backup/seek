@@ -1,6 +1,6 @@
 <template>
   <div id="syncInfo" class="syncInfoWrapper flex column around">
-    <p class="ftpx12 text-center theme-font-blue-70">
+    <p class="ftpx12 text-center theme-font-color">
       #{{currentHeihgt}} / #{{totalHeight}}
     </p>
     <p class="ftpx12 text-center light-blue">

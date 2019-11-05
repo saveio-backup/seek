@@ -21,7 +21,7 @@ const DEFAULT_USERSUMMARY_CONFIG = {
     },
     modify: true
   },
-  Settings: {
+  Settings: { // default setting
     type: 'JSON',
     value: {
       console: false,
@@ -30,7 +30,7 @@ const DEFAULT_USERSUMMARY_CONFIG = {
       maxPeerNum: 20,
       ChainId: DEFAULT_CHAINID,
       lang: 'en',
-      themeColor: 'default'
+      themeColor: 'light'
     },
     modify: true
   },
@@ -64,9 +64,6 @@ class SeekLevelDB {
         if (err) {
           reject('Update Failed');
         } else {
-          console.log('modified ok');
-          console.log('modifed key is', key);
-          console.log('value is', value);
           resolve('OK');
         }
       })

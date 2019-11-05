@@ -150,9 +150,6 @@ $sub-light-color: #8BD179;
 }
 
 .el-select-dropdown {
-  @include themify{
-    background: $color;
-  }
   border:none!important;
   border-radius: 0px !important;
 }
@@ -165,12 +162,6 @@ $sub-light-color: #8BD179;
   padding: 0px !important;
   text-align: center;
   color: $theme-font-blue;
-}
-.el-select-dropdown__item.hover{
-  @include themify {
-    background-color: $table-hover-bg;
-    color: $font-color;
-  }
 }
 .el-select-dropdown__item.selected {
   color: #409EFF;

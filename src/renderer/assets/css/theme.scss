@@ -1,5 +1,5 @@
 $themes: ( // no coment, just for format code
-  'default': ( // same as above
+  'light': ( // same as above
     'color':#f9f9fb, // bgcolor
     'navigation-bg':#dfe2e9,
     'nav-button-bg':#c0c6d1,
@@ -21,9 +21,9 @@ $themes: ( // no coment, just for format code
     'nav-button-bg':#2A2B30,
     'nav-hover-color':#fff,
     'nav-button-disabled':#323436,
-    'table-border-color':#1c1d21,
+    'table-border-color':rgba(255,255,255,0.1),
     'card-color':#35363c,
-    'card-shadow':none,
+    'card-shadow':0px 2px 10px 0px rgba(32,32,32,1),
     'filemanager-font-color':#fff,
     'filemanager-aside-hover-color':#202125,
     'progress-bar-bg':#1c1d21,

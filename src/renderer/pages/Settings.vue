@@ -126,7 +126,7 @@ export default {
 			pathDir: {
 				DownloadPath: ""
 			},
-			themeList: ["dark", "light", "default"],
+			themeList: ["dark", "light"],
 			settings: {},
 			netConfig: {
 				list: [],

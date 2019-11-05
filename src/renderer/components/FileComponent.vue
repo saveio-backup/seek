@@ -95,7 +95,7 @@
 					v-if="transferType === 2"
 				>
 					<template slot-scope="scope">
-						<div class="ftpx16 theme-font-blue">
+						<div class="ftpx16">
 							<i class="ofont ofont-wangye" :title="$t('fileManager.thirdPartyWebsitesResources')" v-if="scope.row.Url.startsWith('oni://www')"></i>
 						</div>
 					</template>
@@ -150,7 +150,7 @@
 								<span>
 									{{Math.ceil((scope.row.Progress||0)*100)}}%
 								</span>
-								<span class="theme-font-blue-40">
+								<span class="grey-color">
 									({{taskSpeed[scope.row.Id] && util.bytesToSize((taskSpeed[scope.row.Id].speed * 1024 || 0)) || '0 Byte'}}/{{$t('fileManager.s')}})
 								</span>
 							</span>
@@ -395,7 +395,7 @@
 					>
 						<div class="node-name pr30">{{$t('fileManager.uploadModel')}}:</div>
 						<div
-							class="theme-font-blue-40 node-value ft14"
+							class="node-value ft14"
 							v-if="fileObjById[detailId]"
 						>
 							{{fileObjById[detailId].StoreType === 1 ? $t('fileManager.advance') : fileObjById[detailId].StoreType === 0 ? $t('fileManager.primary') : ''}}
@@ -407,7 +407,7 @@
 					>
 						<div class="node-name pr30">{{$t('fileManager.fileHash')}}:</div>
 						<div
-							class="theme-font-blue-40 node-value"
+							class="node-value"
 							v-if="fileObjById[detailId]"
 						>{{fileObjById[detailId].FileHash}}</div>
 					</li>
@@ -417,7 +417,7 @@
 					>
 						<div class="node-name pr30">{{$t('fileManager.Consumption')}}:</div>
 						<div
-							class="theme-font-blue-40 node-value"
+							class="node-value"
 							v-if="fileObjById[detailId]"
 						>{{fileObjById[detailId].DownloadSize * 1024 / Math.pow(10, 9)}} ONI</div>
 					</li>
@@ -1950,13 +1950,8 @@ $danger: #f56c6c;
 				padding: 15px 0;
 				border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 				.node-name {
-					// width: 10%;
 					width: 140px;
-					color: #202020;
 					font-size: 1.4rem;
-					// text-overflow: ellipsis;
-					// overflow: hidden;
-					// white-space: nowrap;
 					height: 100%;
 				}
 				.node-value {

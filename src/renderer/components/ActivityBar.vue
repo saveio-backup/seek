@@ -97,7 +97,6 @@
 	</div>
 </template>
 <script>
-import "element-ui/lib/theme-chalk/index.css";
 import { remote, ipcRenderer } from "electron";
 const { Menu } = remote;
 export default {

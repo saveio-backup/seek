@@ -53,8 +53,7 @@ export default {
 			transferType: 2
 		};
 	},
-	mounted() {
-	},
+	mounted() {},
 	watch: {
 		transferType(newVal, oldVal) {
 			localStorage.setItem("transferType", newVal);
@@ -114,7 +113,7 @@ $light-grey: #f9f9fb;
 				display: flex;
 				padding: 10px 0 10px 60px;
 				border-radius: 0 50px 50px 0;
-				@include themify{
+				@include themify {
 					color: $filemanager-font-color;
 				}
 				font-weight: 500;
@@ -130,14 +129,16 @@ $light-grey: #f9f9fb;
 					transform: translateX(100%) translateY(-50%);
 				}
 				&:hover {
-					background: #edeff4;
+					@include themify {
+						background-color: $filemanager-aside-hover-color;
+					}
 					color: #2f8ff0;
 				}
 				&:active {
 					opacity: 0.7;
 				}
 				&.hover-link {
-					@include themify{
+					@include themify {
 						background-color: $filemanager-aside-hover-color;
 					}
 					color: #2f8ff0;

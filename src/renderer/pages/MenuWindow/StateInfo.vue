@@ -3,7 +3,7 @@
 		id="stateInfo"
 		class="stateInfoWrappper"
 	>
-		<ul class="ftpx14 theme-font-blue-70">
+		<ul class="ftpx14 theme-font-color">
 			<li class="flex">
 				<i
 					class="process-status"

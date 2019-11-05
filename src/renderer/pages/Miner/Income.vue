@@ -13,7 +13,7 @@
 				:end-placeholder="$t('miner.end')"
 			>
 			</el-date-picker>
-			<div class="total-income ft14">{{$t('miner.totalProfit')}}: <span>{{filterFloat(result.TotalIncomeFormat).toLocaleString('en-US') || 0}} ONI</span></div>
+			<div class="total-income ft14"> <span class="fixeddddddd">{{$t('miner.totalProfit')}}:</span> <span class="theme-font-color">{{filterFloat(result.TotalIncomeFormat).toLocaleString('en-US') || 0}} ONI</span></div>
 		</div>
 
 		<!-- border -->
@@ -232,8 +232,11 @@ export default {
 		position: absolute;
 		bottom: 15px;
 		right: 70px;
+		.fixeddddddd{
+			font-size:12px;
+			@extend .dark-grey;
+		}
 		span {
-			@extend .theme-font-color;
 			font-size: 1.8rem;
 			margin-left: 10px;
 		}

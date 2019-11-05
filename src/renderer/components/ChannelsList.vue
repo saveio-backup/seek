@@ -197,7 +197,7 @@
 						</el-select> -->
 					</el-form-item>
 					<el-form-item
-						class="theme-font-blue-bold form-amount"
+						class="form-amount"
 						:label="$t('public.amount')+'(ONI)'"
 						prop="amount"
 						v-if="channelToggle.type==='add'"
@@ -719,7 +719,6 @@ $theme-color: #202020;
 			text-align: right;
 			font-size: 1.4rem;
 			font-weight: 500;
-			color: rgba(32, 32, 32, 0.7);
 		}
 	}
 }

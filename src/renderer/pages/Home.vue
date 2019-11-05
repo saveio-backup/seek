@@ -878,7 +878,7 @@ $grey: #ccc;
 $input-color: rgba(203, 203, 203, 1);
 .el-select-dropdown,
 .el-popper {
-	border: solid 1px #fff;
+	// border: solid 1px #fff;
 	border-top: none;
 }
 .asset-item {

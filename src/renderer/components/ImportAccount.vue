@@ -1,7 +1,7 @@
 <template>
 	<div
 		id="import-account"
-		class="account-wrap"
+		class="account-wrap theme-font-color"
 	>
 		<div class="account-box">
 			<h2 class="account-title">{{$t('account.importAccount')}}</h2>
@@ -335,7 +335,6 @@ export default {
 			width: 120px;
 			height: 18px;
 			a {
-				color: rgba(32, 32, 32, 0.4);
 				position: relative;
 				cursor: pointer;
 				user-select: none;
@@ -370,25 +369,17 @@ export default {
 	.import-button {
 		margin-top: 80px;
 	}
-	// .el-form .el-input__inner {
-	// 	background: #EDEFF4;
-	// 	border: 0;
-	// 	border-radius: 2px;
-	// }
 	.el-form textarea {
 		padding: 15px;
 		font-size: 1.4rem;
 		text-align: left;
 		height: 130px;
-		background: #edeff4;
 		border-radius: 2px;
-		color: rgba(32, 32, 32, 0.7);
-		word-break: break-all;
-		border: 0;
 		word-break: break-all;
 		transition: all 0.3s ease;
-		&:focus {
-			background: #e0e2e6;
+		border:0;
+		@include themify{
+			background-color:$card-color;
 		}
 	}
 	.input-opeation {

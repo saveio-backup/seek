@@ -1,5 +1,5 @@
 <template>
-	<div id="login" class="login-wrapper">
+	<div id="login">
 		<div class="login-wrapper loading">
 			<el-form @submit.native.prevent>
 				<el-form-item :label="$t('public.address')+':'">
@@ -90,24 +90,19 @@ export default {
 </script>
 <style lang="scss">
 #login {
-  width: 500px;
-  margin: 0 auto 40px;
+  height:100%;
   display: flex;
   justify-content: space-around;
-  // height: 100%;
-  align-items: center;
-  padding-top: 80px;
+  padding: 80px;
 
   & > .login-wrapper {
-    width: 100%;
+    width:500px;
     textarea {
       padding: 15px;
       font-size: 1.4rem;
       text-align: left;
       height: 130px;
-      background: #edeff4;
       border-radius: 2px;
-      color: rgba(32, 32, 32, 0.7);
       word-break: break-all;
       border: 0;
       word-break: break-all;

@@ -91,9 +91,11 @@ select {
     }
 
     .dialog-title-border {
+        @include themify{
+            background-color:$table-border-color;
+        }
         height: 1px;
         width: 100%;
-        background: #040F39;
         opacity: 0.1;
         margin-top: 18px;
     }
@@ -122,7 +124,6 @@ select {
         }
 
         .el-dialog__close {
-            color: rgba(4, 15, 57, .4);
             font-size: 24px;
 
             &:hover {
@@ -391,10 +392,10 @@ select {
         border: none;
         transition: all .3s ease;
 
-        &:focus {
-            border-color: #202020 !important;
-            background: #E0E2E6;
-        }
+        // &:focus {
+        //     border-color: #202020 !important;
+        //     background: #E0E2E6;
+        // }
     }
 }
 

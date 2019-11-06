@@ -15,7 +15,7 @@ export default {
 	mounted() {
 		this.init();
 		this.activeListener();
-		document.querySelector('#theme-ui').href = `../../static/css/${this.themeColor}/theme/index.css`
+		document.querySelector('#theme-ui').href = `./static/css/${this.themeColor}/theme/index.css`
 		ipcRenderer.on(
 			"current-active-show-message",
 			(event, { info, type, dangerouslyUseHTMLString = false }) => {
@@ -32,7 +32,7 @@ export default {
 		ipcRenderer.on("set-theme", (event, theme) => {
 			console.log("set-theme evenit get!!");
 			console.log("theme is", theme);
-			document.querySelector('#theme-ui').href = `../../static/css/${theme}/theme/index.css`
+			document.querySelector('#theme-ui').href = `./static/css/${theme}/theme/index.css`
 			this.$store.commit("SET_THEME_COLOR", theme);
 		});
 		this.$axios.get(this.$api.version).then(res => {

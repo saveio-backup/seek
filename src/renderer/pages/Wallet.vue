@@ -159,7 +159,7 @@
 							</div>
 						</div>
 						<div
-							class="tx-li-item-detail"
+							class="tx-li-item-detail theme-font-color"
 							v-show="index === txDetailIndex"
 						>
 							<div class="txid grey-xs user-no-select">{{$t('wallet.id')}}:
@@ -193,7 +193,7 @@
 									></i></p>
 							</div>
 							<div class="flex between bottom-info">
-								<div class="minerfee"><span class="theme-font-color user-no-select">{{$t('wallet.minerfee')}}:</span> <span class="theme-font-blue">{{item.FeeFormat}}</span> {{balanceLists[balanceSelected].Symbol === 'SAVE' ? 'ONI': balanceLists[balanceSelected].Symbol}}</div>
+								<div class="minerfee"><span class="theme-font-color user-no-select">{{$t('wallet.minerfee')}}:</span> <span>{{item.FeeFormat}}</span> {{balanceLists[balanceSelected].Symbol === 'SAVE' ? 'ONI': balanceLists[balanceSelected].Symbol}}</div>
 								<div class="flex1"></div>
 								<div class="blockheight"><span class="user-no-select">{{$t('wallet.block')}}:</span> {{item.BlockHeight}}</div>
 							</div>
@@ -942,7 +942,9 @@ $light-grey: #f7f7f7;
 					rgba(19, 176, 250, 1) 0%,
 					rgba(62, 126, 235, 1) 100%
 				);
-				box-shadow: 0px 2px 8px 0px rgba(196, 196, 196, 0.24);
+				@include themify{
+					background-color: $card-color;
+				}
 				border-radius: 6px;
 				color: #fff;
 				display: flex;
@@ -1246,7 +1248,9 @@ $light-grey: #f7f7f7;
 						}
 					}
 					.tx-li-item-detail {
-						background: #f8f9fa;
+						@include themify{
+							background-color: $color;
+						}
 						padding: 10px 45px;
 						& > .txid {
 							& > span {

@@ -1,20 +1,18 @@
 <template>
 	<div
 		id="create-account"
-		class="account-wrap"
+		class="account-wrap theme-font-color"
 	>
 		<div class="account-box">
 			<h2
-				class="theme-font-blue account-title user-no-select"
+				class="account-title user-no-select"
 				v-if="accountStatus === 1"
 			>{{$t('account.blockSynchronization')}}</h2>
 			<h2
-				class="theme-font-blue account-title"
+				class="account-title"
 				v-if="accountStatus === 0"
 			>{{step === 1?$t('account.backupYourKeystoreFile'):step === 2?$t('account.backupYourPrivateKey'):step===3?$t('account.privateKeyRepeat'):$t('account.createAccount')}}</h2>
-			<div
-				v-if="accountStatus === 0"
-			>
+			<div v-if="accountStatus === 0">
 				<el-form
 					class="form"
 					v-show="step === 0"
@@ -81,9 +79,7 @@
 					<p class="back-class ft14">
 						<a @click="setStep(0)">{{$t('account.back')}}</a>
 					</p>
-					<ripper-button
-						@click="setStep()"
-					>{{$t('account.next')}}</ripper-button>
+					<ripper-button @click="setStep()">{{$t('account.next')}}</ripper-button>
 				</div>
 				<div
 					class="step"
@@ -107,9 +103,7 @@
 					<p class="back-class ft14">
 						<a @click="setStep(1)">{{$t('account.back')}}</a>
 					</p>
-					<ripper-button
-						@click="setStep()"
-					>{{$t('account.next')}}</ripper-button>
+					<ripper-button @click="setStep()">{{$t('account.next')}}</ripper-button>
 				</div>
 				<div
 					class="step"
@@ -133,9 +127,7 @@
 					<p class="back-class ft14">
 						<a @click="setStep(2)">{{$t('account.back')}}</a>
 					</p>
-					<ripper-button
-						@click="importAccountWithPrivatekey"
-					>{{$t('account.done')}}</ripper-button>
+					<ripper-button @click="importAccountWithPrivatekey">{{$t('account.done')}}</ripper-button>
 				</div>
 			</div>
 			<div
@@ -178,11 +170,10 @@ import { clipboard, ipcRenderer } from "electron";
 export default {
 	created() {
 		document.title = localStorage.Address
-			? this.$t('account.blockSynchronization')
-			: this.$t('account.createAccount');
+			? this.$t("account.blockSynchronization")
+			: this.$t("account.createAccount");
 	},
 	mounted() {
-
 		this.loopFont();
 		this.getAccountStatus();
 	},
@@ -192,7 +183,9 @@ export default {
 			if (this.form.Password === this.form.Confirm) {
 				callback();
 			} else {
-				callback(new Error(vm.$t('account.inconsistentPasswordsFilledInTwice')));
+				callback(
+					new Error(vm.$t("account.inconsistentPasswordsFilledInTwice"))
+				);
 			}
 		};
 		return {
@@ -223,13 +216,13 @@ export default {
 				Label: [
 					{
 						required: true,
-						message: this.$t('account.pleaseFillYourName'),
+						message: this.$t("account.pleaseFillYourName"),
 						trigger: "blur"
 					}
 				],
 				Password: {
 					// validator: validatePassword,
-					message: this.$t('account.pleaseFillYourPassword'),
+					message: this.$t("account.pleaseFillYourPassword"),
 					required: true,
 					trigger: ["blur", "input"]
 				},
@@ -269,19 +262,19 @@ export default {
 		lang(value) {
 			const vm = this;
 			document.title = localStorage.Address
-			? vm.$t('account.blockSynchronization')
-			: vm.$t('account.createAccount');
+				? vm.$t("account.blockSynchronization")
+				: vm.$t("account.createAccount");
 			vm.rules = {
 				Label: [
 					{
 						required: true,
-						message: vm.$t('account.pleaseFillYourName'),
+						message: vm.$t("account.pleaseFillYourName"),
 						trigger: "blur"
 					}
 				],
 				Password: {
 					// validator: validatePassword,
-					message: vm.$t('account.pleaseFillYourPassword'),
+					message: vm.$t("account.pleaseFillYourPassword"),
 					required: true,
 					trigger: ["blur", "input"]
 				},
@@ -290,14 +283,14 @@ export default {
 					required: true,
 					trigger: ["blur"]
 				}
-			}
+			};
 		},
 		accountStatus(value) {
 			console.log("acountStatus changed!!!");
 			console.log(value);
 			if (value === 1) {
 				console.log("set Title");
-				document.title = this.$t('account.blockSynchronization');
+				document.title = this.$t("account.blockSynchronization");
 			}
 		}
 	},
@@ -306,7 +299,7 @@ export default {
 			const vm = this;
 			this.$exportFile(contents, fileName, function() {
 				vm.$message({
-					message: vm.$t('dialog.exportSuccess'),
+					message: vm.$t("dialog.exportSuccess"),
 					type: "success"
 				});
 			});
@@ -333,7 +326,7 @@ export default {
 			const vm = this;
 			clipboard.writeText(content);
 			this.$message({
-				message: vm.$t('public.copied'),
+				message: vm.$t("public.copied"),
 				duration: 1200,
 				type: "success"
 			});
@@ -371,7 +364,7 @@ export default {
 					this.$axios
 						.post(this.$api.account, this[formName], {
 							loading: {
-								text: vm.$t('account.creating'),
+								text: vm.$t("account.creating"),
 								target: ".form"
 							}
 						})
@@ -388,7 +381,7 @@ export default {
 						})
 						.catch(e => {
 							if (!e.message.includes("timeout")) {
-								this.$message.error(vm.$t('account.networkErrorCreateFailed'));
+								this.$message.error(vm.$t("account.networkErrorCreateFailed"));
 							}
 						});
 				}
@@ -430,7 +423,9 @@ export default {
 				})
 				.catch(e => {
 					if (!e.message.includes("timeout")) {
-						this.$message.error(vm.$t('account.networkErrorImportPrivateKeyFailed'));
+						this.$message.error(
+							vm.$t("account.networkErrorImportPrivateKeyFailed")
+						);
 					}
 				});
 		}
@@ -438,7 +433,6 @@ export default {
 };
 </script>
 <style lang="scss">
-$theme-font-blue: #040f39;
 .account-box {
 	display: flex;
 	flex-direction: column;
@@ -455,16 +449,14 @@ $theme-font-blue: #040f39;
 				font-size: 1.4rem;
 				text-align: left;
 				height: 130px;
-				background: #edeff4;
 				border-radius: 2px;
-				color: rgba(32, 32, 32, 0.7);
 				word-break: break-all;
+				@include themify {
+					background-color: $card-color;
+				}
 			}
 			&.el-loading-text {
 				text-align: center;
-			}
-			&.stop-desc {
-				color: rgba(32, 32, 32, 0.4);
 			}
 		}
 		.back-class {
@@ -489,14 +481,12 @@ $theme-font-blue: #040f39;
 				font-size: 1.4rem;
 				text-align: left;
 				height: 130px;
-				background: #edeff4;
 				border-radius: 2px;
-				color: rgba(32, 32, 32, 0.7);
 				word-break: break-all;
 				border: 0;
 				transition: all 0.3s ease;
-				&:focus {
-					background: #e0e2e6;
+				@include themify{
+					background-color: $card-color;
 				}
 			}
 		}

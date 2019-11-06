@@ -999,6 +999,9 @@ $input-color: rgba(203, 203, 203, 1);
 					font-size: 4.5rem;
 				}
 				.user-name {
+					@include themify{
+						box-shadow: $card-shadow;
+					}
 					display: flex;
 					align-items: center;
 					justify-content: center;
@@ -1012,7 +1015,6 @@ $input-color: rgba(203, 203, 203, 1);
 						rgba(19, 176, 250, 1) 0%,
 						rgba(62, 126, 235, 1) 100%
 					);
-					box-shadow: 0px 2px 20px 0px rgba(196, 196, 196, 0.24);
 					border-radius: 6px;
 					position: relative;
 

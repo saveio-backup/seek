@@ -215,7 +215,7 @@
 <script>
 import util from "../../../assets/config/util";
 import $date from "../../../assets/tool/date";
-import crypto from 'crypto'
+import crypto from "crypto";
 const _NOW = new Date();
 // const nextDay = new Date(now.setDate(now.getDate() + 1));
 // nextDay.setHours(23);
@@ -425,7 +425,7 @@ export default {
 		setUserSpaceCheckRes() {
 			const vm = this;
 			if (this.Password.length === 0) {
-				this.$message(vm.$t('public.pleaseInputWalletPassword'));
+				this.$message(vm.$t("public.pleaseInputWalletPassword"));
 				return false;
 			}
 			return true;
@@ -438,10 +438,19 @@ export default {
 		setUserSpace() {
 			const vm = this;
 			if (!this.submitToggle) return;
-			if (this.cost.FeeFormat === "" || this.cost.FeeFormat === undefined) {
+			if (
+				// neither of FeeFormat or RefundFormat
+				!this.cost.FeeFormat &&
+				this.cost.FeeFormat !== 0 &&
+				(!this.cost.RefundFormat && this.cost.RefundFormat !== 0)
+			) {
 				this.$message.error("Please adjust your space and date.");
 				return;
 			}
+			// if (this.cost.FeeFormat === "" || this.cost.FeeFormat === undefined) {
+			// 	this.$message.error("Please adjust your space and date.");
+			// 	return;
+			// }
 
 			const checkRes = this.setUserSpaceCheckRes();
 			if (!checkRes) return;
@@ -462,11 +471,14 @@ export default {
 							Value: Math.abs(this.addInfo.Size.Value),
 							Type: this.addInfo.Size.Type
 						},
-						Password: crypto.createHash('sha256').update(vm.Password).digest('hex')
+						Password: crypto
+							.createHash("sha256")
+							.update(vm.Password)
+							.digest("hex")
 					},
 					{
 						loading: {
-							text: vm.$t('fileManager.upgrading'),
+							text: vm.$t("fileManager.upgrading"),
 							target: ".loading-content.expand-setspace-loading"
 						}
 					}
@@ -480,7 +492,7 @@ export default {
 						setTimeout(() => {
 							this.$nextTick(() => {
 								this.$message({
-									message: vm.$t('fileManager.getStorageSuccessed'),
+									message: vm.$t("fileManager.getStorageSuccessed"),
 									type: "success"
 								});
 								this.$store.dispatch("setSpace");
@@ -497,7 +509,9 @@ export default {
 				})
 				.catch(e => {
 					if (!e.message.includes("timeout")) {
-						this.$message.error(vm.$t('fileManager.networkErrorSetUserSpaceFailed'));
+						this.$message.error(
+							vm.$t("fileManager.networkErrorSetUserSpaceFailed")
+						);
 					}
 				});
 		},
@@ -624,8 +638,8 @@ $grey: #ccc;
 	}
 	.adjust {
 		border-bottom: solid 1px;
-		@include themify{
-			border-color:$table-border-color;
+		@include themify {
+			border-color: $table-border-color;
 		}
 		margin-bottom: 20px;
 		padding-bottom: 20px;

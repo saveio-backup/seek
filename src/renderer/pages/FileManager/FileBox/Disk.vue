@@ -81,7 +81,7 @@
 							<div class="flex between">
 								<span
 									class="row-name"
-									:class="scope.row.Undone?'theme-font-blue-40':''"
+									:class="scope.row.Undone?'grey-color':''"
 								>{{ scope.row.Name }}</span>
 								<!-- @click="executedFile = scope.row" -->
 								<div
@@ -144,7 +144,7 @@
 						<template slot-scope="scope">
 							<div
 								class="ft14"
-								:class="scope.row.Undone?'theme-font-blue-40':''"
+								:class="scope.row.Undone?'grey-color':''"
 							>
 								{{scope.row.StoreType === 1 ? $t('fileManager.advance') : scope.row.StoreType === 0 ? $t('fileManager.primary') : ''}}
 							</div>
@@ -172,7 +172,7 @@
 						<template slot-scope="scope">
 							<span
 								class=" break-word"
-								:class="scope.row.Undone?'theme-font-blue-40':''"
+								:class="scope.row.Undone?'grey-color':''"
 							>
 								{{util.bytesToSize(scope.row.RealFileSize * 1024)}}
 							</span>
@@ -188,7 +188,7 @@
 						<template slot-scope="scope">
 							<div
 								class=" break-word"
-								:class="scope.row.Undone?'theme-font-blue-40':''"
+								:class="scope.row.Undone?'grey-color':''"
 							>
 								{{scope.row.Status === -1 ? '' : date.formatTime(new Date( (scope.row.DownloadAt||scope.row.UpdatedAt) * 1000))}}
 							</div>

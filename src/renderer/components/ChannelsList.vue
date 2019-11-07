@@ -47,7 +47,7 @@
 					sortable
 				>
 					<template slot-scope="scope">
-						<div class="grey-xs ftpx14">
+						<div class="ftpx14">
 							{{filterFloat(scope.row.BalanceFormat).toLocaleString('en-US', { maximumFractionDigits: 9 })}}
 						</div>
 					</template>
@@ -59,7 +59,7 @@
 					sortable
 				>
 					<template slot-scope="scope">
-						<div class="grey-xs ftpx14">
+						<div class="ftpx14">
 							{{scope.row.Address}}
 						</div>
 					</template>
@@ -71,7 +71,7 @@
 					sortable
 				>
 					<template slot-scope="scope">
-						<div class="grey-xs ftpx14">
+						<div class="ftpx14">
 							{{scope.row.HostAddr}}
 						</div>
 					</template>

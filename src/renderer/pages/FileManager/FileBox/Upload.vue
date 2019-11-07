@@ -1173,8 +1173,6 @@ $inputFocusBg: #dee2ea;
 					width: 480px;
 					overflow: hidden;
 					text-overflow: ellipsis;
-					// color: rgba(32, 32, 32, 0.4);
-					color: rgba(32, 32, 32, 0.7);
 				}
 				.light-blue {
 					color: #409ef7;
@@ -1184,7 +1182,6 @@ $inputFocusBg: #dee2ea;
 					height: 180px;
 					margin-top: 45px;
 					clear: both;
-					background: #f9f9fb;
 
 					& > .el-upload {
 						width: 100%;
@@ -1195,7 +1192,9 @@ $inputFocusBg: #dee2ea;
 							}
 							width: 100%;
 							height: 100%;
-							border-color: rgba(4, 15, 57, 0.2);
+							@include themify{
+								background-color: $card-color;
+							}
 							overflow: visible;
 							&.is-dragover {
 								border-color: #409eff;
@@ -1209,7 +1208,6 @@ $inputFocusBg: #dee2ea;
 						height: 100%;
 						overflow: auto;
 						text-align: left;
-						background: #f9f9fb;
 						position: relative;
 						.el-tag {
 							margin-right: 20px;
@@ -1222,7 +1220,6 @@ $inputFocusBg: #dee2ea;
 							left: 0;
 							& > p {
 								width: 100%;
-								color: rgba(32, 32, 32, 0.4);
 							}
 						}
 					}

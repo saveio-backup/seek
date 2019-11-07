@@ -159,8 +159,5 @@ $light-grey: #f9f9fb;
 			}
 		}
 	}
-	.top-progress {
-		// border-bottom: 1px solid rgba(32, 32, 32, .1);
-	}
 }
 </style>

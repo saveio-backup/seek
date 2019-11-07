@@ -74,9 +74,31 @@
 			</div>
 			<div class="settings-box">
 				<div class="tag">
-					<p>Theme</p>
+					<p>{{$t('settings.themeColor')}}</p>
 				</div>
-				<el-select
+				<ul class="img-selector">
+					<li
+						class="img-selector-item"
+						@click="setTheme('light')"
+					>
+						<img
+							:class="{'theme-selected':settings.themeColor==='light'}"
+							src="../assets/images/theme_light.png"
+						>
+						<p class="dark-grey tag text-center mt10">{{$t('settings.theme.dark')}}</p>
+					</li>
+					<li
+						class="img-selector-item"
+						@click="setTheme('dark')"
+					>
+						<img
+							:class="{'theme-selected':settings.themeColor==='dark'}"
+							src="../assets/images/theme_dark.png"
+						>
+						<p class="dark-grey tag text-center mt10">{{$t('settings.theme.light')}}</p>
+					</li>
+				</ul>
+				<!-- <el-select
 					v-model="settings.themeColor"
 					@change="setTheme"
 				>
@@ -86,7 +108,7 @@
 						:label='item'
 						:value="item"
 					></el-option>
-				</el-select>
+				</el-select> -->
 			</div>
 			<div class="settings-box">
 				<div class="tag">
@@ -210,6 +232,7 @@ export default {
 					}
 				}
 			}, 500);
+			this.settings.themeColor = theme;
 			this.updateSettings("themeColor", this.settings.themeColor);
 		},
 		getSettingsAll() {
@@ -324,6 +347,21 @@ export default {
 					overflow: hidden;
 					text-overflow: ellipsis;
 					white-space: nowrap;
+				}
+			}
+			.img-selector {
+				display: flex;
+				.theme-selected {
+					border: 2px solid #2f8ff0;
+				}
+				& > li {
+					margin: 0 5px;
+					img{
+						width:130px;
+						height:90px;
+						box-sizing: border-box;
+						overflow: hidden;
+					}
 				}
 			}
 			.el-slider {

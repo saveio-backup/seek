@@ -7,6 +7,11 @@ const result = {
   'maxUploadLength': 'Maximum number of tasks',
   'maxPeerNum':'Maximum number of peer',
   'downloadPath': 'Download Path',
+  'themeColor': 'Theme Color',
+  'theme': {
+    'light': 'Light',
+    'dark': 'Dark'
+  },
   'change': 'Change',
   'language': 'Language',
   'DevNet': 'DevNet',

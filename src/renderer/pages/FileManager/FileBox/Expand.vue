@@ -643,10 +643,6 @@ $grey: #ccc;
 		}
 		margin-bottom: 20px;
 		padding-bottom: 20px;
-		.el-input-number__increase,
-		.el-input-number__decrease {
-			// display: none;
-		}
 	}
 	.adjust-item {
 		display: flex;

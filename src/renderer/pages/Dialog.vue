@@ -109,7 +109,7 @@ export default {
 			},
 			// for force update data ↓
 			uploadingTransferListForce: 0,
-			downloadingTransferListForce: 0,
+			downloadingTransferListForce: 0
 		};
 	},
 	computed: {
@@ -192,7 +192,7 @@ export default {
 		uploadingTransferListForce(val) {
 			clearTimeout(this.intervalObj.setTimeUploadingTransferListObj);
 			this.intervalObj.setTimeUploadingTransferListObj = setTimeout(() => {
-				if (this.realUploadingLength < this.$config.maxNumUpload) {	
+				if (this.realUploadingLength < this.$config.maxNumUpload) {
 					this.waitForUploadFileToUpload();
 				}
 			}, 200);
@@ -474,12 +474,12 @@ export default {
 					this.$store.commit("REMOVE_UPLOADING", this.readyUpload);
 					this.$store.commit("REMOVE_PAUSING", this.readyUpload);
 					// this.$store.dispatch("getUpload"); // force update
-					this.uploadingTransferListForce ++;
+					this.uploadingTransferListForce++;
 					setTimeout(() => {
 						this.readyUpload = [];
 						// this.$store.dispatch("getUpload"); // force update
-						this.uploadingTransferListForce ++;
-					}, 2000)
+						this.uploadingTransferListForce++;
+					}, 2000);
 				}, 1000);
 
 				// error message
@@ -595,12 +595,12 @@ export default {
 					this.$store.commit("REMOVE_UPLOADING", this.readyDownload);
 					this.$store.commit("REMOVE_PAUSING", this.readyDownload);
 					// this.$store.dispatch("getDownload");
-					this.downloadingTransferListForce ++; // force update
+					this.downloadingTransferListForce++; // force update
 					setTimeout(() => {
 						this.readyDownload = [];
 						// this.$store.dispatch("getDownload");
-						this.downloadingTransferListForce ++; // force update
-					}, 2000)
+						this.downloadingTransferListForce++; // force update
+					}, 2000);
 				}, 1000);
 
 				// error message
@@ -854,7 +854,7 @@ export default {
 			//  remote.BrowserWindow.getAllWindows()[0].views;
 			for (let win of remote.BrowserWindow.getAllWindows()) {
 				if (win.views) {
-					views.concat(win.views);
+					views = views.concat(win.views);
 				}
 			}
 			for (let view of views) {

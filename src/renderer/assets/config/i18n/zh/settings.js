@@ -7,6 +7,11 @@ const result = {
   'maxUploadLength': '最大任务个数',
   'maxPeerNum': '最大下载节点数',
   'downloadPath': '下载保存地址',
+  'themeColor': '主题颜色',
+  'theme': {
+    'light': '浅色',
+    'dark': '深色'
+  },
   'change': '选 择',
   'language': '语 言',
   'DevNet': '开发网',

@@ -1,5 +1,5 @@
 <template>
-	<div class="markdown">
+	<div class="markdown" style="background-color:#fff">
 		<div v-html="mdHtml"></div>
 	</div>
 </template>

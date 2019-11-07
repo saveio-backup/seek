@@ -376,7 +376,7 @@ import date from "../assets/tool/date";
 import QRCode from "../assets/tool/qrcode.min";
 import { effectiveNumber } from "../assets/config/util";
 import { round } from "mathjs";
-import crypto from 'crypto'
+import crypto from "crypto";
 const { clipboard } = require("electron");
 export default {
 	mounted() {
@@ -724,10 +724,13 @@ export default {
 			this.$refs.transferForm.validate(valid => {
 				if (valid) {
 					this.setFixed();
-					const sendInfo = Object.assign({},this.sendInfo);
+					const sendInfo = Object.assign({}, this.sendInfo);
 					sendInfo.Asset = this.balanceLists[this.balanceSelected].Symbol;
 					sendInfo.To = sendInfo.To.trim();
-					sendInfo.Password = crypto.createHash('sha256').update(sendInfo.Password).digest('hex');
+					sendInfo.Password = crypto
+						.createHash("sha256")
+						.update(sendInfo.Password)
+						.digest("hex");
 					this.$axios
 						.post(this.$api.transfer, sendInfo, {
 							loading: {
@@ -942,7 +945,7 @@ $light-grey: #f7f7f7;
 					rgba(19, 176, 250, 1) 0%,
 					rgba(62, 126, 235, 1) 100%
 				);
-				@include themify{
+				@include themify {
 					background-color: $card-color;
 				}
 				border-radius: 6px;
@@ -989,13 +992,16 @@ $light-grey: #f7f7f7;
 				overflow: auto;
 				.wallet-select {
 					text-align: right;
-					border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+					border-bottom: solid 1px;
+					@include themify {
+						border-color: $table-border-color;
+					}
 					.el-input__inner {
 						@include themify {
 							color: $font-color;
-							background-color:$card-color;
+							background-color: $card-color;
 						}
-						border:none;
+						border: none;
 						font-size: 1.4rem;
 						font-weight: bold;
 						border-color: #fff !important;
@@ -1026,7 +1032,7 @@ $light-grey: #f7f7f7;
 						@extend .grey-xs;
 					}
 					.total {
-						@include themify{
+						@include themify {
 							color: $font-color;
 						}
 						padding: 10px 0px;
@@ -1113,8 +1119,8 @@ $light-grey: #f7f7f7;
 			display: flex;
 			flex-direction: column;
 			flex: 1;
-			@include themify{
-				background-color:$card-color;
+			@include themify {
+				background-color: $card-color;
 				box-shadow: $card-shadow;
 			}
 			margin-left: 30px;
@@ -1177,7 +1183,9 @@ $light-grey: #f7f7f7;
 							& > .transfer-is-done {
 								width: 30px;
 								height: 30px;
-								background: #edeff4;
+								@include themify {
+									background-color: $table-hover-bg;
+								}
 								border-radius: 50%;
 								line-height: 30px;
 								text-align: center;
@@ -1248,7 +1256,7 @@ $light-grey: #f7f7f7;
 						}
 					}
 					.tx-li-item-detail {
-						@include themify{
+						@include themify {
 							background-color: $color;
 						}
 						padding: 10px 45px;

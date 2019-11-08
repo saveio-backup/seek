@@ -162,10 +162,10 @@ export default {
 
 	button {
 		appearance: none;
-		@include themify{
-			box-shadow: $card-shadow;
-		}
-		// box-shadow: 0px 4px 6px 0px rgba(111, 139, 173, 0.21);
+		// @include themify{
+		// 	box-shadow: $card-shadow;
+		// }
+		box-shadow: 0px 4px 6px 0px rgba(111, 139, 173, 0.21);
 		color: #2f8ff0;
 		font-size: 1.4rem;
 		border-radius: 20px;

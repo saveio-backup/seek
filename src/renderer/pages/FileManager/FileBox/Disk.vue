@@ -1001,7 +1001,8 @@ export default {
 			);
 			if (!this.fileSelected || this.fileSelected.length === 0) {
 				this.$message({
-					message: NO_DELETE_FILE_MSG
+					message: NO_DELETE_FILE_MSG,
+					type: "warning"
 				});
 				return;
 			}

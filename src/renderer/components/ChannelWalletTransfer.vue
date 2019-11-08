@@ -7,7 +7,6 @@
 			>
 				<p class=" transparent ft14 user-no-select">{{$t('public.channel')}}(ONI)</p>
 				<p class="ftpx24 mt10">{{filterFloat(channelSelected.BalanceFormat || 0)}}</p>
-				<!-- <p class="theme-font-blue transparent ft12 bold">{{channelSelected.Address}}</p> -->
 			</div>
 			<div
 				v-else
@@ -30,7 +29,6 @@
 			>
 				<p class="transparent ft14 user-no-select">{{$t('public.channel')}}(ONI)</p>
 				<p class="ftpx24 mt10">{{filterFloat(channelSelected.BalanceFormat || 0)}}</p>
-				<!-- <p class="theme-font-blue transparent ft12 bold">{{channelSelected.Address}}</p> -->
 			</div>
 			<div
 				v-else
@@ -94,17 +92,17 @@ export default {
 			const vm = this;
 			const reg = /^[1-9](\d{0,8})\.(\d{1,9})$|^0\.(\d{0,9})$|^[1-9](\d{0,8})$/;
 			if (!reg.test(value)) {
-				callback(new Error(vm.$t('public.pleaseEnterTheCorrectFormat')));
+				callback(new Error(vm.$t("public.pleaseEnterTheCorrectFormat")));
 				return;
 			}
 			if (this.withDraw && this.channelSelected.IsOnline) {
 				if (value * 1 > this.channelSelected.BalanceFormat * 1) {
-					callback(new Error(vm.$t('public.insufficientBalanceAvailable')));
+					callback(new Error(vm.$t("public.insufficientBalanceAvailable")));
 					return;
 				}
 			} else {
 				if (value * 1 > this.mainCount * 1) {
-					callback(new Error(vm.$t('public.insufficientBalanceAvailable')));
+					callback(new Error(vm.$t("public.insufficientBalanceAvailable")));
 					return;
 				}
 			}
@@ -123,7 +121,7 @@ export default {
 				Amount: [
 					{
 						required: true,
-						message: this.$t('public.pleaseFillAmount'),
+						message: this.$t("public.pleaseFillAmount"),
 						trigger: "blur"
 					},
 					{
@@ -134,7 +132,7 @@ export default {
 				Password: [
 					{
 						required: true,
-						message: this.$t('public.pleaseFillPassword'),
+						message: this.$t("public.pleaseFillPassword"),
 						trigger: "blur"
 					}
 				]
@@ -146,7 +144,8 @@ export default {
 			const vm = this;
 			if (!this.channelSelected.IsOnline) {
 				this.$message({
-					message: vm.$t('public.SorryYouCannotWithdrawInOfflineStatus')
+					message: vm.$t("public.SorryYouCannotWithdrawInOfflineStatus"),
+					type: "error"
 				});
 				return;
 			}
@@ -168,7 +167,7 @@ export default {
 			const vm = this;
 			if (this.switchToggle.loading) return;
 			if (!this.channelSelected) {
-				this.emitMessage(vm.$t('public.pleaseChooseChannelAddress'), "error");
+				this.emitMessage(vm.$t("public.pleaseChooseChannelAddress"), "error");
 				return;
 			}
 			this.$refs.transferForm.validate(valid => {
@@ -183,14 +182,17 @@ export default {
 							{
 								Partner: this.channelSelected.Address,
 								Amount: this.transferInfo.Amount,
-								Password: crypto.createHash('sha256').update(vm.transferInfo.Password).digest('hex')
+								Password: crypto
+									.createHash("sha256")
+									.update(vm.transferInfo.Password)
+									.digest("hex")
 							},
 							{
 								loading: {
 									target: ".loading-content.loading-channel",
-									text: vm.$t('public.transactionProcessing')
+									text: vm.$t("public.transactionProcessing")
 								},
-								timeout: (this.$config.outTime * 10000 + 50000)
+								timeout: this.$config.outTime * 10000 + 50000
 							}
 						)
 						.then(res => {
@@ -199,7 +201,7 @@ export default {
 								// this.transferInfo.Password = ""; // reset
 								this.$refs.transferForm.resetFields();
 								this.$message({
-									message: vm.$t('public.transferSuccess'),
+									message: vm.$t("public.transferSuccess"),
 									type: "success"
 								});
 								this.$emit("closeDialog");
@@ -210,7 +212,7 @@ export default {
 						})
 						.catch(e => {
 							if (!e.message.includes("timeout")) {
-								this.$message.error(vm.$t('public.networkErrorTransferFailed'));
+								this.$message.error(vm.$t("public.networkErrorTransferFailed"));
 							}
 						});
 				}
@@ -227,7 +229,7 @@ export default {
 				Amount: [
 					{
 						required: true,
-						message: this.$t('public.pleaseFillAmount'),
+						message: this.$t("public.pleaseFillAmount"),
 						trigger: "blur"
 					},
 					{
@@ -238,11 +240,11 @@ export default {
 				Password: [
 					{
 						required: true,
-						message: this.$t('public.pleaseFillPassword'),
+						message: this.$t("public.pleaseFillPassword"),
 						trigger: "blur"
 					}
 				]
-			}
+			};
 		}
 	},
 	computed: {
@@ -256,7 +258,6 @@ export default {
 };
 </script>
 <style lang="scss">
-$theme-font-blue: #202020;
 .channel-wallet-transfer {
 	.transferForm {
 		padding: 0 30px;
@@ -297,7 +298,6 @@ $theme-font-blue: #202020;
 			.el-input-group__append {
 				background: none;
 				border: none;
-				color: $theme-font-blue;
 				font-weight: bold;
 			}
 		}

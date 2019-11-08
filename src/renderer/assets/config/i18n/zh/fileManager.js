@@ -67,7 +67,7 @@ const result = {
   'expiryDate': '有效期限',
   'chooseDate': '选择日期',
   'pledgeRefund': '质 押',
-  'pledgePayment': '承诺付款',
+  'pledgePayment': '质押支付',
   'update': '更 新',
   'goUpload': '去上传',
   'youCanNowUploadFilesViaPrimaryMode': '你现在可以通过普通模式上传文件。',

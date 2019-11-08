@@ -1893,7 +1893,9 @@ $danger: #f56c6c;
 		line-height: 32px;
 
 		&:hover {
-			background: #dfe2e9;
+			@include themify{
+				background-color: $color;
+			}
 		}
 
 		&:active {

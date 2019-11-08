@@ -1129,7 +1129,6 @@ $light-grey: #f7f7f7;
 				align-items: center;
 				font-size: 1.4rem;
 				height: 68px;
-				border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 				.select-button {
 					margin-right: 35px;
 					cursor: pointer;

@@ -37,7 +37,7 @@
 						<div
 							class="ft14"
 							:title='scope.row.IsOnline ? $t("public.online") : $t("public.offline")'
-							:class="{'theme-font-blue-40':!scope.row.IsOnline}"
+							:class="{'grey-color':!scope.row.IsOnline}"
 						>{{scope.row.IsOnline ? $t("public.online") : $t("public.offline")}}</div>
 					</template>
 				</el-table-column>
@@ -96,7 +96,6 @@
 					v-if="showTransfer"
 				>
 					<template slot-scope="scope">
-						<!-- :class="{'theme-font-blue-40':!scope.row.Connected,'light-blue cursor-pointer cursor-click':scope.row.Connected}" -->
 						<span
 							v-show="scope.row.Participant1State !== 0"
 							class="opeation-icon light-blue user-no-select"
@@ -780,7 +779,9 @@ $theme-color: #202020;
 		line-height: 32px;
 
 		&:hover {
-			background: #dfe2e9;
+			@include themify{
+				background-color: $color;
+			}
 		}
 
 		&:active {

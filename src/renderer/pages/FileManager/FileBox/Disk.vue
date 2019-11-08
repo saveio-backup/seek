@@ -8,19 +8,19 @@
 
 				<!-- <router-link :to="{name:'upload'}"> -->
 				<ripper-button
-					class="primary theme-font-blue"
+					class="primary "
 					@click="goUpload"
 				>{{$t('fileManager.uploadButton')}}</ripper-button>
 
 				<!-- </router-link> -->
 				<ripper-button
-					class="ml10 bt-download theme-font-blue"
+					class="ml10 bt-download "
 					@click="batchDownload"
 				>
 					{{$t('fileManager.downloadButton')}}
 				</ripper-button>
 				<ripper-button
-					class="ml10 bt-download theme-font-blue"
+					class="ml10 bt-download "
 					@click="batchDelete"
 				>
 					{{$t('fileManager.deleteButton')}}
@@ -284,22 +284,22 @@
 			<div class="loading-content disk-download-loading">
 				<div class="adjust">
 					<div class="adjust-item">
-						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.fileName')}}</p>
+						<p class="adjust-title  ft14">{{$t('fileManager.fileName')}}</p>
 						<div class="adjust-info">
 							<p
-								class="theme-font-blue ftpx14 mr20"
+								class="ftpx14 mr20"
 								:title="fileDownloadInfo.allName"
 							>{{fileDownloadInfo.Name}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
-						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.fileSize')}}:</p>
+						<p class="adjust-title  ft14">{{$t('fileManager.fileSize')}}:</p>
 						<div class="adjust-info">
-							<p class="theme-font-blue ftpx14 mr20">{{fileDownloadInfo.Size}}</p>
+							<p class="ftpx14 mr20">{{fileDownloadInfo.Size}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
-						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.savePath')}}:</p>
+						<p class="adjust-title  ft14">{{$t('fileManager.savePath')}}:</p>
 						<div class="adjust-info">
 							<p class="ftpx14 mr20">{{fileDownloadInfo.DownloadDir || ''}}</p>
 						</div>
@@ -312,7 +312,7 @@
 						</div>
 					</div>
 					<div class="adjust-item">
-						<p class="adjust-title theme-font-blue ft14">{{$t('fileManager.channelBalance')}}:</p>
+						<p class="adjust-title  ft14">{{$t('fileManager.channelBalance')}}:</p>
 						<div class="adjust-info">
 							<p class="ftpx14 mr20">{{channelBind.BalanceFormat}} ONI</p>
 						</div>
@@ -799,7 +799,8 @@ export default {
 			);
 			if (!this.fileSelected || this.fileSelected.length === 0) {
 				this.$message({
-					message: NO_DOWNLOAD_FILE_MSG
+					message: NO_DOWNLOAD_FILE_MSG,
+					type: "warning"
 				});
 				return;
 			}
@@ -877,7 +878,12 @@ export default {
 						errorMsg += `</p>`;
 					}
 					let errorLength = errorArr.length;
-					let param = { arr: arr, len: errorLength, errorMsg: errorMsg, flag: flag }
+					let param = {
+						arr: arr,
+						len: errorLength,
+						errorMsg: errorMsg,
+						flag: flag
+					};
 					vm.waitForNowDownload(param);
 				}
 			});
@@ -940,7 +946,6 @@ export default {
 				text: vm.$t("fileManager.fileProcessing"),
 				target: ".loading-content.disk-download-loading"
 			});
-
 			let arr = [];
 			for (let downloadFile of downloadFiles) {
 				arr.push({
@@ -1248,7 +1253,6 @@ export default {
 <style lang="scss">
 $light-blue: #65a6ff;
 $theme-color: #1b1e2f;
-$theme-font-blue: #040f39;
 #disk {
 	.func-nav {
 		display: flex;
@@ -1256,8 +1260,8 @@ $theme-font-blue: #040f39;
 		justify-content: space-between;
 		padding: 0 30px 0 14px;
 		height: 80px;
-		@include themify{
-			background-color:$color;
+		@include themify {
+			background-color: $color;
 		}
 		border-bottom: 1px solid rgba(32, 32, 32, 0.1);
 		.fun-button {
@@ -1322,8 +1326,8 @@ $theme-font-blue: #040f39;
 		top: 80px;
 		bottom: 0px;
 		width: 100%;
-		@include themify{
-			background-color:$color;
+		@include themify {
+			background-color: $color;
 		}
 
 		.table-element {
@@ -1349,7 +1353,9 @@ $theme-font-blue: #040f39;
 						margin: 0px 4px;
 						cursor: pointer;
 						&:hover {
-							background: #dfe2e9;
+							@include themify {
+								background-color: $color;
+							}
 						}
 						&:active {
 							opacity: 0.7;
@@ -1406,7 +1412,6 @@ $theme-font-blue: #040f39;
 			width: 200px;
 			display: flex;
 			text-align: left;
-			color: rgba(32, 32, 32, 0.4);
 			.sizeunit {
 				width: 100px;
 				margin: 0 20px;
@@ -1422,7 +1427,6 @@ $theme-font-blue: #040f39;
 	}
 	.icon-no-bg {
 		.el-input-group__append {
-			background: #f1f3f7;
 			border: 0;
 			i {
 				&:hover {

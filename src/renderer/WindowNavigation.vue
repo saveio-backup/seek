@@ -582,7 +582,9 @@ $tabs-height: 62px;
 
 				&:not(.disable) {
 					&:hover {
-						background: #dfe2e9;
+						@include themify{
+							background-color: $color;
+						}
 						cursor: pointer;
 					}
 

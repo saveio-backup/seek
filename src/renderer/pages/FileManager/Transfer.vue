@@ -90,7 +90,6 @@ export default {
 $brand-blue: #409eff;
 $sucess: #67c23a;
 $danger: #f56c6c;
-$theme-font-blue: #040f39;
 $light-grey: #f9f9fb;
 #transfer {
 	.aside {
@@ -103,7 +102,6 @@ $light-grey: #f9f9fb;
 		bottom: 0;
 		width: 200px;
 		min-height: 400px;
-		color: $theme-font-blue;
 		.aside-link {
 			margin-top: 20px;
 			display: flex;

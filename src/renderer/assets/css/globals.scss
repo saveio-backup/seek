@@ -18,7 +18,10 @@
   }
 }
 
-.el-loading-mask { // element-ui loading mask
+.el-loading-mask {
+  // element-ui loading mask
+  height: calc(100% + 10px);
+
   @include themify {
     background-color: $card-color;
   }
@@ -86,10 +89,6 @@ $sub-light-color: #8BD179;
   @include themify {
     background-color: $progress-bar-bg;
   }
-}
-
-.theme-font-blue-40 {
-  color: rgba(32, 32, 32, .4);
 }
 
 .theme-font-blue-70 {
@@ -170,7 +169,6 @@ $sub-light-color: #8BD179;
 .el-select-dropdown__list {
   padding: 0px !important;
   text-align: center;
-  color: $theme-font-blue;
 }
 
 .el-select-dropdown__item.selected {

@@ -143,7 +143,7 @@
 								:class="{'send-item-amount': item.Type ==1, 'item-contract-amount': item.ContractType == 1}"
 							>{{item.Type ==1 ? '-':'+'}} {{effectiveNumber(item.AmountFormat)}} {{(item.Asset).toUpperCase() === 'SAVE' ? 'ONI' : (item.Asset).toUpperCase()}}</div>
 							<div
-								class="item-contract theme-font-blue-40 ft12 grey-xs user-no-select"
+								class="item-contract ft12 grey-xs user-no-select"
 								v-if="item.ContractType == 1"
 							>
 								<div>
@@ -201,7 +201,7 @@
 					</li>
 					<li
 						v-show="switchToggle.showLoading"
-						class="loading text-center theme-font-blue transparent mt20 mb20"
+						class="loading text-center transparent mt20 mb20"
 					>
 						<i class="el-icon-loading"></i>
 					</li>
@@ -227,7 +227,7 @@
 				</div>
 				<div class="flex ai-center column">
 					<div class="flex ai-center mb10">
-						<p class="mr10 theme-font-blue-transparent ftpx14">{{balanceLists.length>0?balanceLists[balanceSelected].Address : $t('wallet.textAddr')}}</p>
+						<p class="mr10 ftpx14">{{balanceLists.length>0?balanceLists[balanceSelected].Address : $t('wallet.textAddr')}}</p>
 						<i
 							class="ofont ofont-fuzhi addr_btn"
 							@click="clipText(balanceLists[balanceSelected].Address)"
@@ -913,14 +913,7 @@ export default {
 };
 </script>
 <style lang="scss">
-// $theme-font-blue: #040f39;
-$theme-font-blue: #202020;
 $light-grey: #f7f7f7;
-// .el-select,
-// .el-select:hover .el-input__inner:focus,
-// .el-input__inner:hover {
-// 	// border-color: #fff !important;
-// }
 #wallet {
 	display: flex;
 	flex: 1;
@@ -1208,8 +1201,6 @@ $light-grey: #f7f7f7;
 								justify-content: space-between;
 							}
 							.from-or-to {
-								color: $theme-font-blue;
-								// font-weight: bold;
 							}
 						}
 						.item-amount {
@@ -1326,9 +1317,6 @@ $light-grey: #f7f7f7;
 	.asset-list {
 		padding-top: 20px;
 		display: flex;
-		// .el-switch.is-checked .el-switch__core {
-		// 	background-color: $theme-font-blue;
-		// }
 	}
 }
 .done {
@@ -1360,9 +1348,6 @@ $light-grey: #f7f7f7;
 		.el-input.is-active .el-input__inner,
 		.el-input__inner:focus {
 			border: none;
-		}
-		.el-form-item__label {
-			color: $theme-font-blue;
 		}
 	}
 	.el-dialog__footer {

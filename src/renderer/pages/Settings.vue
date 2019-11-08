@@ -74,44 +74,6 @@
 			</div>
 			<div class="settings-box">
 				<div class="tag">
-					<p>{{$t('settings.themeColor')}}</p>
-				</div>
-				<ul class="img-selector">
-					<li
-						class="img-selector-item"
-						@click="setTheme('light')"
-					>
-						<img
-							:class="{'theme-selected':settings.themeColor==='light'}"
-							src="../assets/images/theme_light.png"
-						>
-						<p class="dark-grey tag text-center mt10">{{$t('settings.theme.dark')}}</p>
-					</li>
-					<li
-						class="img-selector-item"
-						@click="setTheme('dark')"
-					>
-						<img
-							:class="{'theme-selected':settings.themeColor==='dark'}"
-							src="../assets/images/theme_dark.png"
-						>
-						<p class="dark-grey tag text-center mt10">{{$t('settings.theme.light')}}</p>
-					</li>
-				</ul>
-				<!-- <el-select
-					v-model="settings.themeColor"
-					@change="setTheme"
-				>
-					<el-option
-						v-for="item in themeList"
-						:key="item"
-						:label='item'
-						:value="item"
-					></el-option>
-				</el-select> -->
-			</div>
-			<div class="settings-box">
-				<div class="tag">
 					<p>{{$t('settings.language')}}</p>
 				</div>
 				<el-select
@@ -125,6 +87,44 @@
 						:value="item.id"
 					></el-option>
 				</el-select>
+			</div>
+			<div class="settings-box">
+				<div class="tag">
+					<p>{{$t('settings.themeColor')}}</p>
+				</div>
+				<ul class="img-selector">
+					<li
+						class="img-selector-item"
+						@click="setTheme('light')"
+					>
+						<img
+							:class="{'theme-selected':settings.themeColor==='light'}"
+							src="../assets/images/theme_light.png"
+						>
+						<p class="dark-grey tag text-center mt10">{{$t('settings.theme.light')}}</p>
+					</li>
+					<li
+						class="img-selector-item"
+						@click="setTheme('dark')"
+					>
+						<img
+							:class="{'theme-selected':settings.themeColor==='dark'}"
+							src="../assets/images/theme_dark.png"
+						>
+						<p class="dark-grey tag text-center mt10">{{$t('settings.theme.dark')}}</p>
+					</li>
+				</ul>
+				<!-- <el-select
+					v-model="settings.themeColor"
+					@change="setTheme"
+				>
+					<el-option
+						v-for="item in themeList"
+						:key="item"
+						:label='item'
+						:value="item"
+					></el-option>
+				</el-select> -->
 			</div>
 		</div>
 	</div>
@@ -353,12 +353,13 @@ export default {
 				display: flex;
 				.theme-selected {
 					border: 2px solid #2f8ff0;
+					border-radius:4px;
 				}
 				& > li {
 					margin: 0 5px;
-					img{
-						width:130px;
-						height:90px;
+					img {
+						width: 130px;
+						height: 90px;
 						box-sizing: border-box;
 						overflow: hidden;
 					}

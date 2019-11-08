@@ -20,7 +20,7 @@
 				<i class="ofont ofont-fasong"></i>
 				<i
 					class="ofont ofont-huazhuan ftpx20 user-no-select"
-					:class="{'ex-change': channelSelected.IsOnline,'theme-font-blue-40 cursor-not-allowed':!channelSelected.IsOnline}"
+					:class="{'ex-change': channelSelected.IsOnline,'grey-xs cursor-not-allowed':!channelSelected.IsOnline}"
 					:title="channelSelected.IsOnline?$t('public.switchover'):$t('public.SorryYouCannotWithdrawInOfflineStatus')"
 					@click="exWithDraw()"
 				></i></div>

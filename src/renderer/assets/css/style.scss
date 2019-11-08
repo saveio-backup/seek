@@ -391,11 +391,6 @@ select {
         font-weight: 500;
         border: none;
         transition: all .3s ease;
-
-        // &:focus {
-        //     border-color: #202020 !important;
-        //     background: #E0E2E6;
-        // }
     }
 }
 
@@ -423,7 +418,6 @@ select {
         position: relative;
 
         &:focus {
-            background: #DEE2EA;
             border: 1px solid #dee2ea !important;
         }
     }

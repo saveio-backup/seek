@@ -98,7 +98,6 @@ export default {
 };
 </script>
 <style lang="scss">
-$theme-font-blue: #040f39;
 $brand-blue: #409eff;
 $sucess: #67c23a;
 $danger: #f56c6c;
@@ -114,7 +113,6 @@ $danger: #f56c6c;
 		bottom: 0;
 		width: 200px;
 		min-height: 400px;
-		color: $theme-font-blue;
 		font-size: 1.6rem;
 		.aside-link {
 			display: flex;

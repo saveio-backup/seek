@@ -109,7 +109,7 @@
 						<div class="ftpx14">
 							<p class="theme-font-color">{{scope.row.FileName}}</p>
 							<p class="grey-xs"><span v-if="transferType != 0">{{util.bytesToSize((((scope.row.IsUploadAction ? scope.row.UploadSize : scope.row.DownloadSize )))/(scope.row.IsUploadAction ? (scope.row.CopyNum + 1) : 1) * 1024 || 0)}}/</span>{{util.bytesToSize(scope.row.FileSize * 1024)}}</p>
-							<!-- <p class="theme-font-blue-40"><span v-if="transferType != 0">{{(((scope.row.IsUploadAction ? (scope.row.UploadSize || 0) : scope.row.DownloadSize )))/(scope.row.IsUploadAction ? (scope.row.CopyNum + 1) : 1) * 1024)}}/</span>{{util.bytesToSize(scope.row.FileSize * 1024)}}</p> -->
+							<!-- <p class=""><span v-if="transferType != 0">{{(((scope.row.IsUploadAction ? (scope.row.UploadSize || 0) : scope.row.DownloadSize )))/(scope.row.IsUploadAction ? (scope.row.CopyNum + 1) : 1) * 1024)}}/</span>{{util.bytesToSize(scope.row.FileSize * 1024)}}</p> -->
 						</div>
 					</template>
 				</el-table-column>
@@ -438,9 +438,9 @@
 									:class="{'more-than-5': (((item.UploadSize?item.UploadSize:item.DownloadSize)/fileObjById[detailId].FileSize) < 0.15),'progressAnimate': fileObjById[detailId].Status != 4 && fileObjById[detailId].Status != 0}"
 								></el-progress>
 							</div>
-							<div class="ml10 tl node-speed ftpx14 theme-font-blue-40">{{nodeSpeed[item.HostAddr] && util.bytesToSize(nodeSpeed[item.HostAddr].speed*1024) || '0 Byte'}}/{{$t('fileManager.s')}}</div>
+							<div class="ml10 tl node-speed ftpx14 ">{{nodeSpeed[item.HostAddr] && util.bytesToSize(nodeSpeed[item.HostAddr].speed*1024) || '0 Byte'}}/{{$t('fileManager.s')}}</div>
 							<div
-								class="file-size tr theme-font-blue-40"
+								class="file-size tr "
 								v-if="fileObjById[detailId]"
 							>{{util.bytesToSize(item.UploadSize*1024 || item.DownloadSize*1024)}}/{{util.bytesToSize(fileObjById[detailId].FileSize * 1024)}}</div>
 						</li>
@@ -457,10 +457,10 @@
 									<div class="node-content-first ft14 theme-font-blue-70">
 										{{$t('fileManager.node')}}{{index+1}}
 									</div>
-									<div class="node-content-second theme-font-blue-40">
+									<div class="node-content-second ">
 										{{util.bytesToSize(item.UploadSize*1024 || item.DownloadSize*1024)}}
 									</div>
-									<div class="node-content-third theme-font-blue-40">
+									<div class="node-content-third ">
 										{{nodeSpeed[item.HostAddr] && util.bytesToSize(nodeSpeed[item.HostAddr].speed*1024) || '0 Byte'}}/{{$t('fileManager.s')}}
 									</div>
 								</div>
@@ -1816,7 +1816,6 @@ export default {
 };
 </script>
 <style lang="scss">
-$theme-font-blue: #040f39;
 $brand-blue: #409eff;
 $light-blue: #65a6ff;
 $sucess: #67c23a;
@@ -1860,7 +1859,6 @@ $danger: #f56c6c;
 			height: calc(100% - 140px);
 		}
 		.el-table {
-			color: $theme-font-blue;
 			font-weight: bold;
 			thead th {
 				background: #f9f9fb;

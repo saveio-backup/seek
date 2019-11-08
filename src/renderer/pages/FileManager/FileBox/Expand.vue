@@ -78,7 +78,6 @@
 						<div class="adjust-item">
 							<div class="adjust-title bold ft14 tl">{{$t('fileManager.spaceSize')}}:</div>
 						</div>
-						<!-- <h3 class="theme-font-blue transparent bold ft12">Space Size:</h3> -->
 						<div class="adjust-item">
 							<p class="adjust-title ftpx14">{{$t('fileManager.current')}}:</p>
 							<div class="adjust-info">
@@ -592,7 +591,6 @@ export default {
 };
 </script>
 <style lang="scss">
-$theme-font-blue: #040f39;
 $grey: #ccc;
 #expand {
 	height: 100%;
@@ -628,7 +626,6 @@ $grey: #ccc;
 			flex: 1;
 			flex-direction: column;
 			.el-table {
-				color: $theme-font-blue;
 				font-weight: bold;
 			}
 		}

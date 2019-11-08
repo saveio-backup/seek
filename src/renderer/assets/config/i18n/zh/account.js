@@ -1,6 +1,6 @@
 const result = {
   'importAccount': '导入账号',
-  'keystoreFile': '密 钥',
+  'keystoreFile': '签名证书',
   'privateKey': '私 钥',
   'key': '密 钥',
   'selectKeystoreFile': '选择密钥文件',

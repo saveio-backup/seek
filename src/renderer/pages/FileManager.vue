@@ -321,7 +321,6 @@ export default {
 };
 </script>
 <style lang="scss">
-// $theme-font-blue: #040f39;
 $grey: #ccc;
 #fileManager {
 	flex: 1;
@@ -379,9 +378,6 @@ $grey: #ccc;
 					overflow: hidden;
 				}
 				&.channel-not-have {
-					.channel-info-first {
-						color: rgba(32, 32, 32, 0.7);
-					}
 				}
 				.channel-info-last {
 					opacity: 0.4;
@@ -442,7 +438,9 @@ $grey: #ccc;
 					text-align: center;
 					border-radius: 50%;
 					&:hover {
-						background: #edeff4;
+						@include themify{
+							background-color: $color;
+						}
 					}
 					&:active {
 						opacity: 0.7;

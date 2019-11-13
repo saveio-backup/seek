@@ -10,6 +10,7 @@
     "rebuild": "./node_modules/.bin/electron-rebuild -w sqlite3 --dist-url=https://atom.io/download/electron",
     "preload": "npx webpack --config ./.electron-vue/webpack.preload.config.js",
     "build": "npm run preload && node .electron-vue/build.js && electron-builder",
+    "build:mac": "npm run preload && node .electron-vue/build.js && electron-builder --m",
     "build:win": "npm run preload && node .electron-vue/build.js && electron-builder --w --x64",
     "build:dir": "node .electron-vue/build.js && electron-builder --dir",
     "build:clean": "cross-env BUILD_TARGET=clean node .electron-vue/build.js",

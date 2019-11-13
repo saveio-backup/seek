@@ -118,7 +118,7 @@ const result = {
   'pleaseFillEncryptionPasscode': 'Please Fill Encryption Password',
   'wrongWalletAddressFormat': 'Wrong Wallet Address Format',
   'uploading': 'Uploading',
-  'passwordCheckFailed': 'Password Check Failed',
+  'passwordCheckFailed': 'Incorrect password',
   'uploadError': 'Upload Error',
   'startUpload': 'Start Upload',
   'getPriceFailes': 'Get Price Failes',

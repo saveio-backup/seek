@@ -13,7 +13,7 @@
 			<li class="flex">
 				<i
 					class="process-status"
-					:class="{'process-all-error': statusList.DNS.State === 0}"
+					:class="{'process-all-error': statusList.DNS.State === 0 && HostAddr, 'process-all-offline': statusList.DNS.State === 0 && !HostAddr}"
 				></i> {{$t('menuWindow.dnsState')}}
 				<i
 					v-show="statusList.DNS.State === 0 && statusList.DNS.HostAddr && UpdatedAt(statusList.DNS.UpdatedAt)"
@@ -116,6 +116,17 @@ export default {
 				);
 				box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.3);
 				border: 1px solid rgba(237, 237, 237, 1);
+			}
+
+			&.process-all-offline {
+				background: linear-gradient(
+					180deg,
+					rgba(222, 222, 222, 1) 0%,
+					rgba(144, 144, 144, 1) 100%
+				);
+				box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.3);
+				border: 1px solid rgba(237, 237, 237, 1);
+
 			}
 		}
 		.rotate-animate {

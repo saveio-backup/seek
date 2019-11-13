@@ -82,7 +82,7 @@
 						id="channel-view"
 						class="channelView"
 					></div>
-					<div class="circle-assist"></div>
+					<div class="circle-assist" :class="'circle-assist-'+themeColor"></div>
 				</div>
 			</div>
 			<ripper-button
@@ -364,7 +364,7 @@ export default {
 							}
 						});
 					} else {
-						this.$message.error(this.$t(`error${[res.Error]}`));
+						this.$message.error(this.$t(`error[${res.Error}]`));
 					}
 				});
 		},
@@ -401,6 +401,7 @@ export default {
 		// init channel chart
 		drawChannelView() {
 			const that = this;
+			let themefontColor = this.themeColor === 'dark' ? 'rgba(255,255,255,0.4)' : 'rgba(32, 32, 32, .4)'
 			const channelDom = document.getElementById("channel-view");
 			this.chartsChannelDom = echarts.init(channelDom);
 			const currentChannelData =
@@ -432,13 +433,13 @@ export default {
 										padding: [10, 0, 10, 0]
 									},
 									b: {
-										color: "rgba(32, 32, 32, .4)",
+										color: themefontColor,
 										fontFamily: "Montserrat-Medium",
 										fontSize: 14,
 										padding: [5, 0, 0, 0]
 									},
 									c: {
-										color: "rgba(32, 32, 32, .4)",
+										color: themefontColor,
 										fontFamily: "Montserrat-Medium",
 										fontSize: 14
 									}
@@ -492,7 +493,7 @@ export default {
 		initDrawBalanceView() {
 			const DAY_NUM = 7;
 			let balanceXAxisData = [];
-			let balanceData = [0, 0, 0, 0, 0, 0, 0];
+			let balanceData = this.currentBalanceList;
 			let todayZeroTimestamp = this.getZeroTimestamp();
 			let i = 0;
 			while (i < DAY_NUM) {
@@ -513,6 +514,9 @@ export default {
 		},
 		// init balance chart
 		drawBalanceView(balanceXAxisData, balanceData) {
+			// console.log(this.themeColor);
+			let areaColor = this.themeColor === 'dark' ? '#303036' : '#F8F9FA'
+			let lineColor = this.themeColor === 'dark' ? 'rgba(244, 244, 244, 0.1)' : 'rgba(244, 244, 244, 1)'
 			const balanceDom = document.getElementById("balance-view");
 			this.chartsDom = echarts.init(balanceDom);
 			this.chartsDom.setOption({
@@ -533,7 +537,13 @@ export default {
 							color: "#AFACAC"
 						}
 					},
-					data: balanceXAxisData
+					data: balanceXAxisData,
+					splitLine: {
+						show: true,
+						lineStyle: {
+							color: lineColor
+						}
+					}
 					// data: ['06/13', '06/14', '06/15', '06/16', '06/17', '06/18', '06/19']
 				},
 				yAxis: {
@@ -545,10 +555,16 @@ export default {
 						}
 					},
 					color: ["#fff"],
+					splitLine: {
+						show: this.themeColor !== 'dark',
+						lineStyle: {
+							color: lineColor
+						}
+					},
 					splitArea: {
 						show: true,
 						areaStyle: {
-							color: ["rgba(250,250,250,0.0)", "#F8F9FA"]
+							color: [areaColor, "rgba(250,250,250,0.0)"]
 						}
 					}
 				},
@@ -771,6 +787,10 @@ export default {
 		lang(newVal, oldVal) {
 			document.title = this.$t("home.home");
 			this.generateChannelView();
+		},
+		themeColor(newVal, oldVal) {
+			this.initDrawBalanceView();
+			this.drawChannelView();
 		}
 	},
 	computed: {
@@ -1205,6 +1225,10 @@ $input-color: rgba(203, 203, 203, 1);
 					top: 91px;
 					left: 50%;
 					transform: translateX(-66px);
+
+					&.circle-assist-dark {
+						border: 3px solid rgba(234, 239, 253, 0.2);
+					}
 				}
 			}
 		}

@@ -118,7 +118,7 @@ const result = {
   'pleaseFillEncryptionPasscode': '请填写加密密码',
   'wrongWalletAddressFormat': '钱包地址格式错误',
   'uploading': '上传中',
-  'passwordCheckFailed': '密码校验失败',
+  'passwordCheckFailed': '密码不正确',
   'uploadError': '上传错误',
   'startUpload': '开始上传',
   'getPriceFailes': '获取价格失败',

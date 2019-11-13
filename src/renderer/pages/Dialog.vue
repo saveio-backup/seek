@@ -105,7 +105,8 @@ export default {
 			websock: null,
 			wsOpeation: {
 				reconnectNumber: 0,
-				setIntervalObj: null
+				setIntervalObj: null,
+				errorTimeout: null
 			},
 			// for force update data ↓
 			uploadingTransferListForce: 0,
@@ -365,9 +366,10 @@ export default {
 			}, 180000);
 		},
 		// ws connect again
-		websocketonerror() {
-			if (this.wsOpeation.reconnectNumber) this.wsOpeation.reconnectNumber = 0;
-			setTimeout(() => {
+		websocketonerror(e) {
+			console.log("error connect", e);
+			// if (this.wsOpeation.reconnectNumber) this.wsOpeation.reconnectNumber = 0;
+			this.wsOpeation.errorTimeout = setTimeout(() => {
 				console.log(`it's ${++this.wsOpeation.reconnectNumber}th reconnet`);
 				this.initWebSocket();
 			}, 3000);
@@ -413,6 +415,12 @@ export default {
 		// close ws
 		websocketclose(e) {
 			console.log("close connect", e);
+			clearInterval(this.wsOpeation.setIntervalObj);
+			console.log(`it's ${++this.wsOpeation.reconnectNumber}th reconnet`);
+			clearTimeout(this.wsOpeation.errorTimeout);
+			setTimeout(() => {
+				this.initWebSocket();
+			}, 3000)
 		},
 		// get wait for upload promise list
 		getStartWaitForUploadPromise(arr) {

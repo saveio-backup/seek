@@ -1,10 +1,12 @@
 <template>
 	<div id="settings">
+		<!-- <div class="settings-box">
+			<div class="ft20">{{$t('settings.setting')}}</div>
+		</div> -->
+		<h2 class="ft20 settings-title">
+			{{$t('settings.setting')}}
+		</h2>
 		<div class="settings-content">
-			<div class="settings-box">
-				<div class="ft20">{{$t('settings.setting')}}</div>
-				<!-- <p class="active-blue ft14">Clear browsing data</p> -->
-			</div>
 			<div class="settings-box">
 				<div class="tag">
 					<span>{{$t('settings.chainEnvironment')}}</span>
@@ -40,7 +42,7 @@
 			</div>
 			<div class="settings-box">
 				<div class="tag">{{$t('settings.maxUploadLength')}}</div>
-				<el-select
+				<!-- <el-select
 					v-model="settings.maxNumUpload"
 					@change="frontConfigUploadRender"
 				>
@@ -50,16 +52,30 @@
 						:label="item"
 						:value="item"
 					></el-option>
-				</el-select>
+				</el-select> -->
+				<div class="flex ai-center">
+					<el-slider
+						v-model="settings.maxNumUpload"
+						@change="frontConfigUploadRender"
+						:max="10"
+						:min="1"
+					></el-slider>
+					<div style="width: 24px;" class="ml10 ftpx14">
+						{{settings.maxNumUpload}}
+					</div>
+				</div>
 			</div>
 			<div class="settings-box">
 				<div class="tag">{{$t('settings.maxPeerNum')}}</div>
-				<div>
+				<div class="flex ai-center">
 					<el-slider
 						v-model="settings.maxPeerNum"
 						@change="updateSettings('maxPeerNum',settings.maxPeerNum)"
 						:max="20"
 					></el-slider>
+					<div style="width: 24px;" class="ml10 ftpx14">
+						{{settings.maxPeerNum}}
+					</div>
 				</div>
 			</div>
 			<div class="settings-box">
@@ -158,7 +174,7 @@ export default {
 					"2": "MainNet"
 				}
 			},
-			maxUploadLimitList: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+			maxUploadTimeoutObj: null,
 			langList: [
 				{
 					id: "en",
@@ -240,26 +256,29 @@ export default {
 		},
 		frontConfigUploadRender() {
 			const vm = this;
-			let views = {};
-			ipcRenderer.send("run-dialog-event", {
-				name: "settingUpdate",
-				data: vm.settings
-			});
-			for (let win of remote.BrowserWindow.getAllWindows()) {
-				if (win.views) {
-					views = win.views;
-					for (let view of views) {
-						if (view.displayURL.indexOf("seek://") === 0) {
-							let winContentId = view.browserView.webContents.id;
-							ipcRenderer.sendTo(winContentId, "get-data", {
-								result: vm.settings,
-								type: "frontConfig"
-							});
+			clearTimeout(this.maxUploadTimeoutObj);
+			this.maxUploadTimeoutObj = setTimeout(() => {
+				let views = {};
+				ipcRenderer.send("run-dialog-event", {
+					name: "settingUpdate",
+					data: vm.settings
+				});
+				for (let win of remote.BrowserWindow.getAllWindows()) {
+					if (win.views) {
+						views = win.views;
+						for (let view of views) {
+							if (view.displayURL.indexOf("seek://") === 0) {
+								let winContentId = view.browserView.webContents.id;
+								ipcRenderer.sendTo(winContentId, "get-data", {
+									result: vm.settings,
+									type: "frontConfig"
+								});
+							}
 						}
 					}
 				}
-			}
-			this.updateSettings("maxNumUpload", this.settings.maxNumUpload);
+				this.updateSettings("maxNumUpload", this.settings.maxNumUpload);
+			}, 500)
 		},
 		updateSettings(key, value) {
 			try {
@@ -329,9 +348,23 @@ export default {
 #settings {
 	padding-top: 20px;
 	min-height: 100%;
+	.settings-title {
+		width: 60%;
+		margin: 0px auto 10px;
+		@extend .theme-font-color;
+	}
+
 	.settings-content {
 		width: 60%;
 		margin: 0px auto 0px;
+    border-radius: 6px;
+		padding: 20px 60px;
+		@include themify {
+			background-color: $card-color;
+			box-shadow: $card-shadow;
+		}
+
+
 		.settings-box {
 			@extend .theme-font-color;
 			display: flex;

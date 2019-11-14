@@ -5,6 +5,13 @@
     background-color: $color;
   }
 }
+#app[data-id=menuWindow] {
+  .theme-bg {
+    @include themify {
+      background-color: $color-menu;
+    }
+  }
+}
 
 .theme-font-color {
   @include themify {

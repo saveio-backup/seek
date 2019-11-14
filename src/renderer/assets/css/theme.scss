@@ -1,6 +1,7 @@
 $themes: ( // no coment, just for format code
   'light': ( // same as above
     'color':#f9f9fb, // bgcolor
+    'colorMenu': #f9f9fb, //bgcolor menu
     'navigation-bg':#dfe2e9,
     'nav-button-bg':#c0c6d1,
     'nav-button-disabled':#C7CAD0,
@@ -17,6 +18,7 @@ $themes: ( // no coment, just for format code
 
   'dark': ( //
     'color':#2A2B30,
+    'colorMenu': #35363C, //bgcolor menu
     'navigation-bg':#1c1d21,
     'nav-button-bg':#2A2B30,
     'nav-hover-color':#fff,
@@ -41,6 +43,7 @@ $font-color:null;
     &,
     .theme-#{$theme} & {
       $color: map-get($props, 'color') !global;
+      $color-menu:map-get($props, 'colorMenu') !global;
       $card-color: map-get($props, 'card-color') !global;
       $card-shadow: map-get($props, 'card-shadow') !global;
       $font-color: map-get($props, 'font-color') !global;
@@ -56,6 +59,7 @@ $font-color:null;
       @content;
 
       $color: null !global;
+      $color-menu: null !global;
       $card-color: null !global;
       $card-shadow: null !global;
       $font-color: null !global;

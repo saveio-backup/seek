@@ -61,24 +61,36 @@ export default class MenuWindow {
       let parentBounds = this.parentWindow.getBounds();
       this.win.webContents.send('setMenuDialog', params);
       this.win.setBounds({
-        x: parentBounds.x + parentBounds.width - 225,
+        x: parentBounds.x + parentBounds.width - 230,
         y: parentBounds.y + Y_POSITION - 5,
         width: 230,
         height: 90
       })
+      this.win.getParentWindow().focus();
       this.win.showInactive();
-      this.focus();
     } else if (params.id === 'state') {
       let parentBounds = this.parentWindow.getBounds();
       this.win.webContents.send('setMenuDialog', params);
       this.win.setBounds({
         x: parentBounds.x + 30,
-        y: parentBounds.y - 165 + parentBounds.height,
+        y: parentBounds.y - 170 + parentBounds.height,
         width: 240,
         height: 170
       })
+      this.win.getParentWindow().focus();
       this.win.showInactive();
-      this.focus();
+    } else if (params.id === 'plugin') {
+      console.log('plugin');
+      let parentBounds = this.parentWindow.getBounds();
+      this.win.webContents.send('setMenuDialog', params);
+      this.win.setBounds({
+        x: parentBounds.x + 30,
+        y: parentBounds.y - 170 + parentBounds.height,
+        width: 240,
+        height: 170
+      })
+      this.win.getParentWindow().focus();
+      this.win.showInactive();
     }
   }
   focus() {

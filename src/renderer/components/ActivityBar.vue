@@ -54,7 +54,8 @@
 							<span class="ofont ofont-dapp1 not-allowed"></span>
 						</div>
 					</li>
-					<li class="action-item">
+					<!-- @mouseenter="setDialog('plugin')" -->
+					<li class="action-item"  @mouseleave="hiddenDialog">
 						<div
 							:title="$t('window.comingSoon')"
 							class="nav-button"
@@ -62,7 +63,6 @@
 						>
 							<span
 								class="ofont ofont-tianjia not-allowed"
-								style='cursor:not-allowed;'
 							></span>
 						</div>
 					</li>

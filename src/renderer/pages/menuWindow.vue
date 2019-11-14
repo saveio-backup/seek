@@ -1,7 +1,13 @@
 <template>
-	<div id="menu-window" :style="computedStyle">
+	<div
+		id="menu-window"
+		:style="computedStyle"
+	>
 		<!-- MenuWindow -->
-		<div @mouseenter="setDialog" @mouseleave="hiddenDialog">
+		<div
+			@mouseenter="setDialog"
+			@mouseleave="hiddenDialog"
+		>
 			<div
 				class="syncInfo"
 				v-if="menuid === 'syncInfo'"
@@ -14,25 +20,33 @@
 			>
 				<state-info></state-info>
 			</div>
+			<div
+				class="plugin"
+				v-if="menuid === 'plugin'"
+			>
+				<plugin-info></plugin-info>
+			</div>
 		</div>
 	</div>
 </template>
 <script>
 import { ipcRenderer, remote } from "electron";
-import syncInfo from './MenuWindow/SyncInfo'
-import stateInfo from './MenuWindow/StateInfo'
+import syncInfo from "./MenuWindow/SyncInfo";
+import stateInfo from "./MenuWindow/StateInfo";
+import pluginInfo from "./PluginInfo.vue";
 export default {
-	name: 'menuWindow',
+	name: "menuWindow",
 	components: {
 		syncInfo,
-		stateInfo
+		stateInfo,
+		pluginInfo
 	},
 	mounted() {
 		this.eventListener();
 	},
 	data() {
 		return {
-			menuid:''
+			menuid: ""
 		};
 	},
 	computed: {
@@ -40,13 +54,18 @@ export default {
 			return remote.getCurrentWindow();
 		},
 		computedStyle: function() {
-			let _style = this.menuid === 'syncInfo' ? 'padding-top: 5px;' : this.menuid === 'state' ? 'padding-left: 10px;' : '';
+			let _style =
+				this.menuid === "syncInfo"
+					? "padding-top: 5px;"
+					: this.menuid === "state"
+					? "padding-left: 10px;"
+					: "";
 			return _style;
 		}
 	},
 	methods: {
 		eventListener() {
-			ipcRenderer.on("setMenuDialog", (event, {id}) => {
+			ipcRenderer.on("setMenuDialog", (event, { id }) => {
 				this.menuid = id;
 			});
 		},

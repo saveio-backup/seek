@@ -80,6 +80,7 @@
 			:class="{'is-not-compelete-top-progress':transferType != 0}"
 		>
 			<!-- border -->
+			<!-- mockFileList -->
 			<el-table
 				:data="fileList"
 				:empty-text='$t("public.noData")'

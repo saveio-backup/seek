@@ -453,8 +453,8 @@ export default {
 			util,
 			baseKeys,
 			BASE,
-			verificationCycleSelected: baseKeys[0], // default Second
-			verificationCycleNumber: 1500, // Integrity verification cycle
+			verificationCycleSelected: baseKeys[1], // default Second
+			verificationCycleNumber: 30, // Integrity verification cycle
 			storageCycleSelected: DEFAULT_KEY, // default Year
 			storageCycleNumber: 1,
 			DefaultCopyNum: "", // axios.get
@@ -783,7 +783,7 @@ export default {
 							IsUploadAction: true,
 							Id: ('waitfor_' + uuid.v4()),
 							Nodes: []
-							// ,Url: 'oni://www.filmlabtest12.com'
+							// ,Url: 'oni://www.filmlabtest14.com'
 						};
 						params = this.switchToggle.advanced
 							? Object.assign({}, params, this.advancedData)

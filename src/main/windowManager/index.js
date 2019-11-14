@@ -1,7 +1,8 @@
 import {
   app,
   BrowserWindow,
-  BrowserView
+  BrowserView,
+  Menu
 } from 'electron'
 import dialogView from './dialogView'
 import path from 'path'
@@ -116,6 +117,25 @@ class View {
   }
   updateEvent() {
     const vm = this;
+    this.webContents.on('context-menu', () => {
+      const menuItems = [];
+      menuItems.push({
+          label: 'Refresh',
+          click: () => {
+            this.webContents.reload();
+          },
+          accelerator: 'CommandOrControl+J'
+        },
+        // { // bug to fix
+        //   label: 'Print',
+        //   click: () => {
+        //     this.webContents.print();
+        //   }
+        // }
+      )
+      let menu = Menu.buildFromTemplate(menuItems);
+      menu.popup();
+    })
     this.webContents.on('did-start-loading', () => {
       // console.log('did start loading !!');
       this.isLoading = true;
@@ -131,7 +151,10 @@ class View {
       console.log('get-----=====---')
       this.favicon = favicons && favicons[0] ? favicons[0] : null;
       this.updateDisplayURL();
-      this.addHistory({e,href: vm.displayURL});
+      this.addHistory({
+        e,
+        href: vm.displayURL
+      });
       this.browserWindow.webContents.send('forceUpdate');
     })
     this.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL, isMainFrame) => {
@@ -147,7 +170,7 @@ class View {
     this.webContents.on('new-window', (e, url) => {
       this.onNewWindow(url, e)
     })
-    this.webContents.on('dom-ready', (e,b,c) => {     
+    this.webContents.on('dom-ready', (e, b, c) => {
       console.log('dom-ready');
       console.log(b);
       console.log(c);
@@ -177,7 +200,10 @@ class View {
       this.forceUpdate()
     });
   }
-  addHistory({e,href}) {
+  addHistory({
+    e,
+    href
+  }) {
     // the timeout for get title when route link change title be changed
     setTimeout(() => {
       // the try catch when brwoserView be closed
@@ -188,12 +214,17 @@ class View {
         const src = this.favicon;
         console.log(title, '--->', timestamp, '--->', href, '---------->', src);
         let res = /^seek:\/\/(history|Login|CreateAccount|ImportAccount|settings)/.test(href)
-        if(res) {
+        if (res) {
           return;
         }
-        global.HistoryDB.add({title, timestamp, href, src});
-      } catch(e) {
-        
+        global.HistoryDB.add({
+          title,
+          timestamp,
+          href,
+          src
+        });
+      } catch (e) {
+
       }
     }, 1000);
   }

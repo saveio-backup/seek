@@ -2,6 +2,7 @@
 	<div id="login">
 		<div class="login-wrapper loading">
 			<el-form @submit.native.prevent>
+        <h1 class="mb50 active-blue">{{data.Label}}</h1>
 				<el-form-item :label="$t('public.address')+':'">
 					<el-input
 						type="textarea"
@@ -42,6 +43,7 @@ export default {
     return {
       data: {
         Password: '',
+        Label:localStorage.getItem('Label'),
         Address: localStorage.getItem('Address')
       }
     }

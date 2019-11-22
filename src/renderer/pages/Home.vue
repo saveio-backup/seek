@@ -621,7 +621,7 @@ export default {
 				.get(this.$api.account + "/export/walletfile")
 				.then(res => {
 					if (res.Error === 0) {
-						ipcRenderer.send("export-file-dialog", res.Result.Wallet, "Wallet");
+						ipcRenderer.send("export-file-dialog", res.Result.Wallet, "keystore");
 						ipcRenderer.once("export-finished", () => {
 							this.$message({
 								message: vm.$t("dialog.exportSuccess"),

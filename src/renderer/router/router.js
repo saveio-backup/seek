@@ -168,9 +168,14 @@ export default new Router({
       component: require('../pages/History/History.vue').default
     },
     {
-      path: '/Login',
-      name: 'Login',
+      path: '/login',
+      name: 'login',
       component: require('../pages/Login/Login.vue').default
+    },
+    {
+      path: '/plugin',
+      name: 'plugin',
+      component: require('../pages/PluginInfo.vue').default
     },
     {
       path: '*',

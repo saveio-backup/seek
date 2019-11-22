@@ -387,6 +387,7 @@ export default {
 		bottom: -4rem;
 		right: 0;
 		button {
+			line-height: normal;
 			height: 2.4rem;
 		}
 	}

@@ -3,11 +3,17 @@ import {
   remote
 } from "electron";
 const methods = {
-  activeMessage({ info, type }) {
+  activeMessage({
+    info,
+    type
+  }) {
     let views = remote.getCurrentWindow().views;
     let activeView = views.find(view => view.isActive);
     const webContentsId = activeView.browserView.webContents.id;
-    ipcRenderer.sendTo(webContentsId, 'current-active-show-message', { info: info, type: type })
+    ipcRenderer.sendTo(webContentsId, 'current-active-show-message', {
+      info: info,
+      type: type
+    })
   },
   install(Vue) {
     const vm = this;
@@ -18,7 +24,7 @@ const methods = {
         .get(Vue.prototype.$api.account + "/export/walletfile")
         .then(res => {
           if (res.Error === 0) {
-            ipcRenderer.send("export-file-dialog", res.Result.Wallet, 'Wallet');
+            ipcRenderer.send("export-file-dialog", res.Result.Wallet, 'keystore');
             ipcRenderer.once("export-finished", () => {
               if (cb) {
                 console.log(cb);
@@ -42,7 +48,7 @@ const methods = {
       ipcRenderer.once("export-finished", () => {
         if (cb) {
           cb();
-        } 
+        }
         // else {
         //   vm.activeMessage({
         //     info: "Export Success!",

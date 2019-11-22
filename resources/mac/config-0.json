@@ -48,7 +48,7 @@
             "AUtcTFw1mMB1R2Lvf28pEmm9xemUDtBHun"
         ],
         "WalletPwd": "",
-        "WalletDir": "./wallet.dat"
+        "WalletDir": "./keystore.dat"
     },
     "Fs": {
         "FsRepoRoot": "./FS",

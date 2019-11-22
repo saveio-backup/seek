@@ -203,63 +203,6 @@ function downloadPage(url, uuid, loadView) {
   })
 }
 
-async function loadPlugin(url, plugItem) {
-  let detail = null;
-  try {
-    detail = await getTransferDetail(url);
-  } catch (error) {
-    console.log('loadThirdPage throw a error from await');
-    console.log(error);
-    detail = {
-      data: null
-    };
-  }
-  if (detail.data.Result) {
-    const data = detail.data.Result;
-    if (data.Progress >= 0 && data.Progress < 1) { // task has exist
-      if (data.Status === 0) { // but in Pause state 
-        axios.post(api.downloadResume, {
-          Ids: [data.Id]
-        }).then(res => {
-          if (res.data.Error === 0) {
-            setTimeout(() => {
-              loadPlugin(url, plugItem);
-            }, 2000);
-          }
-        })
-      } else { // in processing 
-        plugItem.progress = data.Progress;
-        setTimeout(() => {
-          loadPlugin(url, plugItem);
-        }, 2000);
-      }
-    } else if (data.Progress === 1) { // task has finished
-      plugItem.progress = 1;
-    }
-  } else {
-    downloadPlugin(url, plugItem);
-  }
-}
-
-function downloadPlugin(url) {
-  axios.post(api.download, {
-    Url: url,
-    MaxPeerNum: ipcRenderer.sendSync("getSettings", "maxPeerNum"),
-    SetFileName: true
-  }).then(res => {
-    if (res.data.Error === 0) {
-      setTimeout(() => {
-        loadPlugin(url, plugItem);
-      }, 2000);
-    } else {
-      console.log('emit loadErrorPage')
-      ipcRenderer.send(uuid + '-loadErrorPage', {
-        errorCode: res.data.Error
-      });
-    }
-  })
-}
-
 function getTransferDetail(url) {
   const hexUrl = ipcRenderer.sendSync('string-to-hex', url);
   return new Promise((resolve, reject) => {

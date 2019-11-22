@@ -26,16 +26,16 @@
         "PpListenAddr": "",
         "PpBootstrap": null,
         "ChainRestAddrs": [
-            "http://52.163.217.230:10334",
-            "http://52.163.217.230:20334",
+            "http://106.75.10.25:10334",
+            "http://106.75.10.25:20334",
             "http://139.219.141.206:20334"
         ],
         "ChainRpcAddrs": [
-            "http://52.163.217.230:10336",
-            "http://52.163.217.230:20336",
+            "http://106.75.10.25:10336",
+            "http://106.75.10.25:20336",
             "http://139.219.141.206:20336"
         ],
-        "NATProxyServerAddrs": "tcp://52.230.121.132:6007",
+        "NATProxyServerAddrs": "tcp://106.75.9.56:6007",
         "DspProtocol": "tcp",
         "DspPortOffset": 4001,
         "AutoSetupDNSEnable": false,
@@ -49,7 +49,7 @@
             "APnoekqXUkNDFQMbnnBCsMPQgmWoQQmsd4"
         ],
         "WalletPwd": "",
-        "WalletDir": "./wallet.dat"
+        "WalletDir": "./keystore.dat"
     },
     "Fs": {
         "FsRepoRoot": "./FS",

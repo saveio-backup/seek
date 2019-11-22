@@ -11,7 +11,8 @@ import './protocols/protocols' // custom protocol
 // } from './dbs/index';
 import {
   SettingDB,
-  HistoryDB
+  HistoryDB,
+  UsermetaDB
 } from './dbs/index_levelup'
 import './dbs/index_levelup';
 import frontCfgObj from './windowManager/frontCfgObj'
@@ -46,12 +47,14 @@ app.on('ready', function () {
   // })
   global.settingDB = new SettingDB(); // store SettingDB in global var
   global.HistoryDB = new HistoryDB(); // store HistoryDB in global var
+  global.usermetaDB = new UsermetaDB(); // store UsermetaDB in global var
   global.settingDB.initDB(async () => {
     node.setupConfig(app.getPath("appData"), app.getName());
     node.setFrontConfig(app.getPath("appData"), app.getName());
     (!frontCfgObj().devEdgeEnable) && node.run(app.getPath("appData"), app.getName());
     createWindow(winURL);
-    global.HistoryDB.initDB()
+    global.HistoryDB.initDB();
+    global.usermetaDB.initDB();
   })
 })
 

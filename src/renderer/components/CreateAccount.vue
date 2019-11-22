@@ -72,7 +72,7 @@
 						<!-- <p> Backup your </p> -->
 						<ripper-button
 							class="primary margin-center mt20 mb20"
-							@click="exportFile(validation.Wallet,'Wallet')"
+							@click="exportFile(validation.Wallet,'keystore')"
 						>{{$t('account.saveAsFile')}}</ripper-button>
 					</div>
 					<p class="stop-desc ft14 mt20 mb20 break-word">{{$t('account.thisKeystoreFileIsAnAccountFileEncryptedBasedOnThePrivateKey')}}</p>

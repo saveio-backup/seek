@@ -159,9 +159,9 @@ const actions = {
             }
           }
         } else if(res.Error === 50012) {
-          if (location.href.indexOf('Login') < 0) {
+          if (location.href.indexOf('login') < 0) {
             router.replace({
-              name: 'Login'
+              name: 'login'
             })
           }
         } else {

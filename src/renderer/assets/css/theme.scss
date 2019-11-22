@@ -40,7 +40,7 @@ $font-color:null;
   @each $theme,
   $props in $themes {
 
-    &,
+    
     .theme-#{$theme} & {
       $color: map-get($props, 'color') !global;
       $color-menu:map-get($props, 'colorMenu') !global;

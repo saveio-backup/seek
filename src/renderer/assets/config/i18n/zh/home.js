@@ -1,7 +1,7 @@
 const result = {
   //The status code of the transmission process
   'privateKey': '导出私钥',
-  'keystoreFile': '导出钱包',
+  'keystoreFile': '导出密钥库',
   'totalBalance': '余 额',
   'channelAsset': '通道资产',
   'yourProfit': '收 益',

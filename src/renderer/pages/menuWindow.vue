@@ -2,12 +2,10 @@
 	<div
 		id="menu-window"
 		:style="computedStyle"
+		@mouseleave="hiddenDialog"
 	>
 		<!-- MenuWindow -->
-		<div
-			@mouseenter="setDialog"
-			@mouseleave="hiddenDialog"
-		>
+		<div @mouseenter="setDialog">
 			<div
 				class="syncInfo"
 				v-if="menuid === 'syncInfo'"
@@ -76,7 +74,7 @@ export default {
 			this.currentWindow.getParentWindow().menuWindow.openMenu(params);
 		},
 		hiddenDialog() {
-			this.currentWindow.getParentWindow().menuWindow.hiddenMenu();
+			this.currentWindow.getParentWindow().menuWindow.hiddenMenu('hide from menuWindow.vue');
 		}
 	}
 };

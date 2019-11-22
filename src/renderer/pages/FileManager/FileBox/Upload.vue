@@ -179,7 +179,7 @@
 								:key="item"
 								:label="$t(`fileManager['${item}']`)"
 								:value="item"
-								v-show="index < baseKeys.length-1"
+								v-show="index < baseKeys.length-1 && index !=0"
 							></el-option>
 						</el-select>
 					</el-form-item>
@@ -783,7 +783,7 @@ export default {
 							IsUploadAction: true,
 							Id: ('waitfor_' + uuid.v4()),
 							Nodes: []
-							// ,Url: 'oni://www.filmlabtest14.com'
+							,Url: 'oni://www.filmlabtest18.com'
 						};
 						params = this.switchToggle.advanced
 							? Object.assign({}, params, this.advancedData)

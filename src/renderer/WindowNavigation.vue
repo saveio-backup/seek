@@ -53,7 +53,7 @@
 					<div class="flex flex1">
 						<div class="window-navbar-buttons">
 							<div
-							class="nav-button flex ai-center jc-center"
+								class="nav-button flex ai-center jc-center"
 								@click="remoteOpenComponent('Home')"
 							>
 								<i
@@ -94,9 +94,9 @@
 							@keyup.esc.native='inputDisplayUrl=activeView.displayURL'
 							@keyup.enter.native='remoteLoadURL(activeView)'
 						></el-input>
+						<!-- @mouseleave="hiddenDialog" -->
 						<div
 							@mouseenter="setDialog('syncInfo')"
-							@mouseleave="hiddenDialog"
 							class="sync-wrapper flex flex-center"
 							v-if="address && !isNeedSync"
 						>
@@ -338,7 +338,7 @@ export default {
 			remote.getCurrentWindow().close();
 		},
 		hiddenDialog() {
-			this.currentWindow.menuWindow.hiddenMenu();
+			this.currentWindow.menuWindow.hiddenMenu("hidd from windowNavigation");
 		},
 		setDialog(menuid) {
 			let params = {
@@ -582,7 +582,7 @@ $tabs-height: 62px;
 
 				&:not(.disable) {
 					&:hover {
-						@include themify{
+						@include themify {
 							background-color: $color;
 						}
 						cursor: pointer;

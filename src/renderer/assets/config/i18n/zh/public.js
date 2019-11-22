@@ -24,7 +24,7 @@ const result = {
   'pleaseFillAmount': '请填写数量',
   'pleaseFillPassword': '请填写密码',
   'pleaseFillPartnerWalletAddress': '请填写对方钱包地址',
-  'noChannelSwitchesAreAvailable': '没有可用的通道开关',
+  'noChannelSwitchesAreAvailable': '没有可用的通道',
   'blockUnsynchronizedCompletionAreYouSureToDoThis': '块同步未完成。你确定进行此操作吗?',
   'notice': '通 知',
   'processing': '处理中...',

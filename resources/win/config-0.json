@@ -46,7 +46,7 @@
             "AJhMXoVjkgKVxDYHGZubvgTi6WU7pW7Tz4"
         ],
         "WalletPwd": "",
-        "WalletDir": "./wallet.dat"
+        "WalletDir": "./keystore.dat"
     },
     "Fs": {
         "FsRepoRoot": "./FS",

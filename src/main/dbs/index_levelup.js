@@ -18,6 +18,7 @@ const DEFAULT_USERSUMMARY_CONFIG = {
       Address: '',
       DNSAddress: '',
       PublicKey: '',
+      Plugins: []
     },
     modify: true
   },
@@ -110,6 +111,27 @@ class SeekLevelDB {
   }
 }
 
+class UsermetaDB extends SeekLevelDB {
+  constructor() {
+    super('Usermeta');
+  }
+
+  initDB(callback) {
+    const keyLists = {};
+    this.db.createKeyStream()
+      .on('data', (key) => {
+        keyLists[key.toString()] = true;
+      }).on('end', () => {
+        for (const item in DEFAULT_USERSUMMARY_CONFIG.Usermeta.value) {
+          if (!keyLists.hasOwnProperty(item)) {
+            console.log('keyLists has no item: ', item);
+            this.updateData(item, DEFAULT_USERSUMMARY_CONFIG.Usermeta.value[item]);
+          }
+        }
+        callback && callback();
+      })
+  }
+}
 class SettingDB extends SeekLevelDB {
 
   constructor() {
@@ -153,7 +175,10 @@ class HistoryDB extends SeekLevelDB {
       })
   }
 
-  getList({offset, limit}) {
+  getList({
+    offset,
+    limit
+  }) {
     const vm = this;
     console.log('offset, limit');
     // console.log(offset, '===============',limit);
@@ -165,7 +190,12 @@ class HistoryDB extends SeekLevelDB {
     });
   }
 
-  add({timestamp = (new Date()).getTime(), title = '--', href = '', src = ''}) {
+  add({
+    timestamp = (new Date()).getTime(),
+    title = '--',
+    href = '',
+    src = ''
+  }) {
     const vm = this;
     console.log('add history')
     // console.log(timestamp)
@@ -204,6 +234,7 @@ function initDir(subDirname) {
   }
 }
 export {
+  UsermetaDB,
   SettingDB,
   HistoryDB
 }

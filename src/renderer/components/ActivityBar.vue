@@ -54,16 +54,25 @@
 							<span class="ofont ofont-dapp1 not-allowed"></span>
 						</div>
 					</li>
+					<!-- <li
+						class="plugin"
+						v-for="item in pluginsInstalled"
+						:key="item.Url"
+					>
+						{{item.Url}}
+					</li> -->
 					<!-- @mouseenter="setDialog('plugin')" -->
-					<li class="action-item"  @mouseleave="hiddenDialog">
+					<li
+						class="action-item"
+						@mouseleave="hiddenDialog"
+					>
 						<div
 							:title="$t('window.comingSoon')"
+							@click="remoteOpenComponent('plugin')"
 							class="nav-button"
 							style="background:none;"
 						>
-							<span
-								class="ofont ofont-tianjia not-allowed"
-							></span>
+							<span class="ofont ofont-tianjia not-allowed"></span>
 						</div>
 					</li>
 				</ul>
@@ -74,10 +83,10 @@
 						class="ofont ofont-caidan user-no-select cursor-pointer cursor-click"
 						@click="toPopCustomControlMenu"
 					></i>
+					<!-- @mouseleave="hiddenDialog" -->
 					<span
 						v-if="address"
 						@mouseenter="setDialog('state')"
-						@mouseleave="hiddenDialog"
 						class="process-status-wrapper"
 					>
 						<i
@@ -98,14 +107,16 @@
 </template>
 <script>
 import { remote, ipcRenderer } from "electron";
+import fs from "fs";
 const { Menu } = remote;
 export default {
 	mounted() {
+		this.getPlugins();
+		this.watchPlugins();
 		ipcRenderer.on("forceUpdate", () => {
 			this.$forceUpdate();
 			this.views = remote.getCurrentWindow().views;
 		});
-		// this.init();
 	},
 	data() {
 		return {
@@ -116,6 +127,7 @@ export default {
 			user: {
 				name: localStorage.getItem("Label") || ""
 			},
+			pluginsInstalled: [],
 			statusIntervalObj: null
 		};
 	},
@@ -148,7 +160,8 @@ export default {
 				if (
 					this.statusList &&
 					this.statusList[value] &&
-					(this.statusList[value].State === 1 || (value === 'DNS' && this.statusList[value].HostAddr === ''))
+					(this.statusList[value].State === 1 ||
+						(value === "DNS" && this.statusList[value].HostAddr === ""))
 				) {
 					online = true;
 				} else {
@@ -165,6 +178,42 @@ export default {
 		}
 	},
 	methods: {
+		async getPlugins() {
+			const plugins = ipcRenderer.sendSync("getUsermeta", "Plugins");
+			const tempPluginsInstalled = [];
+			console.log("getPlugins");
+			for (let i = 0; i < plugins.length; i++) {
+				const item = plugins[i];
+				let detail = await this.getTransferDetail(item.Url);
+				detail = detail.Result;
+				try {
+					fs.statSync(detail.Path);
+					tempPluginsInstalled.push(detail);
+				} catch (error) {
+					console.error("fs error!");
+					console.error(error);
+				}
+			}
+			this.pluginsInstalled = tempPluginsInstalled;
+		},
+		watchPlugins() {
+			ipcRenderer.on("updatePlugin", () => {
+				this.getPlugins();
+			});
+		},
+		getTransferDetail(url) {
+			const hexUrl = ipcRenderer.sendSync("string-to-hex", url);
+			return new Promise((resolve, reject) => {
+				this.$axios
+					.get(this.$api.transferDetail + `/3/${hexUrl}`)
+					.then(res => {
+						resolve(res);
+					})
+					.catch(err => {
+						reject(err);
+					});
+			});
+		},
 		toPopCustomControlMenu() {
 			const that = this;
 			const customControlMenuItems = [
@@ -189,13 +238,13 @@ export default {
 					}
 				},
 				{
-					label: that.$t('history.historyRecord'),
+					label: that.$t("history.historyRecord"),
 					click() {
-						that.remoteOpenComponent('history');
+						that.remoteOpenComponent("history");
 					}
 				},
 				{
-					label: that.$t('window.logOut'),
+					label: that.$t("window.logOut"),
 					// visible: new Boolean(user.name),
 					click() {
 						that.logout();
@@ -252,7 +301,7 @@ export default {
 			);
 		},
 		hiddenDialog() {
-			this.currentWindow.menuWindow.hiddenMenu();
+			this.currentWindow.menuWindow.hiddenMenu("hide from activityBar");
 		},
 		setDialog(menuid) {
 			let params = {

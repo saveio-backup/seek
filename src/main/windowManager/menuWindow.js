@@ -47,7 +47,8 @@ export default class MenuWindow {
     //   this.win.webContents.openDevTools();
     // }
   }
-  hiddenMenu() {
+  hiddenMenu(from) {
+    console.log('hide from',from);
     clearTimeout(this.setTimeoutObj)
     this.setTimeoutObj = setTimeout(() => {
       console.log('hiddenMenu---------------->')
@@ -68,6 +69,7 @@ export default class MenuWindow {
       })
       this.win.getParentWindow().focus();
       this.win.showInactive();
+      this.win.focus();
     } else if (params.id === 'state') {
       let parentBounds = this.parentWindow.getBounds();
       this.win.webContents.send('setMenuDialog', params);
@@ -79,6 +81,7 @@ export default class MenuWindow {
       })
       this.win.getParentWindow().focus();
       this.win.showInactive();
+      this.win.focus();
     } else if (params.id === 'plugin') {
       console.log('plugin');
       let parentBounds = this.parentWindow.getBounds();
@@ -91,6 +94,7 @@ export default class MenuWindow {
       })
       this.win.getParentWindow().focus();
       this.win.showInactive();
+      this.win.focus();
     }
   }
   focus() {

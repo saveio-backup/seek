@@ -6,7 +6,6 @@ import axios from './assets/config/http'
 import config from './assets/config/default'
 import API from './assets/config/api'
 import commonMethods from './assets/config/commonMethods'
-import './assets/css/style.scss'
 import dateFormat from './assets/tool/date'
 import ElementUI from 'element-ui'
 import locale from 'element-ui/lib/locale';
@@ -15,6 +14,8 @@ import '../../static/css/buttonRipple/js/TweenMax.min'
 import LocalEn from './assets/config/i18n/en/index'
 import LocalZh from './assets/config/i18n/zh/index'
 import VueI18n from 'vue-i18n'
+import './assets/css/style.scss'
+import './assets/css/bootstrap-grid.css'
 
 // const OUTTIME = 1;//out block time
 Vue.use(ElementUI)

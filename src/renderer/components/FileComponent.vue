@@ -109,8 +109,9 @@
 					<template slot-scope="scope">
 						<div class="ftpx14">
 							<p class="theme-font-color">{{scope.row.FileName}}</p>
-							<p class="grey-xs"><span v-if="transferType != 0">{{util.bytesToSize((((scope.row.IsUploadAction ? scope.row.UploadSize : scope.row.DownloadSize )))/(scope.row.IsUploadAction ? (scope.row.CopyNum + 1) : 1) * 1024 || 0)}}/</span>{{util.bytesToSize(scope.row.FileSize * 1024)}}</p>
-							<!-- <p class=""><span v-if="transferType != 0">{{(((scope.row.IsUploadAction ? (scope.row.UploadSize || 0) : scope.row.DownloadSize )))/(scope.row.IsUploadAction ? (scope.row.CopyNum + 1) : 1) * 1024)}}/</span>{{util.bytesToSize(scope.row.FileSize * 1024)}}</p> -->
+							<p class="grey-xs" v-if="transferType === 2">{{util.bytesToSize(scope.row.DownloadSize * 1024 || 0)}}/{{util.bytesToSize(scope.row.FileSize * 1024)}}</p>
+							<p class="grey-xs" v-else-if="transferType === 1">{{util.bytesToSize(scope.row.UploadSize * 1024 || 0)}}/{{util.bytesToSize(scope.row.FileSize * 1024)}}</p>
+							<p class="grey-xs" v-else>{{util.bytesToSize(scope.row.FileSize * 1024)}}</p>
 						</div>
 					</template>
 				</el-table-column>
@@ -422,21 +423,21 @@
 							v-if="fileObjById[detailId]"
 						>{{fileObjById[detailId].DownloadSize * 1024 / Math.pow(10, 9)}} ONI</div>
 					</li>
-					<template v-if="transferType === 1">
+					<!-- <template v-if="transferType === 1">
 						<li
 							class="flex tr"
 							v-for="(item, index) in fileDetailNodes"
 							:key="item.HostAddr"
 						>
-							<div class="node-name pr30">{{$t('fileManager.node')}}{{index+1}}:</div>
+							<div class="node-name pr30">{{$t('fileManager.node')}}{{index+1}}:</div> -->
 							<!-- more-than-5 class: gt text color is white lt text color is #202020-->
-							<div class="node-process">
+							<!-- <div class="node-process">
 								<el-progress
 									:text-inside="true"
 									:stroke-width="14"
 									class="file-progress"
-									:percentage="Math.ceil(((item.UploadSize?item.UploadSize:item.DownloadSize)/fileObjById[detailId].FileSize)*100)"
-									:class="{'more-than-5': (((item.UploadSize?item.UploadSize:item.DownloadSize)/fileObjById[detailId].FileSize) < 0.15),'progressAnimate': fileObjById[detailId].Status != 4 && fileObjById[detailId].Status != 0}"
+									:percentage="Math.ceil((item.UploadSize/fileObjById[detailId].FileSize)*100)"
+									:class="{'more-than-5': ((item.UploadSize/fileObjById[detailId].FileSize) < 0.15),'progressAnimate': fileObjById[detailId].Status != 4 && fileObjById[detailId].Status != 0}"
 								></el-progress>
 							</div>
 							<div class="ml10 tl node-speed ftpx14 ">{{nodeSpeed[item.HostAddr] && util.bytesToSize(nodeSpeed[item.HostAddr].speed*1024) || '0 Byte'}}/{{$t('fileManager.s')}}</div>
@@ -445,7 +446,7 @@
 								v-if="fileObjById[detailId]"
 							>{{util.bytesToSize(item.UploadSize*1024 || item.DownloadSize*1024)}}/{{util.bytesToSize(fileObjById[detailId].FileSize * 1024)}}</div>
 						</li>
-					</template>
+					</template> -->
 					<template v-else-if="transferType === 2">
 						<li class="flex tr no-border">
 							<div class="node-name pr30">{{$t('fileManager.sourceNode')}}:</div>
@@ -459,7 +460,7 @@
 										{{$t('fileManager.node')}}{{index+1}}
 									</div>
 									<div class="node-content-second ">
-										{{util.bytesToSize(item.UploadSize*1024 || item.DownloadSize*1024)}}
+										{{util.bytesToSize(item.DownloadSize*1024)}}
 									</div>
 									<div class="node-content-third ">
 										{{nodeSpeed[item.HostAddr] && util.bytesToSize(nodeSpeed[item.HostAddr].speed*1024) || '0 Byte'}}/{{$t('fileManager.s')}}
@@ -739,8 +740,8 @@ export default {
 			this.fileList.map(file => {
 				if ((file.Status !== 0 && file.Status !== 4) || this.localStatus.uploading.indexOf(file.Id) >= 0) {
 					if (vm.transferType === 1) {
-						transferSize += (file.UploadSize || 0);
-						transferTotal += (file.FileSize * ((file.CopyNum || 2) + 1));
+						transferSize += file.UploadSize || 0;
+						transferTotal += file.FileSize;
 					} else {
 						transferSize += file.DownloadSize || 0;
 						transferTotal += file.FileSize;
@@ -1779,6 +1780,7 @@ export default {
 		 * isF: is not force run
 		 *  */
 		getNodeSpeed(isF = false) {
+			if(this.transferType === 1) return;
 			if ((this.fileDetailNodes.length > 0 && this.taskSpeedNum === 1) || isF) {
 				let oldNodeSpeed = this.nodeSpeed;
 				let newNodeSpeed = {};

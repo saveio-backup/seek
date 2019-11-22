@@ -49,11 +49,12 @@ export default {
     }
   },
   mounted(){
-		document.title = this.$t('login.login');
+    document.title = this.$t('login.login');
+    this.$store.dispatch('setCurrentAccount');
   },
   computed: {
     lang() {
-      return this.$i18.locale;
+      return this.$i18n.locale;
     }
   },
   watch: {

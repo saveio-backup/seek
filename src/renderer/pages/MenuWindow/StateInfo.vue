@@ -13,7 +13,7 @@
 			<li class="flex">
 				<i
 					class="process-status"
-					:class="{'process-all-error': statusList.DNS.State === 0 && HostAddr, 'process-all-offline': statusList.DNS.State === 0 && !HostAddr}"
+					:class="{'process-all-error': statusList.DNS.State === 0 && statusList.DNS.HostAddr, 'process-all-offline': statusList.DNS.State === 0 && !statusList.DNS.HostAddr}"
 				></i> {{$t('menuWindow.dnsState')}}
 				<i
 					v-show="statusList.DNS.State === 0 && statusList.DNS.HostAddr && UpdatedAt(statusList.DNS.UpdatedAt)"

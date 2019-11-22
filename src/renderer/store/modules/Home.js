@@ -112,7 +112,7 @@ const actions = {
   setCurrentAccount({
     commit
   }) {
-    commit('SET_CURRENT_ACCOUNT', 1) // login success
+    // commit('SET_CURRENT_ACCOUNT', 1) // login success
     axios
       .get(api.account)
       .then((res) => {

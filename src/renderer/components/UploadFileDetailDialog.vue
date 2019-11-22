@@ -11,7 +11,11 @@
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content upload-file-detail-loading">
-				<div class="adjust">
+				<div class="flex around upload-file-detail-title" v-if="syncObj[hash]">
+					<div class="upload-file-detail-title-item" @click="selectType(0)" :class="{'select': type === 0}">{{$t('fileManager.basicInfo')}}</div>
+					<div class="upload-file-detail-title-item" @click="selectType(1)" :class="{'select': type === 1}">{{$t('fileManager.nodesInfo')}}</div>
+				</div>
+				<div class="adjust" v-if="!syncObj[hash] || type === 0">
 					<div class="adjust-item">
 						<p class="adjust-title ft14">{{$t('fileManager.fileHash')}}:</p>
 						<div class="adjust-info">
@@ -71,6 +75,67 @@
 						</div>
 					</div>
 				</div>
+				<div class="adjust" v-if="syncObj[hash] && type === 1">
+					<el-table
+						:data="nodes"
+						:empty-text='$t("public.noData")'
+					>
+						<el-table-column
+							type="index"
+							:index="indexMethod"
+							width="80"
+						>
+						</el-table-column>
+						<el-table-column
+							label='Hash'
+							min-width="140"
+						>
+							<template>
+								<div>
+									{{fileDetail && fileDetail.FileHash}}
+								</div>
+							</template>
+						</el-table-column>
+						<el-table-column
+							:label='$t("public.status")'
+							min-width="180"
+						>
+						<template slot-scope="scope">
+							<div>
+								<el-progress
+									class="file-progress flex1 ai-center mr10"
+									:class="{'progressAnimate': scope.row.State != 4 && scope.row.State != 0}"
+									:percentage="percentage(scope.row.UploadSize)"
+									:show-text="false"
+								></el-progress>
+								<!-- <div v-if="scope.row.State === 4">
+									<span class="light-error">
+										{{ scope.row.ErrMsg || '' }}
+									</span>
+								</div>
+								<div v-else>
+									{{ $t(`error['${scope.row.DetailStatus}']`) }}
+								</div> -->
+							</div>
+						</template>
+						</el-table-column>
+						<!-- <el-table-column
+							label=""
+							align="center"
+						>
+							<template>
+								<div>
+									<span class="active-blue cursor-pointer">
+										<i class="ofont ofont-zhongxin ftpx14 mr10"></i>
+									</span>
+									<span class="active-blue cursor-pointer">
+										<i class="ofont ofont-guanbi ftpx14"></i>
+									</span>
+								</div>
+							</template>
+						</el-table-column> -->
+					</el-table>
+				</div>
 				<div slot="footer">
 					<ripper-button
 						class="primary"
@@ -102,12 +167,28 @@ export default {
 			fileDetail: null,
 			loading: null,
 			util,
-			BASE
+			BASE,
+			type: 0, // 0: basic info、 1: nodes info
+			list: [
+				{
+					"HostAddr": "tcp://40.73.103.72:38942",
+					"UploadSize": 50,
+					"Hash": "12312323",
+					"status": 0
+				},
+				{
+					"HostAddr": "tcp://40.73.103.72:38943",
+					"UploadSize": 99,
+					"Hash": "12312323",
+					"status": 0
+				}
+			]
 		};
 	},
 	watch: {
 		hash() {
 			this.init();
+			this.type = 0;
 		},
 		fileDetailDialogToggle(oldVal, newVal) {
 			if (newVal) {
@@ -136,6 +217,27 @@ export default {
 					return `${value / BASE["Second"]} ${vm.$t("fileManager.Second")}`;
 				}
 			};
+		},
+		syncObj() {
+			let obj = {};
+			let syncList = this.$store.state.Transfer.syncList || [];
+			for (let value of syncList) {
+				obj[value.Hash] = value;
+			}
+			return obj;
+		},
+		percentage() {
+			const vm = this;
+			return function(uploadSize) {
+				if(!uploadSize) return 0;
+				if(!vm.fileDetail) return 0;
+				return Math.ceil((uploadSize/vm.fileDetail.Size)*100);
+			}
+		},
+		nodes() {
+			if(!this.syncObj[this.hash] || this.syncObj[this.hash].Nodes.length <= 1) return [];
+			let _nodes = this.syncObj[this.hash].Nodes.slice(1);
+			return _nodes;
 		}
 	},
 	methods: {
@@ -175,6 +277,14 @@ export default {
 		},
 		toClose() {
 			this.$emit("closeUploadFileDetail");
+		},
+		selectType(type) {
+			this.$nextTick(() => {
+				this.type = type;
+			})
+		},
+		indexMethod(index) {
+			return `Node${index}`;
 		}
 	},
 	mounted() {
@@ -184,13 +294,91 @@ export default {
 </script>
 <style lang="scss">
 .upload-file-detail {
+	.upload-file-detail-title {
+		height: 69px;
+
+		.upload-file-detail-title-item {
+			line-height: 69px;
+			position: relative;
+			cursor: pointer;
+
+			&::before {
+				content: "";
+				display: block;
+				position: absolute;
+				transition: all 0.3s ease;
+				background: #2F8FF0;
+				height: 2px;
+				width: 40px;
+				bottom: 10px;
+				left: 50%;
+				margin-left: -20px;
+				transform: scale(0, 1);
+			}
+
+			&:hover,&.select {
+				// opacity: 0.7;
+				color: #2F8FF0;
+				&::before {
+					transform: scale(1, 1);
+				}
+			}
+		}
+	}
 	.adjust {
-		// border-bottom: solid 1px #ebecef;
 		padding-bottom: 20px;
 		.el-input-number__increase,
 		.el-input-number__decrease {
 			display: none;
 		}
+
+		.el-table {
+			border-width: 1px;
+			border-style: solid;
+			border-bottom: 0;
+			@include themify {
+				border-color: $table-border-color;
+			}
+			tr {
+				td {
+					@include themify {
+						background-color: $card-color;
+					}
+				}
+			}
+			th {
+				// background: #EBEEF5;
+			}
+		}
+		
+		.file-progress {
+		&.progressAnimate {
+			.el-progress-bar__outer {
+				height: 16px;
+				background-size: 12px 12px;
+				background-image: linear-gradient(
+					45deg,
+					rgba(255, 255, 255, 0.4) 25%,
+					transparent 25%,
+					transparent 50%,
+					rgba(255, 255, 255, 0.4) 50%,
+					rgba(255, 255, 255, 0.4) 75%,
+					transparent 75%,
+					transparent
+				);
+				animation: progress-bar-stripes 1s linear infinite;
+			}
+		}
+		@keyframes progress-bar-stripes {
+			from {
+				background-position: -1rem 0;
+			}
+			to {
+				background-position: 0 0;
+			}
+		}
+	}
+
 	}
 	.adjust-item {
 		display: flex;

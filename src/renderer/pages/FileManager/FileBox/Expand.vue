@@ -345,7 +345,7 @@ export default {
 	},
 	methods: {
 		async hasUploadedFile() {
-			let addr = this.$api.getFileList + "0/0/0";
+			let addr = this.$api.getFileList + "0/0/0/0";
 			let result = await this.$axios.get(addr);
 			if (result.Error === 0) {
 				if (result.Result.length) {

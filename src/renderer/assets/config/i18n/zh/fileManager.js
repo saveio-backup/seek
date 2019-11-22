@@ -191,7 +191,9 @@ const result = {
   'expireTime': '到期时间',
   'whitelist2': '白名单',
   'networkErrorGetFileDetailFailed': '网络错误。获取文件详细信息失败!',
-  'link': '链 接'
+  'link': '链 接',
+  'basicInfo': '基本信息',
+  'nodesInfo': '节点信息'
 }
 
 export default result;

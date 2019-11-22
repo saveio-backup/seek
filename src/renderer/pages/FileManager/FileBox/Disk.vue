@@ -80,9 +80,22 @@
 						<template slot-scope="scope">
 							<div class="flex between">
 								<span
-									class="row-name"
+									class="row-name flex ai-center"
 									:class="scope.row.Undone?'grey-color':''"
-								>{{ scope.row.Name }}</span>
+								>{{ scope.row.Name }}
+									<span
+										v-if="syncProcess(scope.row.Hash) > -1"
+										class="ml10 mr10 sync-process cursor-pointer cursor-click"
+										@click.stop="openDetailDialogProcess(scope.row)"
+										:title="$t('fileManager.lookDetail')"
+									>
+										<circle-progress
+											:percentage="syncProcess(scope.row.Hash)"
+											:color="syncColor(scope.row.Hash)"
+											:width="20"
+										></circle-progress>
+									</span>
+								</span>
 								<!-- @click="executedFile = scope.row" -->
 								<div
 									class="opera"
@@ -405,6 +418,7 @@
 		<upload-file-detail-dialog
 			@closeUploadFileDetail="toCloseUploadFileDetail"
 			:hash="uploadDetailHash"
+			ref="uploadFileDetailDialog"
 		></upload-file-detail-dialog>
 	</div>
 </template>
@@ -415,6 +429,7 @@ import { clipboard, shell, ipcRenderer } from "electron";
 import { effectiveNumber } from "../../../assets/config/util";
 import fs from "fs";
 import uploadFileDetailDialog from "./../../../components/UploadFileDetailDialog";
+import circleProgress from "./../../../components/circleProgress";
 import uuid from "node-uuid";
 import crypto from "crypto";
 let tableElement;
@@ -441,19 +456,6 @@ export default {
 			uploadDetailHash: "",
 			fileToDownload: [], // the file/files which chekbox or download button you click
 			fileToDelete: [], // the file/files which chekbox  or delete button you click
-			mockMiner: [
-				{
-					Hash: "QmP9pWe9W6KWnVkoEAFPFvfRYDHft7bvq5aAsTGhjpUCvK",
-					Path: "text/tasst/",
-					Name: "miner11111.txt",
-					Size: 1024,
-					DownloadCount: 10,
-					DownloadAt: 1555166,
-					LastShareAt: 15556657,
-					Privilege: 0,
-					Profit: 10
-				}
-			],
 			mockData: [
 				{
 					Hash: "QmYaQ9667z6D11FZ9yECeUWDQkboLmu7UCrhVgJUutsYwL",
@@ -532,55 +534,6 @@ export default {
 					Profit: 1,
 					Privilege: 1,
 					StoreType: 0
-				},
-				{
-					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-					Name: "hahat.txt",
-					Size: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 15585051257,
-					UpdatedAt: 1241240,
-					DownloadAt: 11404134,
-					Profit: 6456120,
-					Privilege: 1,
-					StoreType: 0
-				},
-				{
-					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-					Name: "hahat.txt",
-					Size: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 1555051257,
-					UpdatedAt: 12412410,
-					DownloadAt: 12412410,
-					Profit: 646240,
-					Privilege: 1,
-					StoreType: 1
-				},
-				{
-					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-					Name: "hahat.txt",
-					Size: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 1555051257,
-					UpdatedAt: 51250,
-					DownloadAt: 51250,
-					Profit: 540,
-					Privilege: 1,
-					StoreType: 1
-				},
-				{
-					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-					Name: "hahat.txt",
-					Size: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 1555051257,
-					UpdatedAt: 5213410,
-					DownloadAt: 5213410,
-					Profit: 41241240,
-					Privilege: 1,
-					Path: "123123",
-					StoreType: 0
 				}
 			],
 			extraParams: {
@@ -622,7 +575,8 @@ export default {
 		};
 	},
 	components: {
-		uploadFileDetailDialog
+		uploadFileDetailDialog,
+		circleProgress
 	},
 	mounted() {
 		// window.vue = this;
@@ -650,6 +604,10 @@ export default {
 		},
 		openDetailDialog(row) {
 			this.uploadDetailHash = row.Hash;
+		},
+		openDetailDialogProcess(row) {
+			this.uploadDetailHash = row.Hash;
+			this.$refs.uploadFileDetailDialog.selectType(1);
 		},
 		goStorage() {
 			this.$router.push({ name: "expand" });
@@ -724,13 +682,7 @@ export default {
 		getFileLists() {
 			if (!this.switchToggle.load) return;
 			this.switchToggle.load = false; // if your are loading list now,  the switch will be set to false
-			let addr =
-				this.addrAPI +
-				this.type +
-				"/" +
-				this.fileListData.length +
-				"/" +
-				this.limitCount;
+			let addr = `${this.addrAPI}${this.type}/${this.fileListData.length}/${this.limitCount}${this.addrAPI === this.$api.getFileList ? '/0' : ''}`
 			this.$axios
 				.get(addr)
 				.then(res => {
@@ -1225,6 +1177,43 @@ export default {
 		},
 		waitForDownloadList() {
 			return this.$store.state.Transfer.waitForUploadList || [];
+		},
+		syncObj() {
+			let obj = {};
+			let syncList = this.$store.state.Transfer.syncList || [];
+			for (let value of syncList) {
+				obj[value.Hash] = value;
+			}
+			return obj;
+		},
+		syncProcess() {
+			const vm = this;
+			return function(Hash) {
+				if (!vm.syncObj[Hash]) return -1;
+				let nodes = vm.syncObj[Hash].Nodes;
+				if (nodes.length === 1) return -1;
+				let uploadTotal = 0;
+				for (let value of nodes) {
+					if (value.Index === 0) continue;
+					uploadTotal += value.UploadSize;
+				}
+				let process =
+					uploadTotal / (vm.syncObj[Hash].Size * (nodes.length - 1));
+				return process || 0;
+			};
+		},
+		syncColor() {
+			const vm = this;
+			return function(Hash) {
+				if (!vm.syncObj[Hash]) return '#2F8FF0';
+				let nodes = vm.syncObj[Hash].Nodes;
+				if (nodes.length === 1) return '#2F8FF0';
+				for (let value of nodes) {
+					if (value.Index === 0) continue;
+					if(value.State === 4) return '#E9566D';
+				}
+				return '#2F8FF0';
+			}
 		}
 	},
 	beforeRouteEnter(to, from, next) {
@@ -1237,10 +1226,14 @@ export default {
 				vm.addrAPI = vm.$api.getDownloadFileList;
 			} else {
 				vm.addrAPI = vm.$api.getFileList;
+				vm.$store.dispatch('getSyncFileList');
 			}
-			// vm.page = to.query.type || "filebox";
 			vm.getFileLists();
 		});
+	},
+	beforeRouteLeave(to, from, next) {
+		this.$store.dispatch('clearIntervalSyncFileList');
+		next();
 	},
 	beforeRouteUpdate(to, from, next) {
 		this.type = to.query.type;
@@ -1248,6 +1241,9 @@ export default {
 		this.fileListData = [];
 		this.getFileLists();
 		next();
+	},
+	destroyed() {
+		this.$store.dispatch('clearIntervalSyncFileList');
 	}
 };
 </script>
@@ -1339,6 +1335,11 @@ $theme-color: #1b1e2f;
 				.row-name {
 					min-height: 32px;
 					line-height: 32px;
+
+					.sync-process {
+						position: relative;
+						top: 6px;
+					}
 				}
 				.opera {
 					color: rgba(32, 32, 32, 0.4);

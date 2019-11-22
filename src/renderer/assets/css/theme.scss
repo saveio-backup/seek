@@ -1,7 +1,7 @@
 $themes: ( // no coment, just for format code
   'light': ( // same as above
     'color':#f9f9fb, // bgcolor
-    'colorMenu': #f9f9fb, //bgcolor menu
+    'color-menu': #f9f9fb, //bgcolor menu
     'navigation-bg':#dfe2e9,
     'nav-button-bg':#c0c6d1,
     'nav-button-disabled':#C7CAD0,
@@ -18,7 +18,7 @@ $themes: ( // no coment, just for format code
 
   'dark': ( //
     'color':#2A2B30,
-    'colorMenu': #35363C, //bgcolor menu
+    'color-menu': #35363C, //bgcolor menu
     'navigation-bg':#1c1d21,
     'nav-button-bg':#2A2B30,
     'nav-hover-color':#fff,

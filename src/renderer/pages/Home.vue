@@ -100,7 +100,7 @@
 			class="content not-login"
 			v-if="loginStatus === 0"
 		>
-			<canvas-bg ref="canvasBgObg"></canvas-bg>
+			<canvas-bg ref="canvasBgObj"></canvas-bg>
 			<div class="account-box flex column jc-center">
 				<!-- <h3 class="account-box-sub  mb50"><span>Welcome to</span></h3> -->
 				<div class="flex between column account-box-sub">
@@ -145,7 +145,10 @@ export default {
 		document.title = this.$t("home.home");
 		const vm = this;
 
-		this.chartInit();
+		if(this.loginStatus === 1) {
+			this.chartInit();
+		}
+		
 		this.$store.dispatch("setCurrentAccount"); // get login status
 		// open channel callback form createChannel of browserView dialog
 		if (this.dnsAdress && this.dnsAdress != "done") {
@@ -288,7 +291,7 @@ export default {
 								console.log(e);
 							}
 						} else {
-							this.$refs.canvasBgObg.init();
+							this.$refs.canvasBgObj.init();
 						}
 					}, 50);
 				});
@@ -791,7 +794,12 @@ export default {
 		themeColor(newVal, oldVal) {
 			this.initDrawBalanceView();
 			this.drawChannelView();
-		}
+		},
+		loginStatus(newVal, oldVal) {
+			if(newVal === 1) {
+				this.chartInit();
+			}
+		},
 	},
 	computed: {
 		themeColor() {

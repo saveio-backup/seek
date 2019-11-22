@@ -191,7 +191,9 @@ const result = {
   'expireTime': 'Expire Time',
   'whitelist2': 'Whitelist',
   'networkErrorGetFileDetailFailed': 'Network Error. Get File Detail Failed!',
-  'link': 'Link'
+  'link': 'Link',
+  'basicInfo': 'Basic Info',
+  'nodesInfo': 'Nodes Info'  
 }
 
 export default result;

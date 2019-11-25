@@ -74,8 +74,6 @@ function seekStreamProtocol(request, callback) {
 function saveStreamProtocol(request, callback) {
   // todo  download process
   const urlFormat = new URL(request.url);
-  console.log('request url is');
-  console.log(request.url);
   const {
     protocol,
     host,

@@ -51,17 +51,20 @@
 							class="nav-button"
 							style="background:none;"
 						>
-							<span class="ofont ofont-dapp1 not-allowed"></span>
+							<span class="ofont ofont-dapp1"></span>
 						</div>
 					</li>
 					<!-- <li
-						class="plugin"
+						class="plugin action-item"
 						v-for="item in pluginsInstalled"
 						:key="item.Url"
+						@click="openNewWindow(item.Url)"
 					>
-						{{item.Url}}
+						<div class="nav-button">
+							<i class="ofont ofont-qianbao"></i>
+						</div>
+
 					</li> -->
-					<!-- @mouseenter="setDialog('plugin')" -->
 					<li
 						class="action-item"
 						@mouseleave="hiddenDialog"
@@ -72,7 +75,7 @@
 							class="nav-button"
 							style="background:none;"
 						>
-							<span class="ofont ofont-tianjia not-allowed"></span>
+							<span class="ofont ofont-tianjia"></span>
 						</div>
 					</li>
 				</ul>
@@ -178,6 +181,9 @@ export default {
 		}
 	},
 	methods: {
+		openNewWindow(url) {
+			Seek.openNewWindow(url);
+		},
 		async getPlugins() {
 			const plugins = ipcRenderer.sendSync("getUsermeta", "Plugins");
 			const tempPluginsInstalled = [];
@@ -371,9 +377,6 @@ $slidebar-active-color: linear-gradient(
 					}
 					&.ofont-tianjia {
 						font-size: 20px;
-						@include themify {
-							color: $nav-button-disabled;
-						}
 					}
 				}
 				&.item-user {

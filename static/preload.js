@@ -85,6 +85,9 @@ class Seek {
   }) {
     remote.getCurrentWindow().views.find(item => item.isActive).openComponent(path)
   }
+  static openNewWindow(url) {
+    remote.getCurrentWindow().views.find(item => item.isActive).onNewWindow(url);
+  }
   static getFilePeerCount(hash) {
     return new Promise((resolve, reject) => {
       axios.get(api.dspFilePeersCount + '/' + hash).then(res => {

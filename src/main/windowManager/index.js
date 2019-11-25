@@ -27,7 +27,7 @@ class View {
   constructor(win, url, option = {
     isActive: true
   }) {
-
+    // getCurrentView = getActive(win);
     this.browserWindow = win;
     this.url = url;
     this.isLoading = false;
@@ -229,9 +229,9 @@ class View {
     }, 1000);
   }
   onNewWindow(url, e, framename, disposition) {
+    console.log('create window');
     const win = this.browserWindow;
     getCurrentView = getActive(win);
-    console.log('create window');
     e && e.preventDefault();
     const isActive = (disposition !== 'background-tab');
     console.log(url);
@@ -350,7 +350,9 @@ class View {
   initView() {
     this.resize();
     this.setBroserView()
-    if (this.isActive) this.setActive();
+    if (this.isActive){
+      this.setActive();
+    }
   }
   resize() {
     const win = this.browserWindow;
@@ -371,6 +373,7 @@ class View {
     });
   }
   setActive(viewIndex) {
+    console.log('set active');
     this.browserWindow.views.map((viewItem, index) => {
       if (viewIndex === index) {
         viewItem.isActive = true;
@@ -381,6 +384,7 @@ class View {
     this.isActive = true; // viewIndex maybe undefined
     this.browserWindow.setBrowserView(this.browserView);
     this.resize();
+    getCurrentView = getActive(this.browserWindow);
   }
   setBroserView() {
     this.browserWindow.setBrowserView(this.browserView);

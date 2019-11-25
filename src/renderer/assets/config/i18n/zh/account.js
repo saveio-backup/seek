@@ -44,8 +44,8 @@ const result = {
   'pr6': '步',
   'pr7': '中',
   'creating': '创建中',
-  'networkErrorCreateFailed': '网络错误。创建失败!'
-
+  'networkErrorCreateFailed': '网络错误。创建失败!',
+  'inputLengthLimit18Chars': '输入超出18个字符（一个中文为2个字符，一个英文、数字及特殊字符为一个字符）'
 }
 
 export default result;

@@ -83,7 +83,7 @@
 									class="row-name flex ai-center"
 									:class="scope.row.Undone?'grey-color':''"
 								>{{ scope.row.Name }}
-									<span
+									<!-- <span
 										v-if="syncProcess(scope.row.Hash) > -1"
 										class="ml10 mr10 sync-process cursor-pointer cursor-click"
 										@click.stop="openDetailDialogProcess(scope.row)"
@@ -94,7 +94,7 @@
 											:color="syncColor(scope.row.Hash)"
 											:width="20"
 										></circle-progress>
-									</span>
+									</span> -->
 								</span>
 								<!-- @click="executedFile = scope.row" -->
 								<div

@@ -19,10 +19,11 @@
 								<i
 									v-else
 									class="user-first"
+									:title="localStorage.getItem('Label') | firstString"
 								>{{localStorage.getItem('Label') | firstString}}</i>
 							</div>
 							<div class="user-name-content">
-								<p class="user-name-name ftpx24">{{localStorage.getItem('Label') || ''}}</p>
+								<p class="user-name-name ftpx24" :title="localStorage.getItem('Label') || ''">{{localStorage.getItem('Label') || ''}}</p>
 								<p class="ftpx12">
 									<span
 										class="address"
@@ -32,6 +33,7 @@
 									</span>
 									<i
 										class="ofont ofont-fuzhi"
+										:title="$t('public.copy')"
 										@click="clipText"
 									></i>
 								</p>
@@ -1095,6 +1097,14 @@ $input-color: rgba(203, 203, 203, 1);
 						height: 100%;
 						color: #fff;
 
+						.user-name-name {
+							overflow: hidden;
+							text-overflow: ellipsis;
+							display: inline-block;
+							width: 245px;
+							word-break: keep-all;
+						}
+
 						.ofont-fuzhi {
 							position: relative;
 							top: -2px;
@@ -1114,6 +1124,7 @@ $input-color: rgba(203, 203, 203, 1);
 							width: 230px;
 							overflow: hidden;
 							text-overflow: ellipsis;
+							word-break: keep-all;
 						}
 					}
 

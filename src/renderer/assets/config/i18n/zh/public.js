@@ -52,6 +52,7 @@ const result = {
   'cost': '花 费',
   'download': '下 载',
   'sorryThereAreNoValidFilesFoundTheFileMayHaveBeenDeleted': '对不起，没有找到有效的文件，文件可能已被删除。',
-  'networkErrorDownloadFailed': '网络错误。下载失败!'
+  'networkErrorDownloadFailed': '网络错误。下载失败!',
+  'copy': '复制'
 }
 export default result;

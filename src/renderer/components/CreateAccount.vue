@@ -167,6 +167,7 @@
 </template>
 <script>
 import { clipboard, ipcRenderer } from "electron";
+import util from './../assets/config/util'
 export default {
 	created() {
 		document.title = localStorage.Address
@@ -188,8 +189,21 @@ export default {
 				);
 			}
 		};
+		let validateLength = (rule, value, callback) => {
+			const vm = this;
+			if (util.getCharLength(value) <= 18) {
+				callback();
+			} else {
+				callback(
+					new Error(vm.$t('account.inputLengthLimit18Chars'))
+					// new Error(vm.$t("account.inconsistentPasswordsFilledInTwice"))
+				);
+			}
+		};
 		return {
+			util,
 			validatePassword,
+			validateLength,
 			clipboard,
 			loopFontIndex: 0,
 			accountStatus: "", // 0: no account, 1:account exist
@@ -218,10 +232,13 @@ export default {
 						required: true,
 						message: this.$t("account.pleaseFillYourName"),
 						trigger: "blur"
+					},
+					{
+						validator: validateLength,
+						trigger: ["blur"]
 					}
 				],
 				Password: {
-					// validator: validatePassword,
 					message: this.$t("account.pleaseFillYourPassword"),
 					required: true,
 					trigger: ["blur", "input"]

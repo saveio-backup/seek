@@ -16,6 +16,7 @@
 						</span>
 						<i
 							class="ofont ofont-fuzhi"
+							:title="$t('public.copy')"
 							@click="clipSaveAddress"
 						></i>
 					</p>
@@ -169,7 +170,7 @@
 								<i
 									class="ofont ofont-fuzhi tx-copy"
 									@click="clipText(item.Txid || '')"
-									:title="$t('wallet.clickToCopy')"
+									:title="$t('public.copy')"
 								></i></div>
 							<div class="towards">
 								<p class='from user-no-select'>
@@ -178,7 +179,7 @@
 									</span>
 									<i
 										class="ofont ofont-fuzhi tx-copy"
-										:title="$t('wallet.clickToCopy')"
+										:title="$t('public.copy')"
 										@click="clipText(item.From)"
 									></i></p>
 								<i class="ofont ofont-fasong arrow ft12"></i>
@@ -188,7 +189,7 @@
 									</span>
 									<i
 										class="ofont ofont-fuzhi tx-copy"
-										:title="$t('wallet.clickToCopy')"
+										:title="$t('public.copy')"
 										@click="clipText(item.To)"
 									></i></p>
 							</div>
@@ -230,6 +231,7 @@
 						<p class="mr10 ftpx14">{{balanceLists.length>0?balanceLists[balanceSelected].Address : $t('wallet.textAddr')}}</p>
 						<i
 							class="ofont ofont-fuzhi addr_btn"
+							:title="$t('public.copy')"
 							@click="clipText(balanceLists[balanceSelected].Address)"
 						></i>
 						<!-- :aria-label='balanceLists[balanceSelected].Address' -->

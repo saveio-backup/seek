@@ -190,8 +190,9 @@ export default {
 			console.log("getPlugins");
 			for (let i = 0; i < plugins.length; i++) {
 				const item = plugins[i];
-				let detail = await this.getTransferDetail(item.Url);
-				detail = detail.Result;
+				// let detail = await this.getTransferDetail(item.Url);
+				// detail = detail.Result;
+				let detail = item.detail;
 				try {
 					fs.statSync(detail.Path);
 					tempPluginsInstalled.push(detail);

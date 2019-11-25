@@ -86,16 +86,20 @@ function requestBalanceLists(commit) {
 }
 
 function requestTransActions(commit, config) {
+  console.log('config');
+  console.log(config);
   let skipTxCountFromBlock = 0;
   let {
     asset = '',
     limit = state.txRecords.length >= 30 ? state.txRecords.length : 30,
-    height = ''
+    height = '',
+    IgnoreOtherContract = false
   } = config || {};
-  axios.get(api.transactions + window.localStorage.Address + '/0?asset=' + asset + '&limit=' + limit + '&height=' + height + '&skipTxCountFromBlock=' + skipTxCountFromBlock || '', {
+  axios.get(api.transactions + window.localStorage.Address + '/0?asset=' + asset + '&limit=' + limit + '&height=' + height + '&skipTxCountFromBlock=' + (skipTxCountFromBlock || '') + '&IgnoreOtherContract=' + IgnoreOtherContract, {
     cancelToken: new CancelToken(c => {
       txTransSourceCancel = c;
-    })
+    }),
+    timeout: 60000
   }).then(res => {
     if (res.Error === 0) {
       const transferIn = [];
@@ -116,7 +120,8 @@ function requestTransActions(commit, config) {
       commit('SET_TRANSFER_OUT', transferOut);
       timer.heart = setTimeout(() => {
         this.dispatch('setTxRecords', {
-          asset
+          asset,
+          IgnoreOtherContract
         }); // heart loading
       }, 5000);
     } else {

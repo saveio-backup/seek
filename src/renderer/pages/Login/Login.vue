@@ -55,6 +55,9 @@ export default {
   computed: {
     lang() {
       return this.$i18n.locale;
+    },
+    Address() {
+			return this.$store.state.Home.account && this.$store.state.Home.account.Address || localStorage.getItem('Address');
     }
   },
   watch: {

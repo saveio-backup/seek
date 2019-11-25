@@ -95,22 +95,32 @@
 				</div>
 			</div>
 			<div class="wallet-layout-main">
-				<div class="tx-select">
-					<p
-						@click="txType = 'txRecords';txDetailIndex =-1"
-						class="select-button"
-						:class="{'current-select':txType === 'txRecords'}"
-					>{{$t('wallet.allTransfer')}}</p>
-					<p
-						class="select-button"
-						@click="txType = 'transferIn';txDetailIndex =-1"
-						:class="{'current-select':txType === 'transferIn'}"
-					> {{$t('wallet.receive')}}</p>
-					<p
-						class="select-button"
-						@click="txType = 'transferOut';txDetailIndex =-1"
-						:class="{'current-select':txType === 'transferOut'}"
-					>{{$t('wallet.send')}}</p>
+				<div class="flex between ai-center">
+					<div class="tx-select">
+						<p
+							@click="txType = 'txRecords';txDetailIndex =-1"
+							class="select-button"
+							:class="{'current-select':txType === 'txRecords'}"
+						>{{$t('wallet.allTransfer')}}</p>
+						<p
+							class="select-button"
+							@click="txType = 'transferIn';txDetailIndex =-1"
+							:class="{'current-select':txType === 'transferIn'}"
+						> {{$t('wallet.receive')}}</p>
+						<p
+							class="select-button"
+							@click="txType = 'transferOut';txDetailIndex =-1"
+							:class="{'current-select':txType === 'transferOut'}"
+						>{{$t('wallet.send')}}</p>
+					</div>
+					<div class="ft14 wallet-layout-switch">
+						<el-switch
+							v-model="IgnoreOtherContract"
+							inactive-text="Show Contract"
+							@change="changeShowContract"
+						>
+						</el-switch>
+					</div>
 				</div>
 				<ul class="tx-ul">
 					<!-- this[txType] -->
@@ -385,7 +395,7 @@ export default {
 		document.title = this.$t("wallet.wallet");
 		this.$store.dispatch("setCurrentAccount"); // get login status
 		this.$store.dispatch("setBalanceLists");
-		this.$store.dispatch("setTxRecords");
+		this.$store.dispatch("setTxRecords", {IgnoreOtherContract: !this.IgnoreOtherContract});
 		this.addListenScroll(
 			document.querySelector(".tx-ul"),
 			100,
@@ -658,7 +668,8 @@ export default {
 			user: {
 				name: localStorage.getItem("Label") || "",
 				address: localStorage.getItem("Address") || ""
-			}
+			},
+			IgnoreOtherContract: true
 		};
 	},
 	methods: {
@@ -783,20 +794,12 @@ export default {
 			}
 			this.$axios
 				.get(
-					this.$api.transactions +
-						window.localStorage.Address +
-						"/0?asset=" +
-						asset +
-						"&limit=" +
-						limit +
-						"&height=" +
-						height +
-						"&skipTxCountFromBlock=" +
-						skipTxCountFromBlock,
+					`${this.$api.transactions}${window.localStorage.Address}/0?asset=${asset}&limit=${limit}&height=${height}&skipTxCountFromBlock=${skipTxCountFromBlock}&IgnoreOtherContract=${!this.IgnoreOtherContract}`,
 					{
 						cancelToken: new this.$axios.CancelToken(c => {
 							this.cancelReachBottomTxRequest = c;
-						})
+						}),
+						timeout: 60000
 					}
 				)
 				.then(res => {
@@ -823,6 +826,7 @@ export default {
 						this.txRecords.concat(transferOut)
 					);
 					this.$store.dispatch("setTxRecords", {
+						IgnoreOtherContract: !this.IgnoreOtherContract,
 						asset
 					});
 					if (result.length === 0) {
@@ -843,7 +847,13 @@ export default {
 			this.cancelReachBottomTxRequest && this.cancelReachBottomTxRequest();
 			this.$store.dispatch("cancelTxRequest");
 			const asset = this.balanceLists[this.balanceSelected].Symbol || "";
-			this.$store.dispatch("setTxRecords", { asset });
+			this.$store.dispatch("setTxRecords", { asset,IgnoreOtherContract: !this.IgnoreOtherContract });
+		},
+		changeShowContract() {
+			this.cancelReachBottomTxRequest && this.cancelReachBottomTxRequest();
+			this.$store.dispatch("cancelTxRequest");
+			this.$store.commit('SET_TX_RECORDS', []);
+			this.$store.dispatch("setTxRecords", {IgnoreOtherContract: !this.IgnoreOtherContract});
 		}
 	},
 	computed: {
@@ -1148,6 +1158,29 @@ $light-grey: #f7f7f7;
 					}
 				}
 			}
+
+			.wallet-layout-switch {
+				.el-switch__label {
+					color: rgba(32, 32, 32, 0.4);
+				}
+
+				.el-switch__core {
+					width: 26px !important;
+					height: 16px !important;
+
+					&:after {
+						width: 12px;
+						height: 12px;
+						margin-left: 0px;
+					}
+				}
+				.el-switch.is-checked {
+					.el-switch__core::after {
+						margin-left: -13px;
+					}
+				}
+			}
+
 			.tx-ul {
 				flex: 1;
 				overflow-y: auto;

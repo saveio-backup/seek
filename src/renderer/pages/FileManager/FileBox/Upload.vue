@@ -811,7 +811,7 @@ export default {
 								IsUploadAction: true,
 								Id: "waitfor_" + uuid.v4(),
 								Nodes: []
-								,Url: 'oni://www.filmlabtest1128_01.com'
+								// ,Url: 'oni://www.filmlabtest1128_01.com'
 							};
 							params = this.switchToggle.advanced
 								? Object.assign({}, params, this.advancedData)

@@ -7,7 +7,7 @@
 						class="person-info-name ftpx24"
 						:title="user.name || ''"
 					>{{user.name || ''}}</p>
-					<p class="person-info-address ftpx14">
+					<p class="person-info-address ftpx12">
 						<span
 							class="address"
 							:title="user.address || ''"
@@ -939,7 +939,7 @@ $light-grey: #f7f7f7;
 		display: flex;
 		.wallet-aside {
 			display: flex;
-			width: 284px;
+			width: 290px;
 			flex-direction: column;
 			justify-content: start;
 			.person-info {
@@ -958,7 +958,7 @@ $light-grey: #f7f7f7;
 				display: flex;
 				justify-content: space-between;
 				flex-direction: column;
-				padding: 24px 16px;
+				padding: 24px 10px;
 				font-weight: 400;
 				.person-info-name {
 					overflow: hidden;
@@ -967,7 +967,7 @@ $light-grey: #f7f7f7;
 				.person-info-address {
 					.address {
 						display: inline-block;
-						width: 230px;
+						width: 250px;
 						overflow: hidden;
 						text-overflow: ellipsis;
 					}

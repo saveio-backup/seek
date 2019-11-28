@@ -52,7 +52,7 @@ module.exports = function ({
   <body>
     <div>
     <img style="opacity:0.5" src="${errBaseImage}" alt="">
-      <h3>${TITLE_BY_ERROR_CODE[errorCode] || (errorCode +' ' + DEFAULT_TITLE)}</h3>
+      <h3>${TITLE_BY_ERROR_CODE[errorCode] || (errorCode)}</h3>
       <p>${note} ${url} </p>
       ${errorType===1? '<a class="primary addChannel" onclick="Seek.openChannel(1)">Add Channel</a>' :''}
       <a class="primary" href="javascript:window.location.reload()">Reload</a>

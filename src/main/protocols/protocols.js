@@ -129,7 +129,11 @@ function saveStreamProtocol(request, callback) {
       })
 
     } catch (error) {
-      console.error(error)
+      callback({
+        method: 'get',
+        path: path.join(__static, 'html/failed/blank.html')
+      })
+      contents && contents.executeJavaScript(`document.documentElement.innerHTML = '${dnsErrorPage({errorCode:undefined,note:error})}' `)
     }
   })
   ipcMain.once(thirdpageUid + '-loadErrorPage', (event, {

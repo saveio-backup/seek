@@ -82,7 +82,7 @@ const result = {
   'clearAllAddFile': '清除所有添加的文件',
   'clear': '清 除',
   'browser': '添 加',
-  'dragYourFileHereOrBrowse': '将文件拖到这里或点击添加',
+  'dragYourFileHereOrBrowse': '将文件拖到这里或点击添加按钮',
   'aSingleFileCannotBeLargerThan4GB': '单个文件不能大于4GB',
   'storageCycle': '存储周期',
   'encryption': '加 密',

@@ -29,9 +29,10 @@
 		</div>
 		<button
 			:id="`js-ripple-btn${id}`"
+			:disabled="disabled"
 			class="button styl-material"
 			@mousedown="rippleAnimation($event)"
-      @mouseup="toEmitClick"
+			@mouseup="toEmitClick"
 		>
 			<slot></slot>
 			<svg
@@ -51,6 +52,13 @@
 <script>
 import uuid from "node-uuid";
 export default {
+	props: {
+		disabled: {
+			required: false,
+			type: Boolean,
+			default: false
+		}
+	},
 	data() {
 		return {
 			id: "",
@@ -60,28 +68,28 @@ export default {
 	methods: {
 		readyInit() {
 			this.id = uuid.v4();
-    },
-    toEmitClick() {
-      this.$emit("click");
-    },
+		},
+		toEmitClick() {
+			this.$emit("click");
+		},
 		rippleAnimation($event) {
-      let event = $event;
-      // console.log($event);
-      // console.log($event.target.offsetParent);
-      let w = event.target.offsetWidth,
-        h = event.target.offsetHeight,
-        x = event.offsetX,
-        y = event.offsetY
-      if($event.target.offsetParent.nodeName === 'BUTTON') {
-        event = $event.target.offsetParent;
-        w = event.offsetWidth;
-        h = event.offsetHeight; 
-        x += 25;
-        y += 6;
-      }
+			let event = $event;
+			// console.log($event);
+			// console.log($event.target.offsetParent);
+			let w = event.target.offsetWidth,
+				h = event.target.offsetHeight,
+				x = event.offsetX,
+				y = event.offsetY;
+			if ($event.target.offsetParent.nodeName === "BUTTON") {
+				event = $event.target.offsetParent;
+				w = event.offsetWidth;
+				h = event.offsetHeight;
+				x += 25;
+				y += 6;
+			}
 			const timing = 0.5;
 			let ripple =
-        this.ripple || document.querySelectorAll(`.js-ripple${this.id}`);
+				this.ripple || document.querySelectorAll(`.js-ripple${this.id}`);
 			let tl = new TimelineMax(),
 				offsetX = Math.abs(w / 2 - x),
 				offsetY = Math.abs(h / 2 - y),
@@ -130,7 +138,9 @@ export default {
 	/* Component styles */
 	border-radius: 20px;
 	display: inline-block;
-
+	button[disabled="disabled"] {
+		background: #ccc !important;
+	}
 	&.primary {
 		button {
 			color: #fff;

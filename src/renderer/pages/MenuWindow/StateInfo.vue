@@ -53,25 +53,25 @@ export default {
 		UpdatedAt: function() {
 			return function(UpdatedAt) {
 				try {
-					let currentAt = + new Date();
+					let currentAt = +new Date();
 					const TIMEOUT = 60 * 1000 * 3;
-					if(currentAt - (UpdatedAt*1000) > TIMEOUT) {
+					if (currentAt - UpdatedAt * 1000 > TIMEOUT) {
 						return true;
 					}
 					return false;
-				}catch(e) {
+				} catch (e) {
 					return false;
 				}
-			}
+			};
 		}
 	},
 	methods: {
 		reconnect() {
-			if(this.isLoading) return;
+			if (this.isLoading) return;
 			this.isLoading = true;
 			let params = {
 				Peers: [this.statusList.DNS.HostAddr]
-			}
+			};
 			this.$axios
 				.post(this.$api.reconnect, params, {
 					timeout: 60000
@@ -95,25 +95,17 @@ export default {
 			position: relative;
 			margin-right: 7px;
 			top: 5px;
-			width: 6px;
-			height: 6px;
+			width: 8px;
+			height: 8px;
 			border-radius: 50%;
 			display: block;
 			border: 2px solid white;
-			background: linear-gradient(
-				180deg,
-				rgba(61, 227, 86, 1) 0%,
-				rgba(23, 173, 44, 1) 100%
-			);
-			box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.3);
+			background: rgba(139, 209, 121, 1);
+			box-shadow: 0px 0px 1px 0px rgba(0, 0, 0, 0.3);
 			border: 1px solid rgba(237, 237, 237, 1);
 
 			&.process-all-error {
-				background: linear-gradient(
-					180deg,
-					rgba(247, 144, 115, 1) 0%,
-					rgba(194, 70, 43, 1) 100%
-				);
+				background: rgba(235, 139, 126, 1);
 				box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.3);
 				border: 1px solid rgba(237, 237, 237, 1);
 			}
@@ -126,7 +118,6 @@ export default {
 				);
 				box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.3);
 				border: 1px solid rgba(237, 237, 237, 1);
-
 			}
 		}
 		.rotate-animate {
@@ -138,7 +129,7 @@ export default {
 				transform: rotateZ(0);
 			}
 			to {
-				transform: rotateZ(360deg)
+				transform: rotateZ(360deg);
 			}
 		}
 	}

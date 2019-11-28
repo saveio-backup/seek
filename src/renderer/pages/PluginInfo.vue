@@ -17,7 +17,7 @@
 						<div v-if="plugin.detail">
 							<ripper-button
 								class="primary"
-								v-if="plugin.detail.Progress === 1"
+								v-if="plugin.detail.Progress >= 1"
 								@click="loadPlugin(plugin.Url,plugin)"
 							>Open</ripper-button>
 							<ripper-button
@@ -51,11 +51,11 @@ export default {
 		return {
 			plugins: [
 				{
-					Url: "oni://www.filmlabtest18.com",
+					Url: "oni://www.filmlabtest1128_01.com",
 					img: "https://i.loli.net/2019/11/18/tjBDFyKTpQsXuza.png",
-					title: "filmlabtest18",
+					title: "filmlabtest1128_01",
 					note:
-						"filmlabtest16 test, transfer information, node information and other important information in save network",
+						"filmlabtest1128 test, transfer information, node information and other important information in save network",
 					progress: 0,
 					detail: null
 				},
@@ -111,7 +111,7 @@ export default {
 		this.getPluginsInfo();
 	},
 	methods: {
-		sendInfo() {
+		sendPluginInfo() {
 			ipcRenderer.sendTo(
 				remote.getCurrentWindow().webContents.id,
 				"updatePlugin"
@@ -133,10 +133,7 @@ export default {
 			}
 			try {
 				ipcRenderer.sendSync("setUsermeta", "Plugins", pluginInstaled);
-				ipcRenderer.sendTo(
-					remote.getCurrentWindow().webContents.id,
-					"updatePlugin"
-				);
+				this.sendPluginInfo();
 			} catch (error) {}
 		},
 
@@ -175,13 +172,32 @@ export default {
 							this.loadPlugin(url, plugItem);
 						}, 2000);
 					}
-				} else if (data.Progress === 1) {
+				} else if (data.Progress >= 1) {
 					// task has finished
 					try {
 						fs.statSync(data.Path);
 						plugItem.detail = data;
+						const plugins = ipcRenderer.sendSync("getUsermeta", "Plugins");
+						if (
+							plugins.every(item => {
+								return item.detail.Path !== plugItem.detail.Path;
+							})
+						) {
+							plugins.push(plugItem);
+						}
+						ipcRenderer.sendSync("setUsermeta", "Plugins", plugins);
+						this.sendPluginInfo();
 						window.open(url);
 					} catch (error) {
+						const plugins = ipcRenderer.sendSync("getUsermeta", "Plugins");
+						for (let i = 0; i < plugins.length; i++) {
+							const element = plugins[i];
+							if (element.detail.Path === data.Path) {
+								plugins.splice(i, 1);
+								break;
+							}
+						}
+						ipcRenderer.sendSync("setUsermeta", "Plugins", plugins);
 						plugItem.detail = data;
 						plugItem.detail.Status = 0;
 						plugItem.detail.Progress = 0;

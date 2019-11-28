@@ -9,7 +9,7 @@
 
 1. 点击Create Account进入创建流程
 2. 输入用户名和钱包密码
-3. 备份钱包文件（Keystore File）
+3. 备份密钥文件（Keystore File）
 4. 备份私钥（PrivateKey）
 5. 导入私钥进行验证 
 6. 进入区块同步页面等待完成

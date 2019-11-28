@@ -9,7 +9,7 @@ const result = {
   'wallet': '钱 包',
   'miner': '挖 矿',
   'comingSoon': '敬请期待..',
-  'exportKeystoreFile': '导出密钥',
+  'exportKeystoreFile': '导出密钥库',
   'exportPrivateKey': '导出私钥',
   'helpDocument': '帮助文档',
   'logOut': '登 出',

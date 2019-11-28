@@ -94,6 +94,7 @@
 									v-model="adjustSize"
 									:precision='0'
 									:min='minSize'
+									:max='(1073741824000/sizeUnit)'
 									@change="userSpaceCost"
 									@focus="$refs.spaceNumberInput.select()"
 									@blur="userSpaceCost"

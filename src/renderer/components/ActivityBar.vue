@@ -54,17 +54,17 @@
 							<span class="ofont ofont-dapp1"></span>
 						</div>
 					</li>
-					<!-- <li
+					<li
 						class="plugin action-item"
 						v-for="item in pluginsInstalled"
 						:key="item.Url"
 						@click="openNewWindow(item.Url)"
 					>
 						<div class="nav-button">
-							<i class="ofont ofont-qianbao"></i>
+							<i class="ofont ofont-FS"></i>
 						</div>
 
-					</li> -->
+					</li>
 					<li
 						class="action-item"
 						@mouseleave="hiddenDialog"
@@ -477,36 +477,23 @@ $slidebar-active-color: linear-gradient(
 				display: block;
 				margin: 20px auto 0;
 				& > .process-status {
-					width: 6px;
-					height: 6px;
+					width: 8px;
+					height: 8px;
 					border-radius: 50%;
 					display: block;
-					border: 2px solid white;
-					background: linear-gradient(
-						180deg,
-						rgba(61, 227, 86, 1) 0%,
-						rgba(23, 173, 44, 1) 100%
-					);
-					box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.3);
+					background: rgba(139, 209, 121, 1);
+					box-shadow: 0px 0px 1px 0px rgba(0, 0, 0, 0.3);
 					border: 1px solid rgba(237, 237, 237, 1);
 
 					&.process-some-error {
-						background: linear-gradient(
-							180deg,
-							rgba(235, 181, 126, 1) 0%,
-							rgba(223, 147, 79, 1) 100%
-						);
-						box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.3);
+						background: rgba(242, 166, 41, 1);
+						box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.3);
 						border: 1px solid rgba(237, 237, 237, 1);
 					}
 
 					&.process-all-error {
-						background: linear-gradient(
-							180deg,
-							rgba(247, 144, 115, 1) 0%,
-							rgba(194, 70, 43, 1) 100%
-						);
-						box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.3);
+						background: rgba(235, 139, 126, 1);
+						box-shadow: 0px 0px 1px 0px rgba(0, 0, 0, 0.3);
 						border: 1px solid rgba(237, 237, 237, 1);
 					}
 				}

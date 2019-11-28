@@ -55,6 +55,7 @@
 								<!-- <el-button class="browser-layout" type="primary">Browser</el-button> -->
 								<div
 									class="path-content"
+									@click.stop=""
 								>
 									<!-- @click.stop="" -->
 									<ul>
@@ -134,13 +135,13 @@
 				>
 					<el-form-item :label="$t('fileManager.storageCycle')+':'">
 						<p class="dark-grey tootips">{{$t('fileManager.expiredTime')}}: {{expiredDate}} </p>
-						<el-input
+						<el-input-number
 							v-model="storageCycleNumber"
 							:min="1"
 							@change="setDuration"
 							type="number"
 							class="form-right-second-inside"
-						></el-input>
+						></el-input-number>
 						<el-select
 							class="form-right"
 							v-model="storageCycleSelected"
@@ -160,15 +161,15 @@
 						prop="Interval"
 					>
 						<p class="dark-grey tootips break-word">{{$t('fileManager.integrityVerificationCycleCannotBeLongerThanStorageCycle')}}</p>
-						<el-input
+						<el-input-number
 							:precision='0'
 							v-model="verificationCycleNumber"
-							:min='0'
+							:min='1'
 							:max='advancedData.Duration / BASE[this.verificationCycleSelected]'
 							@change="setDataInterval"
 							class="form-right-second-inside"
 							type="number"
-						></el-input>
+						></el-input-number>
 						<el-select
 							class="form-right"
 							v-model="verificationCycleSelected"
@@ -187,13 +188,13 @@
 						:label="$t('fileManager.backups')"
 						prop="CopyNum"
 					>
-						<el-input
+						<el-input-number
 							type="number"
 							:min="0"
 							class="form-right"
 							v-model="advancedData.CopyNum"
 							@change='toGetPrice'
-						></el-input>
+						></el-input-number>
 					</el-form-item>
 					<el-form-item
 						:label="$t('fileManager.authority')"
@@ -277,6 +278,7 @@
 				<div class="flex jc-center submit-foot mb10">
 					<ripper-button @click="toEmptyUpload">{{$t('public.cancel')}}</ripper-button>
 					<ripper-button
+						:disabled="!switchToggle.uploadToggle"
 						type="primary"
 						class="primary ml10"
 						@click="OpenPasswordDialog"
@@ -384,7 +386,7 @@ import { ipcRenderer } from "electron";
 import util from "../../../assets/config/util";
 import { connect } from "net";
 import fs from "fs";
-import crypto from 'crypto';
+import crypto from "crypto";
 import uuid from "node-uuid";
 const DEFAULT_UPLOAD_PRICE = 0.03;
 export default {
@@ -392,22 +394,26 @@ export default {
 		let validateEncryptFileSize = (rule, value, callback) => {
 			const vm = this;
 			if (this.uploadFormData.Files.length === 0) {
-				callback(new Error(vm.$t('fileManager.pleaseSelectAFile')));
+				callback(new Error(vm.$t("fileManager.pleaseSelectAFile")));
 			} else if (
 				!this.switchToggle.advanced &&
 				(!this.space || this.space.Remain * 1024 < this.fileSize)
 			) {
 				callback(
 					new Error(
-						`${vm.$t('fileManager.insufficientRemainingStorageSpaceCurrently')} ${this.util.bytesToSize(
-							this.space.Remain * 1024
-						)} ${vm.$t('fileManager.remaining')}`
+						`${vm.$t(
+							"fileManager.insufficientRemainingStorageSpaceCurrently"
+						)} ${this.util.bytesToSize(this.space.Remain * 1024)} ${vm.$t(
+							"fileManager.remaining"
+						)}`
 					)
 				);
 			} else {
 				for (let file of this.uploadFormData.Files) {
 					if (file.fileBytes > 4 * 1024 * 1024 * 1024) {
-						callback(new Error(vm.$t('fileManager.aSingleFileCannotBeLargerThan4GB')));
+						callback(
+							new Error(vm.$t("fileManager.aSingleFileCannotBeLargerThan4GB"))
+						);
 						return;
 					}
 				}
@@ -422,7 +428,7 @@ export default {
 			} else if (this.uploadFormData.EncryptPassword.trim()) {
 				callback();
 			} else {
-				callback(new Error(vm.$t('fileManager.pleaseFillEncryptionPasscode')));
+				callback(new Error(vm.$t("fileManager.pleaseFillEncryptionPasscode")));
 			}
 		};
 		let validateWhiteListRex = (rule, value, callback) => {
@@ -434,7 +440,7 @@ export default {
 			) {
 				callback();
 			} else {
-				callback(new Error(vm.$t('fileManager.wrongWalletAddressFormat')));
+				callback(new Error(vm.$t("fileManager.wrongWalletAddressFormat")));
 			}
 		};
 		const BASE = {
@@ -464,14 +470,19 @@ export default {
 			},
 			uploadRules: {
 				Password: [
-					{ required: true, message: this.$t('public.pleaseInputPassword'), trigger: "blur" }
+					{
+						required: true,
+						message: this.$t("public.pleaseInputPassword"),
+						trigger: "blur"
+					}
 				]
 			},
 			switchToggle: {
 				loading: null,
 				whiteListInput: false,
 				advanced: false, // advanced form
-				upload: true
+				upload: true,
+				uploadToggle: true
 			},
 			// wihteListString: "",
 			uploadPrice: DEFAULT_UPLOAD_PRICE,
@@ -486,7 +497,11 @@ export default {
 			},
 			rules: {
 				Path: [
-					{ required: true, message: this.$t('public.pleaseSelectAFile'), trigger: "blur" }
+					{
+						required: true,
+						message: this.$t("public.pleaseSelectAFile"),
+						trigger: "blur"
+					}
 				],
 				FileSize: [
 					{
@@ -543,6 +558,10 @@ export default {
 			this.$refs.uploadForm.validateField("FileSize");
 		},
 		handleChange(file, fileList) {
+			if (this.mainCount >= 0) {
+				this.$message.error(this.$t("public.insufficientBalanceAvailable"));
+				return;
+			}
 			fs.stat(file.raw.path, (err, stats) => {
 				console.log(stats);
 				if (err) {
@@ -622,6 +641,10 @@ export default {
 		},
 		// to select file for upload
 		selectUpload() {
+			if (this.mainCount <= 0) {
+				this.$message.error(this.$t("public.insufficientBalanceAvailable"));
+				return;
+			}
 			const vm = this;
 			ipcRenderer.send("upload-file-dialog");
 			ipcRenderer.once("selected-upload", (event, content) => {
@@ -747,83 +770,99 @@ export default {
 				if (!valid) return;
 				this.switchToggle.upload = false; // set toggle
 				this.switchToggle.loading = this.$loading({
-					text: `${vm.$t('fileManager.uploading')}....`,
+					text: `${vm.$t("fileManager.uploading")}....`,
 					target: ".loading-content.upload-loading"
 				});
 
 				// password check
-				let passwordEncode = crypto.createHash('sha256').update(vm.passwordForm.Password).digest('hex');
+				let passwordEncode = crypto
+					.createHash("sha256")
+					.update(vm.passwordForm.Password)
+					.digest("hex");
 				let passwordParams = {
 					Password: passwordEncode
 				};
-				this.$axios.post(this.$api.checkPassword, passwordParams).then(passwordCheck => {
-					if (passwordCheck.Error !== 0) {
-						this.switchToggle.upload = true; // set toggle
-						this.switchToggle.loading && this.switchToggle.loading.close();
-						this.$message.error(vm.$t('fileManager.passwordCheckFailed'));
-						return;
-					}
-	
-					// get all upload file params
-					let arr = [];
-					for (let file of this.uploadFormData.Files) {
-						let params = {
-							Path: file.filePath,
-							Desc: file.fileName,
-							EncryptPassword: this.uploadFormData.EncryptPassword,
-							StoreType: this.switchToggle.advanced ? 1 : 0,
-							Password: passwordEncode,
-							// cache upload data↓
-							FileSize: file.fileBytes / 1024,
-							DetailStatus: "uploadLoading",
-							FileName: file.fileName,
-							FileHash: "",
-							Type: 1,
-							Status: 2,
-							IsUploadAction: true,
-							Id: ('waitfor_' + uuid.v4()),
-							Nodes: []
-							// ,Url: 'oni://www.filmlabtest18.com'
-						};
-						params = this.switchToggle.advanced
-							? Object.assign({}, params, this.advancedData)
-							: params;
-						delete params.wihteListString;
-						arr.push(params);
-					}
-	
-					let waitForNowUploadLength =
-						this.$config.maxNumUpload - this.$store.state.Transfer.uploadTransferList.length ||
-						0;
-					if (waitForNowUploadLength <= 0) {
-						this.switchToggle.loading && this.switchToggle.loading.close();
-						this.passwordForm.show = false;
-						// this.$store.dispatch("getUpload");
-						ipcRenderer.send("run-dialog-event", {name: "getUpload"});
-						this.$router.push({
-							name: "transfer",
-							query: { transferType: 1 }
+				this.$axios
+					.post(this.$api.checkPassword, passwordParams)
+					.then(passwordCheck => {
+						if (passwordCheck.Error !== 0) {
+							this.switchToggle.upload = true; // set toggle
+							this.switchToggle.loading && this.switchToggle.loading.close();
+							this.$message.error(vm.$t("fileManager.passwordCheckFailed"));
+							return;
+						}
+
+						// get all upload file params
+						let arr = [];
+						for (let file of this.uploadFormData.Files) {
+							let params = {
+								Path: file.filePath,
+								Desc: file.fileName,
+								EncryptPassword: this.uploadFormData.EncryptPassword,
+								StoreType: this.switchToggle.advanced ? 1 : 0,
+								Password: passwordEncode,
+								// cache upload data↓
+								FileSize: file.fileBytes / 1024,
+								DetailStatus: "uploadLoading",
+								FileName: file.fileName,
+								FileHash: "",
+								Type: 1,
+								Status: 2,
+								IsUploadAction: true,
+								Id: "waitfor_" + uuid.v4(),
+								Nodes: []
+								,Url: 'oni://www.filmlabtest1128_01.com'
+							};
+							params = this.switchToggle.advanced
+								? Object.assign({}, params, this.advancedData)
+								: params;
+							delete params.wihteListString;
+							arr.push(params);
+						}
+
+						let waitForNowUploadLength =
+							this.$config.maxNumUpload -
+								this.$store.state.Transfer.uploadTransferList.length || 0;
+						if (waitForNowUploadLength <= 0) {
+							this.switchToggle.loading && this.switchToggle.loading.close();
+							this.passwordForm.show = false;
+							// this.$store.dispatch("getUpload");
+							ipcRenderer.send("run-dialog-event", { name: "getUpload" });
+							this.$router.push({
+								name: "transfer",
+								query: { transferType: 1 }
+							});
+							this.addTask(arr);
+							return;
+						}
+
+						let errorMsg = ""; // error message
+						let flag = false; // is have success
+						this.waitForNowUpload({
+							arr,
+							len: waitForNowUploadLength,
+							errorMsg,
+							flag
 						});
-						this.addTask(arr);
-						return;
-					}
-	
-					let errorMsg = ""; // error message
-					let flag = false; // is have success
-					this.waitForNowUpload({ arr, len: waitForNowUploadLength, errorMsg, flag });
-				})
+					});
 			});
 		},
 		addTask(arr) {
 			let newWaitForUploadList = this.waitForUploadList.concat(arr);
 			this.$store.commit("SET_WAIT_FOR_UPLOAD_LIST", newWaitForUploadList);
-			ipcRenderer.send("run-dialog-event", {name: "setWaitForUploadList", data: newWaitForUploadList});
+			ipcRenderer.send("run-dialog-event", {
+				name: "setWaitForUploadList",
+				data: newWaitForUploadList
+			});
 			// update WaitForUploadOrderList
 			let WaitForUploadOrderList = [];
-			for(let value of newWaitForUploadList) {
+			for (let value of newWaitForUploadList) {
 				WaitForUploadOrderList.push(value.Id);
 			}
-			ipcRenderer.send("run-dialog-event", {name: "pushWaitForUploadOrderList", data: WaitForUploadOrderList});
+			ipcRenderer.send("run-dialog-event", {
+				name: "pushWaitForUploadOrderList",
+				data: WaitForUploadOrderList
+			});
 		},
 		// Call upload interface and joint errorMsg
 		waitForNowUpload({ arr, len, errorMsg, flag }) {
@@ -881,13 +920,13 @@ export default {
 						message: errorMsg
 					});
 				} else {
-					this.$message.error(vm.$t('fileManager.uploadError'));
+					this.$message.error(vm.$t("fileManager.uploadError"));
 				}
 			} else {
 				if (!errorMsg) {
 					this.$message({
 						type: "success",
-						message: vm.$t('fileManager.startUpload')
+						message: vm.$t("fileManager.startUpload")
 					});
 				} else {
 					this.$message.error({
@@ -897,11 +936,11 @@ export default {
 				}
 				this.passwordForm.show = false;
 				// this.$store.dispatch("getUpload");
-				ipcRenderer.send("run-dialog-event", {name: "getUpload"});
+				ipcRenderer.send("run-dialog-event", { name: "getUpload" });
 				if (arr.length > 0) {
 					setTimeout(() => {
 						vm.addTask(arr);
-					}, 2000)
+					}, 2000);
 				}
 				this.$router.push({
 					name: "transfer",
@@ -968,8 +1007,10 @@ export default {
 							storageFee += res.Result.StorageFee;
 							validateFee += res.Result.ValidFee;
 							contractFee += res.Result.TxFee;
+							this.switchToggle.uploadToggle = true;
 						} else {
 							this.$message.error(this.$t(`error[${res.Error}]`));
+							this.switchToggle.uploadToggle = false;
 							return;
 						}
 					}
@@ -988,7 +1029,8 @@ export default {
 					};
 				})
 				.catch(e => {
-					this.$message.error(vm.$t('fileManager.getPriceFailes'));
+					this.$message.error(vm.$t("fileManager.getPriceFailes"));
+					this.switchToggle.uploadToggle = false;
 				});
 		},
 		hiddenAdvanced() {
@@ -1005,12 +1047,20 @@ export default {
 		lang() {
 			this.uploadRules = {
 				Password: [
-					{ required: true, message: this.$t('public.pleaseInputPassword'), trigger: "blur" }
+					{
+						required: true,
+						message: this.$t("public.pleaseInputPassword"),
+						trigger: "blur"
+					}
 				]
-			}
+			};
 			this.rules = {
 				Path: [
-					{ required: true, message: this.$t('public.pleaseSelectAFile'), trigger: "blur" }
+					{
+						required: true,
+						message: this.$t("public.pleaseSelectAFile"),
+						trigger: "blur"
+					}
 				],
 				FileSize: [
 					{
@@ -1025,7 +1075,7 @@ export default {
 						trigger: "blur"
 					}
 				]
-			}
+			};
 			this.advancedRulus = {
 				wihteListString: [
 					{
@@ -1033,8 +1083,8 @@ export default {
 						trigger: "blur"
 					}
 				]
-			}
-		}		
+			};
+		}
 	},
 	computed: {
 		lang() {
@@ -1081,6 +1131,11 @@ $inputFocusBg: #dee2ea;
 		.el-input-number {
 			height: 35px;
 			line-height: 35px;
+			width: 150px;
+			.el-input-number__increase,
+			.el-input-number__decrease {
+				display: none;
+			}
 		}
 		.el-input-group__append {
 			border-radius: 0px;
@@ -1088,9 +1143,9 @@ $inputFocusBg: #dee2ea;
 			color: #fff;
 		}
 		.el-form-item {
-			border-bottom:solid 1px;
-			@include themify{
-				border-color:$table-border-color;
+			border-bottom: solid 1px;
+			@include themify {
+				border-color: $table-border-color;
 			}
 			padding-bottom: 25px;
 		}
@@ -1149,10 +1204,6 @@ $inputFocusBg: #dee2ea;
 					background: $inputFocusBg;
 				}
 			}
-			.el-input-number__increase,
-			.el-input-number__decrease {
-				display: none;
-			}
 		}
 		.form-vertical {
 			position: relative;
@@ -1192,7 +1243,7 @@ $inputFocusBg: #dee2ea;
 							}
 							width: 100%;
 							height: 100%;
-							@include themify{
+							@include themify {
 								background-color: $card-color;
 							}
 							overflow: visible;

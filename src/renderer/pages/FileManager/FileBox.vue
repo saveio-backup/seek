@@ -180,9 +180,6 @@ $danger: #f56c6c;
 			margin-bottom: 20px;
 			.link {
 				user-select: none;
-				&:hover {
-					text-decoration: underline;
-				}
 				&:active {
 					opacity: 0.7;
 				}

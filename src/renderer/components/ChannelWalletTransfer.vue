@@ -51,9 +51,9 @@
 			>
 				<el-input
 					class="transfer-input grey-theme"
-					type="number"
 					ref="transferAmount"
 					min='0'
+					maxlength="9"
 					v-model="transferInfo.Amount"
 					:placeholder="$t('public.inputAmount')"
 					@keyup.enter.native='toTransfer'

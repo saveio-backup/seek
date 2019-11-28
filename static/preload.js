@@ -136,7 +136,7 @@ async function loadThirdPage(url, uuid, loadView) {
           loadThirdPage(url, uuid, loadView);
         }, 2000);
       }
-    } else if (data.Progress === 1) { // task has finished
+    } else if (data.Progress >= 1) { // task has finished
       // render page
       loadView.pageLoadProgress = data.Progress; // set load progress
       try {

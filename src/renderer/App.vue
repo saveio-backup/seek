@@ -4,7 +4,10 @@
 		:class="{['theme-'+themeColor]:true, 'haveBg':(routerName !== 'Dialog' && routerName !== 'menuWindow')}"
 		:data-id="routerName"
 	>
-		<router-view class="theme-bg"></router-view>
+		<router-view
+			v-if="flag"
+			class="theme-bg"
+		></router-view>
 	</div>
 </template>
 
@@ -13,9 +16,15 @@ import { ipcRenderer } from "electron";
 export default {
 	name: "browser",
 	mounted() {
+		document.querySelector(
+			"#theme-ui"
+		).href = `./static/css/${this.themeColor}/theme/index.css`;
+		setTimeout(() => {
+			this.flag = true;
+		}, 1000);
+
 		this.init();
 		this.activeListener();
-		document.querySelector('#theme-ui').href = `./static/css/${this.themeColor}/theme/index.css`
 		ipcRenderer.on(
 			"current-active-show-message",
 			(event, { info, type, dangerouslyUseHTMLString = false }) => {
@@ -32,7 +41,9 @@ export default {
 		ipcRenderer.on("set-theme", (event, theme) => {
 			console.log("set-theme evenit get!!");
 			console.log("theme is", theme);
-			document.querySelector('#theme-ui').href = `./static/css/${theme}/theme/index.css`
+			document.querySelector(
+				"#theme-ui"
+			).href = `./static/css/${theme}/theme/index.css`;
 			this.$store.commit("SET_THEME_COLOR", theme);
 		});
 		this.$axios.get(this.$api.version).then(res => {
@@ -48,6 +59,7 @@ export default {
 	},
 	data() {
 		return {
+			flag: false,
 			syncListener: ["Home", "FileManager", "Wallet", "Miner"],
 			routerName: this.$route.name
 		};
@@ -170,8 +182,8 @@ export default {
 			let _htmlDom = document.querySelector("html");
 			_htmlDom.style.fontSize = this.$t("fontSize");
 		},
-		userspaceUpdate({result}) {
-			this.$store.commit('SET_SPACE', result);
+		userspaceUpdate({ result }) {
+			this.$store.commit("SET_SPACE", result);
 		}
 	}
 };
@@ -193,7 +205,7 @@ $tabs-height: 70px;
 	top: 60px;
 	bottom: 0px;
 	right: 0px;
-	overflow-y:scroll;
+	overflow-y: scroll;
 }
 </style>
 

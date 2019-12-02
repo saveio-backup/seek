@@ -72,7 +72,8 @@
 					></el-table-column>
 					<el-table-column
 						:label="$t('fileManager.fileName')"
-						class-name="rowName"
+						class=""
+						class-name="rowName primary-font-color"
 						prop="Name"
 						sortable
 						min-width="150"

@@ -243,13 +243,15 @@ select {
 }
 
 .el-table {
-
+.el-table__header th{
+    @extend .primary-font-color;
+}
     tr,
     td,
     th,
     & {
         @include themify {
-            color: $font-color;
+            // @extend .grey-color;
             background-color: $color;
         }
     }
@@ -260,9 +262,12 @@ select {
         }
     }
 
-    th,
     td {
+        &.primary-font-color{
+            @extend .primary-font-color;
+        }
         @include themify {
+            @extend .grey-color;
             border-bottom-color: $table-border-color;
         }
     }
@@ -274,7 +279,6 @@ select {
     }
 
     thead th {
-        color: $theme-color;
         font-size: 1.4rem;
 
         .caret-wrapper {
@@ -413,7 +417,6 @@ select {
         border: none;
         transition: all .3s ease;
         background: #edeff4;
-        border: 1px solid #dee2ea;
         position: relative;
 
         &:focus {

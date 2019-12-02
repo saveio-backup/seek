@@ -558,7 +558,7 @@ export default {
 			this.$refs.uploadForm.validateField("FileSize");
 		},
 		handleChange(file, fileList) {
-			if (this.mainCount >= 0) {
+			if (this.mainCount <= 0) {
 				this.$message.error(this.$t("public.insufficientBalanceAvailable"));
 				return;
 			}
@@ -811,7 +811,7 @@ export default {
 								IsUploadAction: true,
 								Id: "waitfor_" + uuid.v4(),
 								Nodes: []
-								// ,Url: 'oni://www.filmlabtest1128_01.com'
+								// ,Url: 'oni://www.filmlabtest1202_01.com'
 							};
 							params = this.switchToggle.advanced
 								? Object.assign({}, params, this.advancedData)

@@ -1865,7 +1865,6 @@ $danger: #f56c6c;
 			font-weight: bold;
 			thead th {
 				background: #f9f9fb;
-				color: #1b1e2f;
 			}
 			.download-type {
 				vertical-align: top;

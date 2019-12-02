@@ -395,7 +395,9 @@ export default {
 		document.title = this.$t("wallet.wallet");
 		this.$store.dispatch("setCurrentAccount"); // get login status
 		this.$store.dispatch("setBalanceLists");
-		this.$store.dispatch("setTxRecords", {IgnoreOtherContract: !this.IgnoreOtherContract});
+		this.$store.dispatch("setTxRecords", {
+			IgnoreOtherContract: !this.IgnoreOtherContract
+		});
 		this.addListenScroll(
 			document.querySelector(".tx-ul"),
 			100,
@@ -794,7 +796,10 @@ export default {
 			}
 			this.$axios
 				.get(
-					`${this.$api.transactions}${window.localStorage.Address}/0?asset=${asset}&limit=${limit}&height=${height}&skipTxCountFromBlock=${skipTxCountFromBlock}&IgnoreOtherContract=${!this.IgnoreOtherContract}`,
+					`${this.$api.transactions}${
+						window.localStorage.Address
+					}/0?asset=${asset}&limit=${limit}&height=${height}&skipTxCountFromBlock=${skipTxCountFromBlock}&IgnoreOtherContract=${!this
+						.IgnoreOtherContract}`,
 					{
 						cancelToken: new this.$axios.CancelToken(c => {
 							this.cancelReachBottomTxRequest = c;
@@ -847,13 +852,18 @@ export default {
 			this.cancelReachBottomTxRequest && this.cancelReachBottomTxRequest();
 			this.$store.dispatch("cancelTxRequest");
 			const asset = this.balanceLists[this.balanceSelected].Symbol || "";
-			this.$store.dispatch("setTxRecords", { asset,IgnoreOtherContract: !this.IgnoreOtherContract });
+			this.$store.dispatch("setTxRecords", {
+				asset,
+				IgnoreOtherContract: !this.IgnoreOtherContract
+			});
 		},
 		changeShowContract() {
 			this.cancelReachBottomTxRequest && this.cancelReachBottomTxRequest();
 			this.$store.dispatch("cancelTxRequest");
-			this.$store.commit('SET_TX_RECORDS', []);
-			this.$store.dispatch("setTxRecords", {IgnoreOtherContract: !this.IgnoreOtherContract});
+			this.$store.commit("SET_TX_RECORDS", []);
+			this.$store.dispatch("setTxRecords", {
+				IgnoreOtherContract: !this.IgnoreOtherContract
+			});
 		}
 	},
 	computed: {
@@ -1160,10 +1170,6 @@ $light-grey: #f7f7f7;
 			}
 
 			.wallet-layout-switch {
-				.el-switch__label {
-					color: rgba(32, 32, 32, 0.4);
-				}
-
 				.el-switch__core {
 					width: 26px !important;
 					height: 16px !important;
@@ -1257,10 +1263,10 @@ $light-grey: #f7f7f7;
 							width: 80px;
 							height: 20px;
 							& > div {
-								@extend .theme-font-color;
+								// @extend .theme-font-color;
 								width: 100%;
 								height: 100%;
-								border: 1px solid rgba(237, 239, 244, 1);
+								border: 1px solid rgba(125, 125, 125, 0.7);
 								border-radius: 1px;
 								text-align: center;
 								line-height: 20px;

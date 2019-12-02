@@ -1121,7 +1121,7 @@ $input-color: rgba(203, 203, 203, 1);
 
 						.address {
 							display: inline-block;
-							width: 230px;
+							width: 250px;
 							overflow: hidden;
 							text-overflow: ellipsis;
 							word-break: keep-all;

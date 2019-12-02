@@ -16,6 +16,8 @@ import LocalZh from './assets/config/i18n/zh/index'
 import VueI18n from 'vue-i18n'
 import './assets/css/style.scss'
 import './assets/css/bootstrap-grid.css'
+// import '../../static/css/dark/theme/index.css'
+// import 'element-ui/lib/theme-chalk/index.css'
 
 // const OUTTIME = 1;//out block time
 Vue.use(ElementUI)

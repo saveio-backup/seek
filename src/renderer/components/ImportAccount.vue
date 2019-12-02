@@ -84,9 +84,8 @@
                 >Select Private Key File</a></div> -->
 							<div
 								class="tr input-opeation"
-								@click='importPrivateKey'
 							>
-								<ripper-button class="primary ftpx12">
+								<ripper-button class="primary ftpx12" @click='importPrivateKey'>
 									<i class="ofont ofont-DAT"></i> <span class="ft14">{{$t('account.selectPrivateKeyFile')}}</span>
 								</ripper-button>
 							</div>
@@ -148,7 +147,9 @@ export default {
 			if (this.privateKeyForm.Password === this.privateKeyForm.Confirm) {
 				callback();
 			} else {
-				callback(new Error(vm.$t('account.inconsistentPasswordsFilledInTwice')));
+				callback(
+					new Error(vm.$t("account.inconsistentPasswordsFilledInTwice"))
+				);
 			}
 		};
 		return {
@@ -167,20 +168,20 @@ export default {
 				PrivateKey: [
 					{
 						required: true,
-						message: this.$t('account.pleaseFillYourPrivateKey'),
+						message: this.$t("account.pleaseFillYourPrivateKey"),
 						trigger: "blur"
 					}
 				],
 				Label: [
 					{
 						required: true,
-						message: this.$t('account.pleaseFillYourName'),
+						message: this.$t("account.pleaseFillYourName"),
 						trigger: "blur"
 					}
 				],
 				Password: {
 					// validator: validatePassword,
-					message: this.$t('account.pleaseFillYourPassword'),
+					message: this.$t("account.pleaseFillYourPassword"),
 					required: true,
 					trigger: ["blur", "input"]
 				},
@@ -208,20 +209,20 @@ export default {
 				PrivateKey: [
 					{
 						required: true,
-						message: vm.$t('account.pleaseFillYourPrivateKey'),
+						message: vm.$t("account.pleaseFillYourPrivateKey"),
 						trigger: "blur"
 					}
 				],
 				Label: [
 					{
 						required: true,
-						message: vm.$t('account.pleaseFillYourName'),
+						message: vm.$t("account.pleaseFillYourName"),
 						trigger: "blur"
 					}
 				],
 				Password: {
 					// validator: validatePassword,
-					message: vm.$t('account.pleaseFillYourPassword'),
+					message: vm.$t("account.pleaseFillYourPassword"),
 					required: true,
 					trigger: ["blur", "input"]
 				},
@@ -230,7 +231,7 @@ export default {
 					required: true,
 					trigger: ["blur"]
 				}
-			}
+			};
 		}
 	},
 	methods: {
@@ -241,12 +242,15 @@ export default {
 			});
 		},
 		importPrivateKey() {
+			console.log("private key");
 			ipcRenderer.send("open-file-dialog");
 			ipcRenderer.once("selected-file", (event, content) => {
 				this.privateKeyForm.PrivateKey = content;
 			});
 		},
 		importAccount() {
+			console.log("import account");
+			return;
 			switch (this.importWay) {
 				case 0:
 					this.importAccountWithWalletFile();
@@ -263,7 +267,7 @@ export default {
 			this.$axios
 				.post(this.$api.account + "/import/walletfile", this.data, {
 					loading: {
-						text: vm.$t('account.importing'),
+						text: vm.$t("account.importing"),
 						target: ".loading"
 					}
 				})
@@ -280,7 +284,9 @@ export default {
 				})
 				.catch(e => {
 					if (!e.message.includes("timeout")) {
-						this.$message.error(vm.$t('account.networkErrorImportWalletFileFailed'));
+						this.$message.error(
+							vm.$t("account.networkErrorImportWalletFileFailed")
+						);
 					}
 				});
 		},
@@ -296,7 +302,7 @@ export default {
 							{
 								loading: {
 									lock: true,
-									text: vm.$t('account.importing'),
+									text: vm.$t("account.importing"),
 									target: ".loading"
 								}
 							}
@@ -314,7 +320,9 @@ export default {
 						})
 						.catch(e => {
 							if (!e.message.includes("timeout")) {
-								this.$message.error(vm.$t('account.networkErrorImportPrivateKeyFailed'));
+								this.$message.error(
+									vm.$t("account.networkErrorImportPrivateKeyFailed")
+								);
 							}
 						});
 				}
@@ -377,9 +385,9 @@ export default {
 		border-radius: 2px;
 		word-break: break-all;
 		transition: all 0.3s ease;
-		border:0;
-		@include themify{
-			background-color:$card-color;
+		border: 0;
+		@include themify {
+			background-color: $card-color;
 		}
 	}
 	.input-opeation {

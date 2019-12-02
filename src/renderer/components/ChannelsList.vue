@@ -4,8 +4,6 @@
 			class="channels"
 			v-if="showRadio?channelsDns:channels"
 		>
-			<!-- :data="mockChannels" -->
-			<!-- border -->
 			<el-table
 				:data="showRadio?channelsDns:channels"
 				ref="singleTable"
@@ -22,11 +20,12 @@
 					sortable
 				>
 					<template slot-scope="scope">
-						<div class="bold">{{scope.row.ChannelId}}</div>
+						<div
+							class="bold"
+							:class="{'grey-color':!scope.row.IsOnline, 'primary-font-color':scope.row.IsOnline}"
+						>{{scope.row.ChannelId}}</div>
 					</template>
 				</el-table-column>
-				<!-- min-width="80px"
-					max-width="120px" -->
 				<el-table-column
 					:label='$t("public.status")'
 					min-width="50"
@@ -37,7 +36,6 @@
 						<div
 							class="ft14"
 							:title='scope.row.IsOnline ? $t("public.online") : $t("public.offline")'
-							:class="{'grey-color':!scope.row.IsOnline}"
 						>{{scope.row.IsOnline ? $t("public.online") : $t("public.offline")}}</div>
 					</template>
 				</el-table-column>
@@ -82,15 +80,6 @@
 				>
 					<span class="channel-radio"></span>
 				</el-table-column>
-				<!-- <el-table-column
-				 label="Created Time"
-				>
-					<template slot-scope="scope">
-						<div class="grey-xs ft14">
-							{{scope.row.HostAddr}}
-						</div>
-					</template>
-				</el-table-column> -->
 				<el-table-column
 					width="160"
 					v-if="showTransfer"
@@ -102,7 +91,6 @@
 							@click="openTransfer(scope.row)"
 							:title="$t('public.transfer')"
 						>
-							<!-- Transfer -->
 							<i class="ofont ofont-huazhuan ftpx16"></i>
 						</span>
 						<span
@@ -112,7 +100,6 @@
 							:title="$t('public.closeChannel')"
 						>
 							<i class="ofont ofont-guanbi ftpx12"></i>
-							<!-- Close -->
 						</span>
 						<span
 							class="closingWrapper"
@@ -171,7 +158,6 @@
 						prop="partner"
 						v-show="channelToggle.type==='add'"
 					>
-						<!-- :fetch-suggestions="querySearchAsync" -->
 						<el-autocomplete
 							class="grey-theme"
 							v-model="channelForm.partner"
@@ -179,21 +165,6 @@
 							:placeholder="$t('public.pleaseFillPartnerWalletAddress')"
 							@select="handleSelect"
 						></el-autocomplete>
-
-						<!-- <el-select
-							class="grey-theme"
-							v-model="channelForm.partner"
-							placeholder="Please Select"
-						>
-							<el-option
-								v-for="item in dns"
-								:key="item.WalletAddr"
-								:label="`${item.WalletAddr}(${item.HostAddr})`"
-								:value="item.WalletAddr"
-								:disabled="dnsIsSelect(item.WalletAddr)"
-							>
-							</el-option>
-						</el-select> -->
 					</el-form-item>
 					<el-form-item
 						class="form-amount"
@@ -736,13 +707,11 @@ $theme-color: #202020;
 		background-color: $card-color;
 	}
 	.el-table {
-		color: $theme-color;
 		tr,
 		td,
 		th,
 		& {
 			@include themify {
-				color: $font-color;
 				background-color: $card-color;
 			}
 		}

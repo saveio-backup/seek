@@ -1,5 +1,7 @@
 $themes: ( // no coment, just for format code
   'light': ( // same as above
+    'primary-font-color':#202020,
+    'line-color':rgba(32,32,32,0.1),
     'color':#f9f9fb, // bgcolor
     // 'color-menu': #f9f9fb, //bgcolor menu
     'navigation-bg':#dfe2e9,
@@ -17,15 +19,17 @@ $themes: ( // no coment, just for format code
   ),
 
   'dark': ( //
+    'primary-font-color':#fff,
+    'line-color':rgba(255, 255, 255, 0.1),
     'color':#2A2B30,
     // 'color-menu': #35363C, //bgcolor menu
     'navigation-bg':#1c1d21,
     'nav-button-bg':#2A2B30,
     'nav-hover-color':#fff,
     'nav-button-disabled':#323436,
-    'table-border-color':rgba(255,255,255,0.1),
+    'table-border-color':rgba(255, 255, 255, 0.1),
     'card-color':#35363c,
-    'card-shadow':0px 2px 10px 0px rgba(32,32,32,1),
+    'card-shadow':0px 2px 10px 0px rgba(32, 32, 32, 1),
     'filemanager-font-color':#fff,
     'filemanager-aside-hover-color':#202125,
     'progress-bar-bg':#1c1d21,
@@ -40,9 +44,11 @@ $font-color:null;
   @each $theme,
   $props in $themes {
 
-    
+
     .theme-#{$theme} & {
+      $primary-font-color: map-get($props, 'primary-font-color') !global;
       $color: map-get($props, 'color') !global;
+      $line-color:map-get($props, 'line-color') !global;
       // $color-menu:map-get($props, 'colorMenu') !global;
       $card-color: map-get($props, 'card-color') !global;
       $card-shadow: map-get($props, 'card-shadow') !global;
@@ -58,7 +64,9 @@ $font-color:null;
       $table-hover-bg: map-get($props, 'table-hover-bg') !global;
       @content;
 
+      $primary-font-color: null !global;
       $color: null !global;
+      $line-color: null !global;
       // $color-menu: null !global;
       $card-color: null !global;
       $card-shadow: null !global;

@@ -45,6 +45,20 @@
 							> -->
 						</div>
 					</li>
+				</ul>
+				<ul class="action-container plugin">
+					<li
+						class="action-item"
+						v-for="item in pluginsInstalled"
+						:key="item.Url"
+						@click="openNewWindow(item.Url)"
+					>
+						<div class="nav-button">
+							<i class="ofont ofont-FS"></i>
+						</div>
+					</li>
+				</ul>
+				<ul class="action-container">
 					<li class="action-item">
 						<div
 							:title="$t('window.comingSoon')"
@@ -53,17 +67,6 @@
 						>
 							<span class="ofont ofont-dapp1"></span>
 						</div>
-					</li>
-					<li
-						class="plugin action-item"
-						v-for="item in pluginsInstalled"
-						:key="item.Url"
-						@click="openNewWindow(item.Url)"
-					>
-						<div class="nav-button">
-							<i class="ofont ofont-FS"></i>
-						</div>
-
 					</li>
 					<li
 						class="action-item"
@@ -352,6 +355,25 @@ $slidebar-active-color: linear-gradient(
 			}
 		}
 		.action-container {
+			&.plugin {
+				li {
+					margin: 0 auto;
+				}
+				li:first-child {
+					padding-top:10px;
+					border-top: solid 1px;
+					@include themify {
+						border-top-color: $line-color;
+					}
+				}
+				li:last-child {
+					padding-bottom:10px;
+					border-bottom: solid 1px;
+					@include themify {
+						border-bottom-color: $line-color;
+					}
+				}
+			}
 			text-align: center;
 			.action-item {
 				display: flex;

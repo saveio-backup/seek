@@ -51,18 +51,18 @@ export default {
 		return {
 			plugins: [
 				{
-					Url: "oni://www.filmlabtest1128_01.com",
+					Url: "oni://www.filmlabtest1202_01.com",
 					img: "https://i.loli.net/2019/11/18/tjBDFyKTpQsXuza.png",
-					title: "filmlabtest1128_01",
+					title: "filmlabtest1202_01",
 					note:
 						"filmlabtest1128 test, transfer information, node information and other important information in save network",
 					progress: 0,
 					detail: null
 				},
 				{
-					Url: "oni://www.filmlabtest13.com",
+					Url: "oni://www.filmlabtest1128_01.com",
 					img: "https://i.loli.net/2019/11/18/tjBDFyKTpQsXuza.png",
-					title: "Block Chain filmlabtest13",
+					title: "filmlabtest1128",
 					note:
 						"Used to query block information, transfer information, node information and other important information in save network",
 					progress: 0,

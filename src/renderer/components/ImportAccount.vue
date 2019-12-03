@@ -250,7 +250,6 @@ export default {
 		},
 		importAccount() {
 			console.log("import account");
-			return;
 			switch (this.importWay) {
 				case 0:
 					this.importAccountWithWalletFile();

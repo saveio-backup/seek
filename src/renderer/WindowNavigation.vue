@@ -96,6 +96,7 @@
 						></el-input>
 						<!-- @mouseleave="hiddenDialog" -->
 						<div
+							@mouseleave="hiddenDialog"
 							@mouseenter="setDialog('syncInfo')"
 							class="sync-wrapper flex flex-center"
 							v-if="address && !isNeedSync"

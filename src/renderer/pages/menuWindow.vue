@@ -5,7 +5,7 @@
 		@mouseleave="hiddenDialog"
 	>
 		<!-- MenuWindow -->
-		<div @mouseenter="setDialog">
+		<div @mouseenter="hiddenDialog">
 			<div
 				class="syncInfo"
 				v-if="menuid === 'syncInfo'"

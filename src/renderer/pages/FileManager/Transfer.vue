@@ -6,7 +6,7 @@
 					class="transform-link"
 					:to="{name:'transfer',query:{transferType:1}}"
 					:class="{'theme-font-blue-bold hover-link': transferType == 1}"
-				><span><i class="ofont ofont-shangchuan"></i>{{$t('fileManager.transfer')}}</span> <span
+				><span><i class="ofont ofont-shangchuan"></i>{{$t('fileManager.upload')}}</span> <span
 						class="badge"
 						v-show="uploadLength>0"
 					>{{uploadLength}}</span></router-link>

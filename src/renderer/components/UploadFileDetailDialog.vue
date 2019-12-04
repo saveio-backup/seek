@@ -400,6 +400,9 @@ export default {
 				width: 100px;
 				margin: 0 20px;
 			}
+			&>p{
+				@extend .grey-color;
+			}
 			ul {
 				max-height: 150px;
 				overflow: auto;

@@ -27,6 +27,7 @@
 					<el-table-column
 						:label="$t('fileManager.size')"
 						prop="Size"
+						class-name="primary-font-color"
 						sortable
 					>
 						<template slot-scope="scope">

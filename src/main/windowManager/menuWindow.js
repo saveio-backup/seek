@@ -54,7 +54,7 @@ export default class MenuWindow {
       console.log('hiddenMenu---------------->')
       this.win.hide();
       this.blur();
-    }, 150);
+    },150);
   }
   openMenu(params, opt) {
     clearTimeout(this.setTimeoutObj)
@@ -69,7 +69,7 @@ export default class MenuWindow {
       })
       this.win.getParentWindow().focus();
       this.win.showInactive();
-      this.win.focus();
+      // this.win.focus();
     } else if (params.id === 'state') {
       let parentBounds = this.parentWindow.getBounds();
       this.win.webContents.send('setMenuDialog', params);
@@ -81,20 +81,7 @@ export default class MenuWindow {
       })
       this.win.getParentWindow().focus();
       this.win.showInactive();
-      this.win.focus();
-    } else if (params.id === 'plugin') {
-      console.log('plugin');
-      let parentBounds = this.parentWindow.getBounds();
-      this.win.webContents.send('setMenuDialog', params);
-      this.win.setBounds({
-        x: parentBounds.x + 30,
-        y: parentBounds.y - 170 + parentBounds.height,
-        width: 240,
-        height: 170
-      })
-      this.win.getParentWindow().focus();
-      this.win.showInactive();
-      this.win.focus();
+      // this.win.focus();
     }
   }
   focus() {

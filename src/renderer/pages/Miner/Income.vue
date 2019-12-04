@@ -27,6 +27,7 @@
 			<el-table-column
 				:label="$t('miner.fileName')"
 				prop="Name"
+				class-name="primary-font-color"
 				sortable
 			></el-table-column>
 			<el-table-column

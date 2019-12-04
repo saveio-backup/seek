@@ -47,6 +47,7 @@
 					</li>
 				</ul>
 				<ul class="action-container plugin">
+					<p class="border"></p>
 					<li
 						class="action-item"
 						v-for="item in pluginsInstalled"
@@ -57,6 +58,7 @@
 							<i class="ofont ofont-FS"></i>
 						</div>
 					</li>
+					<p class="border"></p>
 				</ul>
 				<ul class="action-container">
 					<li class="action-item">
@@ -88,10 +90,10 @@
 					<i
 						class="ofont ofont-caidan user-no-select cursor-pointer cursor-click"
 						@click="toPopCustomControlMenu"
-					></i>
-					<!-- @mouseleave="hiddenDialog" -->
+					></i>	
 					<span
 						v-if="address"
+						@mouseleave="hiddenDialog"
 						@mouseenter="setDialog('state')"
 						class="process-status-wrapper"
 					>
@@ -357,20 +359,23 @@ $slidebar-active-color: linear-gradient(
 		.action-container {
 			&.plugin {
 				li {
-					margin: 0 auto;
+					margin-left: auto;
+					margin-right: auto;
 				}
 				li:first-child {
-					padding-top:10px;
-					border-top: solid 1px;
-					@include themify {
-						border-top-color: $line-color;
-					}
+					padding-top: 10px;
 				}
 				li:last-child {
-					padding-bottom:10px;
-					border-bottom: solid 1px;
+					padding-bottom: 10px;
+				}
+				.border {
+					width: 75%;
+					height: 1px;
+					margin-left:auto;
+					margin-right:auto;
+					background: solid 1px;
 					@include themify {
-						border-bottom-color: $line-color;
+						background-color: $line-color;
 					}
 				}
 			}

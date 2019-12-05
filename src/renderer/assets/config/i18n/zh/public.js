@@ -36,6 +36,7 @@ const result = {
   'wallet': '钱 包',
   'inputAmount': '输入总量',
   'insufficientBalanceAvailable': '可用余额不足',
+  'pleaseAdjustYourSpaceAndDate': '请设置好您的空间容量和有效日期',
   'SorryYouCannotWithdrawInOfflineStatus': '对不起，您不能在离线状态下提取',
   'pleaseChooseChannelAddress': '请选择通道地址',
   'transactionProcessing': '交易处理……',

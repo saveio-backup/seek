@@ -26,12 +26,22 @@
 					></el-input>
 				</el-form-item>
 			</el-form>
-			<div class="text-center">
+			<div class="flex around">
 				<ripper-button
 					@click="login"
-					class="import-button account-button text-center"
+					class="primary import-button account-button text-center"
 					type="primary"
 				>{{$t('login.login')}}</ripper-button>
+        <ripper-button
+					class="import-button account-button text-center"
+          @click="goPage('/ImportAccount')"
+					type="primary"
+				>{{$t('account.importAccount')}}</ripper-button>
+        <ripper-button
+					class="import-button account-button text-center"
+          @click="goPage('/CreateAccount')"
+					type="primary"
+				>{{$t('account.createAccount')}}</ripper-button>
 			</div>
 		</div>
 	</div>
@@ -66,6 +76,11 @@ export default {
     }
   },
   methods: {
+    goPage(path) {
+			this.$router.push({
+				path: path
+			});
+		},
     login() {
       const vm = this;
       // alert('login');

@@ -20,6 +20,7 @@ const result = {
   'RecommendedNoLessThan100ONI': 'Recommended no less than 100 ONI',
   'walletPassword': 'Wallet Password',
   'pleaseInputWalletPassword': 'Please Fill Password',
+  'pleaseAdjustYourSpaceAndDate':'Please adjust your space and date.',
   'pleaseEnterTheCorrectFormat': 'Please Enter the Correct Format',
   'pleaseFillAmount': 'Please Fill Amount',
   'pleaseFillPassword': 'Please Fill Password',

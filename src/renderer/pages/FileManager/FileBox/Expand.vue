@@ -445,7 +445,7 @@ export default {
 				this.cost.FeeFormat !== 0 &&
 				(!this.cost.RefundFormat && this.cost.RefundFormat !== 0)
 			) {
-				this.$message.error("Please adjust your space and date.");
+				this.$message.error(vm.$t("public.pleaseAdjustYourSpaceAndDate"));
 				return;
 			}
 			// if (this.cost.FeeFormat === "" || this.cost.FeeFormat === undefined) {
@@ -606,7 +606,7 @@ $grey: #ccc;
 			display: flex;
 			align-items: flex-end;
 			& > .storage {
-				min-width: 90px;
+				min-width: 125px;
 			}
 
 			.space-progress {

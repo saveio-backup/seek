@@ -60,7 +60,10 @@
 						:max="10"
 						:min="1"
 					></el-slider>
-					<div style="width: 24px;" class="ml10 ftpx14">
+					<div
+						style="width: 24px;"
+						class="ml10 ftpx14"
+					>
 						{{settings.maxNumUpload}}
 					</div>
 				</div>
@@ -73,7 +76,10 @@
 						@change="updateSettings('maxPeerNum',settings.maxPeerNum)"
 						:max="20"
 					></el-slider>
-					<div style="width: 24px;" class="ml10 ftpx14">
+					<div
+						style="width: 24px;"
+						class="ml10 ftpx14"
+					>
 						{{settings.maxPeerNum}}
 					</div>
 				</div>
@@ -278,7 +284,7 @@ export default {
 					}
 				}
 				this.updateSettings("maxNumUpload", this.settings.maxNumUpload);
-			}, 500)
+			}, 500);
 		},
 		updateSettings(key, value) {
 			try {
@@ -318,18 +324,31 @@ export default {
 		switchChainId(id) {
 			const vm = this;
 			console.log("switch chainid", id);
-			this.$axios.post(this.$api.switchChainId, { ChainId: id }).then(res => {
-				if (res.Error === 0) {
-					this.updateSettings("ChainId", id);
-					this.settings.ChainId = id;
-					this.$message({
-						message: vm.$t("settings.switchSuccess"),
-						type: "success"
-					});
-				} else {
-					this.$message.error(this.$t(`error[${res.Error}]`));
-				}
-			});
+			this.$axios
+				.post(
+					this.$api.switchChainId,
+					{
+						ChainId: id
+					},
+					{
+						loading: {
+							text: vm.$t("fileManager.loading"),
+							target: ".settings-content"
+						}
+					}
+				)
+				.then(res => {
+					if (res.Error === 0) {
+						this.updateSettings("ChainId", id);
+						this.settings.ChainId = id;
+						this.$message({
+							message: vm.$t("settings.switchSuccess"),
+							type: "success"
+						});
+					} else {
+						this.$message.error(this.$t(`error[${res.Error}]`));
+					}
+				});
 		},
 		setDir(pathType) {
 			ipcRenderer.send("will-set-dir");
@@ -357,13 +376,12 @@ export default {
 	.settings-content {
 		width: 60%;
 		margin: 0px auto 0px;
-    border-radius: 6px;
+		border-radius: 6px;
 		padding: 20px 60px;
 		@include themify {
 			background-color: $card-color;
 			box-shadow: $card-shadow;
 		}
-
 
 		.settings-box {
 			@extend .theme-font-color;
@@ -386,7 +404,7 @@ export default {
 				display: flex;
 				.theme-selected {
 					border: 2px solid #2f8ff0;
-					border-radius:4px;
+					border-radius: 4px;
 				}
 				& > li {
 					margin: 0 5px;

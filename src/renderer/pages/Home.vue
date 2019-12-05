@@ -23,7 +23,10 @@
 								>{{localStorage.getItem('Label') | firstString}}</i>
 							</div>
 							<div class="user-name-content">
-								<p class="user-name-name ftpx24" :title="localStorage.getItem('Label') || ''">{{localStorage.getItem('Label') || ''}}</p>
+								<p
+									class="user-name-name ftpx24"
+									:title="localStorage.getItem('Label') || ''"
+								>{{localStorage.getItem('Label') || ''}}</p>
 								<p class="ftpx12">
 									<span
 										class="address"
@@ -58,16 +61,12 @@
 					<div class="user-revenue">
 						<p class="grey-xs bold ft14">{{$t('home.yourProfit')}}:</p>
 						<div class="flex between ai-center">
-							<span
-								class="ftpx36"
-							>{{revenueFormat.toLocaleString('en-US')}}</span>
+							<span class="ftpx36">{{revenueFormat.toLocaleString('en-US')}}</span>
 							<span class="bold ftpx16 unit">ONI</span>
 						</div>
 					</div>
 				</div>
-				<div
-					class="user-meta-center"
-				>
+				<div class="user-meta-center">
 					<p class="grey-xs bold ft14 user-meta-title">{{$t('home.totalBalance')}}:</p>
 					<p class="total-num"> {{balanceLists.length>0?filterFloat(balanceLists[0].BalanceFormat).toLocaleString('en-US'):'0'}}<span> ONI</span></p>
 					<div
@@ -84,7 +83,10 @@
 						id="channel-view"
 						class="channelView"
 					></div>
-					<div class="circle-assist" :class="'circle-assist-'+themeColor"></div>
+					<div
+						class="circle-assist"
+						:class="'circle-assist-'+themeColor"
+					></div>
 				</div>
 			</div>
 			<ripper-button
@@ -147,10 +149,10 @@ export default {
 		document.title = this.$t("home.home");
 		const vm = this;
 
-		if(this.loginStatus === 1) {
+		if (this.loginStatus === 1) {
 			this.chartInit();
 		}
-		
+
 		this.$store.dispatch("setCurrentAccount"); // get login status
 		// open channel callback form createChannel of browserView dialog
 		if (this.dnsAdress && this.dnsAdress != "done") {
@@ -399,14 +401,19 @@ export default {
 						this.$refs.channelListObj.openOpen();
 					})
 					.catch(e => {});
-			} else {
+			} else if (this.currentBalanceFormat > 0) {
 				this.$refs.channelListObj.openOpen();
+			} else {
+				this.$message.error(vm.$t("public.insufficientBalanceAvailable"));
 			}
 		},
 		// init channel chart
 		drawChannelView() {
 			const that = this;
-			let themefontColor = this.themeColor === 'dark' ? 'rgba(255,255,255,0.4)' : 'rgba(32, 32, 32, .4)'
+			let themefontColor =
+				this.themeColor === "dark"
+					? "rgba(255,255,255,0.4)"
+					: "rgba(32, 32, 32, .4)";
 			const channelDom = document.getElementById("channel-view");
 			this.chartsChannelDom = echarts.init(channelDom);
 			const currentChannelData =
@@ -520,8 +527,11 @@ export default {
 		// init balance chart
 		drawBalanceView(balanceXAxisData, balanceData) {
 			// console.log(this.themeColor);
-			let areaColor = this.themeColor === 'dark' ? '#303036' : '#F8F9FA'
-			let lineColor = this.themeColor === 'dark' ? 'rgba(244, 244, 244, 0.1)' : 'rgba(244, 244, 244, 1)'
+			let areaColor = this.themeColor === "dark" ? "#303036" : "#F8F9FA";
+			let lineColor =
+				this.themeColor === "dark"
+					? "rgba(244, 244, 244, 0.1)"
+					: "rgba(244, 244, 244, 1)";
 			const balanceDom = document.getElementById("balance-view");
 			this.chartsDom = echarts.init(balanceDom);
 			this.chartsDom.setOption({
@@ -561,7 +571,7 @@ export default {
 					},
 					color: ["#fff"],
 					splitLine: {
-						show: this.themeColor !== 'dark',
+						show: this.themeColor !== "dark",
 						lineStyle: {
 							color: lineColor
 						}
@@ -626,7 +636,11 @@ export default {
 				.get(this.$api.account + "/export/walletfile")
 				.then(res => {
 					if (res.Error === 0) {
-						ipcRenderer.send("export-file-dialog", res.Result.Wallet, "keystore");
+						ipcRenderer.send(
+							"export-file-dialog",
+							res.Result.Wallet,
+							"keystore"
+						);
 						ipcRenderer.once("export-finished", () => {
 							this.$message({
 								message: vm.$t("dialog.exportSuccess"),
@@ -798,10 +812,10 @@ export default {
 			this.drawChannelView();
 		},
 		loginStatus(newVal, oldVal) {
-			if(newVal === 1) {
+			if (newVal === 1) {
 				this.chartInit();
 			}
-		},
+		}
 	},
 	computed: {
 		themeColor() {
@@ -1029,7 +1043,7 @@ $input-color: rgba(203, 203, 203, 1);
 					font-size: 4.5rem;
 				}
 				.user-name {
-					@include themify{
+					@include themify {
 						box-shadow: $card-shadow;
 					}
 					display: flex;
@@ -1155,7 +1169,7 @@ $input-color: rgba(203, 203, 203, 1);
 					padding: 5px 36px 5px 16px;
 					@include themify {
 						background-color: $card-color;
-						color:$font-color;
+						color: $font-color;
 						box-shadow: $card-shadow;
 					}
 
@@ -1179,7 +1193,7 @@ $input-color: rgba(203, 203, 203, 1);
 				}
 			}
 			.user-meta-center {
-				@include themify{
+				@include themify {
 					color: $font-color;
 					background-color: $card-color;
 					box-shadow: $card-shadow;
@@ -1212,8 +1226,8 @@ $input-color: rgba(203, 203, 203, 1);
 				}
 			}
 			.user-meta-right {
-				@include themify{
-					color:$font-color;
+				@include themify {
+					color: $font-color;
 					background: $card-color;
 					box-shadow: $card-shadow;
 				}

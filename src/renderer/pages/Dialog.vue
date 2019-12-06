@@ -707,7 +707,7 @@ export default {
 			if (res.Error === 0) {
 				if (res.Result.Address) {
 					this.Address = res.Result.Address;
-					this.renderDateToBrowserView({
+					this.renderDataToBrowserView({
 						result: res.Result,
 						type: "account",
 						rendTo: 1
@@ -715,7 +715,7 @@ export default {
 				}
 			} else {
 				this.Address = "";
-				this.renderDateToBrowserView({
+				this.renderDataToBrowserView({
 					result: res.Result,
 					type: "account",
 					rendTo: 1
@@ -739,7 +739,7 @@ export default {
 				} else {
 					progressResult.Result.isNeedSync = this.isNeedSync;
 				}
-				this.renderDateToBrowserView({
+				this.renderDataToBrowserView({
 					result: progressResult.Result,
 					type: "progress",
 					rendTo: 1
@@ -752,7 +752,7 @@ export default {
 			const vm = this;
 			// this.$axios.get(this.$api.balance + "/" + this.Address).then(res => {
 			if (res.Error === 0) {
-				this.renderDateToBrowserView({ result: res.Result, type: "balance" });
+				this.renderDataToBrowserView({ result: res.Result, type: "balance" });
 				for (let i = 0; i < res.Result.length; i++) {
 					const item = res.Result[i];
 					if (item.Symbol === "SAVE") {
@@ -771,7 +771,7 @@ export default {
 			// 	})
 			// .then(res => {
 			if (res.Error === 0) {
-				this.renderDateToBrowserView({
+				this.renderDataToBrowserView({
 					result: res.Result,
 					type: "revence"
 				});
@@ -786,7 +786,7 @@ export default {
 			// 	})
 			// 	.then(res => {
 			if (res.Error === 0) {
-				this.renderDateToBrowserView({
+				this.renderDataToBrowserView({
 					result: res.Result,
 					type: "channel"
 				});
@@ -829,7 +829,7 @@ export default {
 			// 	.get(this.$api.networkStatus)
 			// 	.then(res => {
 			if (res.Error === 0) {
-				this.renderDateToBrowserView({
+				this.renderDataToBrowserView({
 					result: res.Result,
 					type: "state",
 					rendTo: 1
@@ -843,7 +843,7 @@ export default {
 			// 		DspProxyState: 0,
 			// 		ChannelProxyState: 0
 			// 	};
-			// 	this.renderDateToBrowserView({
+			// 	this.renderDataToBrowserView({
 			// 		result: result,
 			// 		type: "state",
 			// 		rendTo: 1
@@ -880,7 +880,7 @@ export default {
 		 * 				description: 1: browserView and browserWindow
 		 * 										 0: browserView
 		 */
-		renderDateToBrowserView({ result, type, rendTo = 0 }) {
+		renderDataToBrowserView({ result, type, rendTo = 0 }) {
 			let browserViewIdLists = this.getAllBrowserViewId(rendTo);
 			for (let value of browserViewIdLists) {
 				ipcRenderer.sendTo(value, "get-data", { result, type, page: "tab" });
@@ -1179,7 +1179,7 @@ export default {
 			this.$i18n.locale = lang;
 			let _htmlDom = document.querySelector("html");
 			_htmlDom.style.fontSize = this.$t("fontSize");
-			this.renderDateToBrowserView({
+			this.renderDataToBrowserView({
 				result: { lang: lang },
 				type: "lang",
 				rendTo: 1

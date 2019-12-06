@@ -33,10 +33,7 @@
 					sortable
 				>
 					<template slot-scope="scope">
-						<div
-							class="ft14"
-							:title='scope.row.IsOnline ? $t("public.online") : $t("public.offline")'
-						>{{scope.row.IsOnline ? $t("public.online") : $t("public.offline")}}</div>
+						<div :title='scope.row.IsOnline ? $t("public.online") : $t("public.offline")'>{{scope.row.IsOnline ? $t("public.online") : $t("public.offline")}}</div>
 					</template>
 				</el-table-column>
 				<el-table-column

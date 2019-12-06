@@ -167,7 +167,7 @@
 </template>
 <script>
 import { clipboard, ipcRenderer } from "electron";
-import util from './../assets/config/util'
+import util from "./../assets/config/util";
 export default {
 	created() {
 		document.title = localStorage.Address
@@ -180,6 +180,16 @@ export default {
 	},
 	data() {
 		let validatePassword = (rule, value, callback) => {
+			const vm = this;
+			console.log('value is', value);
+			if (!value.trim().length) {
+				callback(new Error(vm.$t("account.pleaseFillYourPassword")));
+			}
+			else if (value.length > 16) {
+				callback(new Error(vm.$t("account.overMaxPasswordLength16")));
+			} else callback();
+		};
+		let validatePasswordConfirm = (rule, value, callback) => {
 			const vm = this;
 			if (this.form.Password === this.form.Confirm) {
 				callback();
@@ -195,7 +205,7 @@ export default {
 				callback();
 			} else {
 				callback(
-					new Error(vm.$t('account.inputLengthLimit18Chars'))
+					new Error(vm.$t("account.inputLengthLimit18Chars"))
 					// new Error(vm.$t("account.inconsistentPasswordsFilledInTwice"))
 				);
 			}
@@ -203,6 +213,7 @@ export default {
 		return {
 			util,
 			validatePassword,
+			validatePasswordConfirm,
 			validateLength,
 			clipboard,
 			loopFontIndex: 0,
@@ -239,12 +250,12 @@ export default {
 					}
 				],
 				Password: {
-					message: this.$t("account.pleaseFillYourPassword"),
 					required: true,
-					trigger: ["blur", "input"]
+					validator: validatePassword,
+					trigger: ["change","blur"]
 				},
 				Confirm: {
-					validator: validatePassword,
+					validator: validatePasswordConfirm,
 					required: true,
 					trigger: ["blur"]
 				}
@@ -293,10 +304,10 @@ export default {
 					// validator: validatePassword,
 					message: vm.$t("account.pleaseFillYourPassword"),
 					required: true,
-					trigger: ["blur", "input"]
+					trigger: ["blur", "change"]
 				},
 				Confirm: {
-					validator: vm.validatePassword,
+					validator: vm.validatePasswordConfirm,
 					required: true,
 					trigger: ["blur"]
 				}
@@ -502,7 +513,7 @@ export default {
 				word-break: break-all;
 				border: 0;
 				transition: all 0.3s ease;
-				@include themify{
+				@include themify {
 					background-color: $card-color;
 				}
 			}

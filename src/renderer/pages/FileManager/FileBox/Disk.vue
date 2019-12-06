@@ -157,7 +157,7 @@
 					>
 						<template slot-scope="scope">
 							<div
-								class="ft14"
+								class="ftpx14"
 								:class="scope.row.Undone?'grey-color':''"
 							>
 								{{scope.row.StoreType === 1 ? $t('fileManager.advance') : scope.row.StoreType === 0 ? $t('fileManager.primary') : ''}}
@@ -238,7 +238,7 @@
 						prop="Privilege"
 					>
 						<template slot-scope="scope">
-							<span class=" ft14">
+							<span class=" ftpx14">
 								{{$t(`fileManager["${privilegeConfig[scope.row.Privilege]}"]`)}}
 							</span>
 						</template>
@@ -257,7 +257,7 @@
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content">
-				<p class="mt10 mb10 tl ft14">{{$t('fileManager.fileName')}}<span class="ftpx14">: {{executedFile.Name}}</span></p>
+				<p class="mt10 mb10 tl">{{$t('fileManager.fileName')}}<span class="ftpx14">: {{executedFile.Name}}</span></p>
 				<el-form @submit.native.prevent>
 					<el-form-item :label="$t('fileManager.link')+':'">
 						<el-input
@@ -298,7 +298,7 @@
 			<div class="loading-content disk-download-loading">
 				<div class="adjust">
 					<div class="adjust-item">
-						<p class="adjust-title  ft14">{{$t('fileManager.fileName')}}</p>
+						<p class="adjust-title  ftpx14">{{$t('fileManager.fileName')}}</p>
 						<div class="adjust-info">
 							<p
 								class="ftpx14 mr20"
@@ -307,26 +307,26 @@
 						</div>
 					</div>
 					<div class="adjust-item">
-						<p class="adjust-title  ft14">{{$t('fileManager.fileSize')}}:</p>
+						<p class="adjust-title">{{$t('fileManager.fileSize')}}:</p>
 						<div class="adjust-info">
 							<p class="ftpx14 mr20">{{fileDownloadInfo.Size}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
-						<p class="adjust-title  ft14">{{$t('fileManager.savePath')}}:</p>
+						<p class="adjust-title">{{$t('fileManager.savePath')}}:</p>
 						<div class="adjust-info">
 							<p class="ftpx14 mr20">{{fileDownloadInfo.DownloadDir || ''}}</p>
 						</div>
 					</div>
 					<div class="dialog-title-border"></div>
 					<div class="adjust-item">
-						<p class="adjust-title ft14">{{$t('fileManager.cost')}}:</p>
+						<p class="adjust-title">{{$t('fileManager.cost')}}:</p>
 						<div class="adjust-info">
 							<p class="ftpx14 mr20">{{fileDownloadInfo.Fee ? fileDownloadInfo.Fee + ' ONI': ''}} </p>
 						</div>
 					</div>
 					<div class="adjust-item">
-						<p class="adjust-title  ft14">{{$t('fileManager.channelBalance')}}:</p>
+						<p class="adjust-title">{{$t('fileManager.channelBalance')}}:</p>
 						<div class="adjust-info">
 							<p class="ftpx14 mr20">{{channelBind.BalanceFormat}} ONI</p>
 						</div>
@@ -1405,7 +1405,7 @@ $theme-color: #1b1e2f;
 		justify-content: space-between;
 		margin: 15px 0;
 		.adjust-title {
-			font-size: 1.4rem;
+			font-size: 14px;
 			width: 160px;
 			padding-right: 30px;
 			text-align: right;

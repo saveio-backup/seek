@@ -14,6 +14,7 @@ const result = {
   'pleaseFillYourPrivateKey': 'Please Fill Private Key',
   'pleaseFillYourName': 'Please Fill Name',
   'pleaseFillYourPassword': 'Please Fill Password',
+  'overMaxPasswordLength16':'Password cannot exceed 16 characters',
   'importing': 'Importing',
   'networkErrorImportWalletFileFailed': 'Network Error. Import Wallet File Failed',
   'networkErrorImportPrivateKeyFailed': 'Network Error. Import Private Key Failed!',

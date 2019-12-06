@@ -14,6 +14,7 @@ const result = {
   'pleaseFillYourPrivateKey': '请输入私钥',
   'pleaseFillYourName': '请输入名称',
   'pleaseFillYourPassword': '请输入密码',
+  'overMaxPasswordLength16':'密码长度超过 16 位',
   'importing': '导入中',
   'networkErrorImportWalletFileFailed': '网络错误。导入密钥库失败',
   'networkErrorImportPrivateKeyFailed': '网络错误。导入私钥失败!',

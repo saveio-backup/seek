@@ -9,24 +9,24 @@
 						v-model="data.Address"
 						cols="30"
 						rows="10"
-						class="grey-theme"
+						class="grey-theme login-form-item"
             disabled
 					>
 					</el-input>
 				</el-form-item>
-				<el-form-item :label="$t('public.walletPassword')+':'">
+				<el-form-item  :label="$t('public.walletPassword')+':'">
 					<el-input
 						v-model="data.Password"
 						:placeholder="$t('public.pleaseInputWalletPassword')"
 						type="password"
 						:rows="2"
-						class="grey-theme"
+						class="grey-theme login-form-item"
 						show-password
 						@keyup.enter.native='login'
 					></el-input>
 				</el-form-item>
 			</el-form>
-			<div class="flex around">
+			<div class="flex around mt80">
 				<ripper-button
 					@click="login"
 					class="primary import-button account-button text-center"
@@ -132,6 +132,14 @@ export default {
         background: #e0e2e6;
       }
     }
+  }
+  .ripper-button button{
+    width:125px;
+  }
+  .login-form-item{
+    // input{
+      margin-top:10px;
+    // }
   }
 }
 </style>

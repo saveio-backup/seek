@@ -6,7 +6,7 @@ CARRIER_GITCOMMIT=$(shell cd ~/go/src/github.com/saveio/carrier && git log -1 --
 MAX_GITCOMMIT=$(shell cd ~/go/src/github.com/saveio/max && git log -1 --pretty=format:"%H")
 DSP_GITCOMMIT=$(shell cd ~/go/src/github.com/saveio/dsp-go-sdk && git log -1 --pretty=format:"%H")
 
-BUILD_EDGE_PAR =-v -ldflags "-s -w -X github.com/saveio/edge/dsp.Version=$(EDGE_GITCOMMIT) -X github.com/saveio/pylons.Version=${PYLONS_GITCOMMIT} -X github.com/saveio/carrier/network.Version=${CARRIER_GITCOMMIT} -X github.com/saveio/max/max.Version=${MAX_GITCOMMIT} -X github.com/saveio/dsp-go-sdk.Version=${DSP_GITCOMMIT}"
+BUILD_EDGE_PAR =-v -ldflags "-s -w -X github.com/saveio/edge/dsp.Version=$(EDGE_GITCOMMIT) -X github.com/saveio/pylons.Version=${PYLONS_GITCOMMIT} -X github.com/saveio/carrier/network.Version=${CARRIER_GITCOMMIT} -X github.com/saveio/max/max.Version=${MAX_GITCOMMIT} -X github.com/saveio/dsp-go-sdk/dsp.Version=${DSP_GITCOMMIT}"
 
 all: client
 

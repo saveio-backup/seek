@@ -612,53 +612,5 @@ export default {
 		border: 0;
 		border-radius: 2px;
 	}
-	.form-password {
-		.el-input-group__append {
-			display: flex;
-			align-items: center;
-			background: none;
-			border: none;
-			position: absolute;
-			padding: 0;
-			right: 0px;
-			top: 50%;
-			width: 150px;
-			height: 100%;
-			transform: translateX(calc(100% + 20px)) translateY(-50%);
-		}
-		.el-input__suffix {
-			transform: none !important;
-		}
-	}
-	.strength-ul {
-		flex: 1;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		li {
-			width: 35px;
-			height: 10px;
-			border: solid 1px;
-			@include themify {
-				border-color: $line-color;
-			}
-			&.weak:first-child {
-				border-color: #d1756a;
-				background-color: #e88073;
-			}
-			&.medium:nth-of-type(1),
-			&.medium:nth-of-type(2) {
-				border-color: #d98e24;
-				background-color: #f09c25;
-			}
-			&.strong {
-				border-color: #75b865;
-				background-color: #80cb6e;
-			}
-		}
-		& > p {
-			width: 30px;
-		}
-	}
 }
 </style>

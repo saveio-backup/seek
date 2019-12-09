@@ -82,10 +82,11 @@
                   @click='importPrivateKey'
                   class="light-blue ft14 cursor-pointer user-no-select cursor-click input-opeation"
                 >Select Private Key File</a></div> -->
-							<div
-								class="tr input-opeation"
-							>
-								<ripper-button class="primary ftpx12" @click='importPrivateKey'>
+							<div class="tr input-opeation">
+								<ripper-button
+									class="primary ftpx12"
+									@click='importPrivateKey'
+								>
 									<i class="ofont ofont-DAT"></i> <span class="ft14">{{$t('account.selectPrivateKeyFile')}}</span>
 								</ripper-button>
 							</div>
@@ -109,8 +110,28 @@
 								:placeholder="$t('account.inputNewWalletPassword')"
 								show-password
 								type="password"
-								class="grey-theme"
-							></el-input>
+								class="grey-theme form-password"
+							>
+								<ul
+									slot="append"
+									class="flex strength-ul"
+									v-show="switchToggle.passwordStrength>=0"
+								>
+									<li
+										class="password-light"
+										:class="{weak:switchToggle.passwordStrength===0,medium:switchToggle.passwordStrength===1,strong:switchToggle.passwordStrength===2}"
+									></li>
+									<li
+										class="password-light"
+										:class="{weak:switchToggle.passwordStrength===0,medium:switchToggle.passwordStrength===1,strong:switchToggle.passwordStrength===2}"
+									></li>
+									<li
+										class="password-light"
+										:class="{weak:switchToggle.passwordStrength===0,medium:switchToggle.passwordStrength===1,strong:switchToggle.passwordStrength===2}"
+									></li>
+									<p>{{$t('account.passwordStrength['+switchToggle.passwordStrength+']')}}</p>
+								</ul>
+							</el-input>
 						</el-form-item>
 						<el-form-item
 							:label="$t('account.confirmWalletPassword')"
@@ -144,6 +165,18 @@ export default {
 	data() {
 		let validatePassword = (rule, value, callback) => {
 			const vm = this;
+			console.log("value is", value);
+			if (!value.trim().length) {
+				this.switchToggle.passwordStrength = -1;
+				callback(new Error(vm.$t("account.pleaseFillYourPassword")));
+			} else if (value.length > 16) {
+				callback(new Error(vm.$t("account.overMaxPasswordLength16")));
+			} else {
+				vm.checkStrength(value, callback);
+			}
+		};
+		let validatePasswordConfirm = (rule, value, callback) => {
+			const vm = this;
 			if (this.privateKeyForm.Password === this.privateKeyForm.Confirm) {
 				callback();
 			} else {
@@ -154,7 +187,9 @@ export default {
 		};
 		return {
 			validatePassword,
+			validatePasswordConfirm,
 			switchToggle: {
+				passwordStrength: -1,
 				loading: null
 			},
 			importWay: 0, // 0 Wallet 1 PrivateKey
@@ -180,15 +215,35 @@ export default {
 					}
 				],
 				Password: {
-					// validator: validatePassword,
-					message: this.$t("account.pleaseFillYourPassword"),
-					required: true,
-					trigger: ["blur", "input"]
-				},
-				Confirm: {
 					validator: validatePassword,
 					required: true,
+					trigger: ["blur", "change"]
+				},
+				Confirm: {
+					validator: validatePasswordConfirm,
+					required: true,
 					trigger: ["blur"]
+				}
+			},
+			checkStrength(value, callback) {
+				var highRegex = new RegExp(
+					"^(?=.{8,})(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*).*$",
+					"g"
+				);
+				var middleRegex = new RegExp(
+					"^(?=.{7,})(((?=.*[A-Z])(?=.*[a-z])(?=.*\\W))|((?=.*[A-Z])(?=.*[0-9])(?=.*\\W))|((?=.*[a-z])(?=.*[0-9]))(?=.*)).*$",
+					"g"
+				);
+				var lowRegex = new RegExp("(?=.{0,}).*", "g");
+				if (highRegex.test(value)) {
+					this.switchToggle.passwordStrength = 2;
+					callback();
+				} else if (middleRegex.test(value)) {
+					this.switchToggle.passwordStrength = 1;
+					callback();
+				} else {
+					this.switchToggle.passwordStrength = 0;
+					callback();
 				}
 			},
 			data: {
@@ -221,13 +276,12 @@ export default {
 					}
 				],
 				Password: {
-					// validator: validatePassword,
-					message: vm.$t("account.pleaseFillYourPassword"),
+					validator: validatePassword,
 					required: true,
-					trigger: ["blur", "input"]
+					trigger: ["blur", "change"]
 				},
 				Confirm: {
-					validator: vm.validatePassword,
+					validator: vm.validatePasswordConfirm,
 					required: true,
 					trigger: ["blur"]
 				}

@@ -412,11 +412,11 @@ export function createWindow(url) {
    */
 
   let mainWindow = new BrowserWindow({
-    height: 800,
+    height: 850,
     frame: false,
     useContentSize: true,
     minWidth: 1200,
-    minHeight: 600,
+    minHeight: 800,
     width: 1200,
     titleBarStyle: 'hiddenInset',
     autoHideMenuBar: true,

@@ -40,8 +40,28 @@
 							type="password"
 							:placeholder="$t('public.pleaseInputWalletPassword')"
 							show-password
-							class="grey-theme"
-						></el-input>
+							class="grey-theme form-password"
+						>
+							<ul
+								slot="append"
+								class="flex strength-ul"
+								v-show="switchToggle.passwordStrength>=0"
+							>
+								<li
+									class="password-light"
+									:class="{weak:switchToggle.passwordStrength===0,medium:switchToggle.passwordStrength===1,strong:switchToggle.passwordStrength===2}"
+								></li>
+								<li
+									class="password-light"
+									:class="{weak:switchToggle.passwordStrength===0,medium:switchToggle.passwordStrength===1,strong:switchToggle.passwordStrength===2}"
+								></li>
+								<li
+									class="password-light"
+									:class="{weak:switchToggle.passwordStrength===0,medium:switchToggle.passwordStrength===1,strong:switchToggle.passwordStrength===2}"
+								></li>
+								<p>{{$t('account.passwordStrength['+switchToggle.passwordStrength+']')}}</p>
+							</ul>
+						</el-input>
 					</el-form-item>
 					<el-form-item
 						:label="$t('account.confirmWalletPassword')"
@@ -181,13 +201,15 @@ export default {
 	data() {
 		let validatePassword = (rule, value, callback) => {
 			const vm = this;
-			console.log('value is', value);
+			console.log("value is", value);
 			if (!value.trim().length) {
+				this.switchToggle.passwordStrength = -1;
 				callback(new Error(vm.$t("account.pleaseFillYourPassword")));
-			}
-			else if (value.length > 16) {
+			} else if (value.length > 16) {
 				callback(new Error(vm.$t("account.overMaxPasswordLength16")));
-			} else callback();
+			} else {
+				vm.checkStrength(value, callback);
+			}
 		};
 		let validatePasswordConfirm = (rule, value, callback) => {
 			const vm = this;
@@ -220,6 +242,7 @@ export default {
 			accountStatus: "", // 0: no account, 1:account exist
 			// progress: 0,
 			switchToggle: {
+				passwordStrength: -1,
 				loading: null,
 				submitSwitch: true
 			},
@@ -252,12 +275,33 @@ export default {
 				Password: {
 					required: true,
 					validator: validatePassword,
-					trigger: ["change","blur"]
+					trigger: ["change", "blur"]
 				},
 				Confirm: {
 					validator: validatePasswordConfirm,
 					required: true,
 					trigger: ["blur"]
+				}
+			},
+			checkStrength(value, callback) {
+				var highRegex = new RegExp(
+					"^(?=.{8,})(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*).*$",
+					"g"
+				);
+				var middleRegex = new RegExp(
+					"^(?=.{7,})(((?=.*[A-Z])(?=.*[a-z])(?=.*\\W))|((?=.*[A-Z])(?=.*[0-9])(?=.*\\W))|((?=.*[a-z])(?=.*[0-9]))(?=.*)).*$",
+					"g"
+				);
+				var lowRegex = new RegExp("(?=.{0,}).*", "g");
+				if (highRegex.test(value)) {
+					this.switchToggle.passwordStrength = 2;
+					callback();
+				} else if (middleRegex.test(value)) {
+					this.switchToggle.passwordStrength = 1;
+					callback();
+				} else {
+					this.switchToggle.passwordStrength = 0;
+					callback();
 				}
 			}
 		};
@@ -301,7 +345,7 @@ export default {
 					}
 				],
 				Password: {
-					// validator: validatePassword,
+					validator: validatePassword,
 					message: vm.$t("account.pleaseFillYourPassword"),
 					required: true,
 					trigger: ["blur", "change"]
@@ -567,6 +611,54 @@ export default {
 		background: #edeff4;
 		border: 0;
 		border-radius: 2px;
+	}
+	.form-password {
+		.el-input-group__append {
+			display: flex;
+			align-items: center;
+			background: none;
+			border: none;
+			position: absolute;
+			padding: 0;
+			right: 0px;
+			top: 50%;
+			width: 150px;
+			height: 100%;
+			transform: translateX(calc(100% + 20px)) translateY(-50%);
+		}
+		.el-input__suffix {
+			transform: none !important;
+		}
+	}
+	.strength-ul {
+		flex: 1;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		li {
+			width: 35px;
+			height: 10px;
+			border: solid 1px;
+			@include themify {
+				border-color: $line-color;
+			}
+			&.weak:first-child {
+				border-color: #d1756a;
+				background-color: #e88073;
+			}
+			&.medium:nth-of-type(1),
+			&.medium:nth-of-type(2) {
+				border-color: #d98e24;
+				background-color: #f09c25;
+			}
+			&.strong {
+				border-color: #75b865;
+				background-color: #80cb6e;
+			}
+		}
+		& > p {
+			width: 30px;
+		}
 	}
 }
 </style>

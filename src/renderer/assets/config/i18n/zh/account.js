@@ -8,6 +8,7 @@ const result = {
   'userName': '用户名',
   'inputUserName': '请输入用户名',
   'inputNewWalletPassword': '请输入新的钱包密码',
+  'passwordStrength': ['弱', '中', '强'],
   'confirmWalletPassword': '确认钱包密码',
   'import': '导 入',
   'inconsistentPasswordsFilledInTwice': '两次输入不一致的密码。',

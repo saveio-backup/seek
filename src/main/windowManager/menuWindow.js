@@ -6,15 +6,6 @@ import {
   X_POSITION,
   DEFAULT_URL
 } from './defaultOption'
-import frontCfgObj from './frontCfgObj.js'
-// import {
-//   SeekDB
-// } from '../dbs/index';
-import {
-  SettingDB
-} from '../dbs/index_levelup';
-// const seekDB = new SeekDB();
-// seekDB.getDB();
 export default class MenuWindow {
   constructor(parentWindow) {
     this.parentWindow = parentWindow;

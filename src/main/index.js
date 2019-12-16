@@ -6,9 +6,6 @@ import {
 } from 'electron'
 import './ipcManager'
 import './protocols/protocols' // custom protocol
-// import {
-//   SeekDB
-// } from './dbs/index';
 import {
   SettingDB,
   HistoryDB,

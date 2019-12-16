@@ -5,12 +5,6 @@ import {
     app,
     ipcMain
 } from 'electron'
-// import {
-//     SeekDB
-// } from './dbs/index'
-import {
-    SettingDB
-} from './dbs/index_levelup';
 import {
     DEFAULT_CHAINID
 } from './windowManager/defaultOption';

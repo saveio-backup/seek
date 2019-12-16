@@ -12,6 +12,7 @@ import account from './account'
 import windowObj from './window';
 import history from './history';
 import login from './login';
+import plugin from './plugin';
 import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
 
 const obj = {
@@ -30,6 +31,7 @@ const obj = {
   window: windowObj,
   history,
   login,
+  plugin,
   ...zhLocale
 }
 export default obj;

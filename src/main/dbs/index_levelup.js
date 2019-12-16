@@ -18,7 +18,8 @@ const DEFAULT_USERSUMMARY_CONFIG = {
       Address: '',
       DNSAddress: '',
       PublicKey: '',
-      Plugins: []
+      Plugins: [],
+      LocalUrlPlugins:{}
     },
     modify: true
   },

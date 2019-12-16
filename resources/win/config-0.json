@@ -26,17 +26,19 @@
         "PpListenAddr": "",
         "PpBootstrap": null,
         "ChainRestAddrs": [
-            "http://139.219.136.38:20334"
+            "http://139.219.136.38:20334",
+            "http://139.219.142.165:20334"
         ],
         "ChainRpcAddrs": [
-            "http://139.219.136.38:20336"
+            "http://139.219.136.38:20336",
+            "http://139.219.142.165:20336"
         ],
         "NATProxyServerAddrs": "tcp://40.73.100.114:6007",
         "DspProtocol": "tcp",
         "DspPortOffset": 4024,
         "AutoSetupDNSEnable": false,
         "TrackerPortOffset": 337,
-        "TrackerProtocol":"tcp",
+        "TrackerProtocol": "tcp",
         "DnsNodeMaxNum": 100,
         "SeedInterval": 3600,
         "DnsChannelDeposit": 1000000000,

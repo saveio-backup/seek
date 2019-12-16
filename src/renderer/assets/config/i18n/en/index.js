@@ -12,7 +12,8 @@ import account from './account';
 import windowObj from './window';
 import history from './history';
 import login from './login';
-import enLocale from 'element-ui/lib/locale/lang/en'
+import plugin from './plugin';
+import enLocale from 'element-ui/lib/locale/lang/en';
 
 const obj = {
   fontSize: '62.5%',
@@ -30,6 +31,7 @@ const obj = {
   window: windowObj,
   history,
   login,
+  plugin,
   ...enLocale
 }
 export default obj;

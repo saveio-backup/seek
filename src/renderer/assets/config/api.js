@@ -89,9 +89,10 @@ const API = {
   getchainidlist: HOST + VERSION + 'chainid/list',
   invokeContract: HOST + VERSION + 'smartcontract/invoke',
   preexecContract: HOST + VERSION + 'smartcontract/preexec',
-  checkPassword:  HOST + VERSION + 'account/password/check',
+  checkPassword: HOST + VERSION + 'account/password/check',
   config: HOST + VERSION + 'config',
   dspFilePeersCount: HOST + VERSION + 'dsp/file/peers/count',
-  login:  HOST + VERSION + 'account/login'
+  login: HOST + VERSION + 'account/login',
+  getHashByUrl: HOST + VERSION + 'dns/hash'
 }
 export default API;

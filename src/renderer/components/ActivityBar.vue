@@ -55,7 +55,7 @@
 						@click="openNewWindow(item.Url)"
 					>
 						<div class="nav-button">
-							<i class="ofont ofont-FS"></i>
+							<i :class="'ofont ofont-'+item.icon"></i>
 						</div>
 					</li>
 					<p class="border"></p>
@@ -90,7 +90,7 @@
 					<i
 						class="ofont ofont-caidan user-no-select cursor-pointer cursor-click"
 						@click="toPopCustomControlMenu"
-					></i>	
+					></i>
 					<span
 						v-if="address"
 						@mouseleave="hiddenDialog"
@@ -191,8 +191,9 @@ export default {
 		},
 		async getPlugins() {
 			const plugins = ipcRenderer.sendSync("getUsermeta", "Plugins");
-			const tempPluginsInstalled = [];
 			console.log("getPlugins");
+			console.log(plugins);
+			const tempPluginsInstalled = [];
 			for (let i = 0; i < plugins.length; i++) {
 				const item = plugins[i];
 				// let detail = await this.getTransferDetail(item.Url);
@@ -200,7 +201,7 @@ export default {
 				let detail = item.detail;
 				try {
 					fs.statSync(detail.Path);
-					tempPluginsInstalled.push(detail);
+					tempPluginsInstalled.push(item);
 				} catch (error) {
 					console.error("fs error!");
 					console.error(error);
@@ -371,8 +372,8 @@ $slidebar-active-color: linear-gradient(
 				.border {
 					width: 75%;
 					height: 1px;
-					margin-left:auto;
-					margin-right:auto;
+					margin-left: auto;
+					margin-right: auto;
 					background: solid 1px;
 					@include themify {
 						background-color: $line-color;

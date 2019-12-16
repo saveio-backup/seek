@@ -17,19 +17,24 @@
 						<div v-if="plugin.detail">
 							<ripper-button
 								class="primary"
-								v-if="plugin.detail.Progress >= 1"
+								v-if="(plugin.detail.Progress >= 1) &(plugin.detail.Status !=5)"
 								@click="loadPlugin(plugin.Url,plugin)"
-							>Open</ripper-button>
+							>{{$t("plugin.open")}}</ripper-button>
 							<ripper-button
 								class="primary"
-								v-if='(plugin.detail.Status ===1) || (plugin.detail.Status ===0)'
-							>Installing</ripper-button>
+								v-if='(plugin.detail.Status ===1) || (plugin.detail.Status ===0)|| (plugin.detail.Status ===2)'
+							>{{$t("plugin.installing")}}</ripper-button>
+							<ripper-button
+								class="primary"
+								@click="downloadPlugin(plugin.Url,plugin)"
+								v-if="plugin.detail.Status ===5"
+							>{{$t("plugin.update")}}</ripper-button>
 						</div>
 						<ripper-button
 							class="primary"
 							@click="loadPlugin(plugin.Url,plugin)"
 							v-else
-						>Installation</ripper-button>
+						>{{$t("plugin.install")}}</ripper-button>
 
 						<el-progress
 							v-if="plugin.detail"
@@ -51,16 +56,18 @@ export default {
 		return {
 			plugins: [
 				{
-					Url: "oni://www.filmlabtest1202_01.com",
+					Url: "oni://www.filmlabbeta.com",
+					icon: "FS",
 					img: "https://i.loli.net/2019/11/18/tjBDFyKTpQsXuza.png",
-					title: "filmlabtest1202_01",
+					title: "filmlabbeta",
 					note:
-						"filmlabtest1128 test, transfer information, node information and other important information in save network",
+						"filmlabbeta test, transfer information, node information and other important information in save network",
 					progress: 0,
 					detail: null
 				},
 				{
 					Url: "oni://www.filmlabtest1128_01.com",
+					icon: "DNS",
 					img: "https://i.loli.net/2019/11/18/tjBDFyKTpQsXuza.png",
 					title: "filmlabtest1128",
 					note:
@@ -120,18 +127,36 @@ export default {
 		async getPluginsInfo() {
 			const plugins = this.plugins;
 			const pluginInstaled = [];
+			// todo  修改结构
+			const localUrlPlugins = ipcRenderer.sendSync(
+				"getUsermeta",
+				"LocalUrlPlugins"
+			);
+			console.log("localUrlPlugins is");
+			console.log(localUrlPlugins);
 			for (let i = 0; i < plugins.length; i++) {
 				let detail = await this.getTransferDetail(plugins[i].Url);
 				detail = detail.Result;
+				plugins[i].detail = detail;
 				try {
-					fs.statSync(detail.Path);
-					plugins[i].detail = detail;
-					pluginInstaled.push(plugins[i]);
+					if (plugins[i].detail) {
+						fs.statSync(detail.Path);
+						pluginInstaled.push(plugins[i]);
+					} else if (localUrlPlugins[plugins[i].Url]) {
+						// need update
+						plugins[i].detail = localUrlPlugins[plugins[i].Url].detail;
+						plugins[i].detail.Status = 5;
+						pluginInstaled.push(plugins[i]);
+					}
 				} catch (error) {
+					console.log("error");
+					console.log(error);
 					plugins[i].detail = null;
 				}
 			}
 			try {
+				console.log("pluginInstaled is");
+				console.log(pluginInstaled);
 				ipcRenderer.sendSync("setUsermeta", "Plugins", pluginInstaled);
 				this.sendPluginInfo();
 			} catch (error) {}
@@ -178,26 +203,50 @@ export default {
 						fs.statSync(data.Path);
 						plugItem.detail = data;
 						const plugins = ipcRenderer.sendSync("getUsermeta", "Plugins");
+						const localUrlPlugins = ipcRenderer.sendSync(
+							"getUsermeta",
+							"LocalUrlPlugins"
+						);
 						if (
 							plugins.every(item => {
 								return item.detail.Path !== plugItem.detail.Path;
 							})
 						) {
 							plugins.push(plugItem);
+							// everytime we add plugin, we add url:plugin data as key:value to store in localUrlPlugins
+							localUrlPlugins[plugItem.Url] = plugItem;
 						}
 						ipcRenderer.sendSync("setUsermeta", "Plugins", plugins);
+						ipcRenderer.sendSync(
+							"setUsermeta",
+							"LocalUrlPlugins",
+							localUrlPlugins
+						);
 						this.sendPluginInfo();
 						window.open(url);
 					} catch (error) {
 						const plugins = ipcRenderer.sendSync("getUsermeta", "Plugins");
+						const localUrlPlugins = ipcRenderer.sendSync(
+							"getUsermeta",
+							"LocalUrlPlugins"
+						);
 						for (let i = 0; i < plugins.length; i++) {
 							const element = plugins[i];
 							if (element.detail.Path === data.Path) {
 								plugins.splice(i, 1);
+								// while remove plugin, del url:plugin
+								delete localUrlPlugins[element.Url];
 								break;
 							}
 						}
 						ipcRenderer.sendSync("setUsermeta", "Plugins", plugins);
+						console.log("localUrlPlugins is");
+						console.log(localUrlPlugins);
+						ipcRenderer.sendSync(
+							"setUsermeta",
+							"LocalUrlPlugins",
+							localUrlPlugins
+						);
 						plugItem.detail = data;
 						plugItem.detail.Status = 0;
 						plugItem.detail.Progress = 0;
@@ -232,12 +281,23 @@ export default {
 				this.$axios
 					.get(this.$api.transferDetail + `/3/${hexUrl}`)
 					.then(res => {
-						console.log("get transferDetail is!!");
-						console.log(res);
 						resolve(res);
 					})
 					.catch(err => {
 						reject(err);
+					});
+			});
+		},
+		getHashByUrl(url) {
+			const hexUrl = ipcRenderer.sendSync("string-to-hex", url);
+			return new Promise((resolve, rejest) => {
+				this.$axios
+					.get(this.$api.getHashByUrl + `/${hexUrl}`)
+					.then(res => {
+						resolve(res);
+					})
+					.catch(err => {
+						rejest(err);
 					});
 			});
 		}

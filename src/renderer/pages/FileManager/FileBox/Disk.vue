@@ -644,7 +644,7 @@ export default {
 		},
 		clickRow(row) {
 			if (row.Url) {
-				this.$refs.table.clearSelection();
+				// this.$refs.table.clearSelection();
 				this.$refs.table.toggleRowSelection(row);
 			}
 		},

@@ -1,0 +1,10 @@
+diff a/src/renderer/pages/FileManager/FileBox/Disk.vue b/src/renderer/pages/FileManager/FileBox/Disk.vue	(rejected hunks)
+@@ -94,7 +94,7 @@
+ 											:color="syncColor(scope.row.Hash)"
+ 											:width="20"
+ 										></circle-progress>
+-									</span>
++									</span> -->
+ 								</span>
+ 								<!-- @click="executedFile = scope.row" -->
+ 								<div

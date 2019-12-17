@@ -380,7 +380,7 @@ const actions = {
     getSyncFileList({
         commit
     }) {
-        return;
+        // return;
         clearInterval(syncFileTimer);
         syncFileRequest.bind(this, commit)();
         syncFileTimer = setInterval(() => {

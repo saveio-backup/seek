@@ -8,6 +8,11 @@
 					class="plugin-item col-md-4 col-lg-3"
 				>
 					<div class="card">
+						<el-switch
+							v-model="plugin.isShow"
+							v-if="plugin.detail && (plugin.detail.Progress >= 1)"
+							@change="setIsShow(plugin)"
+						></el-switch>
 						<img
 							:src="plugin.img"
 							alt="save"
@@ -17,9 +22,14 @@
 						<div v-if="plugin.detail">
 							<ripper-button
 								class="primary"
-								v-if="(plugin.detail.Progress >= 1) &(plugin.detail.Status !=5)"
+								v-if="(plugin.detail.Progress >= 1) && (plugin.detail.Status !=5)"
 								@click="loadPlugin(plugin.Url,plugin)"
 							>{{$t("plugin.open")}}</ripper-button>
+							<ripper-button
+								class="primary"
+								v-if="plugin.detail.Status===4"
+								@click="downloadPluginRetry(plugin.Url,plugin)"
+							>{{$t("plugin.retry")}}</ripper-button>
 							<ripper-button
 								class="primary"
 								v-if='(plugin.detail.Status ===1) || (plugin.detail.Status ===0)|| (plugin.detail.Status ===2)'
@@ -51,73 +61,84 @@
 <script>
 import { ipcRenderer, remote } from "electron";
 import fs from "fs";
+const G_plugins = [
+	{
+		Url: "oni://www.filmlabbeta.com",
+		icon: "FS",
+		img: "https://i.loli.net/2019/11/18/tjBDFyKTpQsXuza.png",
+		title: "filmlabbeta",
+		note:
+			"filmlabbeta test, transfer information, node information and other important information in save network",
+		progress: 0,
+		detail: null
+	},
+	{
+		Url: "oni://www.explorer.com",
+		icon: "DNS",
+		img: "https://i.loli.net/2019/11/18/tjBDFyKTpQsXuza.png",
+		title: "explorer",
+		note:
+			"Explorer test, Explorer test, Explorer test, Explorer test, Explorer test.",
+		progress: 0,
+		detail: null
+	},
+	{
+		Url: "oni://www.filmlabtest12.com",
+		img: "https://i.loli.net/2019/11/18/tjBDFyKTpQsXuza.png",
+		title: "Block Chain filmlabtest12",
+		note:
+			"Used to query block information, transfer information, node information and other important information in save network",
+		progress: 0,
+		detail: null
+	},
+	{
+		Url: "oni://www.filmlabtest11.com",
+		img: "https://i.loli.net/2019/11/18/tjBDFyKTpQsXuza.png",
+		title: "Block Chain filmlabtest11",
+		note:
+			"Used to query block information, transfer information, node information and other important information in save network",
+		progress: 0,
+		detail: null
+	},
+	{
+		Url: "oni://www.filmlabtest10.com",
+		img: "https://i.loli.net/2019/11/18/tjBDFyKTpQsXuza.png",
+		title: "Block Chain filmlabtest10",
+		note:
+			"Used to query block information, transfer information, node information and other important information in save network",
+		progress: 0,
+		detail: null
+	},
+	{
+		Url: "oni://www.filmlabtest9.com",
+		img: "https://i.loli.net/2019/11/18/tjBDFyKTpQsXuza.png",
+		title: "Block Chain filmlabtest9",
+		note:
+			"Used to query block information, transfer information, node information and other important information in save network",
+		progress: 0,
+		detail: null
+	}
+];
 export default {
 	data() {
 		return {
-			plugins: [
-				{
-					Url: "oni://www.filmlabbeta.com",
-					icon: "FS",
-					img: "https://i.loli.net/2019/11/18/tjBDFyKTpQsXuza.png",
-					title: "filmlabbeta",
-					note:
-						"filmlabbeta test, transfer information, node information and other important information in save network",
-					progress: 0,
-					detail: null
-				},
-				{
-					Url: "oni://www.filmlabtest1128_01.com",
-					icon: "DNS",
-					img: "https://i.loli.net/2019/11/18/tjBDFyKTpQsXuza.png",
-					title: "filmlabtest1128",
-					note:
-						"Used to query block information, transfer information, node information and other important information in save network",
-					progress: 0,
-					detail: null
-				},
-				{
-					Url: "oni://www.filmlabtest12.com",
-					img: "https://i.loli.net/2019/11/18/tjBDFyKTpQsXuza.png",
-					title: "Block Chain filmlabtest12",
-					note:
-						"Used to query block information, transfer information, node information and other important information in save network",
-					progress: 0,
-					detail: null
-				},
-				{
-					Url: "oni://www.filmlabtest11.com",
-					img: "https://i.loli.net/2019/11/18/tjBDFyKTpQsXuza.png",
-					title: "Block Chain filmlabtest11",
-					note:
-						"Used to query block information, transfer information, node information and other important information in save network",
-					progress: 0,
-					detail: null
-				},
-				{
-					Url: "oni://www.filmlabtest10.com",
-					img: "https://i.loli.net/2019/11/18/tjBDFyKTpQsXuza.png",
-					title: "Block Chain filmlabtest10",
-					note:
-						"Used to query block information, transfer information, node information and other important information in save network",
-					progress: 0,
-					detail: null
-				},
-				{
-					Url: "oni://www.filmlabtest9.com",
-					img: "https://i.loli.net/2019/11/18/tjBDFyKTpQsXuza.png",
-					title: "Block Chain filmlabtest9",
-					note:
-						"Used to query block information, transfer information, node information and other important information in save network",
-					progress: 0,
-					detail: null
-				}
-			]
+			plugins: []
 		};
 	},
 	mounted() {
 		this.getPluginsInfo();
 	},
 	methods: {
+		setIsShow(plugin) {
+			const localUrlPlugins = ipcRenderer.sendSync(
+				"getUsermeta",
+				"LocalUrlPlugins"
+			);
+			localUrlPlugins[plugin.Url] = plugin;
+			ipcRenderer.sendSync("setUsermeta", "Plugins", this.plugins);
+			ipcRenderer.sendSync("setUsermeta", "LocalUrlPlugins", localUrlPlugins);
+			this.sendPluginInfo();
+		},
 		sendPluginInfo() {
 			ipcRenderer.sendTo(
 				remote.getCurrentWindow().webContents.id,
@@ -125,7 +146,7 @@ export default {
 			);
 		},
 		async getPluginsInfo() {
-			const plugins = this.plugins;
+			const plugins = G_plugins; // todo  get from http request
 			const pluginInstaled = [];
 			// todo  修改结构
 			const localUrlPlugins = ipcRenderer.sendSync(
@@ -136,8 +157,13 @@ export default {
 			console.log(localUrlPlugins);
 			for (let i = 0; i < plugins.length; i++) {
 				let detail = await this.getTransferDetail(plugins[i].Url);
+				// set isShow
+				plugins[i].isShow = localUrlPlugins[plugins[i].Url]
+					? localUrlPlugins[plugins[i].Url].isShow
+					: false;
 				detail = detail.Result;
 				plugins[i].detail = detail;
+				this.$set(this.plugins, i, plugins[i]);
 				try {
 					if (plugins[i].detail) {
 						fs.statSync(detail.Path);
@@ -151,12 +177,10 @@ export default {
 				} catch (error) {
 					console.log("error");
 					console.log(error);
-					plugins[i].detail = null;
+					// plugins[i].detail = null;
 				}
 			}
 			try {
-				console.log("pluginInstaled is");
-				console.log(pluginInstaled);
 				ipcRenderer.sendSync("setUsermeta", "Plugins", pluginInstaled);
 				this.sendPluginInfo();
 			} catch (error) {}
@@ -190,6 +214,9 @@ export default {
 									}, 2000);
 								}
 							});
+					} else if (data.Status === 4) {
+						// task error
+						plugItem.detail = data;
 					} else {
 						// in processing
 						plugItem.detail = data;
@@ -208,14 +235,32 @@ export default {
 							"LocalUrlPlugins"
 						);
 						if (
-							plugins.every(item => {
-								return item.detail.Path !== plugItem.detail.Path;
+							!plugins.some(item => {
+								if (item.Url === plugItem.Url) {
+									item.detail = plugItem.detail;
+									// everytime we update plugin, we update url:plugin data as key:value to store in localUrlPlugins
+									localUrlPlugins[plugItem.Url].detail = plugItem.detail;
+									return true;
+								} else {
+									return false;
+								}
 							})
 						) {
 							plugins.push(plugItem);
 							// everytime we add plugin, we add url:plugin data as key:value to store in localUrlPlugins
 							localUrlPlugins[plugItem.Url] = plugItem;
+							localUrlPlugins[plugItem.Url].isShow = true;
 						}
+						// if (
+						// 	plugins.every(item => {
+						// 		return item.detail.Path !== plugItem.detail.Path;
+						// 	})
+						// ) {
+						// 	plugins.push(plugItem);
+						// 	// everytime we add plugin, we add url:plugin data as key:value to store in localUrlPlugins
+						// 	localUrlPlugins[plugItem.Url] = plugItem;
+						// 	localUrlPlugins[plugItem.Url].isShow = true;
+						// }
 						ipcRenderer.sendSync("setUsermeta", "Plugins", plugins);
 						ipcRenderer.sendSync(
 							"setUsermeta",
@@ -240,8 +285,6 @@ export default {
 							}
 						}
 						ipcRenderer.sendSync("setUsermeta", "Plugins", plugins);
-						console.log("localUrlPlugins is");
-						console.log(localUrlPlugins);
 						ipcRenderer.sendSync(
 							"setUsermeta",
 							"LocalUrlPlugins",
@@ -272,6 +315,20 @@ export default {
 						}, 2000);
 					} else {
 						console.log("emit loadErrorPage");
+					}
+				});
+		},
+		downloadPluginRetry(url, pluginItem) {
+			this.$axios
+				.post(this.$api.downloadRetry, {
+					Ids: [pluginItem.detail.Id]
+				})
+				.then(res => {
+					if (res.Error === 0) {
+						console.log("download retry");
+						setTimeout(() => {
+							this.loadPlugin(url, plugItem);
+						}, 2000);
 					}
 				});
 		},
@@ -316,11 +373,12 @@ export default {
 		padding: 5px;
 		font-size: 22px;
 		.card {
+			position: relative;
 			padding: 20px 10px;
 			text-align: center;
 			border-radius: 5px;
 			font-size: 16px;
-			height: 260px;
+			height: 100%;
 			@include themify {
 				color: $font-color;
 				background: $card-color;
@@ -341,6 +399,11 @@ export default {
 				margin-bottom: 8px;
 				overflow: hidden;
 				text-overflow: ellipsis;
+			}
+			.el-switch {
+				position: absolute;
+				right: 10px;
+				top: 20px;
 			}
 			.plugin-progress {
 				position: absolute;

@@ -51,6 +51,7 @@
 					<li
 						class="action-item"
 						v-for="item in pluginsInstalled"
+						v-show="item.isShow"
 						:key="item.Url"
 						@click="openNewWindow(item.Url)"
 					>
@@ -191,7 +192,7 @@ export default {
 		},
 		async getPlugins() {
 			const plugins = ipcRenderer.sendSync("getUsermeta", "Plugins");
-			console.log("getPlugins");
+			console.log('plugins is');
 			console.log(plugins);
 			const tempPluginsInstalled = [];
 			for (let i = 0; i < plugins.length; i++) {
@@ -199,6 +200,8 @@ export default {
 				// let detail = await this.getTransferDetail(item.Url);
 				// detail = detail.Result;
 				let detail = item.detail;
+				console.log('detail is');
+				console.log(detail);
 				try {
 					fs.statSync(detail.Path);
 					tempPluginsInstalled.push(item);

@@ -19,7 +19,7 @@ const DEFAULT_USERSUMMARY_CONFIG = {
       DNSAddress: '',
       PublicKey: '',
       Plugins: [],
-      LocalUrlPlugins:{}
+      LocalUrlPlugins: {}
     },
     modify: true
   },
@@ -53,11 +53,18 @@ class SeekLevelDB {
     const dbPath = path.join(g_seekLevelDB, dbName);
     this.db = levelup(leveldown(dbPath), (err) => {
       if (err) {
+        console.log('level failed!!');
         console.log(err);
       } else {
         console.log('level success!');
       }
     });
+    // try {
+    //   this.db = levelup(leveldown(dbPath))
+    // } catch (error) {
+    //   console.log('level error');
+    //   throw (error);
+    // }
   }
 
   updateData(key, value) {
@@ -230,6 +237,7 @@ function initDir(subDirname) {
     fs.mkdirSync(subPath, {
       recursive: true
     }, err => {
+      console.log('subdirname error');
       console.error(err);
     });
   }

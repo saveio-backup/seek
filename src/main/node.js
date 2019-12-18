@@ -8,23 +8,6 @@ import {
 import {
     DEFAULT_CHAINID
 } from './windowManager/defaultOption';
-// const seekDB = new SeekDB();
-// seekDB.getDB();
-
-// const logP = console.log;
-// const keyWords = ['ProductRegistryImpl.Registry', 'stdout'];
-// console.log = function (data, ...args) {
-//     if (typeof data === 'string') {
-//         if (keyWords.some(keyWord => {
-//                 return data.indexOf(keyWord) >= 0
-//             })) {
-//             return;
-//         }
-
-//     } else {
-//         logP(data, ...args)
-//     }
-// }
 const fs = require("fs")
 const path = require("path")
 const appRoot = require("app-root-dir").get()
@@ -269,7 +252,7 @@ const run = async (appDataPath, appName) => {
     try {
         chainId = await global.settingDB.queryData('ChainId');
     } catch (error) {
-        log.error("init database error", error)
+        console.error("init database error", error)
     }
     if (getPlatform() == "win") {
         const chainIdPath = `${appDataPath}/${appName}/config-${chainId}.json`;

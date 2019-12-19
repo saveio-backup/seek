@@ -447,7 +447,7 @@
 							>{{util.bytesToSize(item.UploadSize*1024 || item.DownloadSize*1024)}}/{{util.bytesToSize(fileObjById[detailId].FileSize * 1024)}}</div>
 						</li>
 					</template> -->
-					<template v-else-if="transferType === 2">
+					<template v-if="transferType === 2">
 						<li class="flex tr no-border">
 							<div class="node-name pr30">{{$t('fileManager.sourceNode')}}:</div>
 							<div>

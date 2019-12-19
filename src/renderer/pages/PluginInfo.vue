@@ -203,6 +203,10 @@ export default {
 					// task has exist
 					if (data.Status === 0) {
 						// but in Pause state
+						this.$message({
+							message: this.$t("plugin.startDownload"),
+							type: "success"
+						});
 						this.$axios
 							.post(this.$api.downloadResume, {
 								Ids: [data.Id]
@@ -302,6 +306,10 @@ export default {
 		},
 
 		downloadPlugin(url, plugItem) {
+			this.$message({
+				message: this.$t("plugin.startDownload"),
+				type: "success"
+			});
 			this.$axios
 				.post(this.$api.download, {
 					Url: url,
@@ -319,6 +327,10 @@ export default {
 				});
 		},
 		downloadPluginRetry(url, pluginItem) {
+			this.$message({
+				message: this.$t("plugin.startDownload"),
+				type: "success"
+			});
 			this.$axios
 				.post(this.$api.downloadRetry, {
 					Ids: [pluginItem.detail.Id]
@@ -327,7 +339,7 @@ export default {
 					if (res.Error === 0) {
 						console.log("download retry");
 						setTimeout(() => {
-							this.loadPlugin(url, plugItem);
+							this.loadPlugin(url, pluginItem);
 						}, 2000);
 					}
 				});

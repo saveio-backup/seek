@@ -118,17 +118,22 @@ function saveStreamProtocol(request, callback) {
 
   })
 
-  ipcMain.once('load-third-page', (event, result, fileName) => {
+  ipcMain.once('load-third-page', (event, result, fileName, id) => {
     try {
       const zip = new AdmZip(result)
       const parse = path.parse(result);
-      zip.extractAllTo(path.join(parse.dir));
+      const unzipTo = path.join(parse.dir, fileName + '_' + id)
+      zip.extractAllTo(unzipTo);
+      // console.log('unzip success, will load path is:');
+      // console.log(path.join(unzipTo, path.parse(fileName).name, pathname));
       callback({
         method: 'get',
-        path: path.join(parse.dir, path.parse(fileName).name, pathname)
+        path: path.join(unzipTo, path.parse(fileName).name, pathname)
       })
 
     } catch (error) {
+      // console.log('unzip error ');
+      // console.log(error);
       callback({
         method: 'get',
         path: path.join(__static, 'html/failed/blank.html')

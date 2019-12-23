@@ -86,7 +86,7 @@
 								>{{ scope.row.Name }}
 									<span
 										v-if="syncProcess(scope.row.Hash) > -1"
-										class="ml10 mr10 sync-process cursor-pointer cursor-click"
+										class="sync-process cursor-pointer"
 										@click.stop="openDetailDialogProcess(scope.row)"
 										:title="$t('fileManager.lookDetail')"
 									>
@@ -683,7 +683,9 @@ export default {
 		getFileLists() {
 			if (!this.switchToggle.load) return;
 			this.switchToggle.load = false; // if your are loading list now,  the switch will be set to false
-			let addr = `${this.addrAPI}${this.type}/${this.fileListData.length}/${this.limitCount}${this.addrAPI === this.$api.getFileList ? '/0' : ''}`
+			let addr = `${this.addrAPI}${this.type}/${this.fileListData.length}/${
+				this.limitCount
+			}${this.addrAPI === this.$api.getFileList ? "/0" : ""}`;
 			this.$axios
 				.get(addr)
 				.then(res => {
@@ -1206,15 +1208,15 @@ export default {
 		syncColor() {
 			const vm = this;
 			return function(Hash) {
-				if (!vm.syncObj[Hash]) return '#2F8FF0';
+				if (!vm.syncObj[Hash]) return "#2F8FF0";
 				let nodes = vm.syncObj[Hash].Nodes;
-				if (nodes.length === 1) return '#2F8FF0';
+				if (nodes.length === 1) return "#2F8FF0";
 				for (let value of nodes) {
 					if (value.Index === 0) continue;
-					if(value.State === 4) return '#E9566D';
+					if (value.State === 4) return "#E9566D";
 				}
-				return '#2F8FF0';
-			}
+				return "#2F8FF0";
+			};
 		}
 	},
 	beforeRouteEnter(to, from, next) {
@@ -1227,13 +1229,13 @@ export default {
 				vm.addrAPI = vm.$api.getDownloadFileList;
 			} else {
 				vm.addrAPI = vm.$api.getFileList;
-				vm.$store.dispatch('getSyncFileList');
+				vm.$store.dispatch("getSyncFileList");
 			}
 			vm.getFileLists();
 		});
 	},
 	beforeRouteLeave(to, from, next) {
-		this.$store.dispatch('clearIntervalSyncFileList');
+		this.$store.dispatch("clearIntervalSyncFileList");
 		next();
 	},
 	beforeRouteUpdate(to, from, next) {
@@ -1244,7 +1246,7 @@ export default {
 		next();
 	},
 	destroyed() {
-		this.$store.dispatch('clearIntervalSyncFileList');
+		this.$store.dispatch("clearIntervalSyncFileList");
 	}
 };
 </script>
@@ -1334,12 +1336,20 @@ $theme-color: #1b1e2f;
 			overflow-y: hidden;
 			.rowName {
 				.row-name {
+					position: relative;
+					white-space: nowrap;
+					overflow: hidden;
+					text-overflow: ellipsis;
 					min-height: 32px;
 					line-height: 32px;
+					padding-right:40px;
 
 					.sync-process {
-						position: relative;
+						position: absolute;
 						top: 6px;
+						right: 0px;
+						width:40px;
+						text-align: center;
 					}
 				}
 				.opera {

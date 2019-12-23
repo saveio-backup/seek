@@ -66,10 +66,6 @@ select {
     align-items: center;
 }
 
-.el-progress__text {
-    display: none !important;
-}
-
 .active-blue {
     color: #2F8FF0;
 }
@@ -91,20 +87,23 @@ select {
     }
 
     .dialog-title-border {
-        @include themify{
-            background-color:$table-border-color;
+        @include themify {
+            background-color: $table-border-color;
         }
+
         height: 1px;
         width: 100%;
         opacity: 0.1;
         margin-top: 18px;
     }
-    .el-input__inner{
-        @include themify{
-            border:none;
-            background:$color!important;
+
+    .el-input__inner {
+        @include themify {
+            border: none;
+            background: $color !important;
         }
     }
+
     .el-dialog__header {
         padding-top: 18px;
         user-select: none;
@@ -243,9 +242,10 @@ select {
 }
 
 .el-table {
-.el-table__header th{
-    @extend .primary-font-color;
-}
+    .el-table__header th {
+        @extend .primary-font-color;
+    }
+
     tr,
     td,
     th,
@@ -256,16 +256,31 @@ select {
         }
     }
 
+    td {
+
+        div,
+        span {
+            background-color: inherit;
+        }
+    }
+
     tr:hover>td {
+
+        div,
+        span {
+            background-color: inherit;
+        }
+
         @include themify {
             background-color: $table-hover-bg;
         }
     }
 
     td {
-        &.primary-font-color{
+        &.primary-font-color {
             @extend .primary-font-color;
         }
+
         @include themify {
             @extend .grey-color;
             border-bottom-color: $table-border-color;
@@ -374,6 +389,7 @@ select {
 .theme-bg {
     .el-input__inner {
         border: 1px solid rgba(4, 15, 57, 0.2);
+
         @include themify {
             background-color: $card-color;
             color: $font-color;
@@ -466,9 +482,10 @@ select {
     position: relative;
 
     .price-div-bg {
-        @include themify{
+        @include themify {
             color: $color;
         }
+
         position: absolute;
         top: 0px;
         right: -10px;
@@ -494,6 +511,7 @@ select {
         overflow: hidden;
     }
 }
-.el-date-range-picker__content.is-left{
-    border-right:none;
+
+.el-date-range-picker__content.is-left {
+    border-right: none;
 }

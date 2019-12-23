@@ -29,7 +29,7 @@
 				v-if="space"
 			>
 				<p class="tl aside-progress-num user-no-select"><i class="ofont ofont-yingpan"></i>{{util.bytesToSize(space.Used *1024)}} / {{util.bytesToSize((space.Remain + space.Used)*1024)}} </p>
-				<el-progress :percentage="takeSpace"></el-progress>
+				<el-progress :percentage="takeSpace" :show-text="false"></el-progress>
 				<p>
 					<router-link
 						class="active-blue ft12 link"

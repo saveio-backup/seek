@@ -106,7 +106,6 @@
 									class="file-progress flex1 ai-center mr10"
 									:class="{'progressAnimate': scope.row.State != 4 && scope.row.State != 0}"
 									:percentage="percentage(scope.row.UploadSize)"
-									:show-text="false"
 								></el-progress>
 								<!-- <div v-if="scope.row.State === 4">
 									<span class="light-error">

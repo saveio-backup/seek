@@ -131,6 +131,7 @@
 						class="page-load-progress"
 						:stroke-width='2'
 						:percentage="activeView.pageLoadProgress?activeView.pageLoadProgress * 100:0"
+						:show-text="false"
 					></el-progress>
 				</div>
 				<div

@@ -141,7 +141,7 @@ async function loadThirdPage(url, uuid, loadView) {
       loadView.pageLoadProgress = data.Progress; // set load progress
       try {
         fs.statSync(data.Path);
-        ipcRenderer.send('load-third-page', data.Path, data.FileName);
+        ipcRenderer.send('load-third-page', data.Path, data.FileName,data.Id);
         console.log('task finished!!!!');
       } catch (error) {
         console.error(`error ${error}`);

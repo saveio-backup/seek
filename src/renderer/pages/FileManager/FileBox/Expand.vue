@@ -7,6 +7,7 @@
 					<el-progress
 						:stroke-width="30"
 						:percentage="takeSpace"
+						:show-text="false"
 					></el-progress>
 				</div>
 				<ripper-button
@@ -147,7 +148,7 @@
 					</div>
 					<div class="adjust">
 						<div class="adjust-item">
-							<p class="adjust-title ftpx14">{{cost.TransferType === 2?$t('fileManager.pledgeRefund'):$t('fileManager.pledgePayment')}}:</p>
+							<p class="adjust-title ftpx14">{{cost.TransferType === 2?$t('fileManager.stakeRefund'):$t('fileManager.stakePayment')}}:</p>
 							<div class="adjust-info ftpx14">
 								<div v-if="cost.TransferType !== 2">
 									{{cost.FeeFormat?util.effectiveNumber(cost.FeeFormat):0}} ONI

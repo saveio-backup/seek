@@ -51,6 +51,7 @@
 							class="plugin-progress"
 							:percentage="Math.ceil(plugin.detail.Progress * 100)"
 							:stroke-width="2"
+							:show-text="false"
 						></el-progress>
 					</div>
 				</li>
@@ -170,6 +171,7 @@ export default {
 						pluginInstaled.push(plugins[i]);
 					} else if (localUrlPlugins[plugins[i].Url]) {
 						// need update
+						fs.statSync(localUrlPlugins[plugins[i].Url].detail.Path); // check if path exist in localUrlplugins
 						plugins[i].detail = localUrlPlugins[plugins[i].Url].detail;
 						plugins[i].detail.Status = 5;
 						pluginInstaled.push(plugins[i]);
@@ -177,7 +179,7 @@ export default {
 				} catch (error) {
 					console.log("error");
 					console.log(error);
-					// plugins[i].detail = null;
+					plugins[i].detail = null;
 				}
 			}
 			try {

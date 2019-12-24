@@ -580,7 +580,6 @@ export default {
 		circleProgress
 	},
 	mounted() {
-		// window.vue = this;
 		this.page = this.$route.query.page || "filebox";
 		this.$nextTick(() => {
 			if (this.page == "filebox") {
@@ -1342,13 +1341,13 @@ $theme-color: #1b1e2f;
 					text-overflow: ellipsis;
 					min-height: 32px;
 					line-height: 32px;
-					padding-right:40px;
+					padding-right: 40px;
 
 					.sync-process {
 						position: absolute;
 						top: 6px;
 						right: 0px;
-						width:40px;
+						width: 40px;
 						text-align: center;
 					}
 				}

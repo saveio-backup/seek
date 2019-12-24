@@ -250,6 +250,7 @@ select {
     td,
     th,
     & {
+        transition-duration:0s!important;
         @include themify {
             // @extend .grey-color;
             background-color: $color;
@@ -258,17 +259,24 @@ select {
 
     td {
 
-        div,
-        span {
-            background-color: inherit;
+
+        span.row-name,
+        span.sync-process {
+            @include themify {
+                // @extend .grey-color;
+                background-color: $color;
+            }
         }
     }
 
     tr:hover>td {
 
-        div,
-        span {
-            background-color: inherit;
+        span.row-name,
+        span.sync-process {
+            @include themify {
+                background-color: $table-hover-bg;
+            }
+
         }
 
         @include themify {

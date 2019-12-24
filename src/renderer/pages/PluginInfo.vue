@@ -62,17 +62,18 @@
 <script>
 import { ipcRenderer, remote } from "electron";
 import fs from "fs";
+window.remote = remote;
 const G_plugins = [
-	{
-		Url: "oni://www.filmlabbeta.com",
-		icon: "FS",
-		img: "https://i.loli.net/2019/11/18/tjBDFyKTpQsXuza.png",
-		title: "filmlabbeta",
-		note:
-			"filmlabbeta test, transfer information, node information and other important information in save network",
-		progress: 0,
-		detail: null
-	},
+	// {
+	// 	Url: "oni://www.filmlabbeta.com",
+	// 	icon: "FS",
+	// 	img: "https://i.loli.net/2019/11/18/tjBDFyKTpQsXuza.png",
+	// 	title: "filmlabbeta",
+	// 	note:
+	// 		"filmlabbeta test, transfer information, node information and other important information in save network",
+	// 	progress: 0,
+	// 	detail: null
+	// },
 	{
 		Url: "oni://www.explorer.com",
 		icon: "DNS",
@@ -80,42 +81,6 @@ const G_plugins = [
 		title: "explorer",
 		note:
 			"Explorer test, Explorer test, Explorer test, Explorer test, Explorer test.",
-		progress: 0,
-		detail: null
-	},
-	{
-		Url: "oni://www.filmlabtest12.com",
-		img: "https://i.loli.net/2019/11/18/tjBDFyKTpQsXuza.png",
-		title: "Block Chain filmlabtest12",
-		note:
-			"Used to query block information, transfer information, node information and other important information in save network",
-		progress: 0,
-		detail: null
-	},
-	{
-		Url: "oni://www.filmlabtest11.com",
-		img: "https://i.loli.net/2019/11/18/tjBDFyKTpQsXuza.png",
-		title: "Block Chain filmlabtest11",
-		note:
-			"Used to query block information, transfer information, node information and other important information in save network",
-		progress: 0,
-		detail: null
-	},
-	{
-		Url: "oni://www.filmlabtest10.com",
-		img: "https://i.loli.net/2019/11/18/tjBDFyKTpQsXuza.png",
-		title: "Block Chain filmlabtest10",
-		note:
-			"Used to query block information, transfer information, node information and other important information in save network",
-		progress: 0,
-		detail: null
-	},
-	{
-		Url: "oni://www.filmlabtest9.com",
-		img: "https://i.loli.net/2019/11/18/tjBDFyKTpQsXuza.png",
-		title: "Block Chain filmlabtest9",
-		note:
-			"Used to query block information, transfer information, node information and other important information in save network",
 		progress: 0,
 		detail: null
 	}
@@ -232,8 +197,7 @@ export default {
 					}
 				} else if (data.Progress >= 1) {
 					// task has finished
-					try {
-						fs.statSync(data.Path);
+					if (fs.existsSync(data.Path)) {
 						plugItem.detail = data;
 						const plugins = ipcRenderer.sendSync("getUsermeta", "Plugins");
 						const localUrlPlugins = ipcRenderer.sendSync(
@@ -257,16 +221,6 @@ export default {
 							localUrlPlugins[plugItem.Url] = plugItem;
 							localUrlPlugins[plugItem.Url].isShow = true;
 						}
-						// if (
-						// 	plugins.every(item => {
-						// 		return item.detail.Path !== plugItem.detail.Path;
-						// 	})
-						// ) {
-						// 	plugins.push(plugItem);
-						// 	// everytime we add plugin, we add url:plugin data as key:value to store in localUrlPlugins
-						// 	localUrlPlugins[plugItem.Url] = plugItem;
-						// 	localUrlPlugins[plugItem.Url].isShow = true;
-						// }
 						ipcRenderer.sendSync("setUsermeta", "Plugins", plugins);
 						ipcRenderer.sendSync(
 							"setUsermeta",
@@ -275,7 +229,7 @@ export default {
 						);
 						this.sendPluginInfo();
 						window.open(url);
-					} catch (error) {
+					} else {
 						const plugins = ipcRenderer.sendSync("getUsermeta", "Plugins");
 						const localUrlPlugins = ipcRenderer.sendSync(
 							"getUsermeta",

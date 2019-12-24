@@ -630,7 +630,7 @@ export default {
 				{
 					Id: "c3c94084-b8bf-11e9-837c-74e5f93a476b",
 					FileHash: "QmdUW37NcoT4YdkjgPinNFFT6CGHLRRcXQ5SNzrLqT123123JVpd",
-					FileName: "传输管理.png",
+					FileName: "mock_传输管理.png",
 					Type: 2,
 					Status: 2,
 					DetailStatus: 5,

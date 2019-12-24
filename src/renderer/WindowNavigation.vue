@@ -250,7 +250,6 @@ export default {
 		let activeView = (remote.getCurrentWindow().views || []).find(
 			view => view.isActive
 		);
-		window.vue = this;
 		return {
 			isMaximized: true,
 			platform: remote.process.platform,
@@ -432,7 +431,6 @@ $tabs-height: 62px;
 			.favicon {
 				width: 16px;
 				height: 16px;
-				padding-left: 10px;
 			}
 			.window-tab-item-title {
 				flex: 1;

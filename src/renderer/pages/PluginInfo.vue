@@ -18,7 +18,7 @@
 							alt="save"
 						>
 						<h3>{{plugin.title}}</h3>
-						<p>{{plugin.note}}</p>
+						<p :title="plugin.note[lang]">{{plugin.note[lang]}}</p>
 						<div v-if="plugin.detail">
 							<ripper-button
 								class="primary"
@@ -78,9 +78,13 @@ const G_plugins = [
 		Url: "oni://www.explorer.com",
 		icon: "DNS",
 		img: "https://i.loli.net/2019/11/18/tjBDFyKTpQsXuza.png",
-		title: "explorer",
-		note:
-			"Explorer test, Explorer test, Explorer test, Explorer test, Explorer test.",
+		title: "Explorer",
+		note: {
+			en:
+				"ONI Explorer is a plug-in that queries ONI block, transaction, ONI token, wallet, storage space and other information, and updates all ONI node information in real time.",
+			zh:
+				"ONI区块浏览器是一个查询ONI区块、交易、ONI代币、钱包、存储空间等信息的插件,实时同步更新ONI所有节点信息"
+		},
 		progress: 0,
 		detail: null
 	}
@@ -93,6 +97,11 @@ export default {
 	},
 	mounted() {
 		this.getPluginsInfo();
+	},
+	computed: {
+		lang: function() {
+			return this.$i18n.locale;
+		}
 	},
 	methods: {
 		setIsShow(plugin) {

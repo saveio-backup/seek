@@ -1315,7 +1315,9 @@ $theme-color: #1b1e2f;
 				.el-input__icon {
 					line-height: 34px;
 					font-size: 1.6rem;
-					@extend .theme-font-color;
+					@include themify{
+						color: $tertiary-font-color;
+					}
 				}
 			}
 		}

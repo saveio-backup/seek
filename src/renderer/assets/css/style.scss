@@ -250,7 +250,8 @@ select {
     td,
     th,
     & {
-        transition-duration:0s!important;
+        transition-duration: 0s !important;
+
         @include themify {
             // @extend .grey-color;
             background-color: $color;
@@ -290,7 +291,7 @@ select {
         }
 
         @include themify {
-            @extend .grey-color;
+            color: $tertiary-font-color;
             border-bottom-color: $table-border-color;
         }
     }
@@ -407,7 +408,10 @@ select {
 
 .el-input__inner::placeholder {
     font-weight: 400;
-    @extend .grey-color;
+
+    @include themify {
+        color: $tertiary-font-color;
+    }
 }
 
 .grey-theme {

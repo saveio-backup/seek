@@ -456,7 +456,7 @@
 									v-for="(item, index) in fileDetailNodes"
 									:key="item.HostAddr"
 								>
-									<div class="node-content-first ft14 theme-font-blue-70">
+									<div class="node-content-first ft14">
 										{{$t('fileManager.node')}}{{index+1}}
 									</div>
 									<div class="node-content-second ">

@@ -113,7 +113,7 @@
 							></el-progress>
 							<span
 								v-if="isSync"
-								class="ft12 theme-font-blue-70 syncing"
+								class="ft12 syncing"
 							>
 								{{$t('window.syncing')}}
 							</span>

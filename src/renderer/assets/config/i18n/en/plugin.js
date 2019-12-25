@@ -4,7 +4,7 @@ const result = {
   'retry':'Retry',
   'startDownload':'Start download',
   'installing': 'Installing',
-  'update': 'update'
+  'update': 'Update'
 }
 
 export default result;

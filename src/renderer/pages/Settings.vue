@@ -10,7 +10,7 @@
 			<div class="settings-box">
 				<div class="tag">
 					<span>{{$t('settings.chainEnvironment')}}</span>
-					<div class="dark-grey">{{$t('settings.selectChainEnvironment')}}</div>
+					<div class="tertiary-font-color">{{$t('settings.selectChainEnvironment')}}</div>
 				</div>
 				<el-select
 					v-model="settings.ChainId"
@@ -89,7 +89,7 @@
 					<p>{{$t('settings.downloadPath')}}</p>
 					<p
 						:title="pathDir.DownloadPath"
-						class="pathdir dark-grey"
+						class="pathdir tertiary-font-color"
 					>{{pathDir.DownloadPath}}</p>
 				</div>
 				<el-button @click="setDir('DownloadPath')">{{$t('settings.change')}}</el-button>

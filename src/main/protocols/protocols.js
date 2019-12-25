@@ -7,6 +7,7 @@ import {
   getCurrentView,
   getActive
 } from '../windowManager/index'
+import log from 'electron-log';
 import path from 'path';
 import AdmZip from 'adm-zip';
 import dnsErrorPage from '../../../static/html/failed/dnsError.js';
@@ -46,6 +47,7 @@ app.on('ready', () => {
   }
   protocol.registerFileProtocol('oni', saveStreamProtocol, err => {
     if (err) throw new Error('Failed to create protocol: seek. ' + err)
+    log.error('Failed to create protocol: seek. ' + err);
   })
 })
 
@@ -91,6 +93,7 @@ function saveStreamProtocol(request, callback) {
   contents.thirdPageLists = contents.thirdPageLists ? contents.thirdPageLists : [];
 
   // Load a new third-party page the time you were loading previous third-party page, you must cancel previous task.
+  // !! warn !! this section may occur errors
   if (contents.thirdPageLists.length >= 1) {
     getCurrentView.browserWindow.webContents.send('will-cancel-downloadpage', protocol + `//${contents.thirdPageLists[contents.thirdPageLists.length-1].host}`);
     ipcMain.removeAllListeners([contents.thirdPageLists[contents.thirdPageLists.length - 1].thirdpageUid + '-loadErrorPage'])
@@ -126,6 +129,7 @@ function saveStreamProtocol(request, callback) {
       zip.extractAllTo(unzipTo);
       // console.log('unzip success, will load path is:');
       // console.log(path.join(unzipTo, path.parse(fileName).name, pathname));
+      log.info('load-third-page at first');
       callback({
         method: 'get',
         path: path.join(unzipTo, path.parse(fileName).name, pathname)
@@ -134,6 +138,8 @@ function saveStreamProtocol(request, callback) {
     } catch (error) {
       // console.log('unzip error ');
       // console.log(error);
+      log.error('load-third-page error:');
+      log.error(error);
       callback({
         method: 'get',
         path: path.join(__static, 'html/failed/blank.html')
@@ -147,6 +153,11 @@ function saveStreamProtocol(request, callback) {
   }) => {
     console.log('on loadErrorPage');
     try {
+      log.info('load-third-page in -loadErrorPage');
+      log.info('load-third-page errorCode is');
+      log.info(errorCode);
+      log.info('load-third-page note is');
+      log.info(note);
       callback({
         method: 'get',
         path: path.join(__static, 'html/failed/blank.html')
@@ -156,4 +167,16 @@ function saveStreamProtocol(request, callback) {
       console.log(error);
     }
   })
+}
+
+function detachListener(content, urlFormat) {
+  const {
+    protocol,
+    host,
+    search,
+    hash
+  } = urlFormat;
+  getCurrentView.browserWindow.webContents.send('will-cancel-downloadpage', protocol + `//${contents.thirdPageLists[contents.thirdPageLists.length-1].host}`);
+  ipcMain.removeAllListeners([contents.thirdPageLists[contents.thirdPageLists.length - 1].thirdpageUid + '-loadErrorPage'])
+  contents.thirdPageLists.pop();
 }

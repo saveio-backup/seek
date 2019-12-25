@@ -134,6 +134,10 @@ export default {
 					if (plugins[i].detail) {
 						fs.statSync(detail.Path);
 						pluginInstaled.push(plugins[i]);
+						// if plugin loaded from 'Enter address to load', we should update LocalUrlPlugins
+						localUrlPlugins[plugins[i].Url] = localUrlPlugins[plugins[i].Url]
+							? localUrlPlugins[plugins[i].Url]
+							: plugins[i];
 					} else if (localUrlPlugins[plugins[i].Url]) {
 						// need update
 						fs.statSync(localUrlPlugins[plugins[i].Url].detail.Path); // check if path exist in localUrlplugins
@@ -149,6 +153,7 @@ export default {
 			}
 			try {
 				ipcRenderer.sendSync("setUsermeta", "Plugins", pluginInstaled);
+				ipcRenderer.sendSync("setUsermeta", "LocalUrlPlugins", localUrlPlugins);
 				this.sendPluginInfo();
 			} catch (error) {}
 		},
@@ -227,8 +232,8 @@ export default {
 							"LocalUrlPlugins",
 							localUrlPlugins
 						);
-						this.sendPluginInfo();
 						window.open(url);
+						this.sendPluginInfo();
 					} else {
 						const plugins = ipcRenderer.sendSync("getUsermeta", "Plugins");
 						const localUrlPlugins = ipcRenderer.sendSync(

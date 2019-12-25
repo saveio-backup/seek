@@ -105,6 +105,19 @@ function currentView() {
 
 async function loadThirdPage(url, uuid, loadView) {
   let detail = null;
+  const localUrlPlugins = ipcRenderer.sendSync(
+    "getUsermeta",
+    "LocalUrlPlugins"
+  );
+  let {
+    Path,
+    FileName,
+    Id
+  } = localUrlPlugins[url].detail
+  if (fs.existsSync(Path)) {
+    ipcRenderer.send('load-third-page', Path, FileName, Id);
+    return;
+  }
   try {
     detail = await getTransferDetail(url);
   } catch (error) {
@@ -141,7 +154,7 @@ async function loadThirdPage(url, uuid, loadView) {
       loadView.pageLoadProgress = data.Progress; // set load progress
       try {
         fs.statSync(data.Path);
-        ipcRenderer.send('load-third-page', data.Path, data.FileName,data.Id);
+        ipcRenderer.send('load-third-page', data.Path, data.FileName, data.Id);
         console.log('task finished!!!!');
       } catch (error) {
         console.error(`error ${error}`);
@@ -164,6 +177,7 @@ async function loadThirdPage(url, uuid, loadView) {
 }
 
 async function cancelDownload(url) {
+  console.log('cancelDownload');
   let detail = null;
   try {
     detail = await getTransferDetail(url);
@@ -210,8 +224,6 @@ function getTransferDetail(url) {
   const hexUrl = ipcRenderer.sendSync('string-to-hex', url);
   return new Promise((resolve, reject) => {
     axios.get(api.transferDetail + `/3/${hexUrl}`).then(res => {
-      console.log('get transferDetail is!!');
-      console.log(res);
       resolve(res);
     }).catch(err => {
       reject(err);
@@ -226,4 +238,5 @@ function uniqId() {
 process.once('loaded', () => {
   console.log('loaded');
   global.Seek = Seek;
+  // global.ipcRenderer = ipcRenderer;
 })

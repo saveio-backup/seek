@@ -32,7 +32,7 @@ const DEFAULT_USERSUMMARY_CONFIG = {
       maxPeerNum: 20,
       ChainId: DEFAULT_CHAINID,
       lang: 'en',
-      themeColor: 'light'
+      themeColor: 'dark'
     },
     modify: true
   },

@@ -1,19 +1,21 @@
 <template>
 	<div
 		id="menu-window"
-		:style="computedStyle"
 		@mouseleave="hiddenDialog"
 	>
 		<!-- MenuWindow -->
-		<div @mouseenter="hiddenDialog">
+		<div
+			@mouseenter="hiddenDialog"
+			style="padding:3px"
+		>
 			<div
-				class="syncInfo"
+				class="syncInfo box-shadow"
 				v-if="menuid === 'syncInfo'"
 			>
 				<sync-info></sync-info>
 			</div>
 			<div
-				class="state"
+				class="state box-shadow"
 				v-if="menuid === 'state'"
 			>
 				<state-info></state-info>
@@ -40,6 +42,7 @@ export default {
 		pluginInfo
 	},
 	mounted() {
+		document.querySelector("body").style.background = "transparent";
 		this.eventListener();
 	},
 	data() {
@@ -74,7 +77,9 @@ export default {
 			this.currentWindow.getParentWindow().menuWindow.openMenu(params);
 		},
 		hiddenDialog() {
-			this.currentWindow.getParentWindow().menuWindow.hiddenMenu('hide from menuWindow.vue');
+			this.currentWindow
+				.getParentWindow()
+				.menuWindow.hiddenMenu("hide from menuWindow.vue");
 		}
 	}
 };
@@ -83,7 +88,8 @@ export default {
 #menu-window {
 	width: 100%;
 	height: 100%;
-	padding: 15px;
+	padding: 0px;
+	background: transparent;
 	& > div {
 		width: 100%;
 		height: 100%;
@@ -91,6 +97,12 @@ export default {
 		& > div {
 			width: 100%;
 			height: 100%;
+		}
+	}
+	.box-shadow {
+		@include themify {
+			box-shadow: $pop-menu-shadow;
+			background-color: $content-block-bg;
 		}
 	}
 }

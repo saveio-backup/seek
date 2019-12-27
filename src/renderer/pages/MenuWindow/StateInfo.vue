@@ -88,9 +88,11 @@ export default {
 </script>
 <style lang="scss">
 .stateInfoWrappper {
-	padding: 10px 20px;
+	padding: 15px;
+	width: 100%;
+	height:100%;
 	li {
-		margin-top: 10px;
+		padding-top: 10px;
 		.process-status {
 			position: relative;
 			margin-right: 7px;

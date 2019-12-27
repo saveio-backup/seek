@@ -192,16 +192,12 @@ export default {
 		},
 		async getPlugins() {
 			const plugins = ipcRenderer.sendSync("getUsermeta", "Plugins");
-			console.log('plugins is');
-			console.log(plugins);
 			const tempPluginsInstalled = [];
 			for (let i = 0; i < plugins.length; i++) {
 				const item = plugins[i];
 				// let detail = await this.getTransferDetail(item.Url);
 				// detail = detail.Result;
 				let detail = item.detail;
-				console.log('detail is');
-				console.log(detail);
 				try {
 					fs.statSync(detail.Path);
 					tempPluginsInstalled.push(item);
@@ -260,13 +256,6 @@ export default {
 					}
 				},
 				{
-					label: that.$t("window.logOut"),
-					// visible: new Boolean(user.name),
-					click() {
-						that.logout();
-					}
-				},
-				{
 					label: that.$t("window.settings"),
 					click() {
 						that.remoteOpenComponent("settings");
@@ -276,6 +265,16 @@ export default {
 					label: that.$t("window.version"),
 					click() {
 						that.showVersion();
+					}
+				},
+				{
+					type: "separator"
+				},
+				{
+					label: that.$t("window.logOut"),
+					// visible: new Boolean(user.name),
+					click() {
+						that.logout();
 					}
 				}
 			];

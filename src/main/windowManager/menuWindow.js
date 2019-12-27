@@ -12,6 +12,7 @@ export default class MenuWindow {
     this.win = new BrowserWindow({
       parent: parentWindow,
       frame: false,
+      transparent:true,
       resizable: false,
       maximizable: false,
       show: false,
@@ -53,8 +54,8 @@ export default class MenuWindow {
       let parentBounds = this.parentWindow.getBounds();
       this.win.webContents.send('setMenuDialog', params);
       this.win.setBounds({
-        x: parentBounds.x + parentBounds.width - 230,
-        y: parentBounds.y + Y_POSITION - 5,
+        x: parentBounds.x + parentBounds.width - 235,
+        y: parentBounds.y + Y_POSITION + 5,
         width: 230,
         height: 90
       })
@@ -65,8 +66,8 @@ export default class MenuWindow {
       let parentBounds = this.parentWindow.getBounds();
       this.win.webContents.send('setMenuDialog', params);
       this.win.setBounds({
-        x: parentBounds.x + 30,
-        y: parentBounds.y - 170 + parentBounds.height,
+        x: parentBounds.x + 45,
+        y: parentBounds.y - 175 + parentBounds.height,
         width: 240,
         height: 170
       })

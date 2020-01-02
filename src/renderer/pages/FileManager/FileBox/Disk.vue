@@ -245,7 +245,7 @@
 					</el-table-column>
 					<div
 						slot="append"
-						v-show="switchToggle.showloading"
+						v-show="switchToggle.showLoading"
 						class="loading text-center transparent mt20 mb20"
 					>
 						<i class="el-icon-loading"></i>

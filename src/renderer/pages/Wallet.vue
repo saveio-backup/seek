@@ -430,6 +430,7 @@ export default {
 				loadSwitch: true,
 				receiveDialog: false,
 				sendDialog: false,
+				showLoading: false,
 				assetDialog: false
 			},
 			txDetailIndex: -1,

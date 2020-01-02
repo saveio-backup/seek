@@ -97,6 +97,9 @@ class Seek {
       })
     })
   }
+  static getLangSettings(){
+    return ipcRenderer.sendSync("getSettings", "lang");
+  }
 }
 
 function currentView() {

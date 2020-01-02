@@ -243,6 +243,13 @@
 							</span>
 						</template>
 					</el-table-column>
+					<div
+						slot="append"
+						v-show="switchToggle.showloading"
+						class="loading text-center transparent mt20 mb20"
+					>
+						<i class="el-icon-loading"></i>
+					</div>
 				</el-table>
 			</div>
 		</div>
@@ -559,7 +566,8 @@ export default {
 				confrimDownloadDialog: false,
 				deleteDialog: false,
 				noStorageDialog: false,
-				load: true
+				load: true,
+				showLoading: false
 			},
 			page: "",
 			addrAPI: "",
@@ -682,6 +690,7 @@ export default {
 		getFileLists() {
 			if (!this.switchToggle.load) return;
 			this.switchToggle.load = false; // if your are loading list now,  the switch will be set to false
+			this.switchToggle.showLoading = true;
 			let addr = `${this.addrAPI}${this.type}/${this.fileListData.length}/${
 				this.limitCount
 			}${this.addrAPI === this.$api.getFileList ? "/0" : ""}`;
@@ -719,6 +728,9 @@ export default {
 				.catch(err => {
 					console.error(err);
 					this.switchToggle.load = true;
+				})
+				.finally(() => {
+					this.switchToggle.showLoading = false;
 				});
 		},
 		shareFile(file) {
@@ -1315,7 +1327,7 @@ $theme-color: #1b1e2f;
 				.el-input__icon {
 					line-height: 34px;
 					font-size: 1.6rem;
-					@include themify{
+					@include themify {
 						color: $tertiary-font-color;
 					}
 				}

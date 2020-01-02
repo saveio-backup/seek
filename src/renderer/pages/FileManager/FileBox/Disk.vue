@@ -556,6 +556,7 @@ export default {
 					}
 				]
 			},
+			// fileListDataAll: [], // include waitfor upload list adn fileListData;
 			fileListData: [],
 			privilegeConfig: ["Private", "Public", "Whitelist"],
 			fileSelected: [],
@@ -706,14 +707,15 @@ export default {
 									item.Url !== "" && item.Url !== undefined ? false : true;
 								return item;
 							});
-							if (!this.fileListData || this.fileListData.length === 0) {
-								this.fileListData = this.fileListData.concat(
-									this.waitForUploadList
-								);
-							}
-							// console.log(this.fileListData);
-							// console.log(this.waitForUploadList);
+							// if (!this.fileListData || this.fileListData.length === 0) {
+							// 	this.fileListDataAll = this.fileListData.concat(
+							// 		this.waitForUploadList
+							// 	);
+							// }
 							this.fileListData = this.fileListData.concat(result);
+							// update sync file limit;
+							let _limit = this.fileListData.length;
+							this.$store.dispatch("getSyncFileList", _limit);
 						} else {
 							this.switchToggle.load = false;
 							return;
@@ -1164,8 +1166,8 @@ export default {
 			return this.$store.state.Home.channelBind;
 		},
 		filterListData() {
-			const fileListData = this.fileListData;
-			return fileListData.filter(item => {
+			const fileListDataAll = this.fileListDataAll;
+			return fileListDataAll.filter(item => {
 				item.StoreTypeNum = -item.StoreType;
 				return item.Name.indexOf(this.filterInput) >= 0;
 			});
@@ -1228,6 +1230,10 @@ export default {
 				}
 				return "#2F8FF0";
 			};
+		},
+		// include waitfor upload list adn fileListData;
+		fileListDataAll() {
+			return this.waitForUploadList.concat(this.fileListData);
 		}
 	},
 	beforeRouteEnter(to, from, next) {
@@ -1240,7 +1246,8 @@ export default {
 				vm.addrAPI = vm.$api.getDownloadFileList;
 			} else {
 				vm.addrAPI = vm.$api.getFileList;
-				vm.$store.dispatch("getSyncFileList");
+				let _limit = vm.fileListData.length + vm.limitCount;
+				vm.$store.dispatch("getSyncFileList", _limit);
 			}
 			vm.getFileLists();
 		});

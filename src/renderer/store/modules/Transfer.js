@@ -30,7 +30,8 @@ const state = {
         pausing: [],
         uploading: []
     },
-    syncList: []
+    syncList: [],
+    syncListLimit: 0
 }
 const mutations = {
     GET_DOWNLOAD_TRANSFER(state, result) {
@@ -288,6 +289,9 @@ const mutations = {
     },
     SET_SYNC_LIST(state, result) {
         state.syncList = result;
+    },
+    SET_SYNC_LIST_LIMIT(state, result) {
+        state.syncListLimit = result;
     }
 
 }
@@ -378,33 +382,19 @@ const actions = {
         })();
     },
     getSyncFileList({
-        commit
-    }) {
-        // return;
-        clearInterval(syncFileTimer);
-        syncFileRequest.bind(this, commit)();
-        syncFileTimer = setInterval(() => {
-            syncFileRequest.bind(this, commit)();
-        }, 3000)
+        commit,
+        state
+    }, limit) {
+        commit('SET_SYNC_LIST_LIMIT', limit);
+        // clearInterval(syncFileTimer);
+        syncFileRequest.bind(this, commit, limit)();
+        // syncFileTimer = setInterval(() => {
+            // syncFileRequest.bind(this, commit, state.syncListLimit)();
+        // }, 3000)
     },
     clearIntervalSyncFileList() {
         clearInterval(syncFileTimer);
     }
-    // clearIntervalgetUpload({
-    //     commit
-    // }) {
-    //     transferClear(uploadTimer);
-    // },
-    // clearIntervalSetDownload({
-    //     commit
-    // }) {
-    //     transferClear(downloadTimer);
-    // },
-    // clearIntervalgetComplete({
-    //     commit
-    // }) {
-    //     transferClear(completeTimer);
-    // }
 }
 
 function completeTransferListRequest(commit) {
@@ -442,7 +432,6 @@ function toDownloadTransferListRequest({
     res
 }) {
     if (res.Error === 0) {
-        // this.dispatch('getComplete');
         const result = res.Result.Transfers;
         if (res.Result.IsTransfering) {} else {
             // transferClear(downloadTimer);
@@ -492,12 +481,17 @@ function toUploadTransferListRequest({
     }
 }
 
-function syncFileRequest(commit) {
-    axios.get(api.getFileList + '0/0/0/1').then(res => {
+function syncFileRequest(commit, limit) {
+    clearTimeout(syncFileTimer);
+    axios.get(api.getFileList + `0/0/${limit}/1`).then(res => {
         if (res.Error === 0) {
             commit('SET_SYNC_LIST', res.Result);
         }
-    });
+    }).finally(() => {
+        syncFileTimer = setTimeout(() => {
+            syncFileRequest(commit, limit);
+        }, 3000)
+    })
 }
 export default {
     state,

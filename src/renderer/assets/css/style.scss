@@ -70,6 +70,10 @@ select {
     color: #2F8FF0;
 }
 
+.loading-img {
+    animation: rotating 2s linear infinite;
+}
+
 @mixin active-blue {
     color: #2F8FF0;
 }

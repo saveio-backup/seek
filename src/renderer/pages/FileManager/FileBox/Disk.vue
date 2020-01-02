@@ -248,7 +248,8 @@
 						v-show="switchToggle.showLoading"
 						class="loading text-center transparent mt20 mb20"
 					>
-						<i class="el-icon-loading"></i>
+						<!-- <i class="el-icon-loading"></i> -->
+						<img class="loading-img" src="../../../assets/images/loading.png" alt="loading..">
 					</div>
 				</el-table>
 			</div>

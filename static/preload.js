@@ -100,6 +100,9 @@ class Seek {
   static getLangSettings() {
     return ipcRenderer.sendSync("getSettings", "lang");
   }
+  static getConfigByKey(key) {
+    return ipcRenderer.sendSync("getConfigByKey", key);
+  }
 }
 
 function currentView() {

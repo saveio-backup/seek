@@ -369,7 +369,11 @@ const run = async (appDataPath, appName) => {
                 console.log('edge restart catch---->', e)
             }
         }, 1000)
-    })
+    });
+    // get config.json value by key
+    ipcMain.on('getConfigByKey', (event, params) => {
+        event.returnValue = cacheRestartObj.cfgObj.Base[params];
+    });
 }
 
 // setFrontConfig,

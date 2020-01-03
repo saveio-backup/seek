@@ -97,7 +97,11 @@
 				>
 					<template slot-scope="scope">
 						<div class="ftpx16">
-							<i class="ofont ofont-wangye" :title="$t('fileManager.thirdPartyWebsitesResources')" v-if="scope.row.Url.startsWith('oni://www')"></i>
+							<i
+								class="ofont ofont-wangye"
+								:title="$t('fileManager.thirdPartyWebsitesResources')"
+								v-if="scope.row.Url.startsWith('oni://www')"
+							></i>
 						</div>
 					</template>
 				</el-table-column>
@@ -109,9 +113,18 @@
 					<template slot-scope="scope">
 						<div class="ftpx14">
 							<p class="theme-font-color">{{scope.row.FileName}}</p>
-							<p class="grey-xs" v-if="transferType === 2">{{util.bytesToSize(scope.row.DownloadSize * 1024 || 0)}}/{{util.bytesToSize(scope.row.FileSize * 1024)}}</p>
-							<p class="grey-xs" v-else-if="transferType === 1">{{util.bytesToSize(scope.row.UploadSize * 1024 || 0)}}/{{util.bytesToSize(scope.row.FileSize * 1024)}}</p>
-							<p class="grey-xs" v-else>{{util.bytesToSize(scope.row.FileSize * 1024)}}</p>
+							<p
+								class="grey-xs"
+								v-if="transferType === 2"
+							>{{util.bytesToSize(scope.row.DownloadSize * 1024 || 0)}}/{{util.bytesToSize(scope.row.FileSize * 1024)}}</p>
+							<p
+								class="grey-xs"
+								v-else-if="transferType === 1"
+							>{{util.bytesToSize(scope.row.UploadSize * 1024 || 0)}}/{{util.bytesToSize(scope.row.FileSize * 1024)}}</p>
+							<p
+								class="grey-xs"
+								v-else
+							>{{util.bytesToSize(scope.row.FileSize * 1024)}}</p>
 						</div>
 					</template>
 				</el-table-column>
@@ -430,8 +443,8 @@
 							:key="item.HostAddr"
 						>
 							<div class="node-name pr30">{{$t('fileManager.node')}}{{index+1}}:</div> -->
-							<!-- more-than-5 class: gt text color is white lt text color is #202020-->
-							<!-- <div class="node-process">
+					<!-- more-than-5 class: gt text color is white lt text color is #202020-->
+					<!-- <div class="node-process">
 								<el-progress
 									:text-inside="true"
 									:stroke-width="14"
@@ -564,7 +577,7 @@
 import util from "../assets/config/util";
 import downloadDialog from "./DownloadDialog.vue";
 import uploadFileDetailDialog from "./UploadFileDetailDialog.vue";
-import crypto from 'crypto';
+import crypto from "crypto";
 import { shell, ipcRenderer } from "electron";
 export default {
 	props: {
@@ -620,7 +633,7 @@ export default {
 				Password: [
 					{
 						required: true,
-						message: this.$t('public.pleaseFillPassword'),
+						message: this.$t("public.pleaseFillPassword"),
 						trigger: "blur"
 					}
 				]
@@ -641,7 +654,7 @@ export default {
 					UploadSize: 3072,
 					DownloadSize: 1,
 					FileSize: 1024,
-					Url:'',
+					Url: "",
 					Nodes: [
 						{
 							HostAddr: "tcp://40.73.103.72:33516",
@@ -673,7 +686,7 @@ export default {
 					Status: 2,
 					DetailStatus: 23,
 					CopyNum: 2,
-					Url:'oni://www',
+					Url: "oni://www",
 					Path:
 						"C:\\Users\\qwews\\Desktop\\Seeker交互图\\交互原型图PNG版\\传输管理.png",
 					IsUploadAction: false,
@@ -720,11 +733,11 @@ export default {
 				Password: [
 					{
 						required: true,
-						message: this.$t('public.pleaseFillPassword'),
+						message: this.$t("public.pleaseFillPassword"),
 						trigger: "blur"
 					}
 				]
-			}
+			};
 		}
 	},
 	computed: {
@@ -738,7 +751,10 @@ export default {
 			let transferSize = 0;
 			let transferTotal = 0;
 			this.fileList.map(file => {
-				if ((file.Status !== 0 && file.Status !== 4) || this.localStatus.uploading.indexOf(file.Id) >= 0) {
+				if (
+					(file.Status !== 0 && file.Status !== 4) ||
+					this.localStatus.uploading.indexOf(file.Id) >= 0
+				) {
 					if (vm.transferType === 1) {
 						transferSize += file.UploadSize || 0;
 						transferTotal += file.FileSize;
@@ -762,10 +778,10 @@ export default {
 			let arr =
 				this.$store.state.Transfer[this.TransferConfig[this.transferType]] ||
 				[];
-			if(this.transferType === 1) {
+			if (this.transferType === 1) {
 				let newArr = this.filterUploadArr(arr);
 				return newArr;
-			} else if(this.transferType === 2) {
+			} else if (this.transferType === 2) {
 				let newArr = this.filterDownloadArr(arr);
 				return newArr;
 			}
@@ -831,38 +847,44 @@ export default {
 	},
 	methods: {
 		filterUploadArr(arr) {
-			let newArr = JSON.parse(JSON.stringify(arr))
-			if(this.localStatus.pausing.length === 0 && this.localStatus.uploading.length === 0) {
+			let newArr = JSON.parse(JSON.stringify(arr));
+			if (
+				this.localStatus.pausing.length === 0 &&
+				this.localStatus.uploading.length === 0
+			) {
 				return newArr;
 			}
-			for(let value of newArr) {
-				if(this.localStatus.pausing.indexOf(value.Id) >= 0) {
+			for (let value of newArr) {
+				if (this.localStatus.pausing.indexOf(value.Id) >= 0) {
 					value.Status = 0;
-					value.DetailStatus = '1'
+					value.DetailStatus = "1";
 					continue;
 				}
-				if(this.localStatus.uploading.indexOf(value.Id) >= 0) {
+				if (this.localStatus.uploading.indexOf(value.Id) >= 0) {
 					value.Status = 2;
-					value.DetailStatus = 'uploadLoading';
+					value.DetailStatus = "uploadLoading";
 					continue;
 				}
 			}
 			return newArr;
 		},
 		filterDownloadArr(arr) {
-			let newArr = JSON.parse(JSON.stringify(arr))
-			if(this.localStatus.pausing.length === 0 && this.localStatus.uploading.length === 0) {
+			let newArr = JSON.parse(JSON.stringify(arr));
+			if (
+				this.localStatus.pausing.length === 0 &&
+				this.localStatus.uploading.length === 0
+			) {
 				return newArr;
 			}
-			for(let value of newArr) {
-				if(this.localStatus.pausing.indexOf(value.Id) >= 0) {
+			for (let value of newArr) {
+				if (this.localStatus.pausing.indexOf(value.Id) >= 0) {
 					value.Status = 0;
-					value.DetailStatus = '1'
+					value.DetailStatus = "1";
 					continue;
 				}
-				if(this.localStatus.uploading.indexOf(value.Id) >= 0) {
+				if (this.localStatus.uploading.indexOf(value.Id) >= 0) {
 					value.Status = 2;
-					value.DetailStatus = 'downloadLoading';
+					value.DetailStatus = "downloadLoading";
 					continue;
 				}
 			}
@@ -873,11 +895,11 @@ export default {
 			const vm = this;
 			if (this.isSync && this.transferType === 2) {
 				this.$confirm(
-					vm.$t('public.blockUnsynchronizedCompletionAreYouSureToDoThis'),
-					vm.$t('public.notice'),
+					vm.$t("public.blockUnsynchronizedCompletionAreYouSureToDoThis"),
+					vm.$t("public.notice"),
 					{
-						confirmButtonText: vm.$t('public.confirm'),
-						cancelButtonText: vm.$t('public.cancel')
+						confirmButtonText: vm.$t("public.confirm"),
+						cancelButtonText: vm.$t("public.cancel")
 					}
 				)
 					.then(() => {
@@ -909,7 +931,8 @@ export default {
 				const arr = this.getTask(type, 0, 1, 2, 4);
 				if (arr.length === 0) {
 					this.$message({
-						message: vm.$t('fileManager.thereAreNoTasksToCancel')
+						message: vm.$t("fileManager.thereAreNoTasksToCancel"),
+						type: "warning"
 					});
 					return;
 				}
@@ -934,7 +957,7 @@ export default {
 			const vm = this;
 			this.passwordCancel.loadingObj = this.$loading({
 				target: ".password-cancel-dialog.loading-content",
-				text: vm.$t('fileManager.loading'),
+				text: vm.$t("fileManager.loading"),
 				lock: true
 			});
 			if (this.passwordCancel.File === null) {
@@ -956,7 +979,10 @@ export default {
 					return value.Id !== file.Id;
 				});
 				this.$store.commit("SET_WAIT_FOR_UPLOAD_LIST", newWaitForUploadList);
-				ipcRenderer.send("run-dialog-event", {name: "setWaitForUploadList", data: newWaitForUploadList});
+				ipcRenderer.send("run-dialog-event", {
+					name: "setWaitForUploadList",
+					data: newWaitForUploadList
+				});
 				return;
 			}
 
@@ -971,9 +997,10 @@ export default {
 				// });
 				return;
 			}
-			if(this.uploadLength === 0) {
+			if (this.uploadLength === 0) {
 				this.$message({
-					message: vm.$t('fileManager.thereAreNoTasksToCancel')
+					message: vm.$t("fileManager.thereAreNoTasksToCancel"),
+					type: "warning"
 				});
 				return;
 			}
@@ -1013,7 +1040,8 @@ export default {
 			const arr = this.getTask(type, 0, 1, 2, 3, 4);
 			if (arr.length === 0) {
 				this.$message({
-					message: vm.$t('fileManager.thereAreNoTasksToCancel')
+					message: vm.$t("fileManager.thereAreNoTasksToCancel"),
+					type: "warning"
 				});
 				this.passwordCancel.loadingObj &&
 					this.passwordCancel.loadingObj.close();
@@ -1040,7 +1068,8 @@ export default {
 			//if no task message
 			if (!flag) {
 				this.$message({
-					message: vm.$t('fileManager.thereAreNoTasksToStart')
+					message: vm.$t("fileManager.thereAreNoTasksToStart"),
+					type: "warning"
 				});
 			}
 		},
@@ -1051,11 +1080,11 @@ export default {
 			if (!this.show) return;
 			if (this.isSync && this.transferType === 2) {
 				this.$confirm(
-					vm.$t('public.blockUnsynchronizedCompletionAreYouSureToDoThis'),
-					vm.$t('public.notice'),
+					vm.$t("public.blockUnsynchronizedCompletionAreYouSureToDoThis"),
+					vm.$t("public.notice"),
 					{
-						confirmButtonText: vm.$t('public.confirm'),
-						cancelButtonText: vm.$t('public.cancel')
+						confirmButtonText: vm.$t("public.confirm"),
+						cancelButtonText: vm.$t("public.cancel")
 					}
 				)
 					.then(() => {
@@ -1075,7 +1104,8 @@ export default {
 			const arr = this.getTask(type, 1, 2);
 			if (arr.length === 0) {
 				this.$message({
-					message: vm.$t('fileManager.thereAreNoTasksToPause')
+					message: vm.$t("fileManager.thereAreNoTasksToPause"),
+					type: "warning"
 				});
 				return;
 			}
@@ -1088,14 +1118,18 @@ export default {
 			const arr = this.getTask(type, 3);
 			if (arr.length === 0) {
 				this.$message({
-					message: vm.$t('fileManager.thereAreNoRecordToDelete')
+					message: vm.$t("fileManager.thereAreNoRecordToDelete")
 				});
 				return;
 			}
-			this.$confirm(vm.$t('fileManager.areYouSureToDeleteAllRecords'), vm.$t('fileManager.deleteAll'), {
-				confirmButtonText: vm.$t('public.confirm'),
-				cancelButtonText: vm.$t('public.cancel')
-			})
+			this.$confirm(
+				vm.$t("fileManager.areYouSureToDeleteAllRecords"),
+				vm.$t("fileManager.deleteAll"),
+				{
+					confirmButtonText: vm.$t("public.confirm"),
+					cancelButtonText: vm.$t("public.cancel")
+				}
+			)
 				.then(() => {
 					this.deleteRecord(arr);
 				})
@@ -1149,7 +1183,7 @@ export default {
 			// add wait for task and get have wait for task
 			const haveHttpWaitFor = this.addHttpWaitFor({
 				row: row,
-				waitFor: this.$t('fileManager.deleteRecord')
+				waitFor: this.$t("fileManager.deleteRecord")
 			});
 			if (!haveHttpWaitFor) return;
 
@@ -1159,7 +1193,7 @@ export default {
 				})
 				.then(res => {
 					// this.$store.dispatch("getComplete");
-					ipcRenderer.send("run-dialog-event", {name: "getComplete"});
+					ipcRenderer.send("run-dialog-event", { name: "getComplete" });
 					this.removeHttpWaitFor({ Ids: params.Ids });
 
 					if (res.Error === 0) {
@@ -1173,7 +1207,7 @@ export default {
 						//if no err
 						if (errorArr.length === 0) {
 							this.$message({
-								message: vm.$t('fileManager.opeationSuccess'),
+								message: vm.$t("fileManager.opeationSuccess"),
 								type: "success"
 							});
 						}
@@ -1184,9 +1218,11 @@ export default {
 				.catch(e => {
 					this.removeHttpWaitFor({ Ids: params.Ids });
 					if (!e.message.includes("timeout")) {
-						this.$message.error(vm.$t('fileManager.networkErrorDeleteRecordFailed'));
+						this.$message.error(
+							vm.$t("fileManager.networkErrorDeleteRecordFailed")
+						);
 					} else {
-						this.$message.error('Request Timeout!')
+						this.$message.error("Request Timeout!");
 					}
 				});
 		},
@@ -1235,7 +1271,10 @@ export default {
 
 			// get cancel task again when cancel type is upload
 			if (type === 1) {
-				params.Password = crypto.createHash('sha256').update(vm.passwordCancel.Password).digest('hex');
+				params.Password = crypto
+					.createHash("sha256")
+					.update(vm.passwordCancel.Password)
+					.digest("hex");
 				for (let value of this.waitForUploadList) {
 					if (params.Ids.indexOf(value.Id) >= 0) {
 						waitForUploadArr.push(value.Id);
@@ -1246,7 +1285,10 @@ export default {
 				if (waitForUploadArr.length > 0) {
 					// check password is not true
 					let passParams = {
-						Password: crypto.createHash('sha256').update(params.Password).digest('hex')
+						Password: crypto
+							.createHash("sha256")
+							.update(params.Password)
+							.digest("hex")
 					};
 					let passwordCheck = await this.$axios.post(
 						this.$api.checkPassword,
@@ -1255,7 +1297,7 @@ export default {
 					if (passwordCheck.Error !== 0) {
 						this.passwordCancel.loadingObj &&
 							this.passwordCancel.loadingObj.close();
-						this.$message.error(vm.$t('fileManager.passwordCheckFailed'));
+						this.$message.error(vm.$t("fileManager.passwordCheckFailed"));
 						return;
 					}
 					// pass password check wait for to delete wait for upload file
@@ -1264,7 +1306,10 @@ export default {
 							return waitForUploadArr.indexOf(value.Id) === -1;
 						}) || [];
 					this.$store.commit("SET_WAIT_FOR_UPLOAD_LIST", newWaitForUploadList);
-					ipcRenderer.send("run-dialog-event", {name: "setWaitForUploadList", data: newWaitForUploadList});
+					ipcRenderer.send("run-dialog-event", {
+						name: "setWaitForUploadList",
+						data: newWaitForUploadList
+					});
 				}
 				// check is have uploading task
 				if (!params.Ids || params.Ids.length === 0) {
@@ -1287,8 +1332,14 @@ export default {
 						this.waitForDownloadList.filter(value => {
 							return waitForDownloadArr.indexOf(value.Id) === -1;
 						}) || [];
-					this.$store.commit("SET_WAIT_FOR_DOWNLOAD_LIST", newWaitForDownloadList);
-					ipcRenderer.send("run-dialog-event", {name: "setWaitForDownloadList", data: newWaitForDownloadList});				
+					this.$store.commit(
+						"SET_WAIT_FOR_DOWNLOAD_LIST",
+						newWaitForDownloadList
+					);
+					ipcRenderer.send("run-dialog-event", {
+						name: "setWaitForDownloadList",
+						data: newWaitForDownloadList
+					});
 				}
 				// check is have downloading task
 				if (!params.Ids || params.Ids.length === 0) {
@@ -1306,14 +1357,26 @@ export default {
 						this.passwordCancel.loadingObj.close();
 					// get transfer list info update status
 					if (type === 1) {
-						ipcRenderer.send("run-dialog-event", {name: "getUpload"});
-						ipcRenderer.send("run-dialog-event", {name: "removeWaitForUploadOrderList", data: params.Ids});
+						ipcRenderer.send("run-dialog-event", { name: "getUpload" });
+						ipcRenderer.send("run-dialog-event", {
+							name: "removeWaitForUploadOrderList",
+							data: params.Ids
+						});
 					} else {
-						ipcRenderer.send("run-dialog-event", {name: "getDownload"});
-						ipcRenderer.send("run-dialog-event", {name: "removeWaitForDownloadOrderList", data: params.Ids});
+						ipcRenderer.send("run-dialog-event", { name: "getDownload" });
+						ipcRenderer.send("run-dialog-event", {
+							name: "removeWaitForDownloadOrderList",
+							data: params.Ids
+						});
 					}
-					ipcRenderer.send("run-dialog-event", {name: "removePausing", data: params.Ids});
-					ipcRenderer.send("run-dialog-event", {name: "removeUploading", data: params.Ids});
+					ipcRenderer.send("run-dialog-event", {
+						name: "removePausing",
+						data: params.Ids
+					});
+					ipcRenderer.send("run-dialog-event", {
+						name: "removeUploading",
+						data: params.Ids
+					});
 
 					if (res.Error === 0) {
 						if (type === 1) {
@@ -1332,7 +1395,7 @@ export default {
 						//if no err
 						if (errorMsg.length === 0) {
 							this.$message({
-								message: vm.$t('fileManager.opeationSuccess'),
+								message: vm.$t("fileManager.opeationSuccess"),
 								type: "success"
 							});
 						} else {
@@ -1349,9 +1412,11 @@ export default {
 					this.passwordCancel.loadingObj &&
 						this.passwordCancel.loadingObj.close();
 					if (!e.message.includes("timeout")) {
-						this.$message.error(vm.$t('fileManager.networkErrorCancelTaskFailed'));
+						this.$message.error(
+							vm.$t("fileManager.networkErrorCancelTaskFailed")
+						);
 					} else {
-						this.$message.error('Request Timeout!')
+						this.$message.error("Request Timeout!");
 					}
 				});
 		},
@@ -1359,11 +1424,11 @@ export default {
 			const vm = this;
 			if (this.isSync && this.transferType === 2) {
 				this.$confirm(
-					vm.$t('public.blockUnsynchronizedCompletionAreYouSureToDoThis'),
-					vm.$t('public.notice'),
+					vm.$t("public.blockUnsynchronizedCompletionAreYouSureToDoThis"),
+					vm.$t("public.notice"),
 					{
-						confirmButtonText: vm.$t('public.confirm'),
-						cancelButtonText: vm.$t('public.cancel')
+						confirmButtonText: vm.$t("public.confirm"),
+						cancelButtonText: vm.$t("public.cancel")
 					}
 				)
 					.then(() => {
@@ -1394,13 +1459,25 @@ export default {
 				Ids: arr
 			};
 
-			if(type === 1) {
-				ipcRenderer.send("run-dialog-event", {name: "pushWaitForUploadOrderList", data: params.Ids});
-				ipcRenderer.send("run-dialog-event", {name: "addUploading", data: params.Ids});
+			if (type === 1) {
+				ipcRenderer.send("run-dialog-event", {
+					name: "pushWaitForUploadOrderList",
+					data: params.Ids
+				});
+				ipcRenderer.send("run-dialog-event", {
+					name: "addUploading",
+					data: params.Ids
+				});
 				return;
 			} else {
-				ipcRenderer.send("run-dialog-event", {name: "pushWaitForDownloadOrderList", data: params.Ids});
-				ipcRenderer.send("run-dialog-event", {name: "addUploading", data: params.Ids});
+				ipcRenderer.send("run-dialog-event", {
+					name: "pushWaitForDownloadOrderList",
+					data: params.Ids
+				});
+				ipcRenderer.send("run-dialog-event", {
+					name: "addUploading",
+					data: params.Ids
+				});
 				return;
 			}
 			/*
@@ -1441,11 +1518,11 @@ export default {
 		toUploadOrDownloadContinue(row, type) {
 			if (this.isSync && this.transferType === 2) {
 				this.$confirm(
-					vm.$t('public.blockUnsynchronizedCompletionAreYouSureToDoThis'),
-					vm.$t('public.notice'),
+					vm.$t("public.blockUnsynchronizedCompletionAreYouSureToDoThis"),
+					vm.$t("public.notice"),
 					{
-						confirmButtonText: vm.$t('public.confirm'),
-						cancelButtonText: vm.$t('public.cancel')
+						confirmButtonText: vm.$t("public.confirm"),
+						cancelButtonText: vm.$t("public.cancel")
 					}
 				)
 					.then(() => {
@@ -1468,28 +1545,46 @@ export default {
 			if (!params.Ids || params.Ids.length <= 0) {
 				return;
 			}
-			
-			if(type === 1) {
-				ipcRenderer.send("run-dialog-event", {name: "pushWaitForUploadOrderList", data: params.Ids});
-				ipcRenderer.send("run-dialog-event", {name: "addUploading", data: params.Ids});
+
+			if (type === 1) {
+				ipcRenderer.send("run-dialog-event", {
+					name: "pushWaitForUploadOrderList",
+					data: params.Ids
+				});
+				ipcRenderer.send("run-dialog-event", {
+					name: "addUploading",
+					data: params.Ids
+				});
 				return;
 			} else {
-				ipcRenderer.send("run-dialog-event", {name: "pushWaitForDownloadOrderList", data: params.Ids});
-				ipcRenderer.send("run-dialog-event", {name: "addUploading", data: params.Ids});
+				ipcRenderer.send("run-dialog-event", {
+					name: "pushWaitForDownloadOrderList",
+					data: params.Ids
+				});
+				ipcRenderer.send("run-dialog-event", {
+					name: "addUploading",
+					data: params.Ids
+				});
 				// return;
 			}
 
 			let thirdPartyArr = [];
 			// add wait for task and get have wait for task
 			let httpWaitForList = row.filter(item => {
-				if(params.Ids.indexOf(item.Id) >= 0 && item.Url.startsWith('oni://www')) {
+				if (
+					params.Ids.indexOf(item.Id) >= 0 &&
+					item.Url.startsWith("oni://www")
+				) {
 					thirdPartyArr.push(item.Id);
 					return true;
 				} else {
 					return false;
 				}
-			})
-			const haveHttpWaitFor = this.addHttpWaitFor({ row: httpWaitForList, waitFor: "start" });
+			});
+			const haveHttpWaitFor = this.addHttpWaitFor({
+				row: httpWaitForList,
+				waitFor: "start"
+			});
 			if (thirdPartyArr.length === 0) return;
 			params.Ids = thirdPartyArr;
 
@@ -1501,10 +1596,10 @@ export default {
 					// get transfer list info update status
 					if (type === 1) {
 						// this.$store.dispatch("getUpload");
-						ipcRenderer.send("run-dialog-event", {name: "getUpload"});
+						ipcRenderer.send("run-dialog-event", { name: "getUpload" });
 					} else {
 						// this.$store.dispatch("getDownload");
-						ipcRenderer.send("run-dialog-event", {name: "getDownload"});
+						ipcRenderer.send("run-dialog-event", { name: "getDownload" });
 					}
 					// remove wait for task
 					this.removeHttpWaitFor({ Ids: params.Ids });
@@ -1517,7 +1612,9 @@ export default {
 				.catch(e => {
 					this.removeHttpWaitFor({ Ids: params.Ids });
 					if (!e.message.includes("timeout")) {
-						this.$message.error(vm.$t('fileManager.networkErrorStartTaskFailed'));
+						this.$message.error(
+							vm.$t("fileManager.networkErrorStartTaskFailed")
+						);
 					}
 				});
 		},
@@ -1567,7 +1664,7 @@ export default {
 			let waitForArr = [];
 			// if (isArray) {
 			for (let value of row) {
-				if (value.Id.indexOf('waitfor_') >= 0) {
+				if (value.Id.indexOf("waitfor_") >= 0) {
 					// value.Status = status;
 					waitForArr.push(value.Id);
 					haveWaitForFlag = true;
@@ -1575,7 +1672,8 @@ export default {
 				} else if (
 					!this.show ||
 					((row.DetailStatus === 5 || row.DetailStatus === 23) &&
-						row.Status !== 4 && row.Status !== 0)
+						row.Status !== 4 &&
+						row.Status !== 0)
 				) {
 					continue;
 				}
@@ -1585,37 +1683,59 @@ export default {
 
 			params.Ids = arr;
 			if (haveWaitForFlag) {
-				if(vm.transferType === 1) {
-					let newWaitForList = JSON.parse(JSON.stringify(this.waitForUploadList));
+				if (vm.transferType === 1) {
+					let newWaitForList = JSON.parse(
+						JSON.stringify(this.waitForUploadList)
+					);
 					newWaitForList.map(item => {
-						if(waitForArr.indexOf(item.Id) >= 0) {
+						if (waitForArr.indexOf(item.Id) >= 0) {
 							item.Status = status;
 						}
 						return item;
-					})
+					});
 					this.$store.commit("SET_WAIT_FOR_UPLOAD_LIST", newWaitForList);
-					ipcRenderer.send("run-dialog-event", {name: "setWaitForUploadList", data: newWaitForList});
-					
-					if(status === 2) {
-						ipcRenderer.send("run-dialog-event", {name: "pushWaitForUploadOrderList", data: waitForArr});
+					ipcRenderer.send("run-dialog-event", {
+						name: "setWaitForUploadList",
+						data: newWaitForList
+					});
+
+					if (status === 2) {
+						ipcRenderer.send("run-dialog-event", {
+							name: "pushWaitForUploadOrderList",
+							data: waitForArr
+						});
 					} else {
-						ipcRenderer.send("run-dialog-event", {name: "removeWaitForUploadOrderList", data: waitForArr});
+						ipcRenderer.send("run-dialog-event", {
+							name: "removeWaitForUploadOrderList",
+							data: waitForArr
+						});
 					}
 				} else {
-					let newWaitForList = JSON.parse(JSON.stringify(this.waitForDownloadList));
+					let newWaitForList = JSON.parse(
+						JSON.stringify(this.waitForDownloadList)
+					);
 					newWaitForList.map(item => {
-						if(waitForArr.indexOf(item.Id) >= 0) {
+						if (waitForArr.indexOf(item.Id) >= 0) {
 							item.Status = status;
 						}
 						return item;
-					})
+					});
 					this.$store.commit("SET_WAIT_FOR_DOWNLOAD_LIST", newWaitForList);
-					ipcRenderer.send("run-dialog-event", {name: "setWaitForDownloadList", data: newWaitForList});
-					
-					if(status === 2) {
-						ipcRenderer.send("run-dialog-event", {name: "pushWaitForDownloadOrderList", data: waitForArr});
+					ipcRenderer.send("run-dialog-event", {
+						name: "setWaitForDownloadList",
+						data: newWaitForList
+					});
+
+					if (status === 2) {
+						ipcRenderer.send("run-dialog-event", {
+							name: "pushWaitForDownloadOrderList",
+							data: waitForArr
+						});
 					} else {
-						ipcRenderer.send("run-dialog-event", {name: "removeWaitForDownloadOrderList", data: waitForArr});
+						ipcRenderer.send("run-dialog-event", {
+							name: "removeWaitForDownloadOrderList",
+							data: waitForArr
+						});
 					}
 				}
 			}
@@ -1635,18 +1755,30 @@ export default {
 				return;
 			}
 
-			if(type === 1) {
-				ipcRenderer.send("run-dialog-event", {name: "removeWaitForUploadOrderList", data: params.Ids});
+			if (type === 1) {
+				ipcRenderer.send("run-dialog-event", {
+					name: "removeWaitForUploadOrderList",
+					data: params.Ids
+				});
 			} else {
-				ipcRenderer.send("run-dialog-event", {name: "removeWaitForDownloadOrderList", data: params.Ids});
+				ipcRenderer.send("run-dialog-event", {
+					name: "removeWaitForDownloadOrderList",
+					data: params.Ids
+				});
 			}
-			ipcRenderer.send("run-dialog-event", {name: "addPausing", data: params.Ids});
+			ipcRenderer.send("run-dialog-event", {
+				name: "addPausing",
+				data: params.Ids
+			});
 
 			// add wait for task and get have wait for task
 			let httpWaitForList = row.filter(item => {
-				return params.Ids.indexOf(item.Id) >= 0
-			})
-			const haveHttpWaitFor = this.addHttpWaitFor({ row: httpWaitForList, waitFor: "pause" });
+				return params.Ids.indexOf(item.Id) >= 0;
+			});
+			const haveHttpWaitFor = this.addHttpWaitFor({
+				row: httpWaitForList,
+				waitFor: "pause"
+			});
 			if (!haveHttpWaitFor) return;
 
 			this.$axios
@@ -1657,10 +1789,10 @@ export default {
 					// get transfer list info update status
 					if (type === 1) {
 						// this.$store.dispatch("getUpload");
-						ipcRenderer.send("run-dialog-event", {name: "getUpload"});
+						ipcRenderer.send("run-dialog-event", { name: "getUpload" });
 					} else {
 						// this.$store.dispatch("getDownload");
-						ipcRenderer.send("run-dialog-event", {name: "getDownload"});
+						ipcRenderer.send("run-dialog-event", { name: "getDownload" });
 					}
 					// remove wait for task
 					this.removeHttpWaitFor({ Ids: params.Ids });
@@ -1669,10 +1801,13 @@ export default {
 						let notLocalList = [];
 						for (let value of res.Result.Tasks) {
 							if (value && value.State !== 4) {
-								notLocalList.push(value.Id)
+								notLocalList.push(value.Id);
 							}
 						}
-						ipcRenderer.send("run-dialog-event", {name: "removePausing", data: notLocalList});								
+						ipcRenderer.send("run-dialog-event", {
+							name: "removePausing",
+							data: notLocalList
+						});
 						// //if no err
 						// if (errorArr.length === 0) {
 						// 	this.$message({
@@ -1687,9 +1822,11 @@ export default {
 				.catch(e => {
 					this.removeHttpWaitFor({ Ids: params.Ids });
 					if (!e.message.includes("timeout")) {
-						this.$message.error(vm.$t('fileManager.networkErrorPauseTaskFailed'));
+						this.$message.error(
+							vm.$t("fileManager.networkErrorPauseTaskFailed")
+						);
 					} else {
-						this.$message.error('Request Timeout!')
+						this.$message.error("Request Timeout!");
 					}
 				});
 		},
@@ -1715,7 +1852,7 @@ export default {
 				.then(res => {
 					if (res.Error === 0) {
 						this.$message({
-							message: vm.$t('fileManager.deleteCompleted'),
+							message: vm.$t("fileManager.deleteCompleted"),
 							type: "success"
 						});
 					} else {
@@ -1724,9 +1861,11 @@ export default {
 				})
 				.catch(e => {
 					if (!e.message.includes("timeout")) {
-						this.$message.error(vm.$t('fileManager.networkErrorDeleteFileFailed'));
+						this.$message.error(
+							vm.$t("fileManager.networkErrorDeleteFileFailed")
+						);
 					} else {
-						this.$message.error('Request Timeout!')
+						this.$message.error("Request Timeout!");
 					}
 				});
 		},
@@ -1736,14 +1875,14 @@ export default {
 			this.$axios
 				.post(this.$api.decrypt, this.fileSelected, {
 					loading: {
-						text: vm.$t('public.processing'),
+						text: vm.$t("public.processing"),
 						target: ".loading-content.decrypt"
 					}
 				})
 				.then(res => {
 					if (res.Error === 0) {
 						this.$message({
-							message: vm.$t('fileManager.downloadSuccess'),
+							message: vm.$t("fileManager.downloadSuccess"),
 							type: "success"
 						});
 						this.fileList.Password = "";
@@ -1755,9 +1894,9 @@ export default {
 				})
 				.catch(e => {
 					if (!e.message.includes("timeout")) {
-						this.$message.error(vm.$t('fileManager.networkErrorDecryptFailed'));
+						this.$message.error(vm.$t("fileManager.networkErrorDecryptFailed"));
 					} else {
-						this.$message.error('Request Timeout!')
+						this.$message.error("Request Timeout!");
 					}
 				});
 		},
@@ -1776,7 +1915,7 @@ export default {
 					(oldTaskSpeed[value.Id]
 						? oldTaskSpeed[value.Id].FileSize
 						: uploadOrDownloadSize);
-				if(newTaskSpeed[value.Id]) continue;
+				if (newTaskSpeed[value.Id]) continue;
 				newTaskSpeed[value.Id] = {
 					speed: speed / (this.passHowLongTimeGetFileList + 1),
 					FileSize: uploadOrDownloadSize
@@ -1790,7 +1929,7 @@ export default {
 		 * isF: is not force run
 		 *  */
 		getNodeSpeed(isF = false) {
-			if(this.transferType === 1) return;
+			if (this.transferType === 1) return;
 			if ((this.fileDetailNodes.length > 0 && this.taskSpeedNum === 1) || isF) {
 				let oldNodeSpeed = this.nodeSpeed;
 				let newNodeSpeed = {};
@@ -1865,7 +2004,7 @@ $danger: #f56c6c;
 	}
 	.file-list {
 		height: calc(100% - 80px);
-		@include themify{
+		@include themify {
 			border-top: $table-border-color;
 		}
 		&.is-not-compelete-top-progress {
@@ -1878,7 +2017,6 @@ $danger: #f56c6c;
 			}
 			.download-type {
 				vertical-align: top;
-
 			}
 
 			.opera {
@@ -1905,7 +2043,7 @@ $danger: #f56c6c;
 		line-height: 32px;
 
 		&:hover {
-			@include themify{
+			@include themify {
 				background-color: $color;
 			}
 		}

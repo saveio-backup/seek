@@ -97,7 +97,7 @@ class Seek {
       })
     })
   }
-  static getLangSettings(){
+  static getLangSettings() {
     return ipcRenderer.sendSync("getSettings", "lang");
   }
 }

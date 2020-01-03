@@ -730,6 +730,9 @@ export default {
 				})
 				.catch(err => {
 					console.error(err);
+					if (err.message.includes("timeout")) {
+						this.$message.error("Request Timeout!");
+					}
 					this.switchToggle.load = true;
 				})
 				.finally(() => {
@@ -1041,6 +1044,8 @@ export default {
 							this.$message.error(
 								vm.$t("fileManager.networkErrorDeleteFailed")
 							);
+						} else {
+							this.$message.error("Request Timeout!");
 						}
 					});
 			});
@@ -1075,6 +1080,11 @@ export default {
 						this.switchToggle.deleteDialog = false;
 					} else {
 						this.$message.error(this.$t(`error[${res.Error}]`));
+					}
+				})
+				.catch(error => {
+					if (error.message.includes("timeout")) {
+						this.$message.error("Request Timeout!");
 					}
 				});
 		}
@@ -1119,7 +1129,10 @@ export default {
 						}
 						// }
 					})
-					.catch(() => {
+					.catch((error) => {
+						if (error.message.includes("timeout")) {
+							this.$message.error("Request Timeout!");
+						}
 						console.error("unable to calc");
 						this.fileDownloadInfo.Fee = "Unable to calculate. network error.";
 					});

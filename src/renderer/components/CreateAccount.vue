@@ -454,6 +454,8 @@ export default {
 						.catch(e => {
 							if (!e.message.includes("timeout")) {
 								this.$message.error(vm.$t("account.networkErrorCreateFailed"));
+							} else {
+								this.$message.error('Request Timeout!')
 							}
 						});
 				}
@@ -498,6 +500,8 @@ export default {
 						this.$message.error(
 							vm.$t("account.networkErrorImportPrivateKeyFailed")
 						);
+					} else {
+						vm.$message.error('Request Timeout!')
 					}
 				});
 		}

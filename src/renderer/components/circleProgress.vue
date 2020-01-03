@@ -42,6 +42,7 @@ export default {
 		init() {
       const vm = this;
       let c = document.getElementById(vm.id);
+      if(c === null) return;
       this.ctx = c.getContext("2d");
       this.loadProgress(this.percentage);
     },
@@ -84,7 +85,9 @@ export default {
     }
 	},
 	mounted() {
-		this.init();
+    this.$nextTick(() => {
+      this.init();
+    })
 	}
 };
 </script>

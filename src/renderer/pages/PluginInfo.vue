@@ -198,6 +198,11 @@ export default {
 										this.loadPlugin(url, plugItem);
 									}, 2000);
 								}
+							})
+							.catch(error => {
+								if (error.message.includes("timeout")) {
+									this.$message.error("Request Timeout!");
+								}
 							});
 					} else if (data.Status === 4) {
 						// task error
@@ -294,6 +299,11 @@ export default {
 					} else {
 						console.log("emit loadErrorPage");
 					}
+				})
+				.catch(error => {
+					if (error.message.includes("timeout")) {
+						this.$message.error("Request Timeout!");
+					}
 				});
 		},
 		downloadPluginRetry(url, pluginItem) {
@@ -312,6 +322,11 @@ export default {
 							this.loadPlugin(url, pluginItem);
 						}, 2000);
 					}
+				})
+				.catch(error => {
+					if (error.message.includes("timeout")) {
+						this.$message.error("Request Timeout!");
+					}
 				});
 		},
 		getTransferDetail(url) {
@@ -323,6 +338,9 @@ export default {
 						resolve(res);
 					})
 					.catch(err => {
+						if (err.message.includes("timeout")) {
+							this.$message.error("Request Timeout!");
+						}
 						reject(err);
 					});
 			});
@@ -336,6 +354,9 @@ export default {
 						resolve(res);
 					})
 					.catch(err => {
+						if (err.message.includes("timeout")) {
+							this.$message.error("Request Timeout!");
+						}
 						rejest(err);
 					});
 			});

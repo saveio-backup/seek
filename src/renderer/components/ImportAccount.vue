@@ -340,6 +340,8 @@ export default {
 						this.$message.error(
 							vm.$t("account.networkErrorImportWalletFileFailed")
 						);
+					} else {
+						vm.$message.error('Request Timeout!')
 					}
 				});
 		},
@@ -376,6 +378,8 @@ export default {
 								this.$message.error(
 									vm.$t("account.networkErrorImportPrivateKeyFailed")
 								);
+							} else {
+								this.$message.error('Request Timeout!')
 							}
 						});
 				}

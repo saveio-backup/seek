@@ -292,34 +292,56 @@ export default {
 			} catch (error) {}
 		},
 		getChainList() {
-			this.$axios.get(this.$api.getchainidlist).then(res => {
-				if (res.Error === 0) {
-					this.netConfig.list = res.Result.Ids;
-				}
-			});
+			this.$axios
+				.get(this.$api.getchainidlist)
+				.then(res => {
+					if (res.Error === 0) {
+						this.netConfig.list = res.Result.Ids;
+					}
+				})
+				.catch(error => {
+					if (error.message.includes("timeout")) {
+						this.$message.error("Request Timeout!");
+					}
+				});
 		},
 		getChainId() {
-			this.$axios.get(this.$api.chainId).then(res => {
-				if (res.Error === 0) {
-					if (res.Result.ChainId) {
-						this.updateSettings("ChainId", res.Result.ChainId);
-						this.settings.ChainId = res.Result.ChainId;
+			this.$axios
+				.get(this.$api.chainId)
+				.then(res => {
+					if (res.Error === 0) {
+						if (res.Result.ChainId) {
+							this.updateSettings("ChainId", res.Result.ChainId);
+							this.settings.ChainId = res.Result.ChainId;
+						} else {
+							this.switchChainId(DEFAULT_CHAINID);
+						}
 					} else {
-						this.switchChainId(DEFAULT_CHAINID);
+						if (res.Error !== 40007) {
+							this.$message.error(this.$t(`error[${res.Error}]`));
+						}
 					}
-				} else {
-					if (res.Error !== 40007) {
-						this.$message.error(this.$t(`error[${res.Error}]`));
+				})
+				.catch(error => {
+					if (error.message.includes("timeout")) {
+						this.$message.error("Request Timeout!");
 					}
-				}
-			});
+					s;
+				});
 		},
 		getConfig() {
-			this.$axios.get(this.$api.config).then(res => {
-				console.log("config is ");
-				console.log(res);
-				Object.assign(this.pathDir, res.Result);
-			});
+			this.$axios
+				.get(this.$api.config)
+				.then(res => {
+					console.log("config is ");
+					console.log(res);
+					Object.assign(this.pathDir, res.Result);
+				})
+				.catch(error => {
+					if (error.message.includes("timeout")) {
+						this.$message.error("Request Timeout!");
+					}
+				});
 		},
 		switchChainId(id) {
 			const vm = this;
@@ -348,16 +370,28 @@ export default {
 					} else {
 						this.$message.error(this.$t(`error[${res.Error}]`));
 					}
+				})
+				.catch(error => {
+					if (error.message.includes("timeout")) {
+						this.$message.error("Request Timeout!");
+					}
 				});
 		},
 		setDir(pathType) {
 			ipcRenderer.send("will-set-dir");
 			ipcRenderer.once("did-set-dir", (event, dir) => {
-				this.$axios.post(this.$api.config, { [pathType]: dir }).then(res => {
-					if (res.Error === 0) {
-						this.pathDir[pathType] = dir;
-					}
-				});
+				this.$axios
+					.post(this.$api.config, { [pathType]: dir })
+					.then(res => {
+						if (res.Error === 0) {
+							this.pathDir[pathType] = dir;
+						}
+					})
+					.catch(error => {
+						if (error.message.includes("timeout")) {
+							this.$message.error("Request Timeout!");
+						}
+					});
 			});
 		}
 	}

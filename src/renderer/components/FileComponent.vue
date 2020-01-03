@@ -1185,6 +1185,8 @@ export default {
 					this.removeHttpWaitFor({ Ids: params.Ids });
 					if (!e.message.includes("timeout")) {
 						this.$message.error(vm.$t('fileManager.networkErrorDeleteRecordFailed'));
+					} else {
+						this.$message.error('Request Timeout!')
 					}
 				});
 		},
@@ -1348,6 +1350,8 @@ export default {
 						this.passwordCancel.loadingObj.close();
 					if (!e.message.includes("timeout")) {
 						this.$message.error(vm.$t('fileManager.networkErrorCancelTaskFailed'));
+					} else {
+						this.$message.error('Request Timeout!')
 					}
 				});
 		},
@@ -1684,6 +1688,8 @@ export default {
 					this.removeHttpWaitFor({ Ids: params.Ids });
 					if (!e.message.includes("timeout")) {
 						this.$message.error(vm.$t('fileManager.networkErrorPauseTaskFailed'));
+					} else {
+						this.$message.error('Request Timeout!')
 					}
 				});
 		},
@@ -1719,6 +1725,8 @@ export default {
 				.catch(e => {
 					if (!e.message.includes("timeout")) {
 						this.$message.error(vm.$t('fileManager.networkErrorDeleteFileFailed'));
+					} else {
+						this.$message.error('Request Timeout!')
 					}
 				});
 		},
@@ -1748,6 +1756,8 @@ export default {
 				.catch(e => {
 					if (!e.message.includes("timeout")) {
 						this.$message.error(vm.$t('fileManager.networkErrorDecryptFailed'));
+					} else {
+						this.$message.error('Request Timeout!')
 					}
 				});
 		},

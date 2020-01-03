@@ -50,7 +50,14 @@ export default {
 			if (res.Error === 0) {
 				localStorage.setItem("edgeVersion", res.Result || "");
 			}
-		});
+		})
+		// .catch(error => {
+		// 	if (error.message.includes('timeout')) {
+    //     Message.error({
+    //       message: 'Request Timeout!'
+    //     })
+    //   }
+		// })
 	},
 	watch: {
 		$route(val, old) {

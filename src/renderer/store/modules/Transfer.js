@@ -1,5 +1,8 @@
 import axios from 'axios';
 import api from '../../assets/config/api';
+const CancelToken = axios.CancelToken;
+let syncFileRequestCancel;
+
 const transferClear = clearInterval;
 let address = ''
 // const transferClear = function () { };
@@ -299,6 +302,7 @@ let downloadTimer = null;
 let uploadTimer = null;
 let completeTimer = null;
 let syncFileTimer = null;
+// let syncFileTimeoutr = null;
 // const TIME_COUNT = 3000;
 const actions = {
     getWaitForTransferList({
@@ -386,10 +390,12 @@ const actions = {
         state
     }, limit) {
         commit('SET_SYNC_LIST_LIMIT', limit);
-        // clearInterval(syncFileTimer);
+        try {
+            syncFileRequestCancel('request cancel!');
+        } catch(e) {}
         syncFileRequest.bind(this, commit, limit)();
         // syncFileTimer = setInterval(() => {
-            // syncFileRequest.bind(this, commit, state.syncListLimit)();
+        // syncFileRequest.bind(this, commit, state.syncListLimit)();
         // }, 3000)
     },
     clearIntervalSyncFileList() {
@@ -483,7 +489,16 @@ function toUploadTransferListRequest({
 
 function syncFileRequest(commit, limit) {
     clearTimeout(syncFileTimer);
-    axios.get(api.getFileList + `0/0/${limit}/1`).then(res => {
+    // clearTimeout(syncFileTimeoutr);
+    // syncFileTimeoutr = setTimeout(() => {
+    //     syncFileRequestCancel('request cancel!');
+    // }, 60000)
+    axios.get(api.getFileList + `0/0/${limit}/1`, {
+        cancelToken: new CancelToken(c => {
+            syncFileRequestCancel = c;
+        }),
+        timeout: 60000
+    }).then(res => {
         if (res.Error === 0) {
             commit('SET_SYNC_LIST', res.Result);
         }

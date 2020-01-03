@@ -118,6 +118,8 @@ export default {
 				.catch(e => {
 					if (!e.message.includes("timeout")) {
 						this.$message.error(vm.$t("public.networkErrorDownloadFailed"));
+					} else {
+						this.$message.error('Request Timeout!');
 					}
 				});
 		}

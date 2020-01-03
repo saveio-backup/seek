@@ -599,6 +599,11 @@ export default {
 							this.toAdvanced();
 						}
 					}
+				})
+				.catch(error => {
+					if (error.message.includes("timeout")) {
+						this.$message.error("Request Timeout!");
+					}
 				});
 		},
 		// link to expand page
@@ -630,14 +635,21 @@ export default {
 		},
 		// get contract setting init value
 		getfscontractsetting() {
-			this.$axios.get(this.$api.getfscontractsetting).then(res => {
-				if (res.Error === 0) {
-					this.DefaultCopyNum = res.Result.DefaultCopyNum;
-					this.advancedData.CopyNum = this.DefaultCopyNum;
-				} else {
-					this.$message.error(this.$t(`error[${res.Error}]`));
-				}
-			});
+			this.$axios
+				.get(this.$api.getfscontractsetting)
+				.then(res => {
+					if (res.Error === 0) {
+						this.DefaultCopyNum = res.Result.DefaultCopyNum;
+						this.advancedData.CopyNum = this.DefaultCopyNum;
+					} else {
+						this.$message.error(this.$t(`error[${res.Error}]`));
+					}
+				})
+				.catch(error => {
+					if (error.message.includes("timeout")) {
+						this.$message.error("Request Timeout!");
+					}
+				});
 		},
 		// to select file for upload
 		selectUpload() {
@@ -844,6 +856,11 @@ export default {
 							errorMsg,
 							flag
 						});
+					})
+					.catch(error => {
+						if (error.message.includes("timeout")) {
+							this.$message.error("Request Timeout!");
+						}
 					});
 			});
 		},

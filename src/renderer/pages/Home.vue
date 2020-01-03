@@ -373,6 +373,11 @@ export default {
 					} else {
 						this.$message.error(this.$t(`error[${res.Error}]`));
 					}
+				})
+				.catch(error => {
+					if (error.message.includes("timeout")) {
+						this.$message.error("Request Timeout!");
+					}
 				});
 		},
 		//get today 00:00 timestamp
@@ -652,6 +657,9 @@ export default {
 					}
 				})
 				.catch(err => {
+					if (err.message.includes("timeout")) {
+						this.$message.error("Request Timeout!");
+					}
 					console.error(err);
 				});
 		},

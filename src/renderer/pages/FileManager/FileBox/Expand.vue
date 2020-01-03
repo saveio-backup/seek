@@ -349,7 +349,11 @@ export default {
 	methods: {
 		async hasUploadedFile() {
 			let addr = this.$api.getFileList + "0/0/0/0";
-			let result = await this.$axios.get(addr);
+			let result = await this.$axios.get(addr).catch(error => {
+				if (error.message.includes("timeout")) {
+					this.$message.error("Request Timeout!");
+				}
+			});
 			if (result.Error === 0) {
 				if (result.Result.length) {
 					this.isUploadedFile = true;
@@ -417,6 +421,9 @@ export default {
 					}
 				})
 				.catch(err => {
+					if (err.message.includes("timeout")) {
+						this.$message.error("Request Timeout!");
+					}
 					console.error(err);
 				});
 		},
@@ -514,6 +521,8 @@ export default {
 						this.$message.error(
 							vm.$t("fileManager.networkErrorSetUserSpaceFailed")
 						);
+					} else {
+						this.$message.error("Request Timeout!");
 					}
 				});
 		},
@@ -548,6 +557,11 @@ export default {
 						this.cost.Fee = "";
 						this.cost.FeeFormat = "";
 						this.cost.TransferType = 1;
+					}
+				})
+				.catch(error => {
+					if (error.message.includes("timeout")) {
+						this.$message.error("Request Timeout!");
 					}
 				});
 		},

@@ -561,6 +561,8 @@ export default {
 				.catch(e => {
 					if (!e.message.includes("timeout")) {
 						this.$message.error(vm.$t("public.networkErrorOpenChannelFailed"));
+					} else {
+						this.$message.error('Request Timeout!')
 					}
 				});
 		},
@@ -590,6 +592,8 @@ export default {
 				.catch(e => {
 					if (!e.message.includes("timeout")) {
 						this.$message.error(vm.$t("public.networkErrorCloseChannelFailed"));
+					} else {
+						this.$message.error('Request Timeout!')
 					}
 				});
 		}

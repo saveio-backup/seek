@@ -158,9 +158,9 @@ export default {
 		this.$store.dispatch("setCurrentAccount"); // get login status
 		this.$store.dispatch("getDns"); // get login status
 		this.initBalanceRequest();
-		this.$store.dispatch('getUpload');
-		this.$store.dispatch('getDownload');
-		this.$store.dispatch('getComplete');
+		this.$store.dispatch("getUpload");
+		this.$store.dispatch("getDownload");
+		this.$store.dispatch("getComplete");
 	},
 	components: {
 		channelWalletTransfer,
@@ -231,7 +231,10 @@ export default {
 					this.$api.channelSwitch,
 					{
 						Partner: partnerAddress,
-						Password: crypto.createHash('sha256').update(vm.switchChannelForm.Password).digest('hex')
+						Password: crypto
+							.createHash("sha256")
+							.update(vm.switchChannelForm.Password)
+							.digest("hex")
 					},
 					{
 						loading: {
@@ -252,6 +255,11 @@ export default {
 						this.$store.dispatch("setChannelBind", ChannelId);
 					} else {
 						this.$message.error(this.$t(`error[${res.Error}]`));
+					}
+				})
+				.catch(error => {
+					if (error.message.includes("timeout")) {
+						this.$message.error("Request Timeout!");
 					}
 				});
 		},
@@ -333,8 +341,8 @@ $grey: #ccc;
 		.top-nav {
 			// background: #fff;
 			// box-shadow: 0px 2px 4px 0px rgba(231, 231, 235, 0.7);
-			@include themify{
-				background-color:$card-color;
+			@include themify {
+				background-color: $card-color;
 				box-shadow: $card-shadow;
 			}
 			height: 64px;
@@ -366,7 +374,7 @@ $grey: #ccc;
 			}
 			.channel-info {
 				font-weight: 400;
-				@include themify{
+				@include themify {
 					color: $filemanager-font-color;
 				}
 				width: 140px;
@@ -388,7 +396,7 @@ $grey: #ccc;
 				width: 200px;
 			}
 			.router {
-				@include themify{
+				@include themify {
 					color: $filemanager-font-color;
 				}
 				font-size: 1.8rem;
@@ -425,8 +433,8 @@ $grey: #ccc;
 				display: flex;
 				align-items: center;
 				position: relative;
-				.number{
-					@include themify{
+				.number {
+					@include themify {
 						color: $font-color;
 					}
 				}
@@ -438,7 +446,7 @@ $grey: #ccc;
 					text-align: center;
 					border-radius: 50%;
 					&:hover {
-						@include themify{
+						@include themify {
 							background-color: $color;
 						}
 					}

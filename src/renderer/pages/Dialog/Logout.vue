@@ -51,18 +51,22 @@ export default {
 					{},
 					{
 						loading: {
-							text: vm.$t('dialog.loggingOut'),
+							text: vm.$t("dialog.loggingOut"),
 							target: ".loading-content.logout-loading"
 						}
 					}
 				)
 				.then(res => {
 					if (res.Error === 0) {
-						const notClear = ['waitForUploadOrderList', 'uploadTask', 'localStatus']
-						outer: for(let value in window.localStorage) {
-							if(!window.localStorage.propertyIsEnumerable(value)) continue;
-							for(let notClearItem of notClear) {
-								if(value.startsWith(notClearItem)) {
+						const notClear = [
+							"waitForUploadOrderList",
+							"uploadTask",
+							"localStatus"
+						];
+						outer: for (let value in window.localStorage) {
+							if (!window.localStorage.propertyIsEnumerable(value)) continue;
+							for (let notClearItem of notClear) {
+								if (value.startsWith(notClearItem)) {
 									continue outer;
 								}
 							}
@@ -77,6 +81,9 @@ export default {
 				})
 				.catch(err => {
 					console.error(err);
+					if (err.message.includes("timeout")) {
+						this.$message.error("Request Timeout!");
+					}
 				});
 		},
 		logoutUploadViews() {

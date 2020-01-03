@@ -266,6 +266,9 @@ export default {
 						}
 					})
 					.catch(e => {
+						if (e.message.includes("timeout")) {
+							this.$message.error("Request Timeout!");
+						}
 						this.switchToggle.loading && this.switchToggle.loading.close();
 					});
 			});

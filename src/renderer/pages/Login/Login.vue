@@ -110,6 +110,8 @@ export default {
 				.catch(e => {
 					if (!e.message.includes("timeout")) {
 						this.$message.error(vm.$t("login.networkErrorLoginFailed"));
+					} else {
+						this.$message.error("Request Timeout!");
 					}
 				});
 		}

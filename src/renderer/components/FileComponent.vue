@@ -251,7 +251,7 @@
 							><i class="ofont ofont-guanbi"></i></span>
 							<span
 								class="active-blue cursor-pointer"
-								:title="$t('fileManager.lookDetail')"
+								:title="$t('fileManager.fileDistribution')"
 								@click="openDetailDialog(scope.row)"
 							><i class="ofont ofont-xiangqing"></i></span>
 							<!-- v-show="(scope.row.Nodes && scope.row.Nodes.length > 0) || scope.row.Status === 3" -->

@@ -94,8 +94,7 @@
 					></i>
 					<span
 						v-if="address"
-						@mouseleave="hiddenDialog"
-						@mouseenter="setDialog('state')"
+						@click="setDialog('state')"
 						class="process-status-wrapper"
 					>
 						<i
@@ -501,10 +500,12 @@ $slidebar-active-color: linear-gradient(
 			}
 
 			.process-status-wrapper {
-				// padding: 5px;
-				height: 10px;
-				width: 10px;
-				display: block;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				cursor: pointer;
+				height: 20px;
+				width: 20px;
 				margin: 20px auto 0;
 				& > .process-status {
 					width: 8px;

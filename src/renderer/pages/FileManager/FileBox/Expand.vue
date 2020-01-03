@@ -625,6 +625,7 @@ $grey: #ccc;
 			}
 
 			.space-progress {
+				margin-right:10px;
 				.el-progress-bar__outer,
 				.el-progress-bar__inner {
 					border-radius: 0px;

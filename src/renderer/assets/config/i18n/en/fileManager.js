@@ -22,7 +22,7 @@ const result = {
   'fileName': 'File Name',
   'share': 'Share',
   'openFolder': 'Open Folder',
-  'lookDetail': 'Look Detail',
+  'fileDistribution': 'File Distribution',
   'model': 'Model',
   'advance': 'Advance',
   'primary': 'Primary',

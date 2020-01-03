@@ -22,7 +22,7 @@ const result = {
   'fileName': '文件名称',
   'share': '分 享',
   'openFolder': '打开所在文件夹',
-  'lookDetail': '查看详情',
+  'fileDistribution': '文件分发',
   'model': '模 式',
   'advance': '高 级',
   'primary': '普 通',

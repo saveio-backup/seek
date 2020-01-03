@@ -30,6 +30,7 @@ export default class MenuWindow {
     })
     const url = DEFAULT_URL + '#' + 'menuWindow';
     this.win.loadURL(url);
+    this.win.on('blur',this.hiddenMenu.bind(this));
     // global.settingDB.queryData('console').then(async (res) => {
     //   if (res) {
     //     this.win.webContents.openDevTools();
@@ -71,9 +72,9 @@ export default class MenuWindow {
         width: 240,
         height: 170
       })
-      this.win.getParentWindow().focus();
+      // this.win.getParentWindow().focus();
       this.win.showInactive();
-      // this.win.focus();
+      this.win.focus();
     }
   }
   focus() {

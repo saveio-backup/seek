@@ -88,7 +88,7 @@
 										v-if="syncProcess(scope.row.Hash) > -1"
 										class="sync-process cursor-pointer"
 										@click.stop="openDetailDialogProcess(scope.row)"
-										:title="$t('fileManager.lookDetail')"
+										:title="$t('fileManager.fileDistribution')"
 									>
 										<circle-progress
 											:percentage="syncProcess(scope.row.Hash)"
@@ -136,7 +136,7 @@
 									</span>
 									<span
 										v-if="page === 'filebox'"
-										:title="$t('fileManager.lookDetail')"
+										:title="$t('fileManager.fileDistribution')"
 										@click.stop="openDetailDialog(scope.row)"
 										class="active-blue cursor-pointer"
 									>
@@ -573,7 +573,7 @@ export default {
 			},
 			page: "",
 			addrAPI: "",
-			limitCount: 20,
+			limitCount: 100,
 			currentFile: null,
 			// if no storage link upload is not allow message
 			linkRemindToggle: {

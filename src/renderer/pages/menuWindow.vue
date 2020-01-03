@@ -1,13 +1,12 @@
 <template>
+	<!-- @mouseleave="hiddenDialog" -->
 	<div
 		id="menu-window"
-		@mouseleave="hiddenDialog"
+		@blur="hiddenDialog"
 	>
 		<!-- MenuWindow -->
-		<div
-			@mouseenter="hiddenDialog"
-			style="padding:3px"
-		>
+		<!-- @mouseenter="hiddenDialog" -->
+		<div style="padding:3px">
 			<div
 				class="syncInfo box-shadow"
 				v-if="menuid === 'syncInfo'"

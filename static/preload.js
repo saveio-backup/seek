@@ -161,7 +161,6 @@ async function loadThirdPage(url, uuid, loadView) {
       try {
         fs.statSync(data.Path);
         ipcRenderer.send('load-third-page', data.Path, data.FileName, data.Id);
-        console.log('task finished!!!!');
       } catch (error) {
         console.error(`error ${error}`);
         loadView.pageLoadProgress = 0;
@@ -171,7 +170,6 @@ async function loadThirdPage(url, uuid, loadView) {
   } else if (thirdPageUid[uuid]) {
     console.log(`no result ${url}`);
     delete thirdPageUid[uuid]
-    console.log('loadErrorPage , uuid is:', uuid);
     loadView.pageLoadProgress = 0;
     ipcRenderer.send(uuid + '-loadErrorPage', {
       note: 'The task has been cancelled.'
@@ -183,7 +181,6 @@ async function loadThirdPage(url, uuid, loadView) {
 }
 
 async function cancelDownload(url) {
-  console.log('cancelDownload');
   let detail = null;
   try {
     detail = await getTransferDetail(url);
@@ -201,7 +198,6 @@ async function cancelDownload(url) {
     axios.post(api.downloadCancel, {
       Ids: [Id]
     }).then(res => {
-      console.log('download cancel');
       console.log(res);
     })
   }
@@ -242,7 +238,6 @@ function uniqId() {
   return Math.round(new Date().getTime() + (Math.random() * 100));
 }
 process.once('loaded', () => {
-  console.log('loaded');
   global.Seek = Seek;
   // global.ipcRenderer = ipcRenderer;
 })

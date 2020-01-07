@@ -56,9 +56,7 @@ export default {
 		};
 	},
 	mounted() {
-		console.log("exec mounted");
 		if (this.downloadUrl) {
-			console.log("download alive");
 			this.toGetFileInfo();
 		}
 	},

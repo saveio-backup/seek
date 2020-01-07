@@ -2,9 +2,22 @@ import {
   ipcMain
 } from 'electron'
 
+import {
+  UsermetaDB
+} from '../dbs/index_levelup';
+ipcMain.on('initUsermetaDB', (event, subDirname) => {
+  if ((!global.usermetaDB) || global.usermetaDB.subDirname != subDirname) {
+    global.usermetaDB && global.usermetaDB.close();
+    global.usermetaDB = new UsermetaDB(subDirname);
+    global.usermetaDB.initDB();
+  }
 
-// usermetaDB
+})
 ipcMain.on('getUsermeta', (event, key) => {
+  if (!global.usermetaDB) {
+    event.returnValue = null;
+    return;
+  }
   global.usermetaDB.queryData(key).then(async (res) => {
     event.returnValue = res;
   }).catch(err => {
@@ -13,7 +26,7 @@ ipcMain.on('getUsermeta', (event, key) => {
 })
 
 ipcMain.on('setUsermeta', (event, key, value) => {
-  global.usermetaDB.updateData(key, value).then(async () => {
+  global.usermetaDB && global.usermetaDB.updateData(key, value).then(async () => {
     event.returnValue = {
       status: true
     };

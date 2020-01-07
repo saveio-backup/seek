@@ -416,7 +416,6 @@ export default {
 				: "";
 		},
 		initCurrentRow() {
-			console.log(this.channelsDns);
 			let result = this.channelsDns.some((channel, index) => {
 				if (
 					channel.ChannelId.toString() === localStorage.getItem("channelBindId")
@@ -437,10 +436,6 @@ export default {
 			this.$refs.singleTable.setCurrentRow(row);
 		},
 		handleCurrentChange(currentRow, oldCurrentRow) {
-			// console.log("curreuntRow is");
-			// console.log(currentRow);
-			// console.log("oldCurrentRow is ");
-			// console.log(oldCurrentRow);
 			this.currentRow = currentRow ? currentRow : oldCurrentRow;
 			this.channelsDns.map((channel, index) => {
 				if (

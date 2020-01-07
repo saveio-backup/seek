@@ -91,6 +91,7 @@ const result = {
   'filePassword': '文件密码',
   'integrityVerificationCycle': '完整性验证周期',
   'integrityVerificationCycleCannotBeLongerThanStorageCycle': '完整性验证周期不能长于存储周期',
+  'backupNumCannoExceed': '备份数不能超过',
   'backups': '备 份',
   'authority': '权 限',
   'private': '私 有',

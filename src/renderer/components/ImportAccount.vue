@@ -165,7 +165,6 @@ export default {
 	data() {
 		let validatePassword = (rule, value, callback) => {
 			const vm = this;
-			console.log("value is", value);
 			if (!value.trim().length) {
 				this.switchToggle.passwordStrength = -1;
 				callback(new Error(vm.$t("account.pleaseFillYourPassword")));
@@ -296,14 +295,12 @@ export default {
 			});
 		},
 		importPrivateKey() {
-			console.log("private key");
 			ipcRenderer.send("open-file-dialog");
 			ipcRenderer.once("selected-file", (event, content) => {
 				this.privateKeyForm.PrivateKey = content;
 			});
 		},
 		importAccount() {
-			console.log("import account");
 			switch (this.importWay) {
 				case 0:
 					this.importAccountWithWalletFile();

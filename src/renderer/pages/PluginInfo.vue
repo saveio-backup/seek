@@ -97,6 +97,7 @@ export default {
 	},
 	mounted() {
 		this.getPluginsInfo();
+		this.$store.dispatch("setCurrentAccount"); // get login status
 	},
 	computed: {
 		lang: function() {
@@ -128,8 +129,6 @@ export default {
 				"getUsermeta",
 				"LocalUrlPlugins"
 			);
-			console.log("localUrlPlugins is");
-			console.log(localUrlPlugins);
 			for (let i = 0; i < plugins.length; i++) {
 				let detail = await this.getTransferDetail(plugins[i].Url);
 				// set isShow
@@ -303,6 +302,8 @@ export default {
 				.catch(error => {
 					if (error.message.includes("timeout")) {
 						this.$message.error("Request Timeout!");
+					}else{
+						this.$message.error(this.$t(`error[${res.Error}]`));
 					}
 				});
 		},
@@ -317,7 +318,6 @@ export default {
 				})
 				.then(res => {
 					if (res.Error === 0) {
-						console.log("download retry");
 						setTimeout(() => {
 							this.loadPlugin(url, pluginItem);
 						}, 2000);

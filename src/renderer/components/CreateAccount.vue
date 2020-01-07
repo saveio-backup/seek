@@ -201,7 +201,6 @@ export default {
 	data() {
 		let validatePassword = (rule, value, callback) => {
 			const vm = this;
-			console.log("value is", value);
 			if (!value.trim().length) {
 				this.switchToggle.passwordStrength = -1;
 				callback(new Error(vm.$t("account.pleaseFillYourPassword")));
@@ -358,10 +357,7 @@ export default {
 			};
 		},
 		accountStatus(value) {
-			console.log("acountStatus changed!!!");
-			console.log(value);
 			if (value === 1) {
-				console.log("set Title");
 				document.title = this.$t("account.blockSynchronization");
 			}
 		}

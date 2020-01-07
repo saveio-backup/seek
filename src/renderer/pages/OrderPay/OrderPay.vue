@@ -249,7 +249,6 @@ export default {
 				this.$axios
 					.post(this.$api.invokeContract, data)
 					.then(res => {
-						console.log(res);
 						if (res.Error === 0) {
 							this.switchToggle.loading && this.switchToggle.loading.close();
 							this.passwordForm.show = false;

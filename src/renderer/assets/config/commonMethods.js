@@ -16,7 +16,6 @@ const methods = {
     })
   },
   install(Vue) {
-    const vm = this;
     Vue.prototype.$exportWallet = function (event, cb) {
       console.log('event, cb');
       console.log(event, cb);
@@ -27,10 +26,8 @@ const methods = {
             ipcRenderer.send("export-file-dialog", res.Result.Wallet, 'keystore');
             ipcRenderer.once("export-finished", () => {
               if (cb) {
-                console.log(cb);
                 cb();
               } else {
-                console.log(vm);
                 // vm.activeMessage({
                 //   info: Vue.prototype.$t('dialog.exportSuccess'),
                 //   type: "success"

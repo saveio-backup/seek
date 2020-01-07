@@ -119,6 +119,8 @@ const actions = {
         if (res.Error === 0) {
           if (res.Result.Address) { // Wallet(Account) exist
             const result = res.Result;
+            ipcRenderer.sendSync("updateSettings", 'currentAddress', res.Result.Address);
+            ipcRenderer.send('initUsermetaDB', res.Result.Address); // set Usermeta db
             for (let key in result) {
               window.localStorage.setItem(key, result[key]);
             }
@@ -158,7 +160,7 @@ const actions = {
               window.localStorage.removeItem(value);
             }
           }
-        } else if(res.Error === 50012) {
+        } else if (res.Error === 50012) {
           if (location.href.indexOf('login') < 0) {
             router.replace({
               name: 'login'

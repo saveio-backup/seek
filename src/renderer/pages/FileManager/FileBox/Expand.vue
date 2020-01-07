@@ -289,7 +289,6 @@ export default {
 			);
 		},
 		sizeUnit: function() {
-			console.log("Watch sizeUnit!!!");
 			if (this.isUploadedFile) {
 				this.adjustSize = Math.max(
 					this.minSize,
@@ -366,16 +365,10 @@ export default {
 		},
 		addListenScroll(element, distance, callback) {
 			element.addEventListener("scroll", function() {
-				/* 				console.log(`element.scrollTop is: ${element.scrollTop},
-				element.clientHeight is ${element.clientHeight},
-				distance is ${distance},
-				element.scrollHeight is ${element.scrollHeight}
-				`); */
 				if (
 					element.scrollTop + element.clientHeight + distance >=
 					element.scrollHeight
 				) {
-					console.log("scroll Toggle");
 					callback();
 				}
 			});
@@ -594,13 +587,10 @@ export default {
 				this.addInfo.Second.Type = 0;
 				return;
 			}
-			console.log("expired: ", this.expired);
-			console.log("before e is :", e);
 			if (!fixed) {
 				console.log("not fixed time, so we adjust to last second");
 				e = new Date(new Date(e).getTime() + 86399000);
 			}
-			console.log("e is:", e);
 			this.expired = e;
 			this.userSpaceCost();
 		}

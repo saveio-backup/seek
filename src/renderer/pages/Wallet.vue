@@ -700,16 +700,10 @@ export default {
 		},
 		addListenScroll(element, distance, callback) {
 			element.addEventListener("scroll", function() {
-				// console.log(`element.scrollTop is: ${element.scrollTop},
-				// element.clientHeight is ${element.clientHeight},
-				// distance is ${distance},
-				// element.scrollHeight is ${element.scrollHeight}
-				// `);
 				if (
 					element.scrollTop + element.clientHeight + distance >=
 					element.scrollHeight
 				) {
-					console.log("scroll Toggle");
 					callback();
 				}
 			});

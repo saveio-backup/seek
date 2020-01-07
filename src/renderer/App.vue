@@ -39,8 +39,6 @@ export default {
 			this[type + "Update"]({ result, page });
 		});
 		ipcRenderer.on("set-theme", (event, theme) => {
-			console.log("set-theme evenit get!!");
-			console.log("theme is", theme);
 			document.querySelector(
 				"#theme-ui"
 			).href = `./static/css/${theme}/theme/index.css`;
@@ -50,13 +48,13 @@ export default {
 			if (res.Error === 0) {
 				localStorage.setItem("edgeVersion", res.Result || "");
 			}
-		})
+		});
 		// .catch(error => {
 		// 	if (error.message.includes('timeout')) {
-    //     Message.error({
-    //       message: 'Request Timeout!'
-    //     })
-    //   }
+		//     Message.error({
+		//       message: 'Request Timeout!'
+		//     })
+		//   }
 		// })
 	},
 	watch: {
@@ -87,7 +85,6 @@ export default {
 					 * type: 0: failed;1: restart success
 					 */
 					ipcRenderer.on("edgeClose", (event, type) => {
-						console.log(`edgeClose callback restart: failed`);
 						this.$axios.get = null;
 						this.$axios.post = null;
 						this.$message({

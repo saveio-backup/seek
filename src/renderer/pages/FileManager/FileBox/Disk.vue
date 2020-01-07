@@ -666,7 +666,6 @@ export default {
 						tableElement.scrollTop + tableElement.clientHeight + distance >=
 						tableElement.scrollHeight
 					) {
-						console.log("scroll Toggle");
 						that.getFileLists();
 					}
 				} else {
@@ -1091,7 +1090,6 @@ export default {
 	},
 	watch: {
 		fileToDownload: function() {
-			console.log("fileToDownload Changed.");
 			let fileToDownload = this.fileToDownload;
 			let cost = 0;
 			let size = 0;
@@ -1139,7 +1137,6 @@ export default {
 			});
 		},
 		fileToDelete: function() {
-			console.log("file to delete info changed");
 			let fileToDelete = this.fileToDelete;
 			let name = "";
 			fileToDelete.map((item, index) => {

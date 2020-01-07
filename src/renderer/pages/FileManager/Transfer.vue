@@ -69,8 +69,6 @@ export default {
 	},
 	beforeRouteEnter(to, from, next) {
 		next(vm => {
-			console.log('to.query.transferType');
-			console.log(to.query.transferType);
 			vm.transferType =
 				to.query.transferType >= 0 ? to.query.transferType : vm.transferType;
 			if(to.query.transferType == 0) {
@@ -79,9 +77,6 @@ export default {
 		});
 	},
 	beforeRouteUpdate(to, from, next) {
-		console.log("router update!!!!");
-		console.log("to is");
-		console.log(to);
 		this.transferType = to.query.transferType >= 0 ? to.query.transferType : 2;
 		// localStorage.setItem("transferType", this.transferType);
 		if(to.query.transferType === 0) {
@@ -90,8 +85,6 @@ export default {
 			this.$store.dispatch('clearIntervalSyncFileList');
 		}
 		next();
-		console.log("transferType is");
-		console.log(this.transferType);
 	},
 	beforeRouteLeave(to, from, next) {
 		let type = to.query.transferType;

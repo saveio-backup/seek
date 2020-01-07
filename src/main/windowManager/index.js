@@ -255,7 +255,6 @@ class View {
     }
     //if is pdf loading pdf html
     if (url.toLowerCase().endsWith('.pdf')) {
-      console.log('open pdf page!!!!')
       this.resize();
       this.loadURL(`${__static}\\html\\pdf\\web\\viewer.html?file=${url}`);
       this.setBroserView();

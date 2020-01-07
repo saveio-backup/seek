@@ -179,7 +179,6 @@ export default {
 	},
 	mounted() {
 		ipcRenderer.on("forceUpdate", () => {
-			console.log("forceUpdate!!!!!");
 			this.$forceUpdate();
 			this.views = remote.getCurrentWindow().views;
 		});
@@ -241,8 +240,6 @@ export default {
 			this.user = {
 				name: localStorage.getItem("Label") || ""
 			};
-			console.log("new Value is");
-			console.log(newValue);
 			this.inputDisplayUrl = this.activeView.displayURL;
 		}
 	},
@@ -275,7 +272,6 @@ export default {
 			this.$forceUpdate();
 		},
 		remoteDestory(view, index) {
-			console.log("to use remote destroy");
 			view.destroy(index);
 		},
 		remoteFormatDisplayURL(view) {
@@ -303,7 +299,6 @@ export default {
 			}
 			// browserView go url
 			view.url = this.inputDisplayUrl;
-			console.log(this.inputDisplayUrl);
 			view.onNewUrl(this.inputDisplayUrl);
 		},
 		remoteOpenComponent(path) {

@@ -354,13 +354,11 @@ export default {
 		// ws connect success
 		websocketonopen() {
 			this.wsOpeation.reconnectNumber = 0;
-			console.log("connect");
 			let actions = { Action: "subscribe" };
 			this.websocketsend(JSON.stringify(actions));
 			// add heart beat;
 			clearInterval(this.wsOpeation.setIntervalObj);
 			this.wsOpeation.setIntervalObj = setInterval(() => {
-				console.log("heartbeat");
 				const hreatbeat = { Action: "heartbeat" };
 				this.websocketsend(JSON.stringify(hreatbeat));
 			}, 180000);

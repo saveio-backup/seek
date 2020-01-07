@@ -37,14 +37,16 @@ import * as node from "./node"
 app.on('ready', function () {
   global.settingDB = new SettingDB(); // store SettingDB in global var
   global.HistoryDB = new HistoryDB(); // store HistoryDB in global var
-  global.usermetaDB = new UsermetaDB(); // store UsermetaDB in global var 
+  // global.usermetaDB = new UsermetaDB(); // store UsermetaDB in global var 
 
 
   global.settingDB.initDB(async () => {
+    const currentAddress = await global.settingDB.queryData('currentAddress');
     node.setupConfig(app.getPath("appData"), app.getName());
     node.setFrontConfig(app.getPath("appData"), app.getName());
     (!frontCfgObj().devEdgeEnable) && node.run(app.getPath("appData"), app.getName());
     createWindow(winURL);
+    global.usermetaDB = new UsermetaDB(currentAddress);
     global.HistoryDB.initDB();
     global.usermetaDB.initDB();
   })

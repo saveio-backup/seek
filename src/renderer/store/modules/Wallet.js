@@ -86,8 +86,6 @@ function requestBalanceLists(commit) {
 }
 
 function requestTransActions(commit, config) {
-  console.log('config');
-  console.log(config);
   let skipTxCountFromBlock = 0;
   let {
     asset = '',
@@ -126,7 +124,6 @@ function requestTransActions(commit, config) {
       }, 5000);
     } else {
       if (axios.isCancel(thrown)) {
-        console.log('Request canceled', thrown.message);
       } else {
         console.error('request error');
         console.error(thrown);

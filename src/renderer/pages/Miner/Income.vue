@@ -151,7 +151,6 @@ export default {
 						element.scrollTop + element.clientHeight + distance >=
 						element.scrollHeight
 					) {
-						console.log("scroll Toggle");
 						callback();
 					}
 				} else {
@@ -179,7 +178,6 @@ export default {
 				.get(addr)
 				.then(res => {
 					if (res.Error === 0) {
-						console.log(res);
 						const result = res.Result;
 						this.result.TotalIncome = result.TotalIncome;
 						this.result.TotalIncomeFormat = result.TotalIncomeFormat;

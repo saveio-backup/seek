@@ -188,9 +188,14 @@
 						:label="$t('fileManager.backups')"
 						prop="CopyNum"
 					>
+						<p
+							v-show="contractSetting.MaxCopyNum"
+							class="dark-grey tootips break-word"
+						>{{$t('fileManager.backupNumCannoExceed') + " " +contractSetting.MaxCopyNum}}</p>
 						<el-input-number
 							type="number"
 							:min="0"
+							:max="contractSetting.MaxCopyNum"
 							class="form-right"
 							v-model="advancedData.CopyNum"
 							@change='toGetPrice'
@@ -463,7 +468,14 @@ export default {
 			verificationCycleNumber: 30, // Integrity verification cycle
 			storageCycleSelected: DEFAULT_KEY, // default Year
 			storageCycleNumber: 1,
-			DefaultCopyNum: "", // axios.get
+			contractSetting: {
+				// axios.get
+				DefaultCopyNum: "",
+				DefaultProvePeriod: "",
+				MaxCopyNum: 5,
+				MinProveInterval: "",
+				MinVolume: ""
+			},
 			passwordForm: {
 				Password: "",
 				show: false
@@ -563,7 +575,6 @@ export default {
 				return;
 			}
 			fs.stat(file.raw.path, (err, stats) => {
-				console.log(stats);
 				if (err) {
 					console.log("err", err);
 				}
@@ -639,8 +650,8 @@ export default {
 				.get(this.$api.getfscontractsetting)
 				.then(res => {
 					if (res.Error === 0) {
-						this.DefaultCopyNum = res.Result.DefaultCopyNum;
-						this.advancedData.CopyNum = this.DefaultCopyNum;
+						this.contractSetting = res.Result;
+						this.advancedData.CopyNum = this.contractSetting.DefaultCopyNum;
 					} else {
 						this.$message.error(this.$t(`error[${res.Error}]`));
 					}
@@ -734,8 +745,6 @@ export default {
 		// get price when verificationCycleNumber and verificationCycleSelected be changed
 		setDataInterval() {
 			this.formatVerificationCycleNumber();
-			console.log("verificationCycleNumber is: ");
-			console.log(this.verificationCycleNumber);
 			this.advancedData.Interval =
 				this.verificationCycleNumber *
 				this.BASE[this.verificationCycleSelected];
@@ -743,8 +752,6 @@ export default {
 		},
 		// format verificationCycleNumber value
 		formatVerificationCycleNumber() {
-			console.log("before foramt verificationCycleNumber is ");
-			console.log(this.verificationCycleNumber);
 			this.verificationCycleNumber = Math.min(
 				this.verificationCycleNumber,
 				Math.floor(

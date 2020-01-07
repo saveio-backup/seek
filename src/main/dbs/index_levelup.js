@@ -26,6 +26,7 @@ const DEFAULT_USERSUMMARY_CONFIG = {
   Settings: { // default setting
     type: 'JSON',
     value: {
+      currentAddress:'',
       console: false,
       devEdgeEnable: false,
       maxNumUpload: 5,
@@ -48,9 +49,11 @@ const DEFAULT_USERSUMMARY_CONFIG = {
 let g_seekLevelDB = path.join(app.getPath("appData"), app.getName(), "seekLevelDB");
 
 class SeekLevelDB {
-  constructor(dbName) {
-    initDir();
-    const dbPath = path.join(g_seekLevelDB, dbName);
+  constructor(dbName, subDirname) {
+    subDirname = subDirname || '';
+    initDir(subDirname, dbName);
+    const dbPath = path.join(g_seekLevelDB, subDirname, dbName);
+    this.subDirname = subDirname; // set User wallet Address as dirname
     this.db = levelup(leveldown(dbPath), (err) => {
       if (err) {
         console.log('level failed!!');
@@ -120,8 +123,8 @@ class SeekLevelDB {
 }
 
 class UsermetaDB extends SeekLevelDB {
-  constructor() {
-    super('Usermeta');
+  constructor(subDirname) {
+    super('Usermeta', subDirname);
   }
 
   initDB(callback) {
@@ -226,21 +229,15 @@ class HistoryDB extends SeekLevelDB {
   }
 }
 // create dirctory if not exist
-function initDir(subDirname) {
-  fs.mkdirSync(g_seekLevelDB, {
+function initDir(...dirname) {
+  const subPath = path.join(g_seekLevelDB, ...dirname);
+  fs.mkdirSync(subPath, {
     recursive: true
   }, err => {
+    console.log('subdirname error');
     console.error(err);
   });
-  if (subDirname) {
-    const subPath = path.join(g_seekLevelDB, subDirname);
-    fs.mkdirSync(subPath, {
-      recursive: true
-    }, err => {
-      console.log('subdirname error');
-      console.error(err);
-    });
-  }
+
 }
 export {
   UsermetaDB,

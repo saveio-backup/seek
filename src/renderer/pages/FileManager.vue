@@ -150,8 +150,6 @@ export default {
 	mounted() {
 		document.title = this.$t("fileManager.fileManager");
 		ipcRenderer.on("queryto", (sender, query) => {
-			console.log("query is ");
-			console.log(query);
 			this.$router.push({ name: "transfer", query: query });
 		});
 		this.$store.dispatch("getWaitForTransferList"); // get wait for upload list
@@ -196,7 +194,6 @@ export default {
 			this.switchToggle.assetTransferDialog = true;
 		},
 		hideAssetSettingDialog() {
-			console.log("hideAsset");
 			this.switchToggle.assetSettingDialog = false;
 		},
 		toConfirm() {

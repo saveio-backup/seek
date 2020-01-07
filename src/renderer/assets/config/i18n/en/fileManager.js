@@ -91,6 +91,7 @@ const result = {
   'filePassword': 'File Password',
   'integrityVerificationCycle': 'Integrity Verification Cycle',
   'integrityVerificationCycleCannotBeLongerThanStorageCycle': 'Integrity Verification Cycle cannot be longer than Storage Cycle',
+  'backupNumCannoExceed':'The number of backups cannot exceed',
   'backups': 'Backups',
   'authority': 'Authority',
   'private': 'Private',

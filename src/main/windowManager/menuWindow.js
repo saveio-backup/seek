@@ -41,10 +41,8 @@ export default class MenuWindow {
     // }
   }
   hiddenMenu(from) {
-    console.log('hide from',from);
     clearTimeout(this.setTimeoutObj)
     this.setTimeoutObj = setTimeout(() => {
-      console.log('hiddenMenu---------------->')
       this.win.hide();
       this.blur();
     },150);

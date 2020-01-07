@@ -160,7 +160,6 @@ export default {
 			localStorage.setItem("DNSAdress", "done");
 		}
 		ipcRenderer.on("open-add-channel-dialog", (event, dnsAdress) => {
-			console.log(dnsAdress);
 			vm.openOpen(dnsAdress, 100);
 			// vm.$refs.channelListObj.openOpen(dnsAdress, 100);
 		});
@@ -531,7 +530,6 @@ export default {
 		},
 		// init balance chart
 		drawBalanceView(balanceXAxisData, balanceData) {
-			// console.log(this.themeColor);
 			let areaColor = this.themeColor === "dark" ? "#303036" : "#F8F9FA";
 			let lineColor =
 				this.themeColor === "dark"

@@ -74,8 +74,6 @@ export default {
 		},
 		rippleAnimation($event) {
 			let event = $event;
-			// console.log($event);
-			// console.log($event.target.offsetParent);
 			let w = event.target.offsetWidth,
 				h = event.target.offsetHeight,
 				x = event.offsetX,

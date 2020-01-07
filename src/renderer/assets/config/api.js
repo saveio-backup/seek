@@ -13,8 +13,7 @@ const userDataPath = app.getPath('userData');
 const chainId = ipcRenderer.sendSync('getSettings', 'ChainId');
 let HOST = null;
 const exist = fs.existsSync(`${userDataPath}/config-${chainId}.json`);
-if (exist) {
-  console.log('chainid .json   exist !!!!!!!');
+if (exist) { // chainid.json   exist
   const cfg = fs.readFileSync(`${userDataPath}/config-${chainId}.json`);
   if (cfg) {
     const cfgObj = JSON.parse(cfg);
@@ -22,8 +21,7 @@ if (exist) {
       HOST = `http://localhost:${cfgObj.Base.PortBase + cfgObj.Base.HttpRestPortOffset}/api/`;
     }
   }
-} else {
-  console.log('not exist!!!!');
+} else { // not exist!!
   try {
     const result = ipcRenderer.sendSync("updateSettings", 'ChainId', DEFAULT_CHAINID);
     const cfg = fs.readFileSync(`${userDataPath}/config-${DEFAULT_CHAINID}.json`);

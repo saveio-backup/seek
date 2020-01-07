@@ -90,6 +90,7 @@
 					<p
 						:title="pathDir.DownloadPath"
 						class="pathdir tertiary-font-color"
+						@click="showInFolder(pathDir.DownloadPath)"
 					>{{pathDir.DownloadPath}}</p>
 				</div>
 				<el-button @click="setDir('DownloadPath')">{{$t('settings.change')}}</el-button>
@@ -152,7 +153,7 @@
 	</div>
 </template>
 <script>
-import { ipcRenderer, remote } from "electron";
+import { ipcRenderer, remote, shell } from "electron";
 import { DEFAULT_CHAINID } from "../../main/windowManager/defaultOption";
 export default {
 	mounted() {
@@ -220,7 +221,6 @@ export default {
 		setTheme(theme) {
 			setTimeout(() => {
 				for (let win of remote.BrowserWindow.getAllWindows()) {
-					console.log(win.webContents.getURL());
 					ipcRenderer.sendTo(
 						win.webContents.id,
 						"set-theme",
@@ -333,8 +333,6 @@ export default {
 			this.$axios
 				.get(this.$api.config)
 				.then(res => {
-					console.log("config is ");
-					console.log(res);
 					Object.assign(this.pathDir, res.Result);
 				})
 				.catch(error => {
@@ -345,7 +343,6 @@ export default {
 		},
 		switchChainId(id) {
 			const vm = this;
-			console.log("switch chainid", id);
 			this.$axios
 				.post(
 					this.$api.switchChainId,
@@ -393,6 +390,9 @@ export default {
 						}
 					});
 			});
+		},
+		showInFolder(path){
+			shell.showItemInFolder(path);
 		}
 	}
 };
@@ -432,6 +432,8 @@ export default {
 					overflow: hidden;
 					text-overflow: ellipsis;
 					white-space: nowrap;
+					text-decoration:underline;
+					cursor: pointer;
 				}
 			}
 			.img-selector {

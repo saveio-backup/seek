@@ -724,7 +724,7 @@ export default {
 			nodeSpeed: {},
 			speedIntervalObj: null,
 			passHowLongTimeGetFileList: 0, //computed how long time get file list
-			taskSpeedNum: 1 // computed fileList change max time（3s）
+			taskSpeedNum: 3 // computed fileList change max time（3s）
 		};
 	},
 	watch: {
@@ -1282,10 +1282,7 @@ export default {
 				if (waitForUploadArr.length > 0) {
 					// check password is not true
 					let passParams = {
-						Password: crypto
-							.createHash("sha256")
-							.update(params.Password)
-							.digest("hex")
+						Password: params.Password
 					};
 					let passwordCheck = await this.$axios.post(
 						this.$api.checkPassword,
@@ -1900,11 +1897,7 @@ export default {
 		getTaskSpeed() {
 			let oldTaskSpeed = this.taskSpeed;
 			let newTaskSpeed = {};
-			this.taskSpeedNum++;
-			if (this.taskSpeedNum !== 1) {
-				this.passHowLongTimeGetFileList = this.taskSpeedNum;
-				return;
-			}
+			this.taskSpeedNum = this.taskSpeedNum + 3;
 			for (let value of this.fileList) {
 				let uploadOrDownloadSize = value.UploadSize || value.DownloadSize;
 				let speed =
@@ -1914,13 +1907,37 @@ export default {
 						: uploadOrDownloadSize);
 				if (newTaskSpeed[value.Id]) continue;
 				newTaskSpeed[value.Id] = {
-					speed: speed / (this.passHowLongTimeGetFileList + 1),
+					speed: speed / 3,
 					FileSize: uploadOrDownloadSize
 				};
 			}
-			this.passHowLongTimeGetFileList++;
 			this.taskSpeed = newTaskSpeed;
 		},
+		// getTaskSpeed() {
+		// 	let oldTaskSpeed = this.taskSpeed;
+		// 	let newTaskSpeed = {};
+		// 	this.taskSpeedNum = this.taskSpeedNum + 3;
+		// 	if (this.taskSpeedNum !== 3) {
+		// 		this.passHowLongTimeGetFileList = this.taskSpeedNum;
+		// 		return;
+		// 	}
+		// 	for (let value of this.fileList) {
+		// 		let uploadOrDownloadSize = value.UploadSize || value.DownloadSize;
+		// 		let speed =
+		// 			uploadOrDownloadSize -
+		// 			(oldTaskSpeed[value.Id]
+		// 				? oldTaskSpeed[value.Id].FileSize
+		// 				: uploadOrDownloadSize);
+		// 		if (newTaskSpeed[value.Id]) continue;
+		// 		newTaskSpeed[value.Id] = {
+		// 			speed: speed / (this.passHowLongTimeGetFileList + 3),
+		// 			FileSize: uploadOrDownloadSize
+		// 		};
+		// 	}
+		// 	// this.passHowLongTimeGetFileList = this.passHowLongTimeGetFileList + 3;
+		// 	this.passHowLongTimeGetFileList = 3;
+		// 	this.taskSpeed = newTaskSpeed;
+		// },
 		/**
 		 * params
 		 * isF: is not force run
@@ -1952,7 +1969,8 @@ export default {
 		}
 	},
 	mounted() {
-		const INTERVAL_TIME = 1000;
+		// const INTERVAL_TIME = 1000;
+		const INTERVAL_TIME = 3000;
 		clearInterval(this.speedIntervalObj);
 		this.speedIntervalObj = setInterval(() => {
 			this.getTaskSpeed();

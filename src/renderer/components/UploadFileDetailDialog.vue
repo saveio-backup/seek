@@ -87,14 +87,15 @@
 						>
 						</el-table-column>
 						<el-table-column
-							label='Hash'
+							label='HostAddr'
+							prop="HostAddr"
 							min-width="140"
 						>
-							<template>
+							<!-- <template>
 								<div>
-									{{fileDetail && fileDetail.FileHash}}
+									{{fileDetail && fileDetail.HostAddr}}
 								</div>
-							</template>
+							</template> -->
 						</el-table-column>
 						<el-table-column
 							:label='$t("public.status")'

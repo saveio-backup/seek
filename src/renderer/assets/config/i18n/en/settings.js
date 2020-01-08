@@ -7,7 +7,7 @@ const result = {
   'maxUploadLength': 'Maximum number of tasks',
   'maxPeerNum': 'Maximum number of peer',
   'downloadPath': 'Download Path',
-  'logDir': 'Log Directory',
+  'logDir': 'Log Path',
   'open': 'open',
   'themeColor': 'Theme Color',
   'theme': {

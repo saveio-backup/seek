@@ -1947,29 +1947,48 @@ export default {
 		 *  */
 		getNodeSpeed(isF = false) {
 			if (this.transferType === 1) return;
-			if ((this.fileDetailNodes.length > 0 && this.taskSpeedNum === 1) || isF) {
+			// if ((this.fileDetailNodes.length > 0 && this.taskSpeedNum === 1) || isF) {
 				let oldNodeSpeed = this.nodeSpeed;
 				let newNodeSpeed = {};
 				for (let value of this.fileDetailNodes) {
 					let uploadOrDownloadSize = value.UploadSize || value.DownloadSize;
-					// let speed =
-					// 	uploadOrDownloadSize -
-					// 	(oldNodeSpeed[value.HostAddr] !== undefined
-					// 		? oldNodeSpeed[value.HostAddr].FileSize
-					// 		: 0);
 					let speed =
 						oldNodeSpeed[value.HostAddr] !== undefined
 							? uploadOrDownloadSize -
 							  (oldNodeSpeed[value.HostAddr].FileSize || 0)
 							: 0;
+					// newNodeSpeed[value.HostAddr] = {
+					// 	speed: speed / this.passHowLongTimeGetFileList,
+					// 	FileSize: uploadOrDownloadSize
+					// };
 					newNodeSpeed[value.HostAddr] = {
-						speed: speed / this.passHowLongTimeGetFileList,
+						speed: speed / 3,
 						FileSize: uploadOrDownloadSize
 					};
 				}
 				this.nodeSpeed = newNodeSpeed;
-			}
-		}
+			// }
+		},
+		// getNodeSpeed(isF = false) {
+		// 	if (this.transferType === 1) return;
+		// 	if ((this.fileDetailNodes.length > 0 && this.taskSpeedNum === 1) || isF) {
+		// 		let oldNodeSpeed = this.nodeSpeed;
+		// 		let newNodeSpeed = {};
+		// 		for (let value of this.fileDetailNodes) {
+		// 			let uploadOrDownloadSize = value.UploadSize || value.DownloadSize;
+		// 			let speed =
+		// 				oldNodeSpeed[value.HostAddr] !== undefined
+		// 					? uploadOrDownloadSize -
+		// 					  (oldNodeSpeed[value.HostAddr].FileSize || 0)
+		// 					: 0;
+		// 			newNodeSpeed[value.HostAddr] = {
+		// 				speed: speed / this.passHowLongTimeGetFileList,
+		// 				FileSize: uploadOrDownloadSize
+		// 			};
+		// 		}
+		// 		this.nodeSpeed = newNodeSpeed;
+		// 	}
+		// }
 	},
 	mounted() {
 		// const INTERVAL_TIME = 1000;

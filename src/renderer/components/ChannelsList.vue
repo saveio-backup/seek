@@ -532,34 +532,44 @@ export default {
 		},
 		toChannelOpen(params) {
 			const vm = this;
-			this.$axios
-				.post(this.$api.channelOPen, params, {
-					loading: {
-						text: vm.$t("public.processing"),
-						target: ".loading-content-2"
-					},
-					// timeout: 60000
-					timeout: this.$config.outTime * 10000 + 50000
-				})
-				.then(res => {
-					if (res.Error === 0) {
-						this.$message({
-							message: vm.$t("public.openChannelSuccessed"),
-							type: "success"
-						});
-						this.channelToggle.channelCloseDialog = false;
-						this.$store.dispatch("setChannelBalanceTotal");
-					} else {
-						this.$message.error(this.$t(`error[${res.Error}]`));
-					}
-				})
-				.catch(e => {
-					if (!e.message.includes("timeout")) {
-						this.$message.error(vm.$t("public.networkErrorOpenChannelFailed"));
-					} else {
-						this.$message.error('Request Timeout!')
-					}
-				});
+			if (
+				(this.channelForm.amount > 0 &&
+					this.currentBalanceFormat > (parseFloat(this.channelForm.amount) + 0.02)) ||
+				(this.channelForm.amount == 0 && parseFloat(this.currentBalanceFormat) >= 0.01)
+			) {
+				this.$axios
+					.post(this.$api.channelOPen, params, {
+						loading: {
+							text: vm.$t("public.processing"),
+							target: ".loading-content-2"
+						},
+						// timeout: 60000
+						timeout: this.$config.outTime * 10000 + 50000
+					})
+					.then(res => {
+						if (res.Error === 0) {
+							this.$message({
+								message: vm.$t("public.openChannelSuccessed"),
+								type: "success"
+							});
+							this.channelToggle.channelCloseDialog = false;
+							this.$store.dispatch("setChannelBalanceTotal");
+						} else {
+							this.$message.error(this.$t(`error[${res.Error}]`));
+						}
+					})
+					.catch(e => {
+						if (!e.message.includes("timeout")) {
+							this.$message.error(
+								vm.$t("public.networkErrorOpenChannelFailed")
+							);
+						} else {
+							this.$message.error("Request Timeout!");
+						}
+					});
+			} else {
+				this.$message.error(vm.$t("public.insufficientBalanceAvailable"));
+			}
 		},
 		toChannelClose(params) {
 			const vm = this;
@@ -588,7 +598,7 @@ export default {
 					if (!e.message.includes("timeout")) {
 						this.$message.error(vm.$t("public.networkErrorCloseChannelFailed"));
 					} else {
-						this.$message.error('Request Timeout!')
+						this.$message.error("Request Timeout!");
 					}
 				});
 		}
@@ -660,6 +670,18 @@ export default {
 		},
 		isSync: function() {
 			return this.$store.state.Home.isSync || false;
+		},
+		balanceLists() {
+			return this.$store.state.Wallet.balanceLists;
+		},
+		currentBalanceFormat() {
+			// let sum = 0;
+			if (!this.balanceLists) return 0;
+			for (let value of this.balanceLists) {
+				if (value.Symbol === "SAVE") {
+					return value.BalanceFormat;
+				}
+			}
 		}
 	}
 };

@@ -125,21 +125,26 @@ let cacheRestartObj = {
 let cfgObj = null;
 
 const setupConfig = async (appDataPath, appName) => {
-    let deadline = 1567767645712; // Fri Sep 06 2019 19:00:45 GMT+0800
+    // let deadline = 1567767645712; // Fri Sep 06 2019 19:00:45 GMT+0800
+    let deadline = 1578483813542 // Wed Jan 08 2020 19:43:33 GMT+0800 (China Standard Time)
     let cfg0;
+    let cfg1;
     let cfg2;
     let cfgAlpha;
     if (getPlatform() == "win") {
         cfg0 = `${appDataPath}\\${appName}\\config-0.json`;
+        cfg1 = `${appDataPath}\\${appName}\\config-1.json`;
         cfg2 = `${appDataPath}\\${appName}\\config-2.json`;
         cfgAlpha = `${appDataPath}\\${appName}\\config-alpha.json`;
     } else {
         cfg0 = `${appDataPath}/${appName}/config-0.json`;
+        cfg1 = `${appDataPath}/${appName}/config-1.json`;
         cfg2 = `${appDataPath}/${appName}/config-2.json`;
         cfgAlpha = `${appDataPath}/${appName}/config-alpha.json`;
     }
 
     unlinkFile(cfg0);
+    unlinkFile(cfg1);
     unlinkFile(cfg2);
     unlinkFile(cfgAlpha);
 

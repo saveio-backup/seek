@@ -280,10 +280,6 @@ export default {
 		},
 
 		downloadPlugin(url, plugItem) {
-			this.$message({
-				message: this.$t("plugin.startDownload"),
-				type: "success"
-			});
 			this.$axios
 				.post(this.$api.download, {
 					Url: url,
@@ -292,18 +288,21 @@ export default {
 				})
 				.then(res => {
 					if (res.Error === 0) {
+						this.$message({
+							message: this.$t("plugin.startDownload"),
+							type: "success"
+						});
 						setTimeout(() => {
 							this.loadPlugin(url, plugItem);
 						}, 2000);
 					} else {
 						console.log("emit loadErrorPage");
+						this.$message.error(this.$t(`error[${res.Error}]`));
 					}
 				})
 				.catch(error => {
 					if (error.message.includes("timeout")) {
 						this.$message.error("Request Timeout!");
-					}else{
-						this.$message.error(this.$t(`error[${res.Error}]`));
 					}
 				});
 		},

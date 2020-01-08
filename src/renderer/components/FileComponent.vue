@@ -184,7 +184,7 @@
 								<span class="light-blue">{{$t('fileManager.taskPause')}}</span>
 							</div>
 							<div v-else-if="scope.row.Status === 4">
-								<span class="light-error">{{scope.row.ErrMsg || (transferType === 1? $t('fileManager.uploadFailed'):transferType === 2?$t('fileManager.downloadFailed'):'')}}</span>
+								<span class="light-error">{{scope.row.ErrMsg.replace(/Neo/g,'NeDevo') || (transferType === 1? $t('fileManager.uploadFailed'):transferType === 2?$t('fileManager.downloadFailed'):'')}}</span>
 							</div>
 							<div
 								class="light-blue"

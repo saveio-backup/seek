@@ -1,9 +1,10 @@
 $themes: ( // no coment, just for format code
   'light': ( // same as above
     'primary-font-color':#202020,
-    'tertiary-font-color':#a6a6a6,
+    'tertiary-font-color':#6d6d6d,
     'line-color':rgba(32,32,32,0.1),
     'color':#f9f9fb, // bgcolor
+    'logo-font-color':#dfdfe1,
     'content-block-bg':#fff,
     // 'color-menu': #f9f9fb, //bgcolor menu
     'navigation-bg':#dfe2e9,
@@ -26,6 +27,7 @@ $themes: ( // no coment, just for format code
     'tertiary-font-color':#a6a6a6,
     'line-color':rgba(255, 255, 255, 0.1),
     'color':#2A2B30,
+    'logo-font-color':#fff,
     'content-block-bg':#2A2B30,
     // 'color-menu': #35363C, //bgcolor menu
     'navigation-bg':#1c1d21,
@@ -55,6 +57,7 @@ $font-color:null;
       $primary-font-color: map-get($props, 'primary-font-color') !global;
       $tertiary-font-color: map-get($props,'tertiary-font-color')!global;
       $color: map-get($props, 'color') !global;
+      $logo-font-color:  map-get($props, 'logo-font-color') !global;
       $content-block-bg:map-get($props, 'content-block-bg') !global;
       $line-color:map-get($props, 'line-color') !global;
       // $color-menu:map-get($props, 'colorMenu') !global;
@@ -76,6 +79,7 @@ $font-color:null;
       $primary-font-color: null !global;
       $tertiary-font-color: null !global;
       $color: null !global;
+      $logo-font-color: null !global;
       $content-block-bg: null !global;
       $line-color: null !global;
       // $color-menu: null !global;

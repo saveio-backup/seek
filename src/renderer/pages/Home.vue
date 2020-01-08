@@ -117,6 +117,7 @@
 								srcset=""
 								width="240"
 							>
+							<p>Seeker</p>
 						</div>
 					</div>
 					<div class="tologin">
@@ -998,10 +999,13 @@ $input-color: rgba(203, 203, 203, 1);
 					}
 					& > .save-log-desc {
 						text-align: center;
-						color: #2f8ff0;
-						font-size: 4rem;
-						font-weight: 600;
+						font-size: 8rem;
+						font-weight: 150;
+						letter-spacing: 5px;
 						margin-top: 30px;
+						@include themify{
+							color: $logo-font-color;
+						}
 					}
 				}
 			}

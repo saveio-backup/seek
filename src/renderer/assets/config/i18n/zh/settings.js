@@ -7,6 +7,8 @@ const result = {
   'maxUploadLength': '最大任务个数',
   'maxPeerNum': '最大下载节点数',
   'downloadPath': '下载保存地址',
+  'logDir': '日志目录',
+  'open': '打开',
   'themeColor': '主题颜色',
   'theme': {
     'light': '浅色',

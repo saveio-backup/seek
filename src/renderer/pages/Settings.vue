@@ -97,6 +97,17 @@
 			</div>
 			<div class="settings-box">
 				<div class="tag">
+					<p>{{$t('settings.logDir')}}</p>
+					<p
+						:title="pathDir.LogDirName"
+						class="pathdir tertiary-font-color"
+						@click="showInFolder(path.join(pathDir.BaseDir,pathDir.LogDirName))"
+					>{{pathDir.LogDirName}}</p>
+				</div>
+				<el-button @click="showInFolder(path.join(pathDir.BaseDir,pathDir.LogDirName))">{{$t('settings.open')}}</el-button>
+			</div>
+			<div class="settings-box">
+				<div class="tag">
 					<p>{{$t('settings.language')}}</p>
 				</div>
 				<el-select
@@ -155,6 +166,7 @@
 <script>
 import { ipcRenderer, remote, shell } from "electron";
 import { DEFAULT_CHAINID } from "../../main/windowManager/defaultOption";
+import path from 'path';
 export default {
 	mounted() {
 		document.title = this.$t("settings.settings");
@@ -165,6 +177,7 @@ export default {
 	},
 	data() {
 		return {
+			path,
 			switchToggle: {
 				console: true
 			},
@@ -391,7 +404,7 @@ export default {
 					});
 			});
 		},
-		showInFolder(path){
+		showInFolder(path) {
 			shell.showItemInFolder(path);
 		}
 	}
@@ -432,7 +445,7 @@ export default {
 					overflow: hidden;
 					text-overflow: ellipsis;
 					white-space: nowrap;
-					text-decoration:underline;
+					text-decoration: underline;
 					cursor: pointer;
 				}
 			}

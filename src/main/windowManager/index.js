@@ -119,7 +119,13 @@ class View {
     const vm = this;
     this.webContents.on('context-menu', () => {
       const menuItems = [];
-      menuItems.push({
+      menuItems.push(
+        {
+          role:'copy'
+        },
+        {
+          role: 'paste'
+        }, {
           label: 'Refresh',
           click: () => {
             this.webContents.reload();
@@ -349,7 +355,7 @@ class View {
   initView() {
     this.resize();
     this.setBroserView()
-    if (this.isActive){
+    if (this.isActive) {
       this.setActive();
     }
   }

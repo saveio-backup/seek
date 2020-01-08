@@ -5,8 +5,10 @@ const result = {
   'private': 'Private',
   'autoOpenDevTools': 'Auto openDevTools',
   'maxUploadLength': 'Maximum number of tasks',
-  'maxPeerNum':'Maximum number of peer',
+  'maxPeerNum': 'Maximum number of peer',
   'downloadPath': 'Download Path',
+  'logDir': 'Log Directory',
+  'open': 'open',
   'themeColor': 'Theme Color',
   'theme': {
     'light': 'Light',

@@ -147,7 +147,7 @@
 					<p class="back-class ft14">
 						<a @click="setStep(2)">{{$t('account.back')}}</a>
 					</p>
-					<ripper-button @click="importAccountWithPrivatekey">{{$t('account.done')}}</ripper-button>
+					<ripper-button @click="verifyPrivateKey">{{$t('account.done')}}</ripper-button>
 				</div>
 			</div>
 			<div
@@ -451,11 +451,21 @@ export default {
 							if (!e.message.includes("timeout")) {
 								this.$message.error(vm.$t("account.networkErrorCreateFailed"));
 							} else {
-								this.$message.error('Request Timeout!')
+								this.$message.error("Request Timeout!");
 							}
 						});
 				}
 			});
+		},
+		verifyPrivateKey() {
+			if (this.validation.confirmPrivateKey !== this.validation.PrivateKey) {
+				this.$message.error(
+					this.$t("account.PrivateKeyVerificationIsInconsistent")
+				);
+				return;
+			} else {
+				this.importAccountWithPrivatekey();
+			}
 		},
 		importAccountWithPrivatekey() {
 			const vm = this;
@@ -497,7 +507,7 @@ export default {
 							vm.$t("account.networkErrorImportPrivateKeyFailed")
 						);
 					} else {
-						vm.$message.error('Request Timeout!')
+						vm.$message.error("Request Timeout!");
 					}
 				});
 		}

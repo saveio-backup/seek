@@ -138,6 +138,8 @@
 						<el-input-number
 							v-model="storageCycleNumber"
 							:min="1"
+							:precision='0'
+							:max="858993459 /BASE[this.storageCycleSelected]"
 							@change="setDuration"
 							type="number"
 							class="form-right-second-inside"

@@ -23,7 +23,7 @@
 							<ripper-button
 								class="primary"
 								v-if="(plugin.detail.Progress >= 1) && (plugin.detail.Status !=5)"
-								@click="loadPlugin(plugin.Url,plugin)"
+								@click="openPlugin(plugin.Url,plugin)"
 							>{{$t("plugin.open")}}</ripper-button>
 							<ripper-button
 								class="primary"
@@ -42,7 +42,7 @@
 						</div>
 						<ripper-button
 							class="primary"
-							@click="loadPlugin(plugin.Url,plugin)"
+							@click="downloadPlugin(plugin.Url,plugin)"
 							v-else
 						>{{$t("plugin.install")}}</ripper-button>
 
@@ -180,7 +180,9 @@ export default {
 				this.sendPluginInfo();
 			} catch (error) {}
 		},
-		openPlugin(url, plugItem) {},
+		openPlugin(url, plugItem) {
+			window.open(url);
+		},
 		async loadPlugin(url, plugItem) {
 			let detail = null;
 			try {
@@ -295,10 +297,6 @@ export default {
 		},
 
 		downloadPlugin(url, plugItem) {
-			this.$message({
-				message: this.$t("plugin.startDownload"),
-				type: "success"
-			});
 			this.$axios
 				.post(this.$api.download, {
 					Url: url,
@@ -307,9 +305,10 @@ export default {
 				})
 				.then(res => {
 					if (res.Error === 0) {
-						setTimeout(() => {
-							this.loadPlugin(url, plugItem);
-						}, 2000);
+						this.$message({
+							message: this.$t("plugin.startDownload"),
+							type: "success"
+						});
 					} else {
 						console.log("emit loadErrorPage");
 						this.$message.error(this.$t(`error[${res.Error}]`));
@@ -322,19 +321,16 @@ export default {
 				});
 		},
 		downloadPluginRetry(url, pluginItem) {
-			this.$message({
-				message: this.$t("plugin.startDownload"),
-				type: "success"
-			});
 			this.$axios
 				.post(this.$api.downloadRetry, {
 					Ids: [pluginItem.detail.Id]
 				})
 				.then(res => {
 					if (res.Error === 0) {
-						setTimeout(() => {
-							this.loadPlugin(url, pluginItem);
-						}, 2000);
+						this.$message({
+							message: this.$t("plugin.startDownload"),
+							type: "success"
+						});
 					}
 				})
 				.catch(error => {
@@ -413,15 +409,15 @@ export default {
 					: pluginItem.detail;
 				if (
 					// to do  may change to false
-					localUrlPlugins[plugins[i].Url] &&
-					localUrlPlugins[plugins[i].Url].isShow === false
+					localUrlPlugins[pluginItem.Url] &&
+					localUrlPlugins[pluginItem.Url].isShow === false
 				) {
 					pluginItem.isShow = false;
 				} else {
 					pluginItem.isShow = true;
 				}
 				pluginsTemp.push(pluginItem);
-				localUrlPlugins[plugItem.Url].detail = plugItem.detail;
+				localUrlPlugins[pluginItem.Url].detail = pluginItem.detail;
 			}
 			ipcRenderer.sendSync("setUsermeta", "Plugins", pluginsTemp);
 			ipcRenderer.sendSync("setUsermeta", "LocalUrlPlugins", localUrlPlugins);

@@ -19,6 +19,7 @@ const result = {
   'importing': 'Importing',
   'networkErrorImportWalletFileFailed': 'Network Error. Import Wallet File Failed',
   'networkErrorImportPrivateKeyFailed': 'Network Error. Import Private Key Failed!',
+  'PrivateKeyVerificationIsInconsistent': 'Private key verification is inconsistent',
   'inputImportPrivatekeyHere': 'Please Fill/Import Privatekey Here',
   'blockSynchronization': 'Block Synchronization',
   'backupYourKeystoreFile': 'Backup Keystore File',

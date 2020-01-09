@@ -194,7 +194,8 @@ const result = {
   'networkErrorGetFileDetailFailed': 'Network Error. Get File Detail Failed!',
   'link': 'Link',
   'basicInfo': 'Basic Info',
-  'nodesInfo': 'Nodes Info'  
+  'nodesInfo': 'Nodes Info',
+  'getGasFeeFailed': 'Get gas fee failed'
 }
 
 export default result;

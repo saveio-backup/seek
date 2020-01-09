@@ -91,6 +91,7 @@ const API = {
   config: HOST + VERSION + 'config',
   dspFilePeersCount: HOST + VERSION + 'dsp/file/peers/count',
   login: HOST + VERSION + 'account/login',
-  getHashByUrl: HOST + VERSION + 'dns/hash'
+  getHashByUrl: HOST + VERSION + 'dns/hash',
+  dspFilesDeletefee: HOST + VERSION + 'dsp/files/deletefee'
 }
 export default API;

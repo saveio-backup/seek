@@ -388,32 +388,35 @@
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content disk-delete-loading ft14">
-				<p class="mt10 mb10">{{$t('fileManager.areYouSureYouWantTo')}} <span>{{$t('fileManager.delete2')}}</span> {{$t('fileManager.theSelectedFile')}}</p>
-				<p
-					class="mb20"
-					:title="fileDeleteInfo.allName"
-				>{{fileDeleteInfo.Name}}</p>
-				<el-form
-					ref="extraParamsForm"
-					:model="extraParams"
-					:rules="extraParamsRules"
-					@submit.native.prevent
-					class="mb20"
-				>
-					<el-form-item
-						:label="$t('public.walletPassword')+':'"
-						prop="Password"
+				<div class="delete-dialog-content tl">
+					<p class="mt10 mb10">{{$t('fileManager.areYouSureYouWantTo')}} <span>{{$t('fileManager.delete2')}}</span> {{$t('fileManager.theSelectedFile')}}</p>
+					<p
+						class="mb20 dialog-file-delete-info"
+						:title="fileDeleteInfo.allName"
+					>{{fileDeleteInfo.Name}}</p>
+					<!-- <p class="delete-dialog-gas-fee mb10">{{$t('fileManager.gasFee')}}: {{deleteGasFee}} {{deleteGasFee !== '' ? 'SAVE' : ''}}</p> -->
+					<el-form
+						ref="extraParamsForm"
+						:model="extraParams"
+						:rules="extraParamsRules"
+						@submit.native.prevent
+						class="mb20"
 					>
-						<el-input
-							type="password"
-							class="grey-theme"
-							:placeholder="$t('public.pleaseInputWalletPassword')"
-							show-password
-							@keyup.native.enter='toDeleteFileNew(fileToDelete)'
-							v-model="extraParams.Password"
-						></el-input>
-					</el-form-item>
-				</el-form>
+						<el-form-item
+							:label="$t('public.walletPassword')+':'"
+							prop="Password"
+						>
+							<el-input
+								type="password"
+								class="grey-theme"
+								:placeholder="$t('public.pleaseInputWalletPassword')"
+								show-password
+								@keyup.native.enter='toDeleteFileNew(fileToDelete)'
+								v-model="extraParams.Password"
+							></el-input>
+						</el-form-item>
+					</el-form>
+				</div>
 				<div slot="footer">
 					<ripper-button @click="switchToggle.deleteDialog = false">{{$t('public.cancel')}}</ripper-button>
 					<ripper-button
@@ -450,6 +453,7 @@ export default {
 			toggleFilebox: false,
 			date,
 			util,
+			deleteGasFee: '',
 			fileDownloadInfo: {
 				Fee: 0,
 				Size: 0,
@@ -965,6 +969,7 @@ export default {
 		deleteFile(file) {
 			this.fileToDelete = [file];
 			this.switchToggle.deleteDialog = true;
+			this.getDeleteGasFee();
 		},
 		batchDelete() {
 			const NO_DELETE_FILE_MSG = this.$t(
@@ -979,6 +984,24 @@ export default {
 			}
 			this.fileToDelete = this.fileSelected;
 			this.switchToggle.deleteDialog = true;
+			this.getDeleteGasFee();
+		},
+		getDeleteGasFee() {
+			const vm = this;
+			return;
+			this.deleteGasFee = '';
+			let paramUrl = ''
+			for (let file of deleteFiles) {
+				paramUrl += `hash=${file.Hash}&`;
+			}
+			let url = `this.$api.dspFilesDeletefee?${paramUrl.slice(0, -1)}`;
+			this.$axios.get(url).then((res) => {
+				if(res.Error === 0) {
+					this.deleteGasFee = res.Result.TxFeeFormat;
+				} else {
+					this.$message.error(vm.$t('fileManager.getGasFeeFailed'));
+				}
+			})
 		},
 		syncDeleteFile(res) {
 			if (Object.prototype.toString.call(res) === "[object Array]") {
@@ -998,6 +1021,10 @@ export default {
 		},
 		toDeleteFileNew(deleteFiles) {
 			const vm = this;
+			if(parseFloat(this.deleteGasFee) > this.currentBalanceFormat) {
+				this.$message.error(vm.$t("public.insufficientBalanceAvailable"));
+				return;
+			}
 			this.$refs.extraParamsForm.validate(valid => {
 				if (!valid) return;
 				let arr = [];
@@ -1245,7 +1272,20 @@ export default {
 		// include waitfor upload list adn fileListData;
 		fileListDataAll() {
 			return this.waitForUploadList.concat(this.fileListData);
+		},
+		balanceLists() {
+			return this.$store.state.Wallet.balanceLists;
+		},
+		currentBalanceFormat() {
+			// let sum = 0;
+			if (!this.balanceLists) return 0;
+			for (let value of this.balanceLists) {
+				if (value.Symbol === "SAVE") {
+					return value.BalanceFormat;
+				}
+			}
 		}
+
 	},
 	beforeRouteEnter(to, from, next) {
 		next(vm => {
@@ -1486,6 +1526,25 @@ $theme-color: #1b1e2f;
 		[class^="el-icon-"] {
 			font-size: 1.8rem;
 			cursor: pointer;
+		}
+	}
+	.delete-dialog-content {
+		width: 404px;
+		margin: 0 auto;
+
+		& > .dialog-file-delete-info {
+			@include themify {
+				color: $tertiary-font-color
+			}
+		}
+
+		& > .delete-dialog-gas-fee {
+			padding-bottom: 16px;
+
+			@include themify {
+				border-bottom: 1px solid $line-color;
+			}
+
 		}
 	}
 }

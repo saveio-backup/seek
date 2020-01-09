@@ -83,7 +83,7 @@
 				>
 					<template slot-scope="scope">
 						<span
-							v-show="scope.row.Participant1State !== 0"
+							v-show="scope.row.Participant1State !== 0 && scope.row.ParticiPant2State !== 0"
 							class="opeation-icon light-blue user-no-select"
 							@click="openTransfer(scope.row)"
 							:title="$t('public.transfer')"
@@ -91,7 +91,7 @@
 							<i class="ofont ofont-huazhuan ftpx16"></i>
 						</span>
 						<span
-							v-show="scope.row.Participant1State !== 0"
+							v-show="scope.row.Participant1State !== 0 && scope.row.ParticiPant2State !== 0"
 							class="opeation-icon light-blue ml20 user-no-select"
 							@click="openClose(scope.row)"
 							:title="$t('public.closeChannel')"
@@ -100,7 +100,7 @@
 						</span>
 						<span
 							class="closingWrapper"
-							v-show="scope.row.Participant1State === 0"
+							v-show="scope.row.Participant1State !== scope.row.ParticiPant2State"
 						>{{$t('public.settle')}}...</span>
 					</template>
 				</el-table-column>
@@ -648,12 +648,12 @@ export default {
 		channelsDns: function() {
 			if (!this.channels) return [];
 			const channelsDns = this.channels.filter(item => {
-				if (this.allDns.indexOf(item.HostAddr) >= 0) {
-					return true;
-				} else {
-					false;
-				}
-				// return item.IsDNS;
+				return item.IsDNS;
+				// if (this.allDns.indexOf(item.HostAddr) >= 0) {
+				// 	return true;
+				// } else {
+				// 	false;
+				// }
 			});
 			return channelsDns;
 		},

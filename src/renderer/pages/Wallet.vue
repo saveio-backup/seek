@@ -1189,6 +1189,15 @@ $light-grey: #f7f7f7;
 						margin-left: -13px;
 					}
 				}
+				.el-switch__label {
+					color: #409EFF;
+					&.is-active {
+						@include themify {
+							color: $primary-font-color;
+						}
+					}
+
+				}
 			}
 
 			.tx-ul {

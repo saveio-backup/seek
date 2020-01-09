@@ -747,7 +747,8 @@ export default {
 		},
 		// logout success change block height is default;
 		logoutCb() {
-			this.$nextTick(() => { // avoid ws delay issue
+			this.$nextTick(() => {
+				// avoid ws delay issue
 				this.renderDataToBrowserView({
 					result: {
 						isNeedSync: false,
@@ -786,7 +787,7 @@ export default {
 					type: "progress",
 					rendTo: 1
 				});
-			})
+			});
 		},
 		// get balance for show create channel dialog
 		getBalance(res) {
@@ -978,12 +979,24 @@ export default {
 					views = win.views;
 				}
 			}
-			let activeView = views.find(view =>
+			const transferListener = ["seek://filemanager", "seek://plugin"];
+			const activeView = [];
+			views.map(view => {
+				transferListener.map(url => {
+					if (view.displayURL.toLowerCase().startsWith(url)) {
+						activeView.push(view);
+					}
+				});
+			});
+			activeView.map(view => {
+				ipcRenderer.sendTo(view.webContents.id, "get-data", { result, type });
+			});
+			/* let activeView = views.find(view =>
 				view.displayURL.toLowerCase().startsWith("seek://filemanager")
 			);
 			if (!activeView) return;
 			let winContentId = activeView.webContents.id;
-			ipcRenderer.sendTo(winContentId, "get-data", { result, type });
+			ipcRenderer.sendTo(winContentId, "get-data", { result, type }); */
 		},
 		// rendTo active browser display message
 		message({ info, type, dangerouslyUseHTMLString }) {

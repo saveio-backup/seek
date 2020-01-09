@@ -92,16 +92,22 @@ const G_plugins = [
 export default {
 	data() {
 		return {
-			plugins: []
+			plugins: [],
+			taskByUrl: {}
 		};
 	},
 	mounted() {
+		document.title = this.$t("plugin.plugin");
 		this.getPluginsInfo();
 		this.$store.dispatch("setCurrentAccount"); // get login status
 	},
 	computed: {
 		lang: function() {
 			return this.$i18n.locale;
+		},
+		// downloading file
+		downloadingTransferList() {
+			return this.$store.state.Transfer.downloadingTransferList || [];
 		}
 	},
 	methods: {
@@ -134,7 +140,7 @@ export default {
 				// set isShow
 				plugins[i].isShow = localUrlPlugins[plugins[i].Url]
 					? localUrlPlugins[plugins[i].Url].isShow
-					: false;
+					: true; // todo  may change to false
 				detail = detail.Result;
 				plugins[i].detail = detail;
 				this.$set(this.plugins, i, plugins[i]);
@@ -245,8 +251,8 @@ export default {
 							"LocalUrlPlugins",
 							localUrlPlugins
 						);
-						window.open(url);
 						this.sendPluginInfo();
+						window.open(url);
 					} else {
 						const plugins = ipcRenderer.sendSync("getUsermeta", "Plugins");
 						const localUrlPlugins = ipcRenderer.sendSync(
@@ -359,6 +365,18 @@ export default {
 						rejest(err);
 					});
 			});
+		}
+	},
+	watch: {
+		downloadingTransferList(val) {
+			console.log("downloading changed");
+			console.log(val);
+			let taskByUrl = {};
+			for (let index = 0; index < val.length; index++) {
+				// const task = val[index];
+				taskByUrl[val[index].Url] = val[index];
+			}
+			this.taskByUrl = taskByUrl;
 		}
 	}
 };

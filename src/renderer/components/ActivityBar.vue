@@ -51,7 +51,7 @@
 					<li
 						class="action-item"
 						v-for="item in pluginsInstalled"
-						v-show="item.isShow"
+						v-show="(item.isShow !== false) || item.isShow"
 						:key="item.Url"
 						@click="openNewWindow(item.Url)"
 					>
@@ -76,7 +76,7 @@
 						@mouseleave="hiddenDialog"
 					>
 						<div
-							:title="$t('window.comingSoon')"
+							:title="$t('plugin.plugin')"
 							@click="remoteOpenComponent('plugin')"
 							class="nav-button"
 							style="background:none;"

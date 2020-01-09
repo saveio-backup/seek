@@ -108,6 +108,9 @@ export default {
 		// downloading file
 		downloadingTransferList() {
 			return this.$store.state.Transfer.downloadingTransferList || [];
+		},
+		completeTransferList() {
+			return this.$store.state.Transfer.completeTransferList || [];
 		}
 	},
 	methods: {
@@ -138,9 +141,15 @@ export default {
 			for (let i = 0; i < plugins.length; i++) {
 				let detail = await this.getTransferDetail(plugins[i].Url);
 				// set isShow
-				plugins[i].isShow = localUrlPlugins[plugins[i].Url]
-					? localUrlPlugins[plugins[i].Url].isShow
-					: true; // todo  may change to false
+				if (
+					// to do  may change to false
+					localUrlPlugins[plugins[i].Url] &&
+					localUrlPlugins[plugins[i].Url].isShow === false
+				) {
+					plugins[i].isShow = false;
+				} else {
+					plugins[i].isShow = true;
+				}
 				detail = detail.Result;
 				plugins[i].detail = detail;
 				this.$set(this.plugins, i, plugins[i]);
@@ -171,7 +180,7 @@ export default {
 				this.sendPluginInfo();
 			} catch (error) {}
 		},
-
+		openPlugin(url, plugItem) {},
 		async loadPlugin(url, plugItem) {
 			let detail = null;
 			try {
@@ -376,7 +385,47 @@ export default {
 				// const task = val[index];
 				taskByUrl[val[index].Url] = val[index];
 			}
-			this.taskByUrl = taskByUrl;
+			for (let i = 0; i < this.plugins.length; i++) {
+				const pluginItem = this.plugins[i];
+				pluginItem.detail = taskByUrl[pluginItem.Url]
+					? taskByUrl[pluginItem.Url]
+					: pluginItem.detail;
+			}
+		},
+		completeTransferList(val) {
+			console.log("complete transfer");
+			console.log(val);
+			let taskByUrl = {};
+			for (let i = 0; i < val.length; i++) {
+				// const task = val[i];
+				if (!val[i].IsUploadAction) taskByUrl[val[i].Url] = val[i];
+			}
+			const pluginsTemp = [];
+			// const localUrlPluginsTemp = {};
+			const localUrlPlugins = ipcRenderer.sendSync(
+				"getUsermeta",
+				"LocalUrlPlugins"
+			);
+			for (let i = 0; i < this.plugins.length; i++) {
+				const pluginItem = this.plugins[i];
+				pluginItem.detail = taskByUrl[pluginItem.Url]
+					? taskByUrl[pluginItem.Url]
+					: pluginItem.detail;
+				if (
+					// to do  may change to false
+					localUrlPlugins[plugins[i].Url] &&
+					localUrlPlugins[plugins[i].Url].isShow === false
+				) {
+					pluginItem.isShow = false;
+				} else {
+					pluginItem.isShow = true;
+				}
+				pluginsTemp.push(pluginItem);
+				localUrlPlugins[plugItem.Url].detail = plugItem.detail;
+			}
+			ipcRenderer.sendSync("setUsermeta", "Plugins", pluginsTemp);
+			ipcRenderer.sendSync("setUsermeta", "LocalUrlPlugins", localUrlPlugins);
+			this.sendPluginInfo();
 		}
 	}
 };

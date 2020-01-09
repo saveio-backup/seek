@@ -772,6 +772,10 @@ export default {
 		},
 		// open password dialog
 		OpenPasswordDialog() {
+			if (this.uploadPrice > this.mainCount) {
+				this.$message.error(this.$t("public.insufficientBalanceAvailable"));
+				return;
+			}
 			if (!this.switchToggle.upload) return;
 			this.$refs.uploadForm.validate(valid => {
 				if (!valid) return;

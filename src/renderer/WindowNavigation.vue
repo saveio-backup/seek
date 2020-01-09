@@ -349,7 +349,7 @@ export default {
 			// 	"blur",
 			// 	this.currentWindow.menuWindow.win.hide
 			// );
-		},
+		}
 	}
 };
 </script>
@@ -453,6 +453,8 @@ $tabs-height: 62px;
 				color: rgba(125, 125, 125, 0.7);
 				border-radius: 50%;
 				padding: 4px;
+				height: 16px;
+				line-height: 16px;
 
 				&:hover {
 					background: rgba(144, 144, 144, 0.2);

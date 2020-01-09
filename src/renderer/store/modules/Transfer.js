@@ -388,11 +388,11 @@ const actions = {
     getSyncFileList({
         commit,
         state
-    }, limit) {
+    }, limit = 0) {
         commit('SET_SYNC_LIST_LIMIT', limit);
         try {
             syncFileRequestCancel('request cancel!');
-        } catch(e) {}
+        } catch (e) {}
         syncFileRequest.bind(this, commit, limit)();
         // syncFileTimer = setInterval(() => {
         // syncFileRequest.bind(this, commit, state.syncListLimit)();

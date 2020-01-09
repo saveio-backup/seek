@@ -17,5 +17,6 @@ const result = {
   'wallet': '钱 包',
   'pleaseFillAddress': '请输入地址',
   'qrcodeNotFound': '二维码未找到',
+  'showSmallContract': '显示小额合约',
 }
 export default result;

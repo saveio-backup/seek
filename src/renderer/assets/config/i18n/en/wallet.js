@@ -17,5 +17,6 @@ const result = {
   'wallet': 'Wallet',
   'pleaseFillAddress': 'Please Fill Address',
   'qrcodeNotFound': 'Qrcode Not Found',
+  'showSmallContract': 'Show Small Contract',
 }
 export default result;

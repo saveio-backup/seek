@@ -847,13 +847,13 @@ export default {
 			return this.$store.state.Home.channels;
 		},
 		currentBalanceFormat() {
-			// let sum = 0;
 			if (!this.balanceLists) return 0;
 			for (let value of this.balanceLists) {
 				if (value.Symbol === "SAVE") {
-					return value.BalanceFormat;
+					return value.BalanceFormat || 0;
 				}
 			}
+			return 0;
 		},
 		// currentChannelTotal() {
 		// 	return parseFloat(this.currentBalanceFormat).toFixed(9);

@@ -99,8 +99,9 @@
 							@mouseleave="hiddenDialog"
 							@mouseenter="setDialog('syncInfo')"
 							class="sync-wrapper flex flex-center"
-							v-if="address && !isNeedSync"
 						>
+							<!-- v-if="address && !isNeedSync" -->
+							<!-- v-if="address && !isNeedSync" -->
 							<el-progress
 								class="sync-progress"
 								type="circle"
@@ -121,7 +122,7 @@
 								v-if="!isSync"
 								class="theme-font-blue-70 ml10 currentBlock"
 							>
-								#{{currentHeihgt}}
+								#{{currentHeihgt || 0}}
 							</span>
 						</div>
 					</div>
@@ -187,6 +188,9 @@ export default {
 		});
 		this.setIsMaximized();
 		window.addEventListener("resize", this.setIsMaximized);
+		// ipcRenderer.on("runWindowNavigationEvent", (e, { name, data }) => {
+		// 	this[name](data);
+		// });
 	},
 	computed: {
 		currentHeihgt: function() {
@@ -345,7 +349,7 @@ export default {
 			// 	"blur",
 			// 	this.currentWindow.menuWindow.win.hide
 			// );
-		}
+		},
 	}
 };
 </script>

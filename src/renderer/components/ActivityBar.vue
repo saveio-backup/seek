@@ -92,8 +92,8 @@
 						class="ofont ofont-caidan user-no-select cursor-pointer cursor-click"
 						@click="toPopCustomControlMenu"
 					></i>
+					<!-- v-if="address" -->
 					<span
-						v-if="address"
 						@click="setDialog('state')"
 						class="process-status-wrapper"
 					>
@@ -103,11 +103,11 @@
 						>
 						</i>
 					</span>
-					<span
+					<!-- <span
 						class="process-status-wrapper"
 						v-else
 					>
-					</span>
+					</span> -->
 				</div>
 			</div>
 		</div>

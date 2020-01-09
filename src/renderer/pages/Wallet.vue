@@ -116,7 +116,7 @@
 					<div class="ft14 wallet-layout-switch">
 						<el-switch
 							v-model="IgnoreOtherContract"
-							inactive-text="Show Contract"
+							:inactive-text="$t('wallet.showSmallContract')"
 							@change="changeShowContract"
 						>
 						</el-switch>
@@ -676,7 +676,7 @@ export default {
 				name: localStorage.getItem("Label") || "",
 				address: localStorage.getItem("Address") || ""
 			},
-			IgnoreOtherContract: true
+			IgnoreOtherContract: false
 		};
 	},
 	methods: {

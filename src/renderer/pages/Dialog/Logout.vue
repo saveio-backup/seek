@@ -74,6 +74,7 @@ export default {
 						}
 						// window.localStorage.clear();
 						this.logoutUploadViews();
+						this.$emit('logoutCb');
 						this.closeDialog();
 					} else {
 						this.$message.error(this.$t(`error[${res.Error}]`));

@@ -28,6 +28,10 @@ const result = {
   '23': 'Pay download fees for blocks of data',
   '24': 'Complete the download fee for the data block',
   '25': 'File download complete, submit sharing information to DNS node',
+  '26': 'Task download pay for blocks failed',
+  '27': 'Task download checking file',
+  '28': 'Task download checking file failed',
+  '29': 'Task download checking file done',
   '40000': 'Incorrect parameter',
   '40001': 'Internal server error',
   '40002': 'Incorrect parameter (missing)',
@@ -169,6 +173,7 @@ const result = {
   '59002': 'Database query fails to adjust space record',
   '59003': 'Database added adjustment space record failed',
   '59004': 'Failed to retrieve file information',
-  '59100': 'Reconnect node failed'
+  '59100': 'Reconnect node failed',
+  '59101': 'Net proxy disconnected'
 }
 export default result;

@@ -6,6 +6,7 @@
 		></export-private-key>
 		<logout
 			@closeDialog="closeDialog"
+			@logoutCb="logoutCb"
 			v-if="menuSelector === 'logout'"
 		></logout>
 		<is-create-channel
@@ -418,7 +419,7 @@ export default {
 			clearTimeout(this.wsOpeation.errorTimeout);
 			setTimeout(() => {
 				this.initWebSocket();
-			}, 3000)
+			}, 3000);
 		},
 		// get wait for upload promise list
 		getStartWaitForUploadPromise(arr) {
@@ -743,7 +744,49 @@ export default {
 					rendTo: 1
 				});
 			}
-			// });
+		},
+		// logout success change block height is default;
+		logoutCb() {
+			this.$nextTick(() => { // avoid ws delay issue
+				this.renderDataToBrowserView({
+					result: {
+						isNeedSync: false,
+						isSync: false,
+						Progress: 0,
+						Start: 0,
+						End: 0,
+						Now: 0
+					},
+					type: "progress",
+					rendTo: 1
+				});
+				this.renderDataToBrowserView({
+					result: {
+						Chain: {
+							HostAddr: "",
+							State: 0,
+							UpdatedAt: 0
+						},
+						DNS: {
+							HostAddr: "",
+							State: 0,
+							UpdatedAt: 0
+						},
+						DspProxy: {
+							HostAddr: "",
+							State: 0,
+							UpdatedAt: 0
+						},
+						ChannelProxy: {
+							HostAddr: "",
+							State: 0,
+							UpdatedAt: 0
+						}
+					},
+					type: "progress",
+					rendTo: 1
+				});
+			})
 		},
 		// get balance for show create channel dialog
 		getBalance(res) {

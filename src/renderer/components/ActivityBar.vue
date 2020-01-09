@@ -261,7 +261,7 @@ export default {
 					}
 				},
 				{
-					label: that.$t("window.version"),
+					label: that.$t("window.about"),
 					click() {
 						that.showVersion();
 					}

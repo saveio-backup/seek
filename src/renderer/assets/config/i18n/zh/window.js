@@ -14,7 +14,8 @@ const result = {
   'helpDocument': '帮助文档',
   'logOut': '登 出',
   'settings': '设 置',
-  'version': '版 本'
+  'version': '版 本',
+  'about': '关 于'
 }
 
 export default result;

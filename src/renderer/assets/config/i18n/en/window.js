@@ -14,7 +14,8 @@ const result = {
   'helpDocument': 'Help Document',
   'logOut': 'Log Out',
   'settings': 'Settings',
-  'version': 'Version'
+  'version': 'Version',
+  'about': 'About'
 }
 
 export default result;

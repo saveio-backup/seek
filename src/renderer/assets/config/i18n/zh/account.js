@@ -2,7 +2,7 @@ const result = {
   'importAccount': '导入账号',
   'keystoreFile': '密钥库',
   'privateKey': '私 钥',
-  'key': '密 钥',
+  'key': '请在此处导入密钥库文件',
   'selectKeystoreFile': '选择密钥库文件',
   'selectPrivateKeyFile': '选择私钥文件',
   'userName': '用户名',

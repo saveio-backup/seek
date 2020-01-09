@@ -2,7 +2,7 @@ const result = {
   'importAccount': 'Import Account',
   'keystoreFile': 'Keystore File',
   'privateKey': 'Private Key',
-  'key': 'Key',
+  'key': 'Please Import Keystore File Here',
   'selectKeystoreFile': 'Select Keystore File',
   'selectPrivateKeyFile': 'Select Private Key File',
   'userName': 'User Name',

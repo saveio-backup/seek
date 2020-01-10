@@ -186,7 +186,8 @@ export default {
 			} catch (error) {}
 		},
 		openPlugin(url, plugItem) {
-			window.open(url);
+			// window.open(url);
+			Seek.openThirdPage(url);
 		},
 		async loadPlugin(url, plugItem) {
 			let detail = null;
@@ -405,10 +406,6 @@ export default {
 				// const task = val[index];
 				taskByUrl[val[index].Url] = val[index];
 			}
-			console.log('taskByUrl is');
-			console.log(taskByUrl);
-			console.log('localUrlPlugins is');
-			console.log(localUrlPlugins);
 			for (let i = 0; i < this.plugins.length; i++) {
 				const pluginItem = this.plugins[i];
 				pluginItem.detail = taskByUrl[pluginItem.Url]

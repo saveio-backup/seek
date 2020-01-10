@@ -182,6 +182,10 @@ export default {
 			try {
 				ipcRenderer.sendSync("setUsermeta", "Plugins", pluginInstaled);
 				ipcRenderer.sendSync("setUsermeta", "LocalUrlPlugins", localUrlPlugins);
+				console.log("pluginInstaled");
+				console.log(pluginInstaled);
+				console.log("localUrlPlugins");
+				console.log(localUrlPlugins);
 				this.sendPluginInfo();
 			} catch (error) {}
 		},
@@ -406,11 +410,15 @@ export default {
 				// const task = val[index];
 				taskByUrl[val[index].Url] = val[index];
 			}
+			console.log("this.plugins is");
+			console.log(this.plugins);
 			for (let i = 0; i < this.plugins.length; i++) {
 				const pluginItem = this.plugins[i];
 				pluginItem.detail = taskByUrl[pluginItem.Url]
 					? taskByUrl[pluginItem.Url]
-					: localUrlPlugins[pluginItem.Url].detail; // if plguin is not in task, will reset to localUrlPlugins
+					: localUrlPlugins[pluginItem.Url]
+					? localUrlPlugins[pluginItem.Url].detail
+					: null; // if plguin is not in task, will reset to localUrlPlugins
 			}
 		},
 		completeTransferList(val) {
@@ -442,6 +450,7 @@ export default {
 					pluginItem.isShow = true;
 				}
 				pluginsTemp.push(pluginItem);
+				localUrlPlugins[pluginItem.Url] = localUrlPlugins[pluginItem.Url] || {};
 				localUrlPlugins[pluginItem.Url].detail = pluginItem.detail;
 			}
 			ipcRenderer.sendSync("setUsermeta", "Plugins", pluginsTemp);

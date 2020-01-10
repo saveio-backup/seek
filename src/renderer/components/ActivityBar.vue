@@ -54,7 +54,7 @@
 						v-show="(item.isShow !== false) || item.isShow"
 						:key="item.Url"
 						:title="item.title"
-						@click="openNewWindow(item.Url)"
+						@click="openThirdPage(item.Url)"
 					>
 						<div class="nav-button">
 							<i :class="'ofont ofont-'+item.icon"></i>
@@ -189,6 +189,9 @@ export default {
 	methods: {
 		openNewWindow(url) {
 			Seek.openNewWindow(url);
+		},
+		openThirdPage(url){
+			Seek.openThirdPage(url);
 		},
 		async getPlugins() {
 			const plugins = ipcRenderer.sendSync("getUsermeta", "Plugins");

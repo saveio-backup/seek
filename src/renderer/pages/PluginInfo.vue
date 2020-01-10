@@ -32,13 +32,13 @@
 							>{{$t("plugin.retry")}}</ripper-button>
 							<ripper-button
 								class="primary"
-								v-if='(plugin.detail.Status ===1) || (plugin.detail.Status ===0)|| (plugin.detail.Status ===2)'
+								v-if='(plugin.detail.Status ===1) || (plugin.detail.Status ===2)'
 							>{{$t("plugin.installing")}}</ripper-button>
 							<ripper-button
 								class="primary"
 								@click="downloadResume(plugin.detail.Id)"
-								v-if="plugin.detail.Status ===3"
-							>{{$t("plugin.update")}}</ripper-button>
+								v-if="plugin.detail.Status ===0"
+							>{{$t("plugin.continue")}}</ripper-button>
 							<ripper-button
 								class="primary"
 								@click="downloadPlugin(plugin.Url,plugin)"
@@ -328,7 +328,7 @@ export default {
 		downloadResume(id) {
 			this.$axios
 				.post(this.$api.downloadResume, {
-					Ids: id
+					Ids: [id]
 				})
 				.then(res => {
 					if (res.Error === 0) {
@@ -405,6 +405,10 @@ export default {
 				// const task = val[index];
 				taskByUrl[val[index].Url] = val[index];
 			}
+			console.log('taskByUrl is');
+			console.log(taskByUrl);
+			console.log('localUrlPlugins is');
+			console.log(localUrlPlugins);
 			for (let i = 0; i < this.plugins.length; i++) {
 				const pluginItem = this.plugins[i];
 				pluginItem.detail = taskByUrl[pluginItem.Url]

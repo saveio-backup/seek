@@ -119,11 +119,9 @@ class View {
     const vm = this;
     this.webContents.on('context-menu', () => {
       const menuItems = [];
-      menuItems.push(
-        {
-          role:'copy'
-        },
-        {
+      menuItems.push({
+          role: 'copy'
+        }, {
           role: 'paste'
         }, {
           label: 'Refresh',
@@ -176,10 +174,8 @@ class View {
     this.webContents.on('new-window', (e, url) => {
       this.onNewWindow(url, e)
     })
-    this.webContents.on('dom-ready', (e, b, c) => {
+    this.webContents.on('dom-ready', () => {
       console.log('dom-ready');
-      console.log(b);
-      console.log(c);
       // this.addHistory(e);
 
       this.forceUpdate()
@@ -309,9 +305,9 @@ class View {
       }
       return item.url.replace(/(\\|\/)/g, '').toLowerCase().indexOf((DEFAULT_URL.replace(/(\\|\/)/g, '') + '#' + path.replace(/(\\|\/)/g, '')).toLowerCase()) >= 0
     })
-    this.browserWindow.findView = view;
+    // this.browserWindow.findView = view;
     this.browserWindow.defaultUrl = DEFAULT_URL;
-    this.browserWindow.addPath = path;
+    // this.browserWindow.addPath = path;
     if (view) {
       if (option.vueRouter) {
         view.webContents.send('queryto', option.query)
@@ -324,6 +320,32 @@ class View {
       })
     }
   }
+  openThirdPage(url) {
+    const views = this.browserWindow.views;
+    let activeView = null;
+    try {
+      const host = new URL(url).host;
+      for (let i = views.length - 1; i >= 0; i--) {
+        const view = views[i];
+        if (new URL(view.url).host === host) {
+          activeView = view;
+          break;
+        }
+      }
+      if (activeView) {
+        activeView.setActive();
+      } else {
+        createView(this.browserWindow, url, {
+          isActive: true
+        })
+      }
+    } catch (error) {
+      createView(this.browserWindow, url, {
+        isActive: true
+      })
+    }
+    // const host = new Url
+  }
   loadURL(newURL) {
     let newURLFormat = null;
     if (newURL) {
@@ -331,8 +353,6 @@ class View {
     } else {
       newURLFormat = this.formatURL(this.realURL);
     }
-    console.log('newURLFormat.href is');
-    console.log(newURLFormat.href);
     this.browserView.webContents.loadURL(newURLFormat.href);
   }
   formatURL(newURL) {
@@ -378,7 +398,6 @@ class View {
     });
   }
   setActive(viewIndex) {
-    console.log('set active');
     this.browserWindow.views.map((viewItem, index) => {
       if (viewIndex === index) {
         viewItem.isActive = true;
@@ -500,7 +519,6 @@ const handlerView = {
   }
 }
 export function createView(win, url = DEFAULT_URL + '#/', option) {
-  console.log(url);
   win = getTopWindow(win);
   let view = new Proxy(new View(win, url, option), handlerView)
   url = new URL(url)
@@ -553,7 +571,6 @@ function removeView(win, view, index) {
 }
 
 function resizeAll(win) {
-  console.log('reseize all');
   let {
     width,
     height

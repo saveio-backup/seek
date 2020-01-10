@@ -85,6 +85,9 @@ class Seek {
   }) {
     remote.getCurrentWindow().views.find(item => item.isActive).openComponent(path)
   }
+  static openThirdPage(url){
+    remote.getCurrentWindow().views.find(item => item.isActive).openThirdPage(url)
+  }
   static openNewWindow(url) {
     remote.getCurrentWindow().views.find(item => item.isActive).onNewWindow(url);
   }

@@ -118,6 +118,7 @@ const result = {
   'remaining': 'Remaining.',
   'pleaseFillEncryptionPasscode': 'Please Fill Encryption Password',
   'wrongWalletAddressFormat': 'Wrong Wallet Address Format',
+  'wrongDownloadUrlFormat': 'Wrong download url Format',
   'uploading': 'Uploading',
   'passwordCheckFailed': 'Incorrect password',
   'uploadError': 'Upload Error',

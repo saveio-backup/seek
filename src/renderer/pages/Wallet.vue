@@ -399,8 +399,10 @@ export default {
 		document.title = this.$t("wallet.wallet");
 		this.$store.dispatch("setCurrentAccount"); // get login status
 		this.$store.dispatch("setBalanceLists");
+		let _type = this.txType === 'transferIn' ? 2 : this.txType === 'transferOut' ? 1 : 0;
 		this.$store.dispatch("setTxRecords", {
-			IgnoreOtherContract: !this.IgnoreOtherContract
+			IgnoreOtherContract: !this.IgnoreOtherContract,
+			txType: _type
 		});
 		this.addListenScroll(
 			document.querySelector(".tx-ul"),
@@ -795,11 +797,12 @@ export default {
 					}
 				}
 			}
+			let _type = this.txType === 'transferIn' ? 2 : this.txType === 'transferOut' ? 1 : 0;
 			this.$axios
 				.get(
 					`${this.$api.transactions}${
 						window.localStorage.Address
-					}/0?asset=${asset}&limit=${limit}&height=${height}&skipTxCountFromBlock=${skipTxCountFromBlock}&IgnoreOtherContract=${!this
+					}/${_type}?asset=${asset}&limit=${limit}&height=${height}&skipTxCountFromBlock=${skipTxCountFromBlock}&IgnoreOtherContract=${!this
 						.IgnoreOtherContract}`,
 					{
 						cancelToken: new this.$axios.CancelToken(c => {
@@ -833,7 +836,8 @@ export default {
 					);
 					this.$store.dispatch("setTxRecords", {
 						IgnoreOtherContract: !this.IgnoreOtherContract,
-						asset
+						asset,
+						txType: _type
 					});
 					if (result.length === 0) {
 						this.switchToggle.loadSwitch = false;
@@ -856,17 +860,21 @@ export default {
 			this.cancelReachBottomTxRequest && this.cancelReachBottomTxRequest();
 			this.$store.dispatch("cancelTxRequest");
 			const asset = this.balanceLists[this.balanceSelected].Symbol || "";
+			let _type = this.txType === 'transferIn' ? 2 : this.txType === 'transferOut' ? 1 : 0;
 			this.$store.dispatch("setTxRecords", {
 				asset,
-				IgnoreOtherContract: !this.IgnoreOtherContract
+				IgnoreOtherContract: !this.IgnoreOtherContract,
+				txType: _type
 			});
 		},
 		changeShowContract() {
 			this.cancelReachBottomTxRequest && this.cancelReachBottomTxRequest();
 			this.$store.dispatch("cancelTxRequest");
 			this.$store.commit("SET_TX_RECORDS", []);
+			let _type = this.txType === 'transferIn' ? 2 : this.txType === 'transferOut' ? 1 : 0;
 			this.$store.dispatch("setTxRecords", {
-				IgnoreOtherContract: !this.IgnoreOtherContract
+				IgnoreOtherContract: !this.IgnoreOtherContract,
+				txType: _type
 			});
 		}
 	},

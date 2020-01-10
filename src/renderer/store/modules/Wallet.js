@@ -91,9 +91,12 @@ function requestTransActions(commit, config) {
     asset = '',
     limit = state.txRecords.length >= 30 ? state.txRecords.length : 30,
     height = '',
-    IgnoreOtherContract = false
+    IgnoreOtherContract = false,
+    txType = 0
   } = config || {};
-  axios.get(api.transactions + window.localStorage.Address + '/0?asset=' + asset + '&limit=' + limit + '&height=' + height + '&skipTxCountFromBlock=' + (skipTxCountFromBlock || '') + '&IgnoreOtherContract=' + IgnoreOtherContract, {
+  let _url = `${api.transactions}${window.localStorage.Address}/${txType}?asset=${asset}&limit=${limit}&height=${height}&skipTxCountFromBlock=${(skipTxCountFromBlock || '')}&IgnoreOtherContract=${IgnoreOtherContract}`
+  // axios.get(api.transactions + window.localStorage.Address + '/0?asset=' + asset + '&limit=' + limit + '&height=' + height + '&skipTxCountFromBlock=' + (skipTxCountFromBlock || '') + '&IgnoreOtherContract=' + IgnoreOtherContract, {
+  axios.get(_url, {
     cancelToken: new CancelToken(c => {
       txTransSourceCancel = c;
     }),

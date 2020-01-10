@@ -157,7 +157,7 @@ $light-grey: #f9f9fb;
 					display: inline-block;
 					background: #65a6ff;
 					$width: 14px;
-					width: $width;
+					min-width: $width;
 					height: $width;
 					line-height: $width;
 					font-size: 12px;
@@ -165,6 +165,9 @@ $light-grey: #f9f9fb;
 					border-radius: 50%;
 					color: #fff;
 					margin-left: 4px;
+
+					border-radius: ($width/2);
+					padding: 0 3px;
 				}
 			}
 		}

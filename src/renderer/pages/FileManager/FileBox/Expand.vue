@@ -427,7 +427,7 @@ export default {
 		setUserSpaceCheckRes() {
 			const vm = this;
 			if (this.Password.length === 0) {
-				this.$message(vm.$t("public.pleaseInputWalletPassword"));
+				this.$message.error(vm.$t("public.pleaseInputWalletPassword"));
 				return false;
 			}
 			return true;
@@ -493,7 +493,7 @@ export default {
 						}
 						setTimeout(() => {
 							this.$nextTick(() => {
-								this.$message({
+								this.$message.success({
 									message: vm.$t("fileManager.getStorageSuccessed"),
 									type: "success"
 								});

@@ -42,7 +42,8 @@
 					>{{$t('fileManager.transfer')}} <span
 							class="badge"
 							v-show="transferLength>0"
-						>{{transferLength}}</span></router-link>
+						>{{transferLength}}</span>
+						</router-link>
 				</div>
 				<div class="coin">
 					<div class="flex jc-end">
@@ -413,15 +414,19 @@ $grey: #ccc;
 					display: inline-block;
 					background: #65a6ff;
 					$width: 14px;
-					width: $width;
+					padding: 0 3px;
+					min-width: $width;
 					height: $width;
 					line-height: $width;
 					font-size: 12px;
 					text-align: center;
-					border-radius: 50%;
+					// border-radius: 50%;
+					border-radius: ($width/2);
 					color: #fff;
 					position: absolute;
-					right: 30px;
+					// right: 30px;
+					right: 45px;
+					transform: translateX(100%);
 					top: 0px;
 					// transform: translateX(50%) translateY(-50%)
 				}

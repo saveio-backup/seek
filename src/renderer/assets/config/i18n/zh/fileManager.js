@@ -148,6 +148,7 @@ const result = {
   'uploadFailed': '上传失败',
   'downloadFailed': '下载失败',
   'decrypt': '解 密',
+  'decryption': '解 密',
   'commingSoon': '敬请期待...',
   'startToUpload': '开始上传',
   'startToDownload': '开始下载',

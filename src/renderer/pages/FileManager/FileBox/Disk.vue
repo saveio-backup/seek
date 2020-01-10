@@ -1207,7 +1207,7 @@ export default {
 			const fileListDataAll = this.fileListDataAll;
 			return fileListDataAll.filter(item => {
 				item.StoreTypeNum = -item.StoreType;
-				return item.Name.indexOf(this.filterInput) >= 0;
+				return item.Name.toLowerCase().indexOf(this.filterInput.toLowerCase()) >= 0;
 			});
 		},
 		isSync: function() {

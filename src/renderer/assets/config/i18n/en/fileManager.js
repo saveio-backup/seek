@@ -148,6 +148,7 @@ const result = {
   'uploadFailed': 'Upload failed',
   'downloadFailed': 'Download failed',
   'decrypt': 'Decrypt',
+  'decryption': 'Decryption',
   'commingSoon': 'Comming Soon...',
   'startToUpload': 'Start to Upload',
   'startToDownload': 'Start to Download',

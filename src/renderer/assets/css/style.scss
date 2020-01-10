@@ -160,6 +160,9 @@ select {
 
 // font size exchange element target
 .el-message {
+    @include themify {
+        background: $content-block-bg;
+    }
     .el-message__content {
         font-size: 1.4rem;
     }

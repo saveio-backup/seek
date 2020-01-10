@@ -397,6 +397,10 @@ export default {
 			console.log("downloading changed");
 			console.log(val);
 			let taskByUrl = {};
+			const localUrlPlugins = ipcRenderer.sendSync(
+				"getUsermeta",
+				"LocalUrlPlugins"
+			);
 			for (let index = 0; index < val.length; index++) {
 				// const task = val[index];
 				taskByUrl[val[index].Url] = val[index];
@@ -405,7 +409,7 @@ export default {
 				const pluginItem = this.plugins[i];
 				pluginItem.detail = taskByUrl[pluginItem.Url]
 					? taskByUrl[pluginItem.Url]
-					: pluginItem.detail;
+					: localUrlPlugins[pluginItem.Url].detail; // if plguin is not in task, will reset to localUrlPlugins
 			}
 		},
 		completeTransferList(val) {

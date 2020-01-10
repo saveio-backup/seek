@@ -344,7 +344,7 @@
 			center
 		>
 			<div slot="title">
-				<h2>{{$t('public.decryption')}}</h2>
+				<h2>{{$t('fileManager.decryption')}}</h2>
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content decrypt">

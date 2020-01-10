@@ -175,7 +175,6 @@
 							:placeholder="$t('public.pleaseFillAmount')"
 							@blur="setFixed"
 							@keyup.enter.native="toPeationChannel"
-							maxlength="9"
 							class="channel-opeation-input grey-theme"
 						>
 						</el-input>

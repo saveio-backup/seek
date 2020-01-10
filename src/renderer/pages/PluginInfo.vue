@@ -36,6 +36,11 @@
 							>{{$t("plugin.installing")}}</ripper-button>
 							<ripper-button
 								class="primary"
+								@click="downloadResume(plugin.detail.Id)"
+								v-if="plugin.detail.Status ===3"
+							>{{$t("plugin.update")}}</ripper-button>
+							<ripper-button
+								class="primary"
 								@click="downloadPlugin(plugin.Url,plugin)"
 								v-if="plugin.detail.Status ===5"
 							>{{$t("plugin.update")}}</ripper-button>
@@ -312,6 +317,21 @@ export default {
 					} else {
 						console.log("emit loadErrorPage");
 						this.$message.error(this.$t(`error[${res.Error}]`));
+					}
+				})
+				.catch(error => {
+					if (error.message.includes("timeout")) {
+						this.$message.error("Request Timeout!");
+					}
+				});
+		},
+		downloadResume(id) {
+			this.$axios
+				.post(this.$api.downloadResume, {
+					Ids: id
+				})
+				.then(res => {
+					if (res.Error === 0) {
 					}
 				})
 				.catch(error => {

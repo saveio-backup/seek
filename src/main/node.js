@@ -202,15 +202,15 @@ const setupConfig = async (appDataPath, appName) => {
             fs.mkdirSync(baseDir)
         }
         if (index === 1) {
-            cfgObj.Base.DNSWalletAddrs = [
+            /* cfgObj.Base.DNSWalletAddrs = [
                 "AcJdio7iRMzPxCWgBjSLSqKZcXMjNRtLpd",
                 "APnoekqXUkNDFQMbnnBCsMPQgmWoQQmsd4"
-            ];
+            ]; */
         }
         if (index === 3) {
             cfgObj.Base.AutoSetupDNSEnable = false;
             cfgObj.Base.NetworkId = 1565267317;
-            cfgObj.Base.DNSWalletAddrs = ["AXUhmdzcAJwaFW91q6UYuPGGJY3fimoTAj"];
+            // cfgObj.Base.DNSWalletAddrs = ["AXUhmdzcAJwaFW91q6UYuPGGJY3fimoTAj"];
             cfgObj.Base.ChainRestAddrs = [
                 "http://221.179.156.57:10334",
                 "http://221.179.156.57:11334",

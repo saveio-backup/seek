@@ -5,6 +5,7 @@ const result = {
   'startDownload':'Start download',
   'installing': 'Installing',
   'update': 'Update',
+  'continue':'continue',
   'plugin':'Plug-in'
 }
 

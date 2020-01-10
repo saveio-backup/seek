@@ -53,6 +53,7 @@
 						v-for="item in pluginsInstalled"
 						v-show="(item.isShow !== false) || item.isShow"
 						:key="item.Url"
+						:title="item.title"
 						@click="openNewWindow(item.Url)"
 					>
 						<div class="nav-button">

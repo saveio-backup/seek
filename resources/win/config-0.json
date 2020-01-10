@@ -43,10 +43,6 @@
         "SeedInterval": 3600,
         "DnsChannelDeposit": 1000000000,
         "Trackers": [],
-        "DNSWalletAddrs": [
-            "AUtcTFw1mMB1R2Lvf28pEmm9xemUDtBHun",
-            "AJhMXoVjkgKVxDYHGZubvgTi6WU7pW7Tz4"
-        ],
         "WalletPwd": "",
         "WalletDir": "./keystore.dat"
     },

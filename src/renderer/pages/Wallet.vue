@@ -98,18 +98,18 @@
 				<div class="flex between ai-center">
 					<div class="tx-select">
 						<p
-							@click="txType = 'txRecords';txDetailIndex =-1"
+							@click="setTxType('txRecords')"
 							class="select-button"
 							:class="{'current-select':txType === 'txRecords'}"
 						>{{$t('wallet.allTransfer')}}</p>
 						<p
 							class="select-button"
-							@click="txType = 'transferIn';txDetailIndex =-1"
+							@click="setTxType('transferIn')"
 							:class="{'current-select':txType === 'transferIn'}"
 						> {{$t('wallet.receive')}}</p>
 						<p
 							class="select-button"
-							@click="txType = 'transferOut';txDetailIndex =-1"
+							@click="setTxType('transferOut')"
 							:class="{'current-select':txType === 'transferOut'}"
 						>{{$t('wallet.send')}}</p>
 					</div>
@@ -682,6 +682,15 @@ export default {
 		};
 	},
 	methods: {
+		setTxType(val) {
+			this.txType = val;
+			this.txDetailIndex = -1;
+			let _type = this.txType === 'transferIn' ? 2 : this.txType === 'transferOut' ? 1 : 0;
+			this.$store.dispatch("setTxRecords", {
+				IgnoreOtherContract: !this.IgnoreOtherContract,
+				txType: _type
+			});
+		},
 		clipSaveAddress() {
 			const vm = this;
 			clipboard.writeText(this.user.address);

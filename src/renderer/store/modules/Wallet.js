@@ -119,10 +119,12 @@ function requestTransActions(commit, config) {
       commit('SET_TX_RECORDS', result);
       commit('SET_TRANSFER_IN', transferIn);
       commit('SET_TRANSFER_OUT', transferOut);
+      clearTimeout(timer.heart);
       timer.heart = setTimeout(() => {
         this.dispatch('setTxRecords', {
           asset,
-          IgnoreOtherContract
+          IgnoreOtherContract,
+          txType
         }); // heart loading
       }, 5000);
     } else {

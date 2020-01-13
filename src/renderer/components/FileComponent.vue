@@ -1118,7 +1118,8 @@ export default {
 			const arr = this.getTask(type, 3);
 			if (arr.length === 0) {
 				this.$message({
-					message: vm.$t("fileManager.thereAreNoRecordToDelete")
+					message: vm.$t("fileManager.thereAreNoRecordToDelete"),
+					type: "warning"
 				});
 				return;
 			}

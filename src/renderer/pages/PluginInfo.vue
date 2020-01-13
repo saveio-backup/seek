@@ -104,6 +104,9 @@ export default {
 	mounted() {
 		document.title = this.$t("plugin.plugin");
 		this.getPluginsInfo();
+		document.addEventListener("visibilitychange", function() {
+			this.sendPluginInfo();
+		});
 		this.$store.dispatch("setCurrentAccount"); // get login status
 	},
 	computed: {

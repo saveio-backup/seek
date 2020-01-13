@@ -32,6 +32,8 @@ const result = {
   '27': 'Task download checking file',
   '28': 'Task download checking file failed',
   '29': 'Task download checking file done',
+  '30': 'Task wait for block confirmed',
+  '31': 'Task wait for block confirmed done',
   '40000': 'Incorrect parameter',
   '40001': 'Internal server error',
   '40002': 'Incorrect parameter (missing)',

@@ -26,18 +26,6 @@
 					height='100%'
 				>
 					<el-table-column
-						:label="$t('fileManager.size')"
-						prop="Size"
-						class-name="primary-font-color"
-						sortable
-					>
-						<template slot-scope="scope">
-							<div>
-								{{util.bytesToSize(scope.row.Size * 1024)}}
-							</div>
-						</template>
-					</el-table-column>
-					<el-table-column
 						:label="$t('fileManager.expiredTime')"
 						prop="ExpiredAt"
 						sortable
@@ -47,6 +35,18 @@
 						<template slot-scope="scope">
 							<div>
 								{{ $dateFormat.formatTimeByTimestamp(scope.row.ExpiredAt * 1000)}}
+							</div>
+						</template>
+					</el-table-column>
+					<el-table-column
+						:label="$t('fileManager.size')"
+						prop="Size"
+						class-name="primary-font-color"
+						sortable
+					>
+						<template slot-scope="scope">
+							<div>
+								{{util.bytesToSize(scope.row.Size * 1024)}}
 							</div>
 						</template>
 					</el-table-column>

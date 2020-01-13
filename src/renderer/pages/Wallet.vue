@@ -399,6 +399,7 @@ export default {
 		document.title = this.$t("wallet.wallet");
 		this.$store.dispatch("setCurrentAccount"); // get login status
 		this.$store.dispatch("setBalanceLists");
+		this.getShowSmallContract();
 		let _type = this.txType === 'transferIn' ? 2 : this.txType === 'transferOut' ? 1 : 0;
 		this.$store.dispatch("setTxRecords", {
 			IgnoreOtherContract: !this.IgnoreOtherContract,
@@ -678,6 +679,7 @@ export default {
 				name: localStorage.getItem("Label") || "",
 				address: localStorage.getItem("Address") || ""
 			},
+			showSmallContract: "",
 			IgnoreOtherContract: false
 		};
 	},
@@ -881,6 +883,9 @@ export default {
 			});
 		},
 		changeShowContract() {
+			const vm = this;
+			this.showSmallContract[this.user.address] = this.IgnoreOtherContract;
+			localStorage.setItem('showSmallContract', JSON.stringify(this.showSmallContract));
 			this.cancelReachBottomTxRequest && this.cancelReachBottomTxRequest();
 			this.$store.dispatch("cancelTxRequest");
 			this.$store.commit("SET_TX_RECORDS", []);
@@ -889,6 +894,16 @@ export default {
 				IgnoreOtherContract: !this.IgnoreOtherContract,
 				txType: _type
 			});
+		},
+		getShowSmallContract() {
+			let _showSmallContract = localStorage.getItem('showSmallContract');
+			if(!_showSmallContract) {
+				this.showSmallContract = {};
+				this.showSmallContract[this.user.address] = false;
+			} else {
+				this.showSmallContract = JSON.parse(_showSmallContract);
+			}
+			this.IgnoreOtherContract = this.showSmallContract[this.user.address] || false;
 		}
 	},
 	computed: {
@@ -906,7 +921,7 @@ export default {
 		},
 		balanceLists: function() {
 			return this.$store.state.Wallet.balanceLists || [];
-		}
+		},
 	},
 	watch: {
 		lang() {

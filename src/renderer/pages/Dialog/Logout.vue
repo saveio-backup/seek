@@ -61,7 +61,8 @@ export default {
 						const notClear = [
 							"waitForUploadOrderList",
 							"uploadTask",
-							"localStatus"
+							"localStatus",
+							"showSmallContract"
 						];
 						outer: for (let value in window.localStorage) {
 							if (!window.localStorage.propertyIsEnumerable(value)) continue;

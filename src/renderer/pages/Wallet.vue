@@ -418,7 +418,7 @@ export default {
 				callback(new Error(vm.$t("public.pleaseEnterTheCorrectFormat")));
 				return;
 			} else if (
-				parseFloat(value) > vm.balanceLists[vm.balanceSelected].BalanceFormat
+				parseFloat(value) > (vm.balanceLists[vm.balanceSelected].BalanceFormat - 0.01)
 			) {
 				callback(new Error(vm.$t("public.insufficientBalanceAvailable")));
 				return;
@@ -739,9 +739,13 @@ export default {
 			});
 		},
 		setFixed() {
-			this.sendInfo.Amount = this.sendInfo.Amount
-				? parseFloat(this.sendInfo.Amount).toFixed(9)
-				: "";
+			if(this.sendInfo.Amount >= 1000000000) {
+				this.sendInfo.Amount = '999999999.999999999';
+			} else {
+				this.sendInfo.Amount = this.sendInfo.Amount
+					? parseFloat(this.sendInfo.Amount).toFixed(9)
+					: "";
+			}
 		},
 		sendTransfer() {
 			const vm = this;

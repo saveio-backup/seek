@@ -6,14 +6,14 @@
 				class="flex1 text-left"
 			>
 				<p class=" transparent ft14 user-no-select">{{$t('public.channel')}}(ONI)</p>
-				<p class="ftpx24 mt10">{{filterFloat(channelSelected.BalanceFormat || 0)}}</p>
+				<p class="ftpx24 mt10">{{effectiveNumber(filterFloat(channelSelected.BalanceFormat || 0))}}</p>
 			</div>
 			<div
 				v-else
 				class="flex1 text-left"
 			>
 				<p class="transparent ft14 user-no-select">{{$t('public.wallet')}}(ONI)</p>
-				<p class="ftpx24 mt10">{{filterFloat(mainCount)}}</p>
+				<p class="ftpx24 mt10">{{effectiveNumber(filterFloat(mainCount))}}</p>
 			</div>
 			<div class="flex column between">
 				<i class="ofont ofont-fasong"></i>
@@ -28,14 +28,14 @@
 				class="flex1 text-right"
 			>
 				<p class="transparent ft14 user-no-select">{{$t('public.channel')}}(ONI)</p>
-				<p class="ftpx24 mt10">{{filterFloat(channelSelected.BalanceFormat || 0)}}</p>
+				<p class="ftpx24 mt10">{{effectiveNumber(filterFloat(channelSelected.BalanceFormat || 0))}}</p>
 			</div>
 			<div
 				v-else
 				class="flex1 text-right"
 			>
 				<p class="transparent ft14 user-no-select">{{$t('public.wallet')}}(ONI)</p>
-				<p class="ftpx24 mt10">{{filterFloat(mainCount)}}</p>
+				<p class="ftpx24 mt10">{{effectiveNumber(filterFloat(mainCount))}}</p>
 			</div>
 		</div>
 		<el-form
@@ -53,12 +53,13 @@
 					class="transfer-input grey-theme"
 					ref="transferAmount"
 					min='0'
-					maxlength="9"
+					max='999999999.999999999'
 					v-model="transferInfo.Amount"
 					:placeholder="$t('public.inputAmount')"
 					@keyup.enter.native='toTransfer'
 					@blur="setFixed"
 				>
+					<!-- maxlength="9" -->
 				</el-input>
 			</el-form-item>
 			<el-form-item
@@ -73,12 +74,13 @@
 					@keyup.enter.native='toTransfer'
 					type="password"
 				></el-input>
+				<div class="minerfee tr"><span class="theme-font-color user-no-select">{{$t('wallet.gasFee')}}:</span> <span>0.01</span> {{balanceLists[balanceSelected].Symbol === 'SAVE' ? 'ONI': balanceLists[balanceSelected].Symbol}}</div>
 			</el-form-item>
 		</el-form>
 	</div>
 </template>
 <script>
-import { filterFloat } from "../assets/config/util";
+import { filterFloat,effectiveNumber } from "../assets/config/util";
 import crypto from "crypto";
 export default {
 	props: {
@@ -96,12 +98,12 @@ export default {
 				return;
 			}
 			if (this.withDraw && this.channelSelected.IsOnline) {
-				if (value * 1 > this.channelSelected.BalanceFormat * 1) {
+				if ((value * 1 > this.channelSelected.BalanceFormat * 1) && (this.mainCount >= 0.01)) {
 					callback(new Error(vm.$t("public.insufficientBalanceAvailable")));
 					return;
 				}
 			} else {
-				if (value * 1 > this.mainCount * 1) {
+				if (value * 1 > (this.mainCount * 1 - 0.01)) {
 					callback(new Error(vm.$t("public.insufficientBalanceAvailable")));
 					return;
 				}
@@ -112,7 +114,9 @@ export default {
 			validateMount,
 			switchToggle: { loading: null },
 			filterFloat,
+			effectiveNumber,
 			withDraw: true,
+			balanceSelected: 0,
 			transferInfo: {
 				Amount: "",
 				Password: ""
@@ -159,9 +163,13 @@ export default {
 			}
 		},
 		setFixed() {
-			this.transferInfo.Amount = this.transferInfo.Amount
-				? parseFloat(this.transferInfo.Amount).toFixed(9)
-				: "";
+			if(this.transferInfo.Amount >= 1000000000) {
+				this.transferInfo.Amount = '999999999.999999999'
+			} else {
+				this.transferInfo.Amount = this.transferInfo.Amount
+					? parseFloat(this.transferInfo.Amount).toFixed(9)
+					: "";
+			}
 		},
 		toTransfer() {
 			const vm = this;
@@ -255,6 +263,9 @@ export default {
 		},
 		mainCount: function() {
 			return this.$store.state.Wallet.mainCount;
+		},
+		balanceLists: function() {
+			return this.$store.state.Wallet.balanceLists || [];
 		}
 	}
 };

@@ -150,7 +150,7 @@
 					@submit.native.prevent
 				>
 					<el-form-item
-						class="theme-font-blue-bold"
+						class="theme-font-blue"
 						:label="$t('public.dnsWalletAddress')"
 						prop="partner"
 						v-show="channelToggle.type==='add'"
@@ -164,7 +164,7 @@
 						></el-autocomplete>
 					</el-form-item>
 					<el-form-item
-						class="form-amount"
+						class="theme-font-blue form-amount"
 						:label="$t('public.amount')+'(ONI)'"
 						prop="amount"
 						v-if="channelToggle.type==='add'"
@@ -181,7 +181,7 @@
 						<p style="font-weight: 500;"></p>
 					</el-form-item>
 					<el-form-item
-						class="theme-font-blue-bold"
+						class="theme-font-blue"
 						:label="$t('public.walletPassword')"
 						prop="password"
 					>
@@ -711,6 +711,9 @@ $theme-color: #202020;
 			text-align: right;
 			font-size: 1.4rem;
 			font-weight: 500;
+			@include themify {
+				color: $primary-font-color;
+			}
 		}
 	}
 }

@@ -74,8 +74,8 @@
 					@keyup.enter.native='toTransfer'
 					type="password"
 				></el-input>
-				<div class="minerfee tr"><span class="theme-font-color user-no-select">{{$t('wallet.gasFee')}}:</span> <span>0.01</span> {{balanceLists[balanceSelected].Symbol === 'SAVE' ? 'ONI': balanceLists[balanceSelected].Symbol}}</div>
 			</el-form-item>
+			<div class="minerfee tr rt10"><span class="theme-font-color user-no-select">{{$t('fileManager.gasFee')}}:</span> <span>0.01</span> {{balanceLists[balanceSelected].Symbol === 'SAVE' ? 'ONI': balanceLists[balanceSelected].Symbol}}</div>
 		</el-form>
 	</div>
 </template>
@@ -318,6 +318,10 @@ export default {
 	.el-button {
 		padding: 8px 16px;
 		border-radius: 2px;
+	}
+	.rt10 {
+		position: relative;
+		top: -10px;
 	}
 }
 </style>

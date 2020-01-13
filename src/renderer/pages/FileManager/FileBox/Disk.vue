@@ -80,9 +80,10 @@
 					>
 						<template slot-scope="scope">
 							<div class="flex between">
+
 								<span
 									class="row-name flex ai-center"
-									:class="scope.row.Undone?'grey-color':''"
+									:class="scope.row.Undone ? 'grey-color':''"
 								>{{ scope.row.Name }}
 									<span
 										v-if="syncProcess(scope.row.Hash) > -1"
@@ -497,56 +498,6 @@ export default {
 					Profit: 12534520,
 					Privilege: 1,
 					StoreType: 1
-				},
-				{
-					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-					Name: "helloworld.txt",
-					Size: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 155051257,
-					UpdatedAt: 12412410,
-					DownloadAt: 12412412,
-					Profit: 532452340,
-					Privilege: 1,
-					Url: "asdfsdf",
-					StoreType: 0
-				},
-				{
-					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-					Name: "hahat.txt",
-					Size: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 155505125,
-					UpdatedAt: 124124041,
-					DownloadAt: 11241240,
-					Profit: 513452345234523450,
-					Privilege: 1,
-					Url: "aasfewfwa",
-					StoreType: 0
-				},
-				{
-					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-					Name: "hahat.txt",
-					Size: 1536,
-					DownloadCount: 0,
-					ExpiredAt: 1555051257,
-					UpdatedAt: 1240,
-					DownloadAt: 1140,
-					Profit: 23512312340,
-					Privilege: 1,
-					StoreType: 1
-				},
-				{
-					Hash: "Qma5AY9yC8TkWVU6oys7reUpkBpWAohyCvRxR3VEG2h9Ti",
-					Name: "hahat.txt",
-					Size: 1536,
-					DownloadCount: 1536,
-					ExpiredAt: 555051257,
-					UpdatedAt: 1241241240,
-					DownloadAt: 1140124124,
-					Profit: 1,
-					Privilege: 1,
-					StoreType: 0
 				}
 			],
 			extraParams: {
@@ -586,7 +537,9 @@ export default {
 					localStorage.getItem("linkUploadToNoAllowRemind") === true
 						? true
 						: false
-			}
+			},
+			justNowCompleteNumberTimeoutObj: null,
+			updateFileRequestCancel: null
 		};
 	},
 	components: {
@@ -657,7 +610,6 @@ export default {
 		},
 		clickRow(row) {
 			if (row.Url) {
-				// this.$refs.table.clearSelection();
 				this.$refs.table.toggleRowSelection(row);
 			}
 		},
@@ -692,12 +644,52 @@ export default {
 		selectFile(file) {
 			this.fileSelected = file;
 		},
+		updateFileLists() {
+			const vm = this;
+			try {
+				this.updateFileRequestCancel('update upload file list request cancel!')
+			} catch(e) {}
+			let addr = `${this.addrAPI}0/0/${
+				Math.ceil((this.fileListData.length || 1) / this.limitCount) * this.limitCount}/0`;
+			this.$axios
+				.get(addr, {
+					cancelToken: new vm.$axios.CancelToken(c => {
+            vm.updateFileRequestCancel = c;
+					}),
+				})
+				.then(res => {
+					if (res.Error === 0) {
+						let result = res.Result;
+						if (result.length) {
+							result.map(item => {
+								item.Undone =
+									item.Url !== "" && item.Url !== undefined ? false : true;
+								return item;
+							});
+							// vm.fileListData = result;
+							vm.fileListData = result;
+							vm.$forceUpdate();
+							// update sync file limit;
+							if(vm.fileListData.length === result.length) {
+								let _limit = vm.fileListData.length;
+								vm.$store.dispatch("getSyncFileList", _limit);
+							}
+						}
+					}
+				})
+				.catch(err => {
+					console.error(err);
+					// if (err.message.includes("timeout")) {
+					// 	this.$message.error("Request Timeout!");
+					// }
+				})
+		},
 		getFileLists() {
+			const vm = this;
 			if (!this.switchToggle.load) return;
 			this.switchToggle.load = false; // if your are loading list now,  the switch will be set to false
 			this.switchToggle.showLoading = true;
-			let addr = `${this.addrAPI}${this.type}/${this.fileListData.length}/${
-				this.limitCount
+			let addr = `${this.addrAPI}${this.type}/${this.fileListData.length}/${this.limitCount
 			}${this.addrAPI === this.$api.getFileList ? "/0" : ""}`;
 			this.$axios
 				.get(addr)
@@ -711,24 +703,19 @@ export default {
 									item.Url !== "" && item.Url !== undefined ? false : true;
 								return item;
 							});
-							// if (!this.fileListData || this.fileListData.length === 0) {
-							// 	this.fileListDataAll = this.fileListData.concat(
-							// 		this.waitForUploadList
-							// 	);
-							// }
-							this.fileListData = this.fileListData.concat(result);
+							vm.fileListData = vm.fileListData.concat(result);
 							// update sync file limit;
-							let _limit = this.fileListData.length;
-							this.$store.dispatch("getSyncFileList", _limit);
+							let _limit = vm.fileListData.length;
+							vm.$store.dispatch("getSyncFileList", _limit);
 						} else {
-							this.switchToggle.load = false;
+							vm.switchToggle.load = false;
 							return;
 						}
-						this.switchToggle.load = true;
+						vm.switchToggle.load = true;
 					} else {
 						if (res.Error === 40007) return;
-						this.$message.error(this.$t(`error[${res.Error}]`));
-						this.switchToggle.load = true;
+						vm.$message.error(vm.$t(`error[${res.Error}]`));
+						vm.switchToggle.load = true;
 					}
 				})
 				.catch(err => {
@@ -1117,6 +1104,7 @@ export default {
 	},
 	watch: {
 		fileToDownload: function() {
+			const vm = this;
 			let fileToDownload = this.fileToDownload;
 			let cost = 0;
 			let size = 0;
@@ -1191,6 +1179,14 @@ export default {
 					}
 				]
 			};
+		},
+		uploadLength(val) {
+			const vm = this;
+			console.log(val);
+			clearTimeout(this.justNowCompleteNumberTimeoutObj)
+			this.justNowCompleteNumberTimeoutObj = setTimeout(() => {
+				vm.updateFileLists();
+			}, 200)
 		}
 	},
 	computed: {
@@ -1284,8 +1280,11 @@ export default {
 					return value.BalanceFormat;
 				}
 			}
+		},
+		uploadLength() {
+			let uploadLength = this.$store.state.Transfer.uploadLength;
+			return uploadLength;
 		}
-
 	},
 	beforeRouteEnter(to, from, next) {
 		next(vm => {
@@ -1311,6 +1310,7 @@ export default {
 		this.type = to.query.type;
 		this.switchToggle.load = true;
 		this.fileListData = [];
+		this.$store.commit('SET_JUST_NOW_COMPLETE_Obj', {});
 		this.getFileLists();
 		next();
 	},

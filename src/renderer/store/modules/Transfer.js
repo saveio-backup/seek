@@ -8,10 +8,10 @@ let address = ''
 // const transferClear = function () { };
 const state = {
     completeTransferList: [],
-    // remote upload data
     uploadingTransferList: [],
     downloadingTransferList: [],
-    // downloadTransferList: [],
+    // just now complete task;
+    justNowCompleteNumber: 0,
 
     downloadLength: 0,
     uploadLength: 0,
@@ -34,7 +34,7 @@ const state = {
         uploading: []
     },
     syncList: [],
-    syncListLimit: 0
+    syncListLimit: 0,
 }
 const mutations = {
     GET_DOWNLOAD_TRANSFER(state, result) {
@@ -295,8 +295,13 @@ const mutations = {
     },
     SET_SYNC_LIST_LIMIT(state, result) {
         state.syncListLimit = result;
+    },
+    /**
+     * push justNowCompleteArr value
+    */
+    ADD_JUST_NOW_COMPLETE_Number(state, result) {
+        state.justNowCompleteNumber = state.justNowCompleteNumber + 1;
     }
-
 }
 let downloadTimer = null;
 let uploadTimer = null;

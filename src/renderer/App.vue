@@ -170,7 +170,6 @@ export default {
 		localStatusUpdate({ result }) {
 			this.$store.commit("GET_LOCAL_STATUS", result);
 		},
-
 		frontConfigUpdate({ result }) {
 			this.__proto__.__proto__.$config.maxNumUpload = result.maxNumUpload;
 		},

@@ -267,8 +267,8 @@ export default {
 		completeTransferList(newVal, oldVal) {
 			const vm = this;
 			clearTimeout(this.setTimeoutObj.complete);
-			// let haveComplete = false;
 			this.setTimeoutObj.complete = setTimeout(() => {
+				let justNowCompleteObj = {};
 				for (let value of newVal) {
 					if (
 						value.Id &&
@@ -283,15 +283,7 @@ export default {
 							}`,
 							type: "success"
 						});
-						// haveComplete = true;
 					}
-					// if (haveComplete) {
-					// this.$store.dispatch("setSpace");
-					// this.rendToFileManage({
-					// 	type: "setSpace",
-					// 	result: ""
-					// });
-					// }
 					this.transferObj[value.Id] = value;
 				}
 			}, 50);

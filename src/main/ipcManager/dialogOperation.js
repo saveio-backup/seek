@@ -2,7 +2,7 @@ import {
   ipcMain,
   dialog
 } from 'electron'
-
+import packageJson from '../../../package.json';
 import {
   dialogViewObj
 } from './../windowManager/index'
@@ -26,7 +26,10 @@ ipcMain.on('dialog-close', (event) => {
 
 ipcMain.on('showVersion', (event, info) => {
   // let version = localStorage.getItem('edgeVersion');
-  const message = `Edge Version: ${info}`
+  const message = `
+  Name: ${packageJson.name}
+  Version: ${packageJson.version}
+  Edge Version: ${info}`
   dialog.showMessageBox({
     type: 'info',
     message: message

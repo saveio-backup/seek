@@ -108,7 +108,7 @@ class View {
     } else if (url.host === 'localhost:9080') {
       const urlReg = new RegExp(url.origin + url.pathname + '(#/)?');
       this.displayURL = (url.href.replace(urlReg, DEFAULT_PROTOCOL + '://'));
-    } else if (decodeURIComponent(hrefFormated).indexOf(decodeURIComponent(defaultURLFormated)) >= 0) { // use decodeURIComponent to replace('%20',' ')
+    } else if (decodeURIComponentExtend(hrefFormated).indexOf(decodeURIComponentExtend(defaultURLFormated)) >= 0) { // use decodeURIComponent to replace('%20',' ')
       const urlReg = new RegExp(/(file:.+#)(\/?.*$)/);
       this.displayURL = (hrefFormated.replace((hrefFormated.match(urlReg) || [])[1], DEFAULT_PROTOCOL + '://').replace('\/\/\/', '\/\/'));
     } else {
@@ -272,7 +272,7 @@ class View {
     } else if (urlFormat.host === 'localhost:9080') {
       console.log("urlFormat.host === 'localhost:9080'");
       newIsSave = true;
-    } else if (decodeURIComponent(urlFormat.href).replace(/(\\|\/)/g, '').toLowerCase().indexOf(DEFAULT_URL.replace(/(\\|\/)/g, '').toLowerCase()) >= 0) {
+    } else if (decodeURIComponentExtend(urlFormat.href).replace(/(\\|\/)/g, '').toLowerCase().indexOf(DEFAULT_URL.replace(/(\\|\/)/g, '').toLowerCase()) >= 0) {
       newIsSave = true;
     } else {
       newIsSave = false;
@@ -423,7 +423,7 @@ class View {
     createView(this.browserWindow, undefined, option)
   }
   createHelpDocument(option) {
-    createView(this.browserWindow, decodeURIComponent(`${DEFAULT_URL}#/Markdown?url=${__static}/README.md`), option)
+    createView(this.browserWindow, decodeURIComponentExtend(`${DEFAULT_URL}#/Markdown?url=${__static}/README.md`), option)
   }
   createNewView(win, url = DEFAULT_URL + '#/', option) {
     createView(win, url, option);
@@ -604,5 +604,13 @@ function onAppCommand(win, cmd) {
       break
     default:
       break
+  }
+}
+
+function decodeURIComponentExtend(url) {
+  try {
+    return decodeURIComponent(url);
+  } catch (error) {
+    return '';
   }
 }

@@ -9,6 +9,7 @@ import {
 } from '../windowManager/index'
 import log from 'electron-log';
 import path from 'path';
+import fs from 'fs';
 import AdmZip from 'adm-zip';
 import dnsErrorPage from '../../../static/html/failed/dnsError.js';
 import uuid from 'node-uuid';
@@ -127,12 +128,12 @@ function saveStreamProtocol(request, callback) {
       const parse = path.parse(result);
       const unzipTo = path.join(parse.dir, fileName + '_' + id)
       zip.extractAllTo(unzipTo);
+      const fileRootName = fs.readdirSync(unzipTo)[0];
       // console.log('unzip success, will load path is:');
-      // console.log(path.join(unzipTo, path.parse(fileName).name, pathname));
-      log.info('load-third-page at first');
+      // console.log(path.join(unzipTo, fileRootName, pathname));
       callback({
         method: 'get',
-        path: path.join(unzipTo, path.parse(fileName).name, pathname)
+        path: path.join(unzipTo, fileRootName, pathname)
       })
 
     } catch (error) {
@@ -153,11 +154,6 @@ function saveStreamProtocol(request, callback) {
   }) => {
     console.log('on loadErrorPage');
     try {
-      log.info('load-third-page in -loadErrorPage');
-      log.info('load-third-page errorCode is');
-      log.info(errorCode);
-      log.info('load-third-page note is');
-      log.info(note);
       callback({
         method: 'get',
         path: path.join(__static, 'html/failed/blank.html')

@@ -137,7 +137,7 @@
 								<el-date-picker
 									v-model="expired"
 									@change='setDateValue'
-									format='yyyy-MM-dd-HH:mm:ss'
+									format='yyyy-MM-dd HH:mm:ss'
 									:picker-options="pickerOptions"
 									type="date"
 									:placeholder="$t('fileManager.chooseDate')"

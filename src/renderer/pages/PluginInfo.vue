@@ -54,6 +54,7 @@
 						<el-progress
 							v-if="plugin.detail"
 							class="plugin-progress"
+							:class="{'progressAnimate': (plugin.detail.Status == 1 )|| (plugin.detail.Status == 2)}"
 							:percentage="Math.ceil(plugin.detail.Progress * 100)"
 							:stroke-width="2"
 							:show-text="false"
@@ -104,7 +105,7 @@ export default {
 	mounted() {
 		document.title = this.$t("plugin.plugin");
 		this.getPluginsInfo();
-		document.addEventListener("visibilitychange", function() {
+		document.addEventListener("visibilitychange", () => {
 			this.sendPluginInfo();
 		});
 		this.$store.dispatch("setCurrentAccount"); // get login status
@@ -165,10 +166,15 @@ export default {
 					if (plugins[i].detail) {
 						fs.statSync(detail.Path);
 						pluginInstaled.push(plugins[i]);
+						console.log("plugins[i] is");
+						console.log(plugins[i]);
 						// if plugin loaded from 'Enter address to load', we should update LocalUrlPlugins
-						localUrlPlugins[plugins[i].Url] = localUrlPlugins[plugins[i].Url]
-							? localUrlPlugins[plugins[i].Url]
-							: plugins[i];
+						console.log("localUrlPluginis is");
+						console.log(localUrlPlugins);
+						// localUrlPlugins[plugins[i].Url] = localUrlPlugins[plugins[i].Url]
+						// 	? localUrlPlugins[plugins[i].Url]
+						// 	: plugins[i];
+						localUrlPlugins[plugins[i].Url] = plugins[i];
 					} else if (localUrlPlugins[plugins[i].Url]) {
 						// need update
 						fs.statSync(localUrlPlugins[plugins[i].Url].detail.Path); // check if path exist in localUrlplugins

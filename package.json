@@ -60,10 +60,12 @@
       ]
     },
     "mac": {
-      "icon": "build/icons/seeker_logo_origin.png"
+      "icon": "build/icons/seeker_logo_origin.png",
+      "artifactName": "${productName}_Setup_${version}_alpha.${ext}"
     },
     "win": {
-      "icon": "build/icons/seeker.png"
+      "icon": "build/icons/seeker.png",
+      "artifactName": "${productName}_Setup_${version}_alpha.${ext}"
     },
     "linux": {
       "icon": "build/icons"

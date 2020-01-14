@@ -2090,33 +2090,6 @@ $danger: #f56c6c;
 			opacity: 0.7;
 		}
 	}
-	.file-progress {
-		&.progressAnimate {
-			.el-progress-bar__outer {
-				height: 16px;
-				background-size: 12px 12px;
-				background-image: linear-gradient(
-					45deg,
-					rgba(255, 255, 255, 0.4) 25%,
-					transparent 25%,
-					transparent 50%,
-					rgba(255, 255, 255, 0.4) 50%,
-					rgba(255, 255, 255, 0.4) 75%,
-					transparent 75%,
-					transparent
-				);
-				animation: progress-bar-stripes 1s linear infinite;
-			}
-		}
-		@keyframes progress-bar-stripes {
-			from {
-				background-position: -1rem 0;
-			}
-			to {
-				background-position: 0 0;
-			}
-		}
-	}
 	.speed-content {
 		width: 130px;
 	}

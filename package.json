@@ -1,6 +1,6 @@
 {
   "name": "seek",
-  "version": "1.0.2-2",
+  "version": "1.0.2-3",
   "description": "seek about ONI",
   "license": "MIT",
   "main": "./dist/electron/main.js",

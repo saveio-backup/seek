@@ -11,7 +11,7 @@
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content upload-file-detail-loading">
-				<div class="flex around upload-file-detail-title" v-if="nodes">
+				<div class="flex around upload-file-detail-title" v-if="nodes && !isClose">
 					<div class="upload-file-detail-title-item" @click="selectType(0)" :class="{'select': type === 0}">{{$t('fileManager.basicInfo')}}</div>
 					<div class="upload-file-detail-title-item" @click="selectType(1)" :class="{'select': type === 1}">{{$t('fileManager.nodesInfo')}}</div>
 				</div>
@@ -164,6 +164,11 @@ export default {
 			required: false,
 			type: Array,
 			default: () => []
+		},
+		isClose: {
+			required: false,
+			type: Boolean,
+			default: false
 		}
 	},
 	data() {

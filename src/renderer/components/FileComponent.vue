@@ -525,6 +525,7 @@
 			@closeUploadFileDetail="toCloseUploadFileDetail"
 			:hash="uploadDetailHash"
 			:fileNodes="uploadDetailNodes"
+			:isClose="true"
 			v-if="transferType === 0"
 		></upload-file-detail-dialog>
 		<!-- complete page download dialog-->

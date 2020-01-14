@@ -431,6 +431,7 @@
 		<upload-file-detail-dialog
 			@closeUploadFileDetail="toCloseUploadFileDetail"
 			:hash="uploadDetailHash"
+			:fileNodes="uploadDetailNodes"
 			ref="uploadFileDetailDialog"
 		></upload-file-detail-dialog>
 	</div>
@@ -468,6 +469,7 @@ export default {
 			executedFile: {}, // a file be opera
 			filterInput: "",
 			uploadDetailHash: "",
+			uploadDetailNodes: [],
 			fileToDownload: [], // the file/files which chekbox or download button you click
 			fileToDelete: [], // the file/files which chekbox  or delete button you click
 			mockData: [
@@ -568,12 +570,15 @@ export default {
 		},
 		toCloseUploadFileDetail() {
 			this.uploadDetailHash = "";
+			this.uploadDetailNodes = [];
 		},
 		openDetailDialog(row) {
 			this.uploadDetailHash = row.Hash;
+			this.uploadDetailNodes = row.Nodes || [];
 		},
 		openDetailDialogProcess(row) {
 			this.uploadDetailHash = row.Hash;
+			this.uploadDetailNodes = row.Nodes || [];
 			this.$refs.uploadFileDetailDialog.selectType(1);
 		},
 		goStorage() {
@@ -664,6 +669,9 @@ export default {
 							result.map(item => {
 								item.Undone =
 									item.Url !== "" && item.Url !== undefined ? false : true;
+									if(vm.uploadDetailHash && (item.Hash === vm.uploadDetailHash)) {
+										vm.uploadDetailNodes = item.Nodes || [];
+									}
 								return item;
 							});
 							// vm.fileListData = result;
@@ -701,6 +709,9 @@ export default {
 							result.map(item => {
 								item.Undone =
 									item.Url !== "" && item.Url !== undefined ? false : true;
+								if(vm.uploadDetailHash && (item.Hash === vm.uploadDetailHash)) {
+									vm.uploadDetailNodes = item.Nodes || [];
+								}
 								return item;
 							});
 							vm.fileListData = vm.fileListData.concat(result);
@@ -1299,18 +1310,19 @@ export default {
 				let _limit = vm.fileListData.length + vm.limitCount;
 				vm.$store.dispatch("getSyncFileList", _limit);
 			}
+			console.log('beforeRouteEnter')
 			vm.getFileLists();
 		});
 	},
 	beforeRouteLeave(to, from, next) {
 		this.$store.dispatch("clearIntervalSyncFileList");
+		console.log('beforeRouteLeave')
 		next();
 	},
 	beforeRouteUpdate(to, from, next) {
 		this.type = to.query.type;
 		this.switchToggle.load = true;
 		this.fileListData = [];
-		this.$store.commit('SET_JUST_NOW_COMPLETE_Obj', {});
 		this.getFileLists();
 		next();
 	},

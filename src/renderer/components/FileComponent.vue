@@ -524,6 +524,7 @@
 		<upload-file-detail-dialog
 			@closeUploadFileDetail="toCloseUploadFileDetail"
 			:hash="uploadDetailHash"
+			:fileNodes="uploadDetailNodes"
 			v-if="transferType === 0"
 		></upload-file-detail-dialog>
 		<!-- complete page download dialog-->
@@ -724,7 +725,8 @@ export default {
 			nodeSpeed: {},
 			speedIntervalObj: null,
 			passHowLongTimeGetFileList: 0, //computed how long time get file list
-			taskSpeedNum: 3 // computed fileList change max time（3s）
+			taskSpeedNum: 3, // computed fileList change max time（3s）
+			uploadDetailNodes: [],
 		};
 	},
 	watch: {
@@ -804,6 +806,11 @@ export default {
 		fileObjById: function() {
 			let obj = {};
 			for (let value of this.fileList) {
+				// update upload file nodes
+				if(this.uploadDetailHash && this.transferType === 0 && value.FileHash === this.uploadDetailHash) {
+					this.uploadDetailNodes = value.Nodes;
+				}
+				// 
 				obj[value.Id] = value;
 			}
 			return obj;
@@ -1013,12 +1020,14 @@ export default {
 		// close upload file detail dialog callback
 		toCloseUploadFileDetail() {
 			this.uploadDetailHash = "";
+			this.uploadDetailNodes = [];
 		},
 		// open detail dialog
 		openDetailDialog(row) {
 			if (this.transferType === 0) {
 				if (row.IsUploadAction) {
 					this.uploadDetailHash = row.FileHash;
+					this.uploadDetailNodes = row.Nodes || [];
 				} else {
 					this.detailObj = null;
 					this.detailId = row.Id;
@@ -1382,14 +1391,20 @@ export default {
 						}
 						//get error list
 						let errorMsg = "";
+						let errorObj = {};
 						for (let value of res.Result.Tasks) {
 							if (value && value.Code) {
-								errorMsg += `<p>`;
-								errorMsg += `${value.FileName || ""}`;
-								errorMsg += vm.$t(`error["${value.Error}"]`);
-								errorMsg += `</p>`;
+								if(!errorObj[value.Code]) errorObj[value.Code] = [];
+								errorObj[value.Code].push(value.FileName);
 							}
 						}
+						for(let key in errorObj) {
+							errorMsg += `<p>`;
+							errorMsg += `${errorObj[key].join('、') || ""}:`;
+							errorMsg += vm.$t(`error["${key}"]`);
+							errorMsg += `</p>`;
+						}
+
 						//if no err
 						if (errorMsg.length === 0) {
 							this.$message({

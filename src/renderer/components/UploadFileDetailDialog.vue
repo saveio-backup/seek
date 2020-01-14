@@ -11,25 +11,11 @@
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content upload-file-detail-loading">
-				<div
-					class="flex around upload-file-detail-title"
-					v-if="syncObj[hash]"
-				>
-					<div
-						class="upload-file-detail-title-item"
-						@click="selectType(0)"
-						:class="{'select': type === 0}"
-					>{{$t('fileManager.basicInfo')}}</div>
-					<div
-						class="upload-file-detail-title-item"
-						@click="selectType(1)"
-						:class="{'select': type === 1}"
-					>{{$t('fileManager.nodesInfo')}}</div>
+				<div class="flex around upload-file-detail-title" v-if="nodes">
+					<div class="upload-file-detail-title-item" @click="selectType(0)" :class="{'select': type === 0}">{{$t('fileManager.basicInfo')}}</div>
+					<div class="upload-file-detail-title-item" @click="selectType(1)" :class="{'select': type === 1}">{{$t('fileManager.nodesInfo')}}</div>
 				</div>
-				<div
-					class="adjust"
-					v-if="!syncObj[hash] || type === 0"
-				>
+				<div class="adjust" v-if="!nodes || type === 0">
 					<div class="adjust-item">
 						<p class="adjust-title ft14">{{$t('fileManager.fileHash')}}:</p>
 						<div class="adjust-info">
@@ -89,10 +75,7 @@
 						</div>
 					</div>
 				</div>
-				<div
-					class="adjust"
-					v-if="syncObj[hash] && type === 1"
-				>
+				<div class="adjust" v-if="nodes && type === 1">
 					<el-table
 						:data="nodes"
 						:empty-text='$t("public.noData")'
@@ -176,6 +159,11 @@ export default {
 		hash: {
 			required: true,
 			type: String //file hash
+		},
+		fileNodes: {
+			required: false,
+			type: Array,
+			default: () => []
 		}
 	},
 	data() {
@@ -252,9 +240,13 @@ export default {
 			};
 		},
 		nodes() {
-			if (!this.syncObj[this.hash] || this.syncObj[this.hash].Nodes.length <= 1)
-				return [];
-			let _nodes = this.syncObj[this.hash].Nodes.slice(1);
+			let _nodes;
+			if(!this.syncObj[this.hash] || this.syncObj[this.hash].Nodes.length <= 1) {
+				if(!this.fileNodes || this.fileNodes.length <= 1) return [];
+				_nodes = this.fileNodes.slice(1);
+			} else {
+				_nodes = this.syncObj[this.hash].Nodes.slice(1);
+			}
 			return _nodes;
 		}
 	},
@@ -308,6 +300,7 @@ export default {
 		}
 	},
 	mounted() {
+		console.log('124124');
 		this.init();
 	}
 };

@@ -35,6 +35,7 @@ const state = {
     },
     syncList: [],
     syncListLimit: 0,
+    fileboxLeave: true,
 }
 const mutations = {
     GET_DOWNLOAD_TRANSFER(state, result) {
@@ -301,6 +302,9 @@ const mutations = {
     */
     ADD_JUST_NOW_COMPLETE_Number(state, result) {
         state.justNowCompleteNumber = state.justNowCompleteNumber + 1;
+    },
+    SET_FILEBOX_LEAVE(state, result) {
+        state.fileboxLeave = result;
     }
 }
 let downloadTimer = null;
@@ -394,17 +398,17 @@ const actions = {
         commit,
         state
     }, limit = 0) {
+        commit('SET_FILEBOX_LEAVE', false);
         commit('SET_SYNC_LIST_LIMIT', limit);
+        clearTimeout(syncFileTimer);
         try {
             syncFileRequestCancel('request cancel!');
         } catch (e) {}
-        syncFileRequest.bind(this, commit, limit)();
-        // syncFileTimer = setInterval(() => {
-        // syncFileRequest.bind(this, commit, state.syncListLimit)();
-        // }, 3000)
+        syncFileRequest.bind(this, commit, state, limit)();
     },
-    clearIntervalSyncFileList() {
-        clearInterval(syncFileTimer);
+    clearIntervalSyncFileList({commit}) {
+        commit('SET_FILEBOX_LEAVE', true);
+        clearTimeout(syncFileTimer);
     }
 }
 
@@ -492,12 +496,8 @@ function toUploadTransferListRequest({
     }
 }
 
-function syncFileRequest(commit, limit) {
+function syncFileRequest(commit, state, limit) {
     clearTimeout(syncFileTimer);
-    // clearTimeout(syncFileTimeoutr);
-    // syncFileTimeoutr = setTimeout(() => {
-    //     syncFileRequestCancel('request cancel!');
-    // }, 60000)
     axios.get(api.getFileList + `0/0/${limit}/1`, {
         cancelToken: new CancelToken(c => {
             syncFileRequestCancel = c;
@@ -509,7 +509,9 @@ function syncFileRequest(commit, limit) {
         }
     }).finally(() => {
         syncFileTimer = setTimeout(() => {
-            syncFileRequest(commit, limit);
+            if((state.uploadLength !== 0 || state.syncList.length !== 0) && !state.fileboxLeave) {
+                syncFileRequest(commit, state, limit);
+            }
         }, 3000)
     })
 }

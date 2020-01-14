@@ -400,7 +400,8 @@ export default {
 		this.$store.dispatch("setCurrentAccount"); // get login status
 		this.$store.dispatch("setBalanceLists");
 		this.getShowSmallContract();
-		let _type = this.txType === 'transferIn' ? 2 : this.txType === 'transferOut' ? 1 : 0;
+		let _type =
+			this.txType === "transferIn" ? 2 : this.txType === "transferOut" ? 1 : 0;
 		this.$store.dispatch("setTxRecords", {
 			IgnoreOtherContract: !this.IgnoreOtherContract,
 			txType: _type
@@ -419,7 +420,8 @@ export default {
 				callback(new Error(vm.$t("public.pleaseEnterTheCorrectFormat")));
 				return;
 			} else if (
-				parseFloat(value) > (vm.balanceLists[vm.balanceSelected].BalanceFormat - 0.01)
+				parseFloat(value) >
+				vm.balanceLists[vm.balanceSelected].BalanceFormat - 0.01
 			) {
 				callback(new Error(vm.$t("public.insufficientBalanceAvailable")));
 				return;
@@ -687,7 +689,12 @@ export default {
 		setTxType(val) {
 			this.txType = val;
 			this.txDetailIndex = -1;
-			let _type = this.txType === 'transferIn' ? 2 : this.txType === 'transferOut' ? 1 : 0;
+			let _type =
+				this.txType === "transferIn"
+					? 2
+					: this.txType === "transferOut"
+					? 1
+					: 0;
 			this.$store.dispatch("setTxRecords", {
 				IgnoreOtherContract: !this.IgnoreOtherContract,
 				txType: _type
@@ -741,8 +748,8 @@ export default {
 			});
 		},
 		setFixed() {
-			if(this.sendInfo.Amount >= 1000000000) {
-				this.sendInfo.Amount = '999999999.999999999';
+			if (this.sendInfo.Amount >= 1000000000) {
+				this.sendInfo.Amount = "999999999.999999999";
 			} else {
 				this.sendInfo.Amount = this.sendInfo.Amount
 					? parseFloat(this.sendInfo.Amount).toFixed(9)
@@ -812,7 +819,12 @@ export default {
 					}
 				}
 			}
-			let _type = this.txType === 'transferIn' ? 2 : this.txType === 'transferOut' ? 1 : 0;
+			let _type =
+				this.txType === "transferIn"
+					? 2
+					: this.txType === "transferOut"
+					? 1
+					: 0;
 			this.$axios
 				.get(
 					`${this.$api.transactions}${
@@ -875,7 +887,12 @@ export default {
 			this.cancelReachBottomTxRequest && this.cancelReachBottomTxRequest();
 			this.$store.dispatch("cancelTxRequest");
 			const asset = this.balanceLists[this.balanceSelected].Symbol || "";
-			let _type = this.txType === 'transferIn' ? 2 : this.txType === 'transferOut' ? 1 : 0;
+			let _type =
+				this.txType === "transferIn"
+					? 2
+					: this.txType === "transferOut"
+					? 1
+					: 0;
 			this.$store.dispatch("setTxRecords", {
 				asset,
 				IgnoreOtherContract: !this.IgnoreOtherContract,
@@ -885,25 +902,34 @@ export default {
 		changeShowContract() {
 			const vm = this;
 			this.showSmallContract[this.user.address] = this.IgnoreOtherContract;
-			localStorage.setItem('showSmallContract', JSON.stringify(this.showSmallContract));
+			localStorage.setItem(
+				"showSmallContract",
+				JSON.stringify(this.showSmallContract)
+			);
 			this.cancelReachBottomTxRequest && this.cancelReachBottomTxRequest();
 			this.$store.dispatch("cancelTxRequest");
 			this.$store.commit("SET_TX_RECORDS", []);
-			let _type = this.txType === 'transferIn' ? 2 : this.txType === 'transferOut' ? 1 : 0;
+			let _type =
+				this.txType === "transferIn"
+					? 2
+					: this.txType === "transferOut"
+					? 1
+					: 0;
 			this.$store.dispatch("setTxRecords", {
 				IgnoreOtherContract: !this.IgnoreOtherContract,
 				txType: _type
 			});
 		},
 		getShowSmallContract() {
-			let _showSmallContract = localStorage.getItem('showSmallContract');
-			if(!_showSmallContract) {
+			let _showSmallContract = localStorage.getItem("showSmallContract");
+			if (!_showSmallContract) {
 				this.showSmallContract = {};
 				this.showSmallContract[this.user.address] = false;
 			} else {
 				this.showSmallContract = JSON.parse(_showSmallContract);
 			}
-			this.IgnoreOtherContract = this.showSmallContract[this.user.address] || false;
+			this.IgnoreOtherContract =
+				this.showSmallContract[this.user.address] || false;
 		}
 	},
 	computed: {
@@ -921,7 +947,7 @@ export default {
 		},
 		balanceLists: function() {
 			return this.$store.state.Wallet.balanceLists || [];
-		},
+		}
 	},
 	watch: {
 		lang() {
@@ -1226,13 +1252,12 @@ $light-grey: #f7f7f7;
 					}
 				}
 				.el-switch__label {
-					color: #409EFF;
+					color: #409eff;
 					&.is-active {
 						@include themify {
 							color: $primary-font-color;
 						}
 					}
-
 				}
 			}
 

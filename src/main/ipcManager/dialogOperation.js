@@ -26,10 +26,10 @@ ipcMain.on('dialog-close', (event) => {
 
 ipcMain.on('showVersion', (event, info) => {
   // let version = localStorage.getItem('edgeVersion');
-  const message = `
-  Seeker Version: ${packageJson.version}
-  Edge Version: ${info}`
+  const message = `Seeker Version: ${packageJson.version}
+Edge Version: ${info}`
   dialog.showMessageBox({
+    title: 'About',
     type: 'info',
     message: message
   });

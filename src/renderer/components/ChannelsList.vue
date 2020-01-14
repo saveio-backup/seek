@@ -586,7 +586,7 @@ export default {
 						this.$message({
 							message: vm.$t("public.closeChannelSuccessed"),
 							type: "success"
-						});
+					});
 						this.channelToggle.channelCloseDialog = false;
 						this.$store.dispatch("setChannelBalanceTotal");
 					} else {

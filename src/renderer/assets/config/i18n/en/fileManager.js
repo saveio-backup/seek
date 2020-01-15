@@ -140,6 +140,7 @@ const result = {
   'newTask': 'New Task',
   'finished': 'Finished',
   'files': 'Files',
+  'files2': 'files',
   'deleteAll': 'Delete All',
   'thirdPartyWebsitesResources': 'Third-party Websites Resources',
   'downloadCompleted': 'Download Completed',
@@ -197,7 +198,9 @@ const result = {
   'link': 'Link',
   'basicInfo': 'Basic Info',
   'nodesInfo': 'Nodes Info',
-  'getGasFeeFailed': 'Get gas fee failed'
+  'getGasFeeFailed': 'Get gas fee failed',
+  'calculating': 'Calculating...',
+  'recalculation': 'Recalculation'
 }
 
 export default result;

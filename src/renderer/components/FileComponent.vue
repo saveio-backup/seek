@@ -321,7 +321,7 @@
 							v-model="passwordCancel.Password"
 							show-password
 							type="password"
-							@keyup.native.enter='toCancel'
+							@keyup.native.enter='toCancelCheck'
 							:placeholder="$t('public.pleaseInputPassword')"
 							class="grey-theme mb10"
 						></el-input>
@@ -331,7 +331,7 @@
 					<ripper-button
 						class="primary"
 						type="primary"
-						@click="toCancel"
+						@click="toCancelCheck"
 					>{{$t('public.confirm')}}</ripper-button>
 				</div>
 			</div>
@@ -957,6 +957,13 @@ export default {
 			}
 			this.switchToggle.confirmCancelDownloadDialog = true;
 		},
+		toCancelCheck() {
+			const vm = this;
+			this.$refs['passwordCancel'].validate(valid => {
+				if(!valid) return;
+				vm.toCancel();
+			})
+		},
 		// cancel task
 		toCancel() {
 			// to do!!!!!
@@ -1012,6 +1019,7 @@ export default {
 				});
 				return;
 			}
+
 			this.switchToggle.passwordDialog = true;
 			this.$nextTick(() => {
 				this.$refs.passwordCancel.resetFields();

@@ -284,12 +284,29 @@
 				</div>
 				<div class="flex jc-center submit-foot mb10">
 					<ripper-button @click="toEmptyUpload">{{$t('public.cancel')}}</ripper-button>
+						<!-- :disabled="!switchToggle.uploadToggle" -->
 					<ripper-button
-						:disabled="!switchToggle.uploadToggle"
+						v-show="!switchToggle.uploadToggle && !switchToggle.uploadToggleError"
+						:disabled="true"
 						type="primary"
 						class="primary ml10"
 						@click="OpenPasswordDialog"
-					>{{$t('fileManager.pay')}} & {{$t('fileManager.upload')}}</ripper-button>
+					>{{$t('fileManager.calculating')}}</ripper-button>
+					<ripper-button 
+						class="primary ml10"
+						v-show="switchToggle.uploadToggleError"
+						@click="toGetPrice"
+					>
+						{{$t('fileManager.recalculation')}}
+					</ripper-button>
+					<ripper-button
+						v-show="switchToggle.uploadToggle && !switchToggle.uploadToggleError"
+						type="primary"
+						class="primary ml10"
+						@click="OpenPasswordDialog"
+					>
+						{{$t('fileManager.pay')}} & {{$t('fileManager.upload')}}
+					</ripper-button>
 				</div>
 			</div>
 		</div>
@@ -496,7 +513,9 @@ export default {
 				whiteListInput: false,
 				advanced: false, // advanced form
 				upload: true,
-				uploadToggle: true
+				uploadToggle: true,
+				uploadToggleError: false,
+				getPriceNumber: 0,
 			},
 			// wihteListString: "",
 			uploadPrice: DEFAULT_UPLOAD_PRICE,
@@ -1026,9 +1045,14 @@ export default {
 			for (let file of this.uploadFormData.Files) {
 				commitAll.push(this.toGetPricePromise(file));
 			}
+			this.switchToggle.uploadToggle = false;
+			this.switchToggle.uploadToggleError = false;
+			this.switchToggle.getPriceNumber ++;
 			this.$axios
 				.all(commitAll)
 				.then(resArr => {
+					this.switchToggle.getPriceNumber --;
+					if(this.switchToggle.getPriceNumber !== 0) return;
 					let storageFee = 0;
 					let validateFee = 0;
 					let contractFee = 0;
@@ -1037,10 +1061,10 @@ export default {
 							storageFee += res.Result.StorageFee;
 							validateFee += res.Result.ValidFee;
 							contractFee += res.Result.TxFee;
-							this.switchToggle.uploadToggle = true;
 						} else {
 							this.$message.error(this.$t(`error[${res.Error}]`));
-							this.switchToggle.uploadToggle = false;
+							this.switchToggle.uploadToggleError = true;
+							this.switchToggle.uploadToggle = true;
 							return;
 						}
 					}
@@ -1057,10 +1081,15 @@ export default {
 						StorageFeeFormat: storageFee / Math.pow(10, 9),
 						ValidFeeFormat: validateFee / Math.pow(10, 9)
 					};
+					this.switchToggle.uploadToggle = true;
+					this.switchToggle.uploadToggleError = false;
 				})
 				.catch(e => {
+					this.switchToggle.getPriceNumber --;
+					if(this.switchToggle.getPriceNumber !== 0) return;
 					this.$message.error(vm.$t("fileManager.getPriceFailes"));
-					this.switchToggle.uploadToggle = false;
+					this.switchToggle.uploadToggle = true;
+					this.switchToggle.uploadToggleError = true;
 				});
 		},
 		hiddenAdvanced() {

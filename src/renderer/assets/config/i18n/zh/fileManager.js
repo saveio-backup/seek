@@ -140,6 +140,7 @@ const result = {
   'newTask': '新建任务',
   'finished': '已完成',
   'files': '文 件',
+  'files2': '文件',
   'deleteAll': '删除全部',
   'thirdPartyWebsitesResources': '第三方网站资源',
   'downloadCompleted': '下载完成',
@@ -196,7 +197,9 @@ const result = {
   'networkErrorGetFileDetailFailed': '网络错误。获取文件详细信息失败!',
   'link': '链 接',
   'basicInfo': '基本信息',
-  'nodesInfo': '节点信息'
+  'nodesInfo': '节点信息',
+  'calculating': '计算中...',
+  'recalculation': '重新计算'
 }
 
 export default result;

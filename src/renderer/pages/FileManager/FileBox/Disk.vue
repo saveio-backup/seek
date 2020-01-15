@@ -313,7 +313,7 @@
 							<p
 								class="ftpx14 mr20"
 								:title="fileDownloadInfo.allName"
-							>{{fileDownloadInfo.Name}}</p>
+							>{{fileDownloadInfo.Name}} ({{fileToDownload.length}} {{$t('fileManager.files2')}})</p>
 						</div>
 					</div>
 					<div class="adjust-item">
@@ -395,7 +395,7 @@
 					<p
 						class="mb20 dialog-file-delete-info"
 						:title="fileDeleteInfo.allName"
-					>{{fileDeleteInfo.Name}}</p>
+					>{{fileDeleteInfo.Name}} ({{fileToDelete.length}} {{$t('fileManager.files2')}})</p>
 					<!-- <p class="delete-dialog-gas-fee mb10">{{$t('fileManager.gasFee')}}: {{deleteGasFee}} {{deleteGasFee !== '' ? 'SAVE' : ''}}</p> -->
 					<el-form
 						ref="extraParamsForm"
@@ -1137,7 +1137,8 @@ export default {
 			let cost = 0;
 			let size = 0;
 			let name = "";
-			this.fileDownloadInfo.Fee = "Calculating";
+			const MAX_LENGTH = 27;
+			this.fileDownloadInfo.Fee = this.$t('fileManager.calculating');
 			fileToDownload.map((item, index) => {
 				const path = ipcRenderer.sendSync("string-to-hex", item.Url);
 				size += this.fileToDownload[index].Size;
@@ -1148,9 +1149,9 @@ export default {
 					name +
 					this.fileToDownload[index].Name +
 					(index == fileToDownload.length - 1 ? "" : " / ");
-				if (name.length > 37) {
+				if (name.length > MAX_LENGTH) {
 					// max length
-					this.fileDownloadInfo.Name = name.substring(0, 37) + " ....";
+					this.fileDownloadInfo.Name = name.substring(0, MAX_LENGTH) + " ....";
 					this.fileDownloadInfo.allName = name;
 				} else {
 					this.fileDownloadInfo.Name = name;
@@ -1182,14 +1183,15 @@ export default {
 		fileToDelete: function() {
 			let fileToDelete = this.fileToDelete;
 			let name = "";
+			const MAX_LENGTH = 37;
 			fileToDelete.map((item, index) => {
 				name =
 					name +
 					this.fileToDelete[index].Name +
 					(index == fileToDelete.length - 1 ? "" : " / ");
-				if (name.length > 37) {
+				if (name.length > MAX_LENGTH) {
 					// max length
-					this.fileDeleteInfo.Name = name.substring(0, 37) + " ....";
+					this.fileDeleteInfo.Name = name.substring(0, MAX_LENGTH) + " ....";
 					this.fileDeleteInfo.allName = name;
 				} else {
 					this.fileDeleteInfo.Name = name;

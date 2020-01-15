@@ -589,7 +589,7 @@ export default {
 			margin: 0 25px;
 			.progress-circle-min {
 				height: 100%;
-				background: url("../assets/images/progress_cricle_min.svg") no-repeat 0
+				background: url("../assets/images/progress_circle_min.svg") no-repeat 0
 					center;
 			}
 			.progress-mask {

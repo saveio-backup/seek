@@ -80,7 +80,7 @@
 	</div>
 </template>
 <script>
-import { filterFloat,effectiveNumber } from "../assets/config/util";
+import { filterFloat, effectiveNumber } from "../assets/config/util";
 import crypto from "crypto";
 export default {
 	props: {
@@ -98,12 +98,15 @@ export default {
 				return;
 			}
 			if (this.withDraw && this.channelSelected.IsOnline) {
-				if ((value * 1 > this.channelSelected.BalanceFormat * 1) && (this.mainCount >= 0.01)) {
+				if (
+					value * 1 > this.channelSelected.BalanceFormat * 1 &&
+					this.mainCount >= 0.01
+				) {
 					callback(new Error(vm.$t("public.insufficientBalanceAvailable")));
 					return;
 				}
 			} else {
-				if (value * 1 > (this.mainCount * 1 - 0.01)) {
+				if (value * 1 > this.mainCount * 1 - 0.01) {
 					callback(new Error(vm.$t("public.insufficientBalanceAvailable")));
 					return;
 				}
@@ -163,12 +166,10 @@ export default {
 			}
 		},
 		setFixed() {
-			if(this.transferInfo.Amount >= 1000000000) {
-				this.transferInfo.Amount = '999999999.999999999'
+			if (this.transferInfo.Amount >= 1000000000) {
+				this.transferInfo.Amount = "999999999.999999999";
 			} else {
-				this.transferInfo.Amount = this.transferInfo.Amount
-					? parseFloat(this.transferInfo.Amount).toFixed(9)
-					: "";
+				this.transferInfo.Amount = effectiveNumber(this.transferInfo.Amount);
 			}
 		},
 		toTransfer() {
@@ -222,7 +223,7 @@ export default {
 							if (!e.message.includes("timeout")) {
 								this.$message.error(vm.$t("public.networkErrorTransferFailed"));
 							} else {
-								this.$message.error('Request Timeout!')
+								this.$message.error("Request Timeout!");
 							}
 						});
 				}

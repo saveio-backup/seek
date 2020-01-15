@@ -20,19 +20,22 @@ const result = {
     return NaN;
   },
   effectiveNumber(value) {
+    if (!value) return '';
     var m = Number(value)
       .toExponential()
       .match(/\d(?:\.(\d*))?e([+-]\d+)/);
     return Number(value).toFixed(Math.max(0, (m[1] || "").length - m[2]));
   },
   getCharLength(value) {
-    var realLength = 0, len = value.length, charCode = -1;
-    for (var i = 0; i < len; i++) {  
-        charCode = value.charCodeAt(i);  
-        if (charCode >= 0 && charCode <= 128) realLength += 1;  
-        else realLength += 2;  
-    }  
-    return realLength;  
+    var realLength = 0,
+      len = value.length,
+      charCode = -1;
+    for (var i = 0; i < len; i++) {
+      charCode = value.charCodeAt(i);
+      if (charCode >= 0 && charCode <= 128) realLength += 1;
+      else realLength += 2;
+    }
+    return realLength;
   }
 }
 module.exports = result;

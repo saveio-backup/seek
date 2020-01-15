@@ -112,12 +112,11 @@
 						<div class="save-log-desc user-no-select">
 							<!-- Seeker -->
 							<img
-								src="./../assets/images/home_seeker.svg"
+								src="./../assets/images/home_seeker_with_word.svg"
 								alt=""
 								srcset=""
-								width="240"
+								width="300"
 							>
-							<p>Seeker</p>
 						</div>
 					</div>
 					<div class="tologin">

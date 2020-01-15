@@ -33,16 +33,6 @@
 							:class="{'nav-active':activeView.displayURL.toLowerCase().indexOf('seek://miner')>=0}"
 						>
 							<i class="ofont ofont-kuanggong"></i>
-							<!-- <img
-							 v-show="activeView.displayURL.indexOf('seek://Miner')<0"
-							 src="../assets/images/aside_miner.png"
-							 alt="Menu"
-							>
-							<img
-							 v-show="activeView.displayURL.indexOf('seek://Miner')>=0"
-							 src="../assets/images/aside_miner_color.png"
-							 alt=""
-							> -->
 						</div>
 					</li>
 				</ul>

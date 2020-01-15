@@ -208,7 +208,7 @@
 	</div>
 </template>
 <script>
-import { filterFloat } from "../assets/config/util";
+import { filterFloat, effectiveNumber } from "../assets/config/util";
 import channelWalletTransfer from "./ChannelWalletTransfer.vue";
 import crypto from "crypto";
 export default {
@@ -279,6 +279,7 @@ export default {
 			},
 			currentRow: {},
 			filterFloat,
+			effectiveNumber,
 			channelSelected: {},
 			mockChannels: [
 				{
@@ -410,9 +411,7 @@ export default {
 			});
 		},
 		setFixed() {
-			this.channelForm.amount = this.channelForm.amount
-				? parseFloat(this.channelForm.amount).toFixed(9)
-				: "";
+			this.channelForm.amount = effectiveNumber(this.channelForm.amount);
 		},
 		initCurrentRow() {
 			let result = this.channelsDns.some((channel, index) => {
@@ -533,8 +532,10 @@ export default {
 			const vm = this;
 			if (
 				(this.channelForm.amount > 0 &&
-					this.currentBalanceFormat > (parseFloat(this.channelForm.amount) + 0.02)) ||
-				(this.channelForm.amount == 0 && parseFloat(this.currentBalanceFormat) >= 0.01)
+					this.currentBalanceFormat >
+						effectiveNumber(this.channelForm.amount) + 0.02) ||
+				(this.channelForm.amount == 0 &&
+					effectiveNumber(this.currentBalanceFormat) >= 0.01)
 			) {
 				this.$axios
 					.post(this.$api.channelOPen, params, {
@@ -586,7 +587,7 @@ export default {
 						this.$message({
 							message: vm.$t("public.closeChannelSuccessed"),
 							type: "success"
-					});
+						});
 						this.channelToggle.channelCloseDialog = false;
 						this.$store.dispatch("setChannelBalanceTotal");
 					} else {

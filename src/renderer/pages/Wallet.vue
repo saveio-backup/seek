@@ -214,11 +214,7 @@
 						v-show="switchToggle.showLoading"
 						class="loading text-center transparent mt20 mb20"
 					>
-						<img
-							class="loading-img"
-							src="../assets/images/loading.png"
-							alt="loading.."
-						>
+						<i class="ofont ofont-loading loading-rotate"></i>
 					</li>
 				</ul>
 			</div>
@@ -404,7 +400,8 @@ export default {
 			this.txType === "transferIn" ? 2 : this.txType === "transferOut" ? 1 : 0;
 		this.$store.dispatch("setTxRecords", {
 			IgnoreOtherContract: !this.IgnoreOtherContract,
-			txType: _type
+			txType: _type,
+			switchToggle: this.switchToggle
 		});
 		this.addListenScroll(
 			document.querySelector(".tx-ul"),
@@ -697,7 +694,8 @@ export default {
 					: 0;
 			this.$store.dispatch("setTxRecords", {
 				IgnoreOtherContract: !this.IgnoreOtherContract,
-				txType: _type
+				txType: _type,
+				switchToggle: this.switchToggle
 			});
 		},
 		clipSaveAddress() {
@@ -864,7 +862,8 @@ export default {
 					this.$store.dispatch("setTxRecords", {
 						IgnoreOtherContract: !this.IgnoreOtherContract,
 						asset,
-						txType: _type
+						txType: _type,
+						switchToggle: this.switchToggle
 					});
 					if (result.length === 0) {
 						this.switchToggle.loadSwitch = false;
@@ -896,7 +895,8 @@ export default {
 			this.$store.dispatch("setTxRecords", {
 				asset,
 				IgnoreOtherContract: !this.IgnoreOtherContract,
-				txType: _type
+				txType: _type,
+				switchToggle: this.switchToggle
 			});
 		},
 		changeShowContract() {
@@ -917,7 +917,8 @@ export default {
 					: 0;
 			this.$store.dispatch("setTxRecords", {
 				IgnoreOtherContract: !this.IgnoreOtherContract,
-				txType: _type
+				txType: _type,
+				switchToggle: this.switchToggle
 			});
 		},
 		getShowSmallContract() {

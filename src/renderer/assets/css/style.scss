@@ -70,9 +70,10 @@ select {
     color: #2F8FF0;
 }
 
-.loading-img {
-    width: 20px;
-    height: 20px;
+.loading-rotate {
+    font-size:30px;
+    color:#409EFF;
+    display: inline-block;
     animation: rotating 1s linear infinite;
 }
 

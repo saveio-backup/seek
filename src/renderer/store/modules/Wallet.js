@@ -67,8 +67,7 @@ const actions = {
 function requestBalanceLists(commit) {
   axios
     .get(
-      api.balance + "/" + window.localStorage.getItem("Address") || "",
-      {
+      api.balance + "/" + window.localStorage.getItem("Address") || "", {
         message: {
           once: 'onceIdWalletBalance'
         }
@@ -88,12 +87,14 @@ function requestBalanceLists(commit) {
 function requestTransActions(commit, config) {
   let skipTxCountFromBlock = 0;
   let {
-    asset = '',
-    limit = state.txRecords.length >= 30 ? state.txRecords.length : 30,
-    height = '',
-    IgnoreOtherContract = false,
-    txType = 0
+    switchToggle = {},
+      asset = '',
+      limit = state.txRecords.length >= 30 ? state.txRecords.length : 30,
+      height = '',
+      IgnoreOtherContract = false,
+      txType = 0
   } = config || {};
+  switchToggle.showLoading = true;
   let _url = `${api.transactions}${window.localStorage.Address}/${txType}?asset=${asset}&limit=${limit}&height=${height}&skipTxCountFromBlock=${(skipTxCountFromBlock || '')}&IgnoreOtherContract=${IgnoreOtherContract}`
   // axios.get(api.transactions + window.localStorage.Address + '/0?asset=' + asset + '&limit=' + limit + '&height=' + height + '&skipTxCountFromBlock=' + (skipTxCountFromBlock || '') + '&IgnoreOtherContract=' + IgnoreOtherContract, {
   axios.get(_url, {
@@ -128,12 +129,13 @@ function requestTransActions(commit, config) {
         }); // heart loading
       }, 5000);
     } else {
-      if (axios.isCancel(thrown)) {
-      } else {
+      if (axios.isCancel(thrown)) {} else {
         console.error('request error');
         console.error(thrown);
       }
     }
+  }).finally(() => {
+    switchToggle.showLoading = false;
   })
 }
 export default {

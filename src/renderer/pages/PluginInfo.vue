@@ -106,7 +106,7 @@ export default {
 		document.title = this.$t("plugin.plugin");
 		this.getPluginsInfo();
 		document.addEventListener("visibilitychange", () => {
-			this.sendPluginInfo();
+			if (document.visibilityState === "visible") this.sendPluginInfo();
 		});
 		this.$store.dispatch("setCurrentAccount"); // get login status
 	},
@@ -134,10 +134,11 @@ export default {
 			this.sendPluginInfo();
 		},
 		sendPluginInfo() {
-			ipcRenderer.sendTo(
-				remote.getCurrentWindow().webContents.id,
-				"updatePlugin"
-			);
+			remote.getCurrentWindow() &&
+				ipcRenderer.sendTo(
+					remote.getCurrentWindow().webContents.id,
+					"updatePlugin"
+				);
 		},
 		async getPluginsInfo() {
 			const plugins = G_plugins; // todo  get from http request
@@ -176,11 +177,16 @@ export default {
 						// 	: plugins[i];
 						localUrlPlugins[plugins[i].Url] = plugins[i];
 					} else if (localUrlPlugins[plugins[i].Url]) {
-						// need update
-						fs.statSync(localUrlPlugins[plugins[i].Url].detail.Path); // check if path exist in localUrlplugins
-						plugins[i].detail = localUrlPlugins[plugins[i].Url].detail;
-						plugins[i].detail.Status = 5;
-						pluginInstaled.push(plugins[i]);
+						// check if path exist in localUrlplugins
+						if (fs.existsSync(localUrlPlugins[plugins[i].Url].detail.Path)) {
+							// need update
+							plugins[i].detail = localUrlPlugins[plugins[i].Url].detail;
+							plugins[i].detail.Status = 5;
+							pluginInstaled.push(plugins[i]);
+						} else {
+							delete localUrlPlugins[plugins[i].Url]; // no longer exists, there is no need to save the local database.
+							plugins[i].detail = null;
+						}
 					}
 				} catch (error) {
 					console.log("error");

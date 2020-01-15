@@ -305,7 +305,6 @@ export default {
 		}
 	},
 	mounted() {
-		console.log('124124');
 		this.init();
 	}
 };

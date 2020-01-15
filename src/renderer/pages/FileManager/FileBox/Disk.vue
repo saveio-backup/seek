@@ -60,6 +60,7 @@
 					:empty-text="$t('public.noData')"
 					@row-click="clickRow"
 					height="100%"
+					row-key="Hash"
 					@selection-change="selectFile"
 					@select="toSelectFile"
 					@select-all="selectAll"
@@ -68,6 +69,7 @@
 					<el-table-column
 						v-if="toggleFilebox"
 						type="selection"
+						:reserve-selection="true"
 						width="30"
 					></el-table-column>
 					<el-table-column
@@ -525,7 +527,8 @@ export default {
 				deleteDialog: false,
 				noStorageDialog: false,
 				load: true,
-				showLoading: false
+				showLoading: false,
+				newFile: true // filebox have more upload file(allow loading more file)
 			},
 			page: "",
 			addrAPI: "",
@@ -621,7 +624,7 @@ export default {
 			const that = this;
 			const distance = 300;
 			tableElement.addEventListener("scroll", function() {
-				if (that.switchToggle.load) {
+				if (that.switchToggle.load || that.switchToggle.newFile) {
 					if (
 						tableElement.scrollTop + tableElement.clientHeight + distance >=
 						tableElement.scrollHeight
@@ -653,8 +656,8 @@ export default {
 			try {
 				this.updateFileRequestCancel('update upload file list request cancel!')
 			} catch(e) {}
-			let addr = `${this.addrAPI}0/0/${
-				Math.ceil((this.fileListData.length || 1) / this.limitCount) * this.limitCount}/0`;
+			let _end = Math.ceil((this.fileListData.length || 1) / this.limitCount) * this.limitCount + 1;
+			let addr = `${this.addrAPI}0/0/${_end}/0`;
 			this.$axios
 				.get(addr, {
 					cancelToken: new vm.$axios.CancelToken(c => {
@@ -673,14 +676,23 @@ export default {
 									}
 								return item;
 							});
-							// vm.fileListData = result;
-							vm.fileListData = result;
-							vm.$forceUpdate();
-							// update sync file limit;
-							if(vm.fileListData.length === result.length) {
+
+							// update limit
+							if(vm.fileListData.length < result.length) {
 								let _limit = vm.fileListData.length;
 								vm.$store.dispatch("getSyncFileList", _limit);
 							}
+
+							// update list
+							if(result.length > (_end - 1)) {
+								vm.fileListData = result.slice(0, -1).concat(vm.fileListData.slice(_end));
+								// have more file when return limit number 
+								vm.switchToggle.newFile = true;
+							} else {
+								vm.fileListData = result.concat(vm.fileListData.slice(_end));
+							}
+							vm.$forceUpdate();
+							// update sync file limit;
 						}
 					}
 				})
@@ -693,10 +705,12 @@ export default {
 		},
 		getFileLists() {
 			const vm = this;
-			if (!this.switchToggle.load) return;
+			if (!this.switchToggle.load && !this.switchToggle.newFile) return;
 			this.switchToggle.load = false; // if your are loading list now,  the switch will be set to false
 			this.switchToggle.showLoading = true;
-			let addr = `${this.addrAPI}${this.type}/${this.fileListData.length}/${this.limitCount
+			this.switchToggle.newFile = false;
+			let _start = this.fileListData.length
+			let addr = `${this.addrAPI}${this.type}/${_start}/${this.limitCount
 			}${this.addrAPI === this.$api.getFileList ? "/0" : ""}`;
 			this.$axios
 				.get(addr)
@@ -713,12 +727,15 @@ export default {
 								}
 								return item;
 							});
-							vm.fileListData = vm.fileListData.concat(result);
+							// if(vm.fileListData.length > _start) {
+							vm.fileListData = vm.fileListData.slice(0, _start).concat(result);
+							// }
 							// update sync file limit;
 							let _limit = vm.fileListData.length;
 							vm.$store.dispatch("getSyncFileList", _limit);
 						} else {
 							vm.switchToggle.load = false;
+							vm.switchToggle.newFile = false;
 							return;
 						}
 						vm.switchToggle.load = true;
@@ -1039,7 +1056,7 @@ export default {
 								.digest("hex")
 						},
 						{
-							timeout: 20000 * arr.length + this.$outTime * 2000,
+							timeout: 20000 * arr.length + vm.$outTime * 2000,
 							loading: {
 								text: vm.$t("fileManager.deleting"),
 								target: ".loading-content.disk-delete-loading"
@@ -1048,6 +1065,7 @@ export default {
 					)
 					.then(res => {
 						this.$refs["extraParamsForm"].resetFields();
+						this.$refs["table"].clearSelection();
 						this.$store.dispatch("setSpace"); // get userspace
 						this.switchToggle.deleteDialog = false;
 						if (res.Error === 0) {

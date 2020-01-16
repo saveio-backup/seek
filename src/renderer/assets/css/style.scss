@@ -1,5 +1,5 @@
 @import './font/ofont/iconfont.css';
-@import './font/pingfang.css';
+@import './font/source_han.css'; // font
 @import './globals.scss';
 @import './atom.scss';
 @import url('https://fonts.font.im/css?family=Open+Sans');
@@ -15,7 +15,7 @@ input,
 button,
 textarea,
 select {
-    font-family: 'Montserrat-Medium', 'Open Sans', 'SF Pro SC', 'PingFangSC-Regular', 'HanHei SC', 'SF Pro Text', 'Myriad Set Pro', 'SF Pro Icons', 'PingFang SC', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+    font-family: 'source_han';
 }
 
 .flex {

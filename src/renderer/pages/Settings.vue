@@ -10,7 +10,7 @@
 			<div class="settings-box">
 				<div class="tag">
 					<span>{{$t('settings.chainEnvironment')}}</span>
-					<div class="tertiary-font-color">{{$t('settings.selectChainEnvironment')}}</div>
+					<div class="tertiary-font-color sec-desc">{{$t('settings.selectChainEnvironment')}}</div>
 				</div>
 				<el-select
 					v-model="settings.ChainId"
@@ -89,7 +89,7 @@
 					<p>{{$t('settings.downloadPath')}}</p>
 					<p
 						:title="pathDir.DownloadPath"
-						class="pathdir tertiary-font-color"
+						class="pathdir tertiary-font-color sec-desc"
 						@click="showInFolder(pathDir.DownloadPath)"
 					>{{pathDir.DownloadPath}}</p>
 				</div>
@@ -100,7 +100,7 @@
 					<p>{{$t('settings.logDir')}}</p>
 					<p
 						:title="pathDir.LogDirName"
-						class="pathdir tertiary-font-color"
+						class="pathdir tertiary-font-color sec-desc"
 						@click="showInFolder(path.join(pathDir.BaseDir,pathDir.LogDirName))"
 					>{{pathDir.LogDirName}}</p>
 				</div>
@@ -166,7 +166,7 @@
 <script>
 import { ipcRenderer, remote, shell } from "electron";
 import { DEFAULT_CHAINID } from "../../main/windowManager/defaultOption";
-import path from 'path';
+import path from "path";
 export default {
 	mounted() {
 		document.title = this.$t("settings.settings");
@@ -440,6 +440,9 @@ export default {
 			.tag {
 				// font-size: 14px;
 				font-size: 1.4rem;
+				.sec-desc {
+					font-size: 1.3rem;
+				}
 				.pathdir {
 					width: 400px;
 					overflow: hidden;

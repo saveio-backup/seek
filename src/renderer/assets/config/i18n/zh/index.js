@@ -16,7 +16,7 @@ import plugin from './plugin';
 import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
 
 const obj = {
-  fontSize: '71%',
+  fontSize: '65%',
   error,
   home,
   public: publicObj,

@@ -180,7 +180,7 @@ export default {
 		openNewWindow(url) {
 			Seek.openNewWindow(url);
 		},
-		openThirdPage(url){
+		openThirdPage(url) {
 			Seek.openThirdPage(url);
 		},
 		async getPlugins() {
@@ -193,12 +193,11 @@ export default {
 				// let detail = await this.getTransferDetail(item.Url);
 				// detail = detail.Result;
 				let detail = item.detail;
-				try {
+				if (fs.existsSync(detail.Path)) {
 					fs.statSync(detail.Path);
 					tempPluginsInstalled.push(item);
-				} catch (error) {
-					console.error("fs error!");
-					console.error(error);
+				} else {
+					console.error("fs.existsSync(detail.Path) return false");
 				}
 			}
 			this.pluginsInstalled = tempPluginsInstalled;

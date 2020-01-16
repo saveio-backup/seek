@@ -1,4 +1,5 @@
 @import './font/ofont/iconfont.css';
+@import './font/pingfang.css'; // font
 @import './font/source_han.css'; // font
 @import './globals.scss';
 @import './atom.scss';
@@ -15,7 +16,7 @@ input,
 button,
 textarea,
 select {
-    font-family: 'source_han';
+    font-family: 'pingfangSc-Regular';
 }
 
 .flex {
@@ -71,8 +72,8 @@ select {
 }
 
 .loading-rotate {
-    font-size:30px;
-    color:#409EFF;
+    font-size: 30px;
+    color: #409EFF;
     display: inline-block;
     animation: rotating 1s linear infinite;
 }

@@ -2,6 +2,7 @@ const result = {
   //The status code of the transmission process
   'uploadLoading': '等待上传',
   'downloadLoading': '等待下载',
+  'uploadTimeout': '上传文件超时!',
   '0':  '',
   '1': '任务暂停',
   '2': '任务开始',

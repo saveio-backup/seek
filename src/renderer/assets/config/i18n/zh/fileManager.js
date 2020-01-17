@@ -151,7 +151,6 @@ const result = {
   'downloadFailed': '下载失败',
   'decrypt': '解 密',
   'decryption': '解 密',
-  'commingSoon': '敬请期待...',
   'startToUpload': '开始上传',
   'startToDownload': '开始下载',
   'pauseToUpload': '暂停上传',
@@ -199,7 +198,9 @@ const result = {
   'basicInfo': '基本信息',
   'nodesInfo': '节点信息',
   'calculating': '计算中...',
-  'recalculation': '重新计算'
+  'recalculation': '重新计算',
+  'thereAre': '有',
+  'cancelTaskFailed': '个任务取消失败',
 }
 
 export default result;

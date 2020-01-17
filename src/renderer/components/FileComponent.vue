@@ -42,14 +42,12 @@
 				class="batch-button"
 				@click="openConfirmCancelDownload('all')"
 			>{{$t('fileManager.cancelAll')}}</ripper-button>
-			<!-- title="Comming Soon..." -->
 			<ripper-button
 				v-if="transferType !== 0"
 				class="batch-button"
 				:class="{'not-allow-opeation':!show}"
 				@click="continueAll"
 			>{{$t('fileManager.startAll')}}</ripper-button>
-			<!-- title="Comming Soon..." -->
 			<ripper-button
 				v-if="transferType !== 0"
 				class="batch-button"
@@ -100,7 +98,7 @@
 							<i
 								class="ofont ofont-wangye"
 								:title="$t('fileManager.thirdPartyWebsitesResources')"
-								v-if="scope.row.Url.startsWith('oni://www')"
+								v-if="scope.row.Url && scope.row.Url.startsWith('oni://www')"
 							></i>
 						</div>
 					</template>
@@ -226,40 +224,37 @@
 							><i class="el-icon-lock"></i></span>
 							<span
 								class="active-blue cursor-pointer"
-								:class="{'not-allow-opeation':!show || ((scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4)}"
-								:title="(!show || ((scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4)) ? $t('fileManager.commingSoon') : scope.row.IsUploadAction ? $t('fileManager.startToUpload'):$t('fileManager.startToDownload')"
+								:title="scope.row.IsUploadAction ? $t('fileManager.startToUpload'):$t('fileManager.startToDownload')"
 								v-show="scope.row.Status === 4"
-								@click="toUploadOrDownloadAgain([scope.row], transferType)"
+								@click="toUploadOrDownloadAgain([scope.row])"
 							><i
-									class="ofont"
-									:class="{'ofont-zhongxin': (!scope.row.IsUploadAction && scope.row.Status === 3 && show),'ofont-jixu': scope.row.Status === 4}"
+									class="ofont ofont-jixu"
 								></i></span>
 							<span
 								class="active-blue cursor-pointer"
-								:title="!show  ? $t('fileManager.commingSoon') : scope.row.IsUploadAction ? $t('fileManager.startToUpload'):$t('fileManager.startToDownload')"
-								:class="{'not-allow-opeation':!show}"
+								:title="scope.row.IsUploadAction ? $t('fileManager.startToUpload'):$t('fileManager.startToDownload')"
 								v-show="scope.row.Status === 0"
-								@click="toUploadOrDownloadContinue([scope.row], transferType)"
+								@click="toUploadOrDownloadContinue([scope.row])"
 							><i class="ofont ofont-jixu"></i></span>
 							<span
 								class="active-blue cursor-pointer"
-								:class="{'not-allow-opeation':!show || ((scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4)}"
-								:title="(!show || ((scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4)) ? $t('fileManager.commingSoon') : scope.row.IsUploadAction ? $t('fileManager.pauseToUpload'):$t('fileManager.pauseToDownload')"
-								v-show="(scope.row.Status === 1 || scope.row.Status === 2)"
-								@click="uploadOrDownloadPause([scope.row], transferType)"
+								:class="{'not-allow-opeation':scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23}"
+								:title="scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23 ? '' : scope.row.IsUploadAction ? $t('fileManager.pauseToUpload'):$t('fileManager.pauseToDownload')"
+								v-show="scope.row.Status === 1 || scope.row.Status === 2"
+								@click="uploadOrDownloadPause([scope.row])"
 							><i class="ofont ofont-zanting"></i></span>
 							<span
 								class="active-blue cursor-pointer"
-								:class="{'not-allow-opeation':!show || ((scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4)}"
-								:title="(!show || ((scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4)) ? $t('fileManager.commingSoon') : scope.row.IsUploadAction ? $t('fileManager.cancelToUpload'):$t('fileManager.cancelToDownload')"
-								v-show="transferType === 1"
+								:class="{'not-allow-opeation':(scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4}"
+								:title="(scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4 ? '' : scope.row.IsUploadAction ? $t('fileManager.cancelToUpload'):$t('fileManager.cancelToDownload')"
+								v-if="transferType === 1"
 								@click="openPassword(scope.row)"
 							><i class="ofont ofont-guanbi"></i></span>
 							<span
 								class="active-blue cursor-pointer"
-								:class="{'not-allow-opeation':!show || ((scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4)}"
-								:title="(!show || ((scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4)) ? $t('fileManager.commingSoon') : scope.row.IsUploadAction ? $t('fileManager.cancelToUpload'):$t('fileManager.cancelToDownload')"
-								v-show="transferType === 2"
+								:class="{'not-allow-opeation':(scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4}"
+								:title="(scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4 ? '' : scope.row.IsUploadAction ? $t('fileManager.cancelToUpload'):$t('fileManager.cancelToDownload')"
+								v-if="transferType === 2"
 								@click="openConfirmCancelDownload(scope.row)"
 							><i class="ofont ofont-guanbi"></i></span>
 							<span
@@ -267,12 +262,11 @@
 								:title="$t('fileManager.fileDistribution')"
 								@click="openDetailDialog(scope.row)"
 							><i class="ofont ofont-xiangqing"></i></span>
-							<!-- v-show="(scope.row.Nodes && scope.row.Nodes.length > 0) || scope.row.Status === 3" -->
 							<span
 								class="active-blue cursor-pointer"
 								:title="$t('fileManager.deleteRecord')"
 								@click="deleteRecord(scope.row)"
-								v-show="transferType === 0"
+								v-if="transferType === 0"
 							><i class="ofont ofont-shanchu"></i></span>
 						</div>
 					</template>
@@ -327,8 +321,23 @@
 						></el-input>
 					</el-form-item>
 				</el-form>
+				<p class="cancel-dialog-gas-fee mb10">{{$t('fileManager.gasFee')}}: {{cancelGasFee !== '' && cancelGasFee != '...' ? (cancelGasFee * 500 / Math.pow(10, 9)) : cancelGasFee}} {{cancelGasFee !== '' && cancelGasFee != '...' ? 'ONI' : ''}}</p>
 				<div slot="footer">
 					<ripper-button
+						v-show="!switchToggle.cancelToggle && !switchToggle.cancelToggleError"
+						:disabled="true"
+						type="primary"
+						class="primary ml10"
+					>{{$t('fileManager.calculating')}}</ripper-button>
+					<ripper-button 
+						class="primary ml10"
+						v-show="switchToggle.cancelToggleError"
+						@click="getCancelGasFee"
+					>
+						{{$t('fileManager.recalculation')}}
+					</ripper-button>
+					<ripper-button
+						v-show="switchToggle.cancelToggle && !switchToggle.cancelToggleError"
 						class="primary"
 						type="primary"
 						@click="toCancelCheck"
@@ -605,8 +614,12 @@ export default {
 				detailDialog: false,
 				passwordDialog: false,
 				downloadDetailDialog: false,
-				confirmCancelDownloadDialog: false
+				confirmCancelDownloadDialog: false,
+				cancelToggle: true,
+				cancelToggleError: false,
+				getGasNumber: 0,
 			},
+			cancelGasFee: "",
 			TransferConfig: [
 				"completeTransferList",
 				"uploadTransferList",
@@ -741,6 +754,11 @@ export default {
 					}
 				]
 			};
+		},
+		uploadLength(val) {
+			if(this.switchToggle.passwordDialog && this.passwordCancel.File === null) {
+				this.getCancelGasFee();
+			}
 		}
 	},
 	computed: {
@@ -851,6 +869,17 @@ export default {
 		},
 		uploadLength: function() {
 			return this.$store.state.Transfer.uploadLength;
+		},
+		balanceLists() {
+			return this.$store.state.Wallet.balanceLists;
+		},
+		currentBalanceFormat() {
+			if (!this.balanceLists) return 0;
+			for (let value of this.balanceLists) {
+				if (value.Symbol === "SAVE") {
+					return value.BalanceFormat;
+				}
+			}
 		}
 	},
 	methods: {
@@ -922,7 +951,7 @@ export default {
 		cancelDownload() {
 			this.switchToggle.confirmCancelDownloadDialog = false;
 			if (this.confirmCancelTask && this.confirmCancelTask.Id) {
-				this.uploadOrDownloadCancel(this.confirmCancelTask, this.transferType);
+				this.uploadOrDownloadCancel(this.confirmCancelTask);
 			} else if (this.confirmCancelTask === "all") {
 				this.cancelAll();
 			}
@@ -957,8 +986,69 @@ export default {
 			}
 			this.switchToggle.confirmCancelDownloadDialog = true;
 		},
+		getCancelGasFee() {
+			const vm = this;
+			this.cancelGasFee = '...';
+			let paramUrl = ''
+			this.$set(this.switchToggle, 'cancelToggleError', false);
+			this.$set(this.switchToggle, 'cancelToggle', false);
+			this.switchToggle.getGasNumber ++;
+			if (this.passwordCancel.File === null) {
+				for (let file of this.fileList) {
+					if(file.Id.indexOf("waitfor_") >= 0) continue;
+					paramUrl += `hash=${file.FileHash}&`;
+				}
+			} else {
+				if(this.passwordCancel.File.Id.indexOf("waitfor_") === -1) {
+					paramUrl += `hash=${this.passwordCancel.File.FileHash}&`;
+				};
+			}
+			if(paramUrl === '') {
+				this.switchToggle.getGasNumber --;
+				if(this.switchToggle.getGasNumber !== 0) return;
+				this.cancelGasFee = 0;
+				this.$set(this.switchToggle, 'cancelToggleError', false);
+				this.$set(this.switchToggle, 'cancelToggle', true);
+				return;
+			}
+			let url = `${this.$api.dspFilesDeletefee}?${paramUrl.slice(0, -1)}`;
+			this.$axios.get(url).then((res) => {
+				this.switchToggle.getGasNumber --;
+				if(this.switchToggle.getGasNumber !== 0) return;
+				if(res.Error === 0 || res.Error === 54013) {
+					this.cancelGasFee = res.Result.GasLimit;
+					this.$set(this.switchToggle, 'cancelToggleError', false);
+				} else {
+					this.$message.error(vm.$t('fileManager.getGasFeeFailed'));
+					this.$set(this.switchToggle, 'cancelToggleError', true);
+				}
+				this.$set(this.switchToggle, 'cancelToggle', true);
+			}).catch(e => {
+				this.switchToggle.getGasNumber --;
+				if(this.switchToggle.getGasNumber !== 0) return;
+				this.$message.error(vm.$t('fileManager.getGasFeeFailed'));
+				this.$set(this.switchToggle, 'cancelToggleError', true);
+				this.$set(this.switchToggle, 'cancelToggle', true);
+			})
+		},
 		toCancelCheck() {
 			const vm = this;
+			if(!this.switchToggle.cancelToggle || this.switchToggle.cancelToggleError) return;
+			let balanceLists = this.$store.state.Wallet.balanceLists;
+			let currentBalanceFormat = 0;
+			if (!this.balanceLists) {
+				currentBalanceFormat = 0;
+			} else {
+				for (let value of balanceLists) {
+					if (value.Symbol === "SAVE") {
+						currentBalanceFormat = value.BalanceFormat;
+					}
+				}
+			}
+			if(this.cancelGasFee * 500 / Math.pow(10, 9) > currentBalanceFormat) {
+				this.$message.error(vm.$t("public.insufficientBalanceAvailable"));
+				return;
+			}
 			this.$refs['passwordCancel'].validate(valid => {
 				if(!valid) return;
 				vm.toCancel();
@@ -966,8 +1056,6 @@ export default {
 		},
 		// cancel task
 		toCancel() {
-			// to do!!!!!
-			// if (!this.show) return;
 			// add loading
 			const vm = this;
 			this.passwordCancel.loadingObj = this.$loading({
@@ -981,8 +1069,7 @@ export default {
 			} else {
 				// cancel task when file is object
 				this.uploadOrDownloadCancel(
-					this.passwordCancel.File,
-					this.transferType
+					this.passwordCancel.File
 				);
 			}
 		},
@@ -1024,6 +1111,7 @@ export default {
 			this.$nextTick(() => {
 				this.$refs.passwordCancel.resetFields();
 				this.passwordCancel.File = file;
+				this.getCancelGasFee();
 			});
 		},
 		// close upload file detail dialog callback
@@ -1065,7 +1153,7 @@ export default {
 					this.passwordCancel.loadingObj.close();
 				return;
 			}
-			this.uploadOrDownloadCancel(arr, type);
+			this.uploadOrDownloadCancel(arr);
 		},
 		toContinueAll() {
 			const vm = this;
@@ -1075,13 +1163,13 @@ export default {
 			const arr = this.getTask(type, 0);
 			if (arr.length > 0) {
 				flag = true;
-				this.uploadOrDownloadContinue(arr, type);
+				this.uploadOrDownloadContinue(arr);
 			}
 			const arr2 = this.getTask(type, 4);
 			//get error task to again
 			if (arr2.length > 0) {
 				flag = true;
-				this.uploadOrDownloadAgain(arr2, type);
+				this.uploadOrDownloadAgain(arr2);
 			}
 			//if no task message
 			if (!flag) {
@@ -1127,7 +1215,7 @@ export default {
 				});
 				return;
 			}
-			this.uploadOrDownloadPause(arr, type);
+			this.uploadOrDownloadPause(arr);
 		},
 		// delete complete all task record
 		deleteAll() {
@@ -1263,9 +1351,10 @@ export default {
 		 * row: transfer item or list
 		 * type: 0:upload    1:download
 		 */
-		async uploadOrDownloadCancel(row, type) {
+		async uploadOrDownloadCancel(row) {
 			const vm = this;
 			// if (!this.show) return;
+			let type = this.transferType;
 			// get http url
 			let url = type === 1 ? this.$api.uploadCancel : this.$api.downloadCancel;
 
@@ -1300,6 +1389,8 @@ export default {
 					}
 				}
 				params.Ids = this.diffSet(params.Ids, waitForUploadArr);
+				params.GasLimit = this.cancelGasFee.toString();
+
 				// is have wait for upload file
 				if (waitForUploadArr.length > 0) {
 					// check password is not true
@@ -1399,32 +1490,22 @@ export default {
 							this.switchToggle.passwordDialog = false;
 						}
 						//get error list
-						let errorMsg = "";
-						let errorObj = {};
-						for (let value of res.Result.Tasks) {
-							if (value && value.Code) {
-								if(!errorObj[value.Code]) errorObj[value.Code] = [];
-								errorObj[value.Code].push(value.FileName);
+						let errorNumber = 0;
+
+						for(let value of res.Result.Tasks) {
+							if(value && value.Code) {
+								errorNumber ++;
 							}
-						}
-						for(let key in errorObj) {
-							errorMsg += `<p>`;
-							errorMsg += `${errorObj[key].join('、') || ""}:`;
-							errorMsg += vm.$t(`error["${key}"]`);
-							errorMsg += `</p>`;
 						}
 
 						//if no err
-						if (errorMsg.length === 0) {
+						if (errorNumber === 0) {
 							this.$message({
 								message: vm.$t("fileManager.opeationSuccess"),
 								type: "success"
 							});
 						} else {
-							this.$message.error({
-								dangerouslyUseHTMLString: true,
-								message: errorMsg
-							});
+							this.$message.error(`${this.$t('fileManager.thereAre')}${errorNumber}${this.$t('fileManager.cancelTaskFailed')}`);
 						}
 					} else {
 						this.$message.error(this.$t(`error["${res.Error}"]`));
@@ -1442,9 +1523,10 @@ export default {
 					}
 				});
 		},
-		toUploadOrDownloadAgain(row, type) {
+		toUploadOrDownloadAgain(row) {
 			const vm = this;
-			if (this.isSync && this.transferType === 2) {
+			let type = this.transferType;
+			if (this.isSync && type === 2) {
 				this.$confirm(
 					vm.$t("public.blockUnsynchronizedCompletionAreYouSureToDoThis"),
 					vm.$t("public.notice"),
@@ -1454,11 +1536,11 @@ export default {
 					}
 				)
 					.then(() => {
-						this.uploadOrDownloadAgain(row, type);
+						this.uploadOrDownloadAgain(row);
 					})
 					.catch(e => {});
 			} else {
-				this.uploadOrDownloadAgain(row, type);
+				this.uploadOrDownloadAgain(row);
 			}
 		},
 		/**
@@ -1466,7 +1548,8 @@ export default {
 		 * row: transfer item or list
 		 * type: 0:upload    1:download
 		 */
-		uploadOrDownloadAgain(row, type) {
+		uploadOrDownloadAgain(row) {
+			let type = this.transferType;
 			// get http url
 			let url = type === 1 ? this.$api.uploadRetry : this.$api.downloadRetry;
 
@@ -1537,8 +1620,9 @@ export default {
 				});
 				*/
 		},
-		toUploadOrDownloadContinue(row, type) {
-			if (this.isSync && this.transferType === 2) {
+		toUploadOrDownloadContinue(row) {
+			let type = this.transferType;
+			if (this.isSync && type === 2) {
 				this.$confirm(
 					vm.$t("public.blockUnsynchronizedCompletionAreYouSureToDoThis"),
 					vm.$t("public.notice"),
@@ -1548,11 +1632,11 @@ export default {
 					}
 				)
 					.then(() => {
-						this.uploadOrDownloadContinue(row, type);
+						this.uploadOrDownloadContinue(row);
 					})
 					.catch(e => {});
 			} else {
-				this.uploadOrDownloadContinue(row, type);
+				this.uploadOrDownloadContinue(row);
 			}
 		},
 		/**
@@ -1560,8 +1644,9 @@ export default {
 		 * row: transfer item or list
 		 * type: 0:upload    1:download
 		 */
-		uploadOrDownloadContinue(row, type) {
+		uploadOrDownloadContinue(row) {
 			const vm = this;
+			let type = this.transferType;
 			let url = type === 1 ? this.$api.uploadResume : this.$api.downloadResume;
 			let params = this.getParams(row, 2);
 			if (!params.Ids || params.Ids.length <= 0) {
@@ -1768,8 +1853,9 @@ export default {
 		 * row: transfer item or list
 		 * type: 0:upload    1:download
 		 */
-		uploadOrDownloadPause(row, type) {
+		uploadOrDownloadPause(row) {
 			const vm = this;
+			let type = this.transferType;
 			// get http url
 			let url = type === 1 ? this.$api.uploadPause : this.$api.downloadPause;
 			let params = this.getParams(row, 0);
@@ -1972,7 +2058,6 @@ export default {
 		 *  */
 		getNodeSpeed(isF = false) {
 			if (this.transferType === 1) return;
-			// if ((this.fileDetailNodes.length > 0 && this.taskSpeedNum === 1) || isF) {
 				let oldNodeSpeed = this.nodeSpeed;
 				let newNodeSpeed = {};
 				for (let value of this.fileDetailNodes) {
@@ -1982,10 +2067,6 @@ export default {
 							? uploadOrDownloadSize -
 							  (oldNodeSpeed[value.HostAddr].FileSize || 0)
 							: 0;
-					// newNodeSpeed[value.HostAddr] = {
-					// 	speed: speed / this.passHowLongTimeGetFileList,
-					// 	FileSize: uploadOrDownloadSize
-					// };
 					newNodeSpeed[value.HostAddr] = {
 						speed: speed / 3,
 						FileSize: uploadOrDownloadSize
@@ -2200,6 +2281,15 @@ $danger: #f56c6c;
 		&:focus {
 			opacity: 1 !important;
 		}
+	}
+
+	.cancel-dialog-gas-fee {
+		width: 200px;
+		position: absolute;
+		bottom: 50px;
+		right: 30px;
+		text-align: right;
+		// float: right;
 	}
 }
 .download-file-detail {

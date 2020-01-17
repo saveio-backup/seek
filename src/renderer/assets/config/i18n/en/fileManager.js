@@ -151,7 +151,6 @@ const result = {
   'downloadFailed': 'Download failed',
   'decrypt': 'Decrypt',
   'decryption': 'Decryption',
-  'commingSoon': 'Comming Soon...',
   'startToUpload': 'Start to Upload',
   'startToDownload': 'Start to Download',
   'pauseToUpload': 'Pause to Upload',
@@ -200,7 +199,9 @@ const result = {
   'nodesInfo': 'Nodes Info',
   'getGasFeeFailed': 'Get gas fee failed',
   'calculating': 'Calculating...',
-  'recalculation': 'Recalculation'
+  'recalculation': 'Recalculation',
+  'thereAre': 'There are ',
+  'cancelTaskFailed': ' cancel task failed.',
 }
 
 export default result;

@@ -931,6 +931,7 @@ export default {
 			}
 
 			this.$axios.all(commitAll).then(resArr => {
+				// console
 				let errorArr = [];
 				for (let res of resArr) {
 					if (res.Error === 0) {
@@ -998,7 +999,11 @@ export default {
 			}
 		},
 		getToUploadFilePromise(data) {
-			return this.$axios.post(this.$api.upload, data);
+			return this.$axios.post(this.$api.upload, data).catch(e => {
+				return {
+					Error: 'uploadTimeout'
+				};
+			})
 		},
 		toGetFileSize() {
 			let fileSize = 0;

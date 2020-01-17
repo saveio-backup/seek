@@ -234,7 +234,7 @@
 
 					</el-table-column>
 					<el-table-column
-						:label="$t('fileManager.type')"
+						:label="$t('fileManager.authority')"
 						v-if="page === 'filebox'"
 						width="150"
 						sortable
@@ -396,7 +396,7 @@
 						class="mb20 dialog-file-delete-info"
 						:title="fileDeleteInfo.allName"
 					>{{fileDeleteInfo.Name}} ({{fileToDelete.length}} {{$t('fileManager.files2')}})</p>
-					<!-- <p class="delete-dialog-gas-fee mb10">{{$t('fileManager.gasFee')}}: {{deleteGasFee}} {{deleteGasFee !== '' ? 'SAVE' : ''}}</p> -->
+					<p class="delete-dialog-gas-fee mb10">{{$t('fileManager.gasFee')}}: {{deleteGasFee !== '' && deleteGasFee != '...' ? (deleteGasFee * 500 / Math.pow(10, 9)) : deleteGasFee}} {{deleteGasFee !== '' && deleteGasFee != '...' ? 'ONI' : ''}}</p>
 					<el-form
 						ref="extraParamsForm"
 						:model="extraParams"
@@ -422,6 +422,20 @@
 				<div slot="footer">
 					<ripper-button @click="switchToggle.deleteDialog = false">{{$t('public.cancel')}}</ripper-button>
 					<ripper-button
+						v-show="!switchToggle.deleteToggle && !switchToggle.deleteToggleError"
+						:disabled="true"
+						type="primary"
+						class="primary ml10"
+					>{{$t('fileManager.calculating')}}</ripper-button>
+					<ripper-button 
+						class="primary ml10"
+						v-show="switchToggle.deleteToggleError"
+						@click="getDeleteGasFee"
+					>
+						{{$t('fileManager.recalculation')}}
+					</ripper-button>
+					<ripper-button
+						v-show="switchToggle.deleteToggle && !switchToggle.deleteToggleError"
 						type="danger"
 						class="primary ml10"
 						@click="toDeleteFileNew(fileToDelete)"
@@ -528,7 +542,10 @@ export default {
 				noStorageDialog: false,
 				load: true,
 				showLoading: false,
-				newFile: true // filebox have more upload file(allow loading more file)
+				newFile: true, // filebox have more upload file(allow loading more file)
+				deleteToggleError: false,
+				deleteToggle: true,
+				getGasNumber: 0,
 			},
 			page: "",
 			addrAPI: "",
@@ -1002,19 +1019,32 @@ export default {
 		},
 		getDeleteGasFee() {
 			const vm = this;
-			return;
-			this.deleteGasFee = '';
+			this.deleteGasFee = '...';
 			let paramUrl = ''
-			for (let file of deleteFiles) {
+			this.$set(this.switchToggle, 'deleteToggleError', false);
+			this.$set(this.switchToggle, 'deleteToggle', false);
+			this.switchToggle.getGasNumber ++;
+			for (let file of this.fileToDelete) {
 				paramUrl += `hash=${file.Hash}&`;
 			}
-			let url = `this.$api.dspFilesDeletefee?${paramUrl.slice(0, -1)}`;
+			let url = `${this.$api.dspFilesDeletefee}?${paramUrl.slice(0, -1)}`;
 			this.$axios.get(url).then((res) => {
-				if(res.Error === 0) {
-					this.deleteGasFee = res.Result.TxFeeFormat;
+				this.switchToggle.getGasNumber --;
+				if(this.switchToggle.getGasNumber !== 0) return;
+				if(res.Error === 0 || res.Error === 54013) {
+					this.deleteGasFee = res.Result.GasLimit;
+					this.$set(this.switchToggle, 'deleteToggleError', false);
 				} else {
 					this.$message.error(vm.$t('fileManager.getGasFeeFailed'));
+					this.$set(this.switchToggle, 'deleteToggleError', true);
 				}
+				this.$set(this.switchToggle, 'deleteToggle', true);
+			}).catch(e => {
+				this.switchToggle.getGasNumber --;
+				if(this.switchToggle.getGasNumber !== 0) return;
+				this.$message.error(vm.$t('fileManager.getGasFeeFailed'));
+				this.$set(this.switchToggle, 'deleteToggleError', true);
+				this.$set(this.switchToggle, 'deleteToggle', true);
 			})
 		},
 		syncDeleteFile(res) {
@@ -1035,7 +1065,8 @@ export default {
 		},
 		toDeleteFileNew(deleteFiles) {
 			const vm = this;
-			if(parseFloat(this.deleteGasFee) > this.currentBalanceFormat) {
+			if(!this.switchToggle.deleteToggle || this.switchToggle.deleteToggleError) return;
+			if(this.deleteGasFee * 500 / Math.pow(10, 9) > this.currentBalanceFormat) {
 				this.$message.error(vm.$t("public.insufficientBalanceAvailable"));
 				return;
 			}
@@ -1050,6 +1081,7 @@ export default {
 						this.$api.deletes,
 						{
 							Hash: arr,
+							GasLimit: this.deleteGasFee.toString(),
 							Password: crypto
 								.createHash("sha256")
 								.update(vm.extraParams.Password)
@@ -1362,8 +1394,9 @@ $theme-color: #1b1e2f;
 		height: 80px;
 		@include themify {
 			background-color: $color;
+			border-bottom: 1px solid $line-color;
 		}
-		border-bottom: 1px solid rgba(32, 32, 32, 0.1);
+
 		.fun-button {
 			button {
 				width: 125px;

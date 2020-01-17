@@ -2,6 +2,7 @@ const result = {
   //The status code of the transmission process
   'uploadLoading': 'Wait for the Upload',
   'downloadLoading': 'Wait for the Download',
+  'uploadTimeout': 'Upload file timeout!',
   '0':  '',
   '1': 'Task Pause',
   '2': 'Task Start',
@@ -86,7 +87,7 @@ const result = {
   '50039': 'Failed to add request file block',
   '50040': 'Decryption failure',
   '50041': 'File rename failed',
-  '50042':'Download file timeout',
+  '50042': 'Download file timeout',
   '50043': 'download file resused',
   '50044': 'Failed to obtain file download price',
   '50045': 'The download task already exists',

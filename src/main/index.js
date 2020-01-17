@@ -17,6 +17,12 @@ import {
   windows,
   createWindow
 } from './windowManager/'
+import zh from './i18n/zh/index';
+import en from './i18n/en/index';
+const i18n = {
+  zh,
+  en
+}
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
@@ -42,6 +48,7 @@ app.on('ready', function () {
 
   global.settingDB.initDB(async () => {
     const currentAddress = await global.settingDB.queryData('currentAddress');
+    const lang = await global.settingDB.queryData('lang')
     node.setupConfig(app.getPath("appData"), app.getName());
     node.setFrontConfig(app.getPath("appData"), app.getName());
     (!frontCfgObj().devEdgeEnable) && node.run(app.getPath("appData"), app.getName());
@@ -49,6 +56,9 @@ app.on('ready', function () {
     global.usermetaDB = new UsermetaDB(currentAddress);
     global.HistoryDB.initDB();
     global.usermetaDB.initDB();
+    global.lang = i18n[lang];
+    console.log('global.lang is');
+    console.log(global.lang);
   })
 })
 

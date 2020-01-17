@@ -120,7 +120,8 @@ class View {
     this.webContents.on('context-menu', () => {
       const menuItems = [];
       menuItems.push({
-          role: 'copy'
+          role: 'copy',
+          label: global.lang.contextMenu.copy
         }, {
           role: 'paste'
         }, {

@@ -226,6 +226,7 @@ export default {
 			vm.$i18n.locale = vm.settings.lang || "en";
 			document.title = this.$t("settings.settings");
 			this.updateSettings("lang", vm.settings.lang);
+			ipcRenderer.send("setlang", vm.$i18n.locale);
 			ipcRenderer.send("run-dialog-event", {
 				name: "toSetLang",
 				data: vm.settings.lang

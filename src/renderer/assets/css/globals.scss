@@ -159,6 +159,10 @@ $sub-light-color: #8BD179;
 }
 
 /* Element UI */
+.el-range-separator {
+  box-sizing: content-box; // date picker in income page
+}
+
 .common-el-input {
   $height: 35px;
   height: $height;

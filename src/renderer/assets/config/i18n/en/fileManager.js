@@ -81,7 +81,7 @@ const result = {
   'selectFile': 'Select File',
   'clearAllAddFile': 'Clear All Add File',
   'clear': 'Clear',
-  'browser': 'Browser',
+  'browse': 'Browse',
   'dragYourFileHereOrBrowse': 'Drag Your File Here or Browse',
   'aSingleFileCannotBeLargerThan4GB': 'A Single File Cannot be Larger than 4GB',
   'storageCycle': 'Storage Cycle',

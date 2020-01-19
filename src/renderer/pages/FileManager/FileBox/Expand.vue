@@ -232,10 +232,6 @@ export default {
 		this.addListenScroll(element, 100, this.getUserSpaceRecords);
 	},
 	data() {
-		// const expired =
-		// 	this.$dateFormat.formatTimeByTimestamp(
-		// 		this.$store.state.Filemanager.space.ExpiredAt * 1000
-		// 	) || this.$dateFormat.formatTimeByTimestamp(now.getTime());
 		return {
 			util,
 			sizeUnit: 1048576,
@@ -251,7 +247,6 @@ export default {
 			isUploadedFile: true, // has user uploaded file in save
 			pickerOptions: {
 				disabledDate: date => {
-					// (this.space.ExpiredAt * 1000)
 					const now = new Date().getTime();
 					if (this.isUploadedFile) {
 						return (
@@ -318,15 +313,9 @@ export default {
 					this.$store.state.Filemanager.space.ExpiredAt * 1000
 				);
 			} else {
-				// this.expired = new Date(_NOW.getTime());
-				this.expired = $date.lastSecondByDate(_NOW);
+				this.expired = $date.lastSecondByDate(_NOW, 2);
 				return this.$dateFormat.formatTimeByTimestamp(_NOW.getTime());
 			}
-			// return (
-			// 	this.$dateFormat.formatTimeByTimestamp(
-			// 		this.$store.state.Filemanager.space.ExpiredAt * 1000
-			// 	) || this.$dateFormat.formatTimeByTimestamp(_NOW.getTime())
-			// );
 		},
 		space() {
 			return this.$store.state.Filemanager.space;
@@ -444,7 +433,8 @@ export default {
 				// neither of FeeFormat or RefundFormat
 				!this.cost.FeeFormat &&
 				this.cost.FeeFormat !== 0 &&
-				(!this.cost.RefundFormat && this.cost.RefundFormat !== 0)
+				!this.cost.RefundFormat &&
+				this.cost.RefundFormat !== 0
 			) {
 				this.$message.error(vm.$t("public.pleaseAdjustYourSpaceAndDate"));
 				return;
@@ -615,7 +605,7 @@ $grey: #ccc;
 			}
 
 			.space-progress {
-				margin-right:10px;
+				margin-right: 10px;
 				.el-progress-bar__outer,
 				.el-progress-bar__inner {
 					border-radius: 0px;

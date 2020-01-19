@@ -95,9 +95,9 @@ const formatNumber = n => {
   n = n.toString()
   return n[1] ? n : '0' + n
 }
-const lastSecondByDate = date => {
+const lastSecondByDate = (date, scale = 1) => { // scale : Number; How many days are last
   // return Date
-  return new Date(new Date(date.toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1)
+  return new Date(new Date(date.toLocaleDateString()).getTime() + scale * (24 * 60 * 60 * 1000) - 1)
 }
 module.exports = {
   formatTimeByTimestamp,

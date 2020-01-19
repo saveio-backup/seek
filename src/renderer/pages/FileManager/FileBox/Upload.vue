@@ -40,7 +40,7 @@
 						<ripper-button
 							class="form-right browser-layout"
 							@click="selectUpload"
-						>{{$t('fileManager.browser')}}</ripper-button>
+						>{{$t('fileManager.browse')}}</ripper-button>
 						<el-upload
 							class="path-wrapper"
 							ref="upload"
@@ -490,8 +490,8 @@ export default {
 			contractSetting: {
 				// axios.get
 				DefaultCopyNum: "",
-				DefaultProvePeriod: "",
 				MaxCopyNum: 5,
+				DefaultProvePeriod: "",
 				MinProveInterval: "",
 				MinVolume: ""
 			},

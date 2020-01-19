@@ -130,7 +130,12 @@ class View {
             this.webContents.reload();
           },
           accelerator: 'CommandOrControl+J'
-        },
+        }, {
+          label: 'Devtools',
+          click: () => {
+            this.webContents.openDevTools();
+          }
+        }
         // { // bug to fix
         //   label: 'Print',
         //   click: () => {

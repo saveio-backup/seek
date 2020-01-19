@@ -417,7 +417,7 @@ export default {
 				callback(new Error(vm.$t("public.pleaseEnterTheCorrectFormat")));
 				return;
 			} else if (
-				effectiveNumber(value) >
+				parseFloat(value) >
 				vm.balanceLists[vm.balanceSelected].BalanceFormat - 0.01
 			) {
 				callback(new Error(vm.$t("public.insufficientBalanceAvailable")));

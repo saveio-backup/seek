@@ -289,7 +289,10 @@ export default {
 			color: #2f8ff0;
 			cursor: pointer;
 			&:hover {
-				background: #edeff4;
+				// background: #edeff4;
+				@include themify {
+					background-color: $filemanager-aside-hover-color;
+				}
 			}
 			&:active {
 				opacity: 0.7;

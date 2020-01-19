@@ -533,9 +533,9 @@ export default {
 			if (
 				(this.channelForm.amount > 0 &&
 					this.currentBalanceFormat >
-						effectiveNumber(this.channelForm.amount) + 0.02) ||
+						parseFloat(this.channelForm.amount) + 0.02) ||
 				(this.channelForm.amount == 0 &&
-					effectiveNumber(this.currentBalanceFormat) >= 0.01)
+					parseFloat(this.currentBalanceFormat) >= 0.01)
 			) {
 				this.$axios
 					.post(this.$api.channelOPen, params, {

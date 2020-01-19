@@ -529,7 +529,7 @@
 				</div>
 			</div>
 		</el-dialog>
-		<!-- complete page upload dialog-->
+		<!-- complete page upload dialog -->
 		<upload-file-detail-dialog
 			@closeUploadFileDetail="toCloseUploadFileDetail"
 			:hash="uploadDetailHash"

@@ -1,3 +1,6 @@
 export default {
-  'copy': 'copy'
+  'copy': 'Copy',
+  'paste': 'Paste',
+  'refresh': 'Refresh',
+  'devtools': 'inspection'
 }

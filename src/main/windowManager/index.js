@@ -121,17 +121,21 @@ class View {
       const menuItems = [];
       menuItems.push({
           role: 'copy',
-          label: global.lang.contextMenu.copy
+          label: global.lang.contextMenu.copy,
+          accelerator: 'CommandOrControl+C'
         }, {
-          role: 'paste'
+          role: 'paste',
+          label: global.lang.contextMenu.paste,
+          accelerator: 'CommandOrControl+V'
         }, {
-          label: 'Refresh',
+          label: global.lang.contextMenu.refresh,
           click: () => {
             this.webContents.reload();
           },
-          accelerator: 'CommandOrControl+J'
+          // accelerator: 'CommandOrControl+J'
         }, {
           label: 'Devtools',
+          label: global.lang.contextMenu.devtools,
           click: () => {
             this.webContents.openDevTools();
           }

@@ -246,11 +246,13 @@ export default {
 		},
 		nodes() {
 			let _nodes;
-			if(!this.syncObj[this.hash] || this.syncObj[this.hash].Nodes.length <= 1) {
-				if(!this.fileNodes || this.fileNodes.length <= 1) return [];
-				_nodes = this.fileNodes.slice(1);
+			if(!this.syncObj[this.hash] || this.syncObj[this.hash].Nodes.length < 1) {
+				if(!this.fileNodes || this.fileNodes.length < 1) return [];
+				// _nodes = this.fileNodes.slice(1);
+				_nodes = this.fileNodes;
 			} else {
-				_nodes = this.syncObj[this.hash].Nodes.slice(1);
+				// _nodes = this.syncObj[this.hash].Nodes.slice(1);
+				_nodes = this.syncObj[this.hash].Nodes;
 			}
 			return _nodes;
 		}

@@ -227,9 +227,7 @@
 								:title="scope.row.IsUploadAction ? $t('fileManager.startToUpload'):$t('fileManager.startToDownload')"
 								v-show="scope.row.Status === 4"
 								@click="toUploadOrDownloadAgain([scope.row])"
-							><i
-									class="ofont ofont-jixu"
-								></i></span>
+							><i class="ofont ofont-jixu"></i></span>
 							<span
 								class="active-blue cursor-pointer"
 								:title="scope.row.IsUploadAction ? $t('fileManager.startToUpload'):$t('fileManager.startToDownload')"
@@ -329,7 +327,7 @@
 						type="primary"
 						class="primary ml10"
 					>{{$t('fileManager.calculating')}}</ripper-button>
-					<ripper-button 
+					<ripper-button
 						class="primary ml10"
 						v-show="switchToggle.cancelToggleError"
 						@click="getCancelGasFee"
@@ -617,7 +615,7 @@ export default {
 				confirmCancelDownloadDialog: false,
 				cancelToggle: true,
 				cancelToggleError: false,
-				getGasNumber: 0,
+				getGasNumber: 0
 			},
 			cancelGasFee: "",
 			TransferConfig: [
@@ -740,7 +738,7 @@ export default {
 			speedIntervalObj: null,
 			passHowLongTimeGetFileList: 0, //computed how long time get file list
 			taskSpeedNum: 3, // computed fileList change max time（3s）
-			uploadDetailNodes: [],
+			uploadDetailNodes: []
 		};
 	},
 	watch: {
@@ -756,7 +754,10 @@ export default {
 			};
 		},
 		uploadLength(val) {
-			if(this.switchToggle.passwordDialog && this.passwordCancel.File === null) {
+			if (
+				this.switchToggle.passwordDialog &&
+				this.passwordCancel.File === null
+			) {
 				this.getCancelGasFee();
 			}
 		}
@@ -826,10 +827,14 @@ export default {
 			let obj = {};
 			for (let value of this.fileList) {
 				// update upload file nodes
-				if(this.uploadDetailHash && this.transferType === 0 && value.FileHash === this.uploadDetailHash) {
+				if (
+					this.uploadDetailHash &&
+					this.transferType === 0 &&
+					value.FileHash === this.uploadDetailHash
+				) {
 					this.uploadDetailNodes = value.Nodes;
 				}
-				// 
+				//
 				obj[value.Id] = value;
 			}
 			return obj;
@@ -976,9 +981,8 @@ export default {
 				this.confirmCancelTask = task;
 			} else {
 				if (
-					!this.show ||
-					((task.DetailStatus === 5 || task.DetailStatus === 23) &&
-						task.Status !== 4)
+					(task.DetailStatus === 5 || task.DetailStatus === 23) &&
+					task.Status !== 4
 				) {
 					return;
 				}
@@ -988,52 +992,59 @@ export default {
 		},
 		getCancelGasFee() {
 			const vm = this;
-			this.cancelGasFee = '...';
-			let paramUrl = ''
-			this.$set(this.switchToggle, 'cancelToggleError', false);
-			this.$set(this.switchToggle, 'cancelToggle', false);
-			this.switchToggle.getGasNumber ++;
+			this.cancelGasFee = "...";
+			let paramUrl = "";
+			this.$set(this.switchToggle, "cancelToggleError", false);
+			this.$set(this.switchToggle, "cancelToggle", false);
+			this.switchToggle.getGasNumber++;
 			if (this.passwordCancel.File === null) {
 				for (let file of this.fileList) {
-					if(file.Id.indexOf("waitfor_") >= 0) continue;
+					if (file.Id.indexOf("waitfor_") >= 0) continue;
 					paramUrl += `hash=${file.FileHash}&`;
 				}
 			} else {
-				if(this.passwordCancel.File.Id.indexOf("waitfor_") === -1) {
+				if (this.passwordCancel.File.Id.indexOf("waitfor_") === -1) {
 					paramUrl += `hash=${this.passwordCancel.File.FileHash}&`;
-				};
+				}
 			}
-			if(paramUrl === '') {
-				this.switchToggle.getGasNumber --;
-				if(this.switchToggle.getGasNumber !== 0) return;
+			if (paramUrl === "") {
+				this.switchToggle.getGasNumber--;
+				if (this.switchToggle.getGasNumber !== 0) return;
 				this.cancelGasFee = 0;
-				this.$set(this.switchToggle, 'cancelToggleError', false);
-				this.$set(this.switchToggle, 'cancelToggle', true);
+				this.$set(this.switchToggle, "cancelToggleError", false);
+				this.$set(this.switchToggle, "cancelToggle", true);
 				return;
 			}
 			let url = `${this.$api.dspFilesDeletefee}?${paramUrl.slice(0, -1)}`;
-			this.$axios.get(url).then((res) => {
-				this.switchToggle.getGasNumber --;
-				if(this.switchToggle.getGasNumber !== 0) return;
-				if(res.Error === 0 || res.Error === 54013) {
-					this.cancelGasFee = res.Result.GasLimit;
-					this.$set(this.switchToggle, 'cancelToggleError', false);
-				} else {
-					this.$message.error(vm.$t('fileManager.getGasFeeFailed'));
-					this.$set(this.switchToggle, 'cancelToggleError', true);
-				}
-				this.$set(this.switchToggle, 'cancelToggle', true);
-			}).catch(e => {
-				this.switchToggle.getGasNumber --;
-				if(this.switchToggle.getGasNumber !== 0) return;
-				this.$message.error(vm.$t('fileManager.getGasFeeFailed'));
-				this.$set(this.switchToggle, 'cancelToggleError', true);
-				this.$set(this.switchToggle, 'cancelToggle', true);
-			})
+			this.$axios
+				.get(url)
+				.then(res => {
+					this.switchToggle.getGasNumber--;
+					if (this.switchToggle.getGasNumber !== 0) return;
+					if (res.Error === 0 || res.Error === 54013) {
+						this.cancelGasFee = res.Result.GasLimit;
+						this.$set(this.switchToggle, "cancelToggleError", false);
+					} else {
+						this.$message.error(vm.$t("fileManager.getGasFeeFailed"));
+						this.$set(this.switchToggle, "cancelToggleError", true);
+					}
+					this.$set(this.switchToggle, "cancelToggle", true);
+				})
+				.catch(e => {
+					this.switchToggle.getGasNumber--;
+					if (this.switchToggle.getGasNumber !== 0) return;
+					this.$message.error(vm.$t("fileManager.getGasFeeFailed"));
+					this.$set(this.switchToggle, "cancelToggleError", true);
+					this.$set(this.switchToggle, "cancelToggle", true);
+				});
 		},
 		toCancelCheck() {
 			const vm = this;
-			if(!this.switchToggle.cancelToggle || this.switchToggle.cancelToggleError) return;
+			if (
+				!this.switchToggle.cancelToggle ||
+				this.switchToggle.cancelToggleError
+			)
+				return;
 			let balanceLists = this.$store.state.Wallet.balanceLists;
 			let currentBalanceFormat = 0;
 			if (!this.balanceLists) {
@@ -1045,14 +1056,14 @@ export default {
 					}
 				}
 			}
-			if(this.cancelGasFee * 500 / Math.pow(10, 9) > currentBalanceFormat) {
+			if ((this.cancelGasFee * 500) / Math.pow(10, 9) > currentBalanceFormat) {
 				this.$message.error(vm.$t("public.insufficientBalanceAvailable"));
 				return;
 			}
-			this.$refs['passwordCancel'].validate(valid => {
-				if(!valid) return;
+			this.$refs["passwordCancel"].validate(valid => {
+				if (!valid) return;
 				vm.toCancel();
-			})
+			});
 		},
 		// cancel task
 		toCancel() {
@@ -1068,9 +1079,7 @@ export default {
 				this.cancelAll();
 			} else {
 				// cancel task when file is object
-				this.uploadOrDownloadCancel(
-					this.passwordCancel.File
-				);
+				this.uploadOrDownloadCancel(this.passwordCancel.File);
 			}
 		},
 		// upload file open cancel task dialog to input password
@@ -1090,9 +1099,8 @@ export default {
 
 			if (
 				file != null &&
-				(!this.show ||
-					((file.DetailStatus === 5 || file.DetailStatus === 23) &&
-						file.Status !== 4))
+				(file.DetailStatus === 5 || file.DetailStatus === 23) &&
+				file.Status !== 4
 			) {
 				// this.$message({
 				// 	message: vm.$t('fileManager.thereAreNoTasksToCancel')
@@ -1139,8 +1147,6 @@ export default {
 		},
 		// cancel all task
 		cancelAll() {
-			// to do!!!!!
-			// if (!this.show) return;
 			const vm = this;
 			const type = this.transferType;
 			const arr = this.getTask(type, 0, 1, 2, 3, 4);
@@ -1181,9 +1187,7 @@ export default {
 		},
 		// continue all task
 		continueAll() {
-			// to do!!!!!
 			const vm = this;
-			if (!this.show) return;
 			if (this.isSync && this.transferType === 2) {
 				this.$confirm(
 					vm.$t("public.blockUnsynchronizedCompletionAreYouSureToDoThis"),
@@ -1203,9 +1207,7 @@ export default {
 		},
 		// pause all task
 		pauseAll() {
-			// to do!!!!!
 			const vm = this;
-			if (!this.show) return;
 			const type = this.transferType;
 			const arr = this.getTask(type, 1, 2);
 			if (arr.length === 0) {
@@ -1259,7 +1261,7 @@ export default {
 				}
 				if (
 					(item.DetailStatus === 5 || item.DetailStatus === 23) &&
-					(item.Status !== 4 && item.Status !== 0)
+					item.Status !== 4 && item.Status !== 0
 				) {
 					return false;
 				}
@@ -1353,7 +1355,6 @@ export default {
 		 */
 		async uploadOrDownloadCancel(row) {
 			const vm = this;
-			// if (!this.show) return;
 			let type = this.transferType;
 			// get http url
 			let url = type === 1 ? this.$api.uploadCancel : this.$api.downloadCancel;
@@ -1492,9 +1493,9 @@ export default {
 						//get error list
 						let errorNumber = 0;
 
-						for(let value of res.Result.Tasks) {
-							if(value && value.Code) {
-								errorNumber ++;
+						for (let value of res.Result.Tasks) {
+							if (value && value.Code) {
+								errorNumber++;
 							}
 						}
 
@@ -1505,7 +1506,11 @@ export default {
 								type: "success"
 							});
 						} else {
-							this.$message.error(`${this.$t('fileManager.thereAre')}${errorNumber}${this.$t('fileManager.cancelTaskFailed')}`);
+							this.$message.error(
+								`${this.$t("fileManager.thereAre")}${errorNumber}${this.$t(
+									"fileManager.cancelTaskFailed"
+								)}`
+							);
 						}
 					} else {
 						this.$message.error(this.$t(`error["${res.Error}"]`));
@@ -1552,9 +1557,7 @@ export default {
 			let type = this.transferType;
 			// get http url
 			let url = type === 1 ? this.$api.uploadRetry : this.$api.downloadRetry;
-
 			// get params
-			// let isArray = this.isArray(row);
 			let params;
 			let arr = [];
 			for (let value of row) {
@@ -1585,40 +1588,6 @@ export default {
 				});
 				return;
 			}
-			/*
-			// add wait for task and get have wait for task
-			const haveHttpWaitFor = this.addHttpWaitFor({ row: row, waitFor: "start" });
-			if (!haveHttpWaitFor) return;
-
-
-			this.$axios
-				.post(url, params, {
-					timeout: (this.$config.outTime * 2000 + 18000) * params.Ids.length
-				})
-				.then(res => {
-					// get transfer list info update status
-					if (type === 1) {
-						// this.$store.dispatch("getUpload");
-						ipcRenderer.send("run-dialog-event", {name: "getUpload"});
-					} else {
-						// this.$store.dispatch("getDownload");
-						ipcRenderer.send("run-dialog-event", {name: "getDownload"});
-					}
-					// remove wait for task
-					this.removeHttpWaitFor({ Ids: params.Ids });
-
-					if (res.Error === 0) {
-					} else {
-						this.$message.error(this.$t(`error[${res.Error}]`));
-					}
-				})
-				.catch(e => {
-					this.removeHttpWaitFor({ Ids: params.Ids });
-					if (!e.message.includes("timeout")) {
-						this.$message.error("Network Error. Start Task Failed!");
-					}
-				});
-				*/
 		},
 		toUploadOrDownloadContinue(row) {
 			let type = this.transferType;
@@ -1702,10 +1671,8 @@ export default {
 				.then(res => {
 					// get transfer list info update status
 					if (type === 1) {
-						// this.$store.dispatch("getUpload");
 						ipcRenderer.send("run-dialog-event", { name: "getUpload" });
 					} else {
-						// this.$store.dispatch("getDownload");
 						ipcRenderer.send("run-dialog-event", { name: "getDownload" });
 					}
 					// remove wait for task
@@ -1759,7 +1726,6 @@ export default {
 		},
 		// get params and change wait for list status(pause、start)
 		getParams(row, status) {
-			// let row = JSON.parse(JSON.stringify(oldRow))
 			// get params
 			const vm = this;
 			let isArray = this.isArray(row);
@@ -1769,18 +1735,15 @@ export default {
 			let haveWaitForFlag = false;
 			let arr = [];
 			let waitForArr = [];
-			// if (isArray) {
 			for (let value of row) {
 				if (value.Id.indexOf("waitfor_") >= 0) {
-					// value.Status = status;
 					waitForArr.push(value.Id);
 					haveWaitForFlag = true;
 					continue;
 				} else if (
-					!this.show ||
-					((row.DetailStatus === 5 || row.DetailStatus === 23) &&
-						row.Status !== 4 &&
-						row.Status !== 0)
+					(value.DetailStatus === 5 || value.DetailStatus === 23) &&
+					value.Status !== 4 &&
+					value.Status !== 0
 				) {
 					continue;
 				}
@@ -1896,10 +1859,8 @@ export default {
 				.then(res => {
 					// get transfer list info update status
 					if (type === 1) {
-						// this.$store.dispatch("getUpload");
 						ipcRenderer.send("run-dialog-event", { name: "getUpload" });
 					} else {
-						// this.$store.dispatch("getDownload");
 						ipcRenderer.send("run-dialog-event", { name: "getDownload" });
 					}
 					// remove wait for task
@@ -1916,13 +1877,6 @@ export default {
 							name: "removePausing",
 							data: notLocalList
 						});
-						// //if no err
-						// if (errorArr.length === 0) {
-						// 	this.$message({
-						// 		message: "Opeation Success",
-						// 		type: "success"
-						// 	});
-						// }
 					} else {
 						this.$message.error(this.$t(`error["${res.Error}"]`));
 					}
@@ -2058,23 +2012,23 @@ export default {
 		 *  */
 		getNodeSpeed(isF = false) {
 			if (this.transferType === 1) return;
-				let oldNodeSpeed = this.nodeSpeed;
-				let newNodeSpeed = {};
-				for (let value of this.fileDetailNodes) {
-					let uploadOrDownloadSize = value.UploadSize || value.DownloadSize;
-					let speed =
-						oldNodeSpeed[value.HostAddr] !== undefined
-							? uploadOrDownloadSize -
-							  (oldNodeSpeed[value.HostAddr].FileSize || 0)
-							: 0;
-					newNodeSpeed[value.HostAddr] = {
-						speed: speed / 3,
-						FileSize: uploadOrDownloadSize
-					};
-				}
-				this.nodeSpeed = newNodeSpeed;
+			let oldNodeSpeed = this.nodeSpeed;
+			let newNodeSpeed = {};
+			for (let value of this.fileDetailNodes) {
+				let uploadOrDownloadSize = value.UploadSize || value.DownloadSize;
+				let speed =
+					oldNodeSpeed[value.HostAddr] !== undefined
+						? uploadOrDownloadSize -
+						  (oldNodeSpeed[value.HostAddr].FileSize || 0)
+						: 0;
+				newNodeSpeed[value.HostAddr] = {
+					speed: speed / 3,
+					FileSize: uploadOrDownloadSize
+				};
+			}
+			this.nodeSpeed = newNodeSpeed;
 			// }
-		},
+		}
 		// getNodeSpeed(isF = false) {
 		// 	if (this.transferType === 1) return;
 		// 	if ((this.fileDetailNodes.length > 0 && this.taskSpeedNum === 1) || isF) {

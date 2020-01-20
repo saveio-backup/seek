@@ -443,7 +443,7 @@ export default {
 			let filterWaitForUploadList = this.waitForUploadList.filter(item => {
 				return this.readyUpload.indexOf(item.Id) !== -1;
 			});
-			// get upload list in the waitForUploadList
+			// get upload list in the uploadingList
 			let filterUploadingList = this.uploadingTransferList.filter(item => {
 				return this.readyUpload.indexOf(item.Id) !== -1;
 			});
@@ -453,7 +453,6 @@ export default {
 				this.getStartWaitForUploadPromise(filterWaitForUploadList)
 			);
 			commitAll.concat(vm.getContinueUploadPromise(filterUploadingList));
-			console.log(commitAll);
 			this.toStartUpload(commitAll);
 		},
 		// to upload and callback
@@ -464,7 +463,8 @@ export default {
 					return this.readyUpload.indexOf(item.Id) < 0;
 				});
 				// wait for 1s for wait for get upload file done
-				setTimeout(() => {
+				// setTimeout(() => {
+				vm.$nextTick(() => {
 					this.$store.commit("SET_WAIT_FOR_UPLOAD_LIST", newWaitForList);
 					this.$store.commit(
 						"REMOVE_WAIT_FOR_UPLOAD_ORDER_LIST",
@@ -479,7 +479,8 @@ export default {
 						// this.$store.dispatch("getUpload"); // force update
 						this.uploadingTransferListForce++;
 					}, 2000);
-				}, 1000);
+				});
+				// }, 1000);
 
 				// error message
 				let errorArr = [];
@@ -694,7 +695,6 @@ export default {
 		},
 		// get wallet address
 		getAddress(res) {
-			// this.$axios.get(this.$api.account).then(async res => {
 			if (res.Error === 0) {
 				if (res.Result.Address) {
 					this.Address = res.Result.Address;
@@ -712,11 +712,9 @@ export default {
 					rendTo: 1
 				});
 			}
-			// });
 		},
 		// get current sync process
 		getProcess(progressResult) {
-			// this.$axios.get(this.$api.channelInitProgress).then(progressResult => {
 			if (progressResult.Error === 0) {
 				if (progressResult.Result.End - progressResult.Result.Now > 50) {
 					progressResult.Result.isSync = true;
@@ -784,7 +782,6 @@ export default {
 		// get balance for show create channel dialog
 		getBalance(res) {
 			const vm = this;
-			// this.$axios.get(this.$api.balance + "/" + this.Address).then(res => {
 			if (res.Error === 0) {
 				this.renderDataToBrowserView({ result: res.Result, type: "balance" });
 				for (let i = 0; i < res.Result.length; i++) {
@@ -795,30 +792,18 @@ export default {
 					}
 				}
 			}
-			// });
 		},
 		// get revenue
 		getRevenue(res) {
-			// this.$axios
-			// 	.get(this.$api.revenue, {
-			// 		timeout: this.$config.outTime * 5000 + 15000
-			// 	})
-			// .then(res => {
 			if (res.Error === 0) {
 				this.renderDataToBrowserView({
 					result: res.Result,
 					type: "revence"
 				});
 			}
-			// });
 		},
 		// get channel
 		getChannel(res) {
-			// this.$axios
-			// 	.get(this.$api.channel, {
-			// 		timeout: this.$config.outTime * 5000 + 15000
-			// 	})
-			// 	.then(res => {
 			if (res.Error === 0) {
 				this.renderDataToBrowserView({
 					result: res.Result,
@@ -830,20 +815,12 @@ export default {
 					res.Result.Channels.length > 0
 				) {
 					this.channelNum = res.Result.Channels.length;
-					// clearInterval(this.intervalObj.setTimeObj);
-					// return;
 				}
 				this.channelNum =
 					res.Result && res.Result.Channels && res.Result.Channels.length;
 			}
-			// });
 		},
 		getCurrentChannel(res) {
-			// this.$axios
-			// 	.get(this.$api.getCurrentChannel, {
-			// 		timeout: this.$config.outTime * 5000 + 15000
-			// 	})
-			// 	.then(res => {
 			if (res.Error === 0) {
 				if (res.Result.IsOnline === false) {
 					if (!this.usable) return;
@@ -855,13 +832,9 @@ export default {
 			} else {
 				this.usable = true;
 			}
-			// });
 		},
 		// get connect state
 		getState(res) {
-			// this.$axios
-			// 	.get(this.$api.networkStatus)
-			// 	.then(res => {
 			if (res.Error === 0) {
 				this.renderDataToBrowserView({
 					result: res.Result,
@@ -869,20 +842,6 @@ export default {
 					rendTo: 1
 				});
 			}
-			// })
-			// .catch(e => {
-			// 	let result = {
-			// 		ChainState: 0,
-			// 		DNSState: 0,
-			// 		DspProxyState: 0,
-			// 		ChannelProxyState: 0
-			// 	};
-			// 	this.renderDataToBrowserView({
-			// 		result: result,
-			// 		type: "state",
-			// 		rendTo: 1
-			// 	});
-			// });
 		},
 		/**
 		 * params:
@@ -940,16 +899,6 @@ export default {
 				}
 			}
 		},
-		// get channel、balance、revenue list data and check have channel and wallet money
-		// getPollingData() {
-		// 	this.getTransferPollData();
-		// },
-		// // get polling data about transfer list
-		// getTransferPollData() {
-		// 	this.$store.dispatch("getWaitForTransferList"); // get wait for upload list
-		// 	this.$store.dispatch("getUpload");
-		// 	this.$store.dispatch("getDownload");
-		// },
 		// update get current main browseWindow
 		getWin() {
 			let arrWin = remote.BrowserWindow.getAllWindows();
@@ -983,12 +932,6 @@ export default {
 			activeView.map(view => {
 				ipcRenderer.sendTo(view.webContents.id, "get-data", { result, type });
 			});
-			/* let activeView = views.find(view =>
-				view.displayURL.toLowerCase().startsWith("seek://filemanager")
-			);
-			if (!activeView) return;
-			let winContentId = activeView.webContents.id;
-			ipcRenderer.sendTo(winContentId, "get-data", { result, type }); */
 		},
 		// rendTo active browser display message
 		message({ info, type, dangerouslyUseHTMLString }) {
@@ -1127,13 +1070,11 @@ export default {
 			this.$store.commit("REMOVE_UPLOADING", data);
 			this.getUpload();
 		},
-
 		/**
-		 * set config
+		 * set config maxNumUpload
 		 * params:
 		 * data(type array):
 		 */
-		// to do
 		settingUpdate(data) {
 			const vm = this;
 			this.maxNumUpload = data.maxNumUpload;

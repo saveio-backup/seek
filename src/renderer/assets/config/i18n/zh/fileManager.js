@@ -201,6 +201,7 @@ const result = {
   'recalculation': '重新计算',
   'thereAre': '有',
   'cancelTaskFailed': '个任务取消失败',
+  'filesUploadFailed': '个文件上传失败',
 }
 
 export default result;

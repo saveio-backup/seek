@@ -443,30 +443,6 @@
 							v-if="fileObjById[detailId]"
 						>{{fileObjById[detailId].DownloadSize * 1024 / Math.pow(10, 9)}} ONI</div>
 					</li>
-					<!-- <template v-if="transferType === 1">
-						<li
-							class="flex tr"
-							v-for="(item, index) in fileDetailNodes"
-							:key="item.HostAddr"
-						>
-							<div class="node-name pr30">{{$t('fileManager.node')}}{{index+1}}:</div> -->
-					<!-- more-than-5 class: gt text color is white lt text color is #202020-->
-					<!-- <div class="node-process">
-								<el-progress
-									:text-inside="true"
-									:stroke-width="14"
-									class="file-progress"
-									:percentage="Math.ceil((item.UploadSize/fileObjById[detailId].FileSize)*100)"
-									:class="{'more-than-5': ((item.UploadSize/fileObjById[detailId].FileSize) < 0.15),'progressAnimate': fileObjById[detailId].Status != 4 && fileObjById[detailId].Status != 0}"
-								></el-progress>
-							</div>
-							<div class="ml10 tl node-speed ftpx14 ">{{nodeSpeed[item.HostAddr] && util.bytesToSize(nodeSpeed[item.HostAddr].speed*1024) || '0 Byte'}}/{{$t('fileManager.s')}}</div>
-							<div
-								class="file-size tr "
-								v-if="fileObjById[detailId]"
-							>{{util.bytesToSize(item.UploadSize*1024 || item.DownloadSize*1024)}}/{{util.bytesToSize(fileObjById[detailId].FileSize * 1024)}}</div>
-						</li>
-					</template> -->
 					<template v-if="transferType === 2">
 						<li class="flex tr no-border">
 							<div class="node-name pr30">{{$t('fileManager.sourceNode')}}:</div>
@@ -510,7 +486,7 @@
 				<h2>{{$t('fileManager.taskDelete')}}</h2>
 				<div class="dialog-title-border"></div>
 			</div>
-			<div class="loading-content">
+			<div class="loading-content confirm-cancel-download-dialog">
 				<p class="mb20 mt10">
 					{{$t('fileManager.areYouSureYouWantToDeleteTheSelectedTask')}}
 				</p>
@@ -613,6 +589,7 @@ export default {
 				passwordDialog: false,
 				downloadDetailDialog: false,
 				confirmCancelDownloadDialog: false,
+				confirmCancelDownloadDialogLoading: null,
 				cancelToggle: true,
 				cancelToggleError: false,
 				getGasNumber: 0
@@ -954,11 +931,20 @@ export default {
 		},
 		// dialog confirm cancel download
 		cancelDownload() {
-			this.switchToggle.confirmCancelDownloadDialog = false;
+			const vm = this;
+			// this.switchToggle.confirmCancelDownloadDialog = false;
+			this.switchToggle.confirmCancelDownloadDialogLoading = this.$loading({
+				target: ".confirm-cancel-download-dialog.loading-content",
+				text: vm.$t("fileManager.loading"),
+				lock: true
+			});
 			if (this.confirmCancelTask && this.confirmCancelTask.Id) {
 				this.uploadOrDownloadCancel(this.confirmCancelTask);
 			} else if (this.confirmCancelTask === "all") {
 				this.cancelAll();
+			} else {
+				this.switchToggle.confirmCancelDownloadDialogLoading &&
+					this.switchToggle.confirmCancelDownloadDialogLoading.close();
 			}
 		},
 		/**
@@ -1155,8 +1141,13 @@ export default {
 					message: vm.$t("fileManager.thereAreNoTasksToCancel"),
 					type: "warning"
 				});
-				this.passwordCancel.loadingObj &&
-					this.passwordCancel.loadingObj.close();
+				if(type === 1) {
+					this.passwordCancel.loadingObj &&
+						this.passwordCancel.loadingObj.close();
+				} else {
+					this.switchToggle.confirmCancelDownloadDialogLoading &&
+						this.switchToggle.confirmCancelDownloadDialogLoading.close();
+				}
 				return;
 			}
 			this.uploadOrDownloadCancel(arr);
@@ -1451,6 +1442,9 @@ export default {
 				}
 				// check is have downloading task
 				if (!params.Ids || params.Ids.length === 0) {
+					this.switchToggle.confirmCancelDownloadDialogLoading &&
+						this.switchToggle.confirmCancelDownloadDialogLoading.close();
+					this.switchToggle.confirmCancelDownloadDialog = false;
 					return;
 				}
 			}
@@ -1461,8 +1455,14 @@ export default {
 					timeout: (this.$config.outTime * 2000 + 18000) * params.Ids.length
 				})
 				.then(res => {
-					this.passwordCancel.loadingObj &&
-						this.passwordCancel.loadingObj.close();
+					if(type === 1) {
+						this.passwordCancel.loadingObj &&
+							this.passwordCancel.loadingObj.close();
+					} else {
+						this.switchToggle.confirmCancelDownloadDialogLoading &&
+							this.switchToggle.confirmCancelDownloadDialogLoading.close();
+					}
+					
 					// get transfer list info update status
 					if (type === 1) {
 						ipcRenderer.send("run-dialog-event", { name: "getUpload" });
@@ -1489,6 +1489,8 @@ export default {
 					if (res.Error === 0) {
 						if (type === 1) {
 							this.switchToggle.passwordDialog = false;
+						} else {
+							this.switchToggle.confirmCancelDownloadDialog = false;
 						}
 						//get error list
 						let errorNumber = 0;
@@ -1517,8 +1519,13 @@ export default {
 					}
 				})
 				.catch(e => {
-					this.passwordCancel.loadingObj &&
-						this.passwordCancel.loadingObj.close();
+					if (type === 1) {
+						this.passwordCancel.loadingObj &&
+							this.passwordCancel.loadingObj.close();
+					} else {
+						this.switchToggle.confirmCancelDownloadDialogLoading &&
+							this.switchToggle.confirmCancelDownloadDialogLoading.close();
+					}
 					if (!e.message.includes("timeout")) {
 						this.$message.error(
 							vm.$t("fileManager.networkErrorCancelTaskFailed")

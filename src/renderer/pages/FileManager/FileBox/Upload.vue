@@ -880,7 +880,7 @@ export default {
 							return;
 						}
 
-						let errorMsg = ""; // error message
+						let errorMsg = 0; // error message
 						let flag = false; // is have success
 						this.waitForNowUpload({
 							arr,
@@ -946,10 +946,11 @@ export default {
 				} else {
 					//if have error task joint errorMsg and run me again(argumnets.callee())
 					for (let value of errorArr) {
-						errorMsg += `<p>`;
-						errorMsg += `${value.FileName || ""}`;
-						errorMsg += this.$t(`error["${value.Error}"]`);
-						errorMsg += `</p>`;
+						// errorMsg += `<p>`;
+						// errorMsg += `${value.FileName || ""}`;
+						// errorMsg += this.$t(`error["${value.Error}"]`);
+						// errorMsg += `</p>`;
+						errorMsg ++;
 					}
 					let errorLength = errorArr.length;
 					this.waitForNowUpload({ arr, len: errorLength, errorMsg, flag });
@@ -965,9 +966,9 @@ export default {
 			if (flag === false) {
 				// is have upload success task
 				if (errorMsg) {
+					// dangerouslyUseHTMLString: true,
 					this.$message.error({
-						dangerouslyUseHTMLString: true,
-						message: errorMsg
+						message: `${vm.$t('fileManager.thereAre')}${errorMsg}${vm.$t('fileManager.filesUploadFailed')}`
 					});
 				} else {
 					this.$message.error(vm.$t("fileManager.uploadError"));
@@ -979,13 +980,12 @@ export default {
 						message: vm.$t("fileManager.startUpload")
 					});
 				} else {
+					// dangerouslyUseHTMLString: true,
 					this.$message.error({
-						dangerouslyUseHTMLString: true,
-						message: errorMsg
+						message: `${vm.$t('fileManager.thereAre')}${errorMsg}${vm.$t('fileManager.filesUploadFailed')}`
 					});
 				}
 				this.passwordForm.show = false;
-				// this.$store.dispatch("getUpload");
 				ipcRenderer.send("run-dialog-event", { name: "getUpload" });
 				if (arr.length > 0) {
 					setTimeout(() => {

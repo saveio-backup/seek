@@ -202,6 +202,7 @@ const result = {
   'recalculation': 'Recalculation',
   'thereAre': 'There are ',
   'cancelTaskFailed': ' cancel task failed.',
+  'filesUploadFailed': ' files upload failed',
 }
 
 export default result;

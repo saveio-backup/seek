@@ -6,13 +6,11 @@
 		>
 			<div class="fun-button">
 
-				<!-- <router-link :to="{name:'upload'}"> -->
 				<ripper-button
 					class="primary "
 					@click="goUpload"
 				>{{$t('fileManager.uploadButton')}}</ripper-button>
 
-				<!-- </router-link> -->
 				<ripper-button
 					class="ml10 bt-download "
 					@click="batchDownload"
@@ -1288,7 +1286,8 @@ export default {
 			return arr;
 		},
 		waitForDownloadList() {
-			return this.$store.state.Transfer.waitForUploadList || [];
+			// return this.$store.state.Transfer.waitForUploadList || [];
+			return this.$store.state.Transfer.waitForDownloadList || [];
 		},
 		syncObj() {
 			let obj = {};

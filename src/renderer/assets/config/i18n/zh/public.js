@@ -21,7 +21,7 @@ const result = {
   'walletPassword': '钱包密码',
   'pleaseInputWalletPassword': '请输入钱包密码',
   'pleaseEnterTheCorrectFormat': '请输入正确的格式',
-  'pleaseFillAmount': '请填写数量,最大不超过 10亿',
+  'pleaseFillAmount': '请填写数量',
   'pleaseFillPassword': '请填写密码',
   'pleaseFillPartnerWalletAddress': '请填写对方钱包地址',
   'noChannelSwitchesAreAvailable': '没有可用的通道',

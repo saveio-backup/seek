@@ -32,13 +32,13 @@
 					>
 						<!-- prop="Path" -->
 						<span
-							class="form-right browser-layout-reset light-blue"
+							class="form-right browse-layout-reset light-blue"
 							@click="resetFileList"
 							:title="$t('fileManager.clearAllAddFile')"
 							v-if="uploadFormData.Files && uploadFormData.Files.length !== 0"
 						>{{$t('fileManager.clear')}}</span>
 						<ripper-button
-							class="form-right browser-layout"
+							class="form-right browse-layout"
 							@click="selectUpload"
 						>{{$t('fileManager.browse')}}</ripper-button>
 						<el-upload
@@ -52,7 +52,7 @@
 							:on-change="handleChange"
 						>
 							<div slot="trigger">
-								<!-- <el-button class="browser-layout" type="primary">Browser</el-button> -->
+								<!-- <el-button class="browse-layout" type="primary">Browser</el-button> -->
 								<div
 									class="path-content"
 									@click.stop=""
@@ -82,6 +82,7 @@
 										<p class="text-center mt10 user-no-select break-word">{{$t('fileManager.aSingleFileCannotBeLargerThan4GB')}}</p>
 									</div>
 								</div>
+								<!-- <el-button slot="trigger" size="small" type="primary">选取文件</el-button> -->
 							</div>
 						</el-upload>
 					</el-form-item>
@@ -1339,11 +1340,11 @@ $inputFocusBg: #dee2ea;
 						}
 					}
 				}
-				.browser-layout {
+				.browse-layout {
 					top: 10px;
 					position: absolute;
 				}
-				.browser-layout-reset {
+				.browse-layout-reset {
 					right: 150px;
 					top: 10px;
 					position: absolute;

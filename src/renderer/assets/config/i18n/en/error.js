@@ -171,6 +171,7 @@ const result = {
   '56014': 'Channel withdrawal amount is wrong',
   '56015': 'Channel is synchronizing blocks',
   '56016': 'DSP channel open to on dns',
+  '56017': 'DSP channel DNS offline',
   '58000': 'Task for operation does not exist',
   '59000': 'Database query sharing revenue failed',
   '59001': 'Database statistics share revenue failed',

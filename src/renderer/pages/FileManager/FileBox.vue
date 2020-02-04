@@ -39,7 +39,9 @@
 			</div>
 		</div>
 		<div class="layout-main theme-bg">
-			<router-view></router-view>
+			<keep-alive>
+				<router-view></router-view>
+			</keep-alive>
 		</div>
 	</div>
 </template>

@@ -1357,16 +1357,17 @@ export default {
 				vm.addrAPI = vm.$api.getDownloadFileList;
 			} else {
 				vm.addrAPI = vm.$api.getFileList;
-				let _limit = vm.fileListData.length + vm.limitCount;
-				vm.$store.dispatch("getSyncFileList", _limit);
+				if(vm.fileListData.length === 0) { // first enter or file list is zero
+					vm.$store.dispatch("getSyncFileList", vm.limitCount);
+				} else {
+					vm.$store.dispatch("getSyncFileList", vm.fileListData.length);
+				}
 			}
-			console.log('beforeRouteEnter')
 			vm.getFileLists();
 		});
 	},
 	beforeRouteLeave(to, from, next) {
 		this.$store.dispatch("clearIntervalSyncFileList");
-		console.log('beforeRouteLeave')
 		next();
 	},
 	beforeRouteUpdate(to, from, next) {

@@ -1,41 +1,52 @@
 <template>
 	<div class="channel-wallet-transfer">
 		<div class="flex between pl30 pr30 mb20 mt20">
-			<div
-				v-if="withDraw && channelSelected.IsOnline"
-				class="flex1 text-left"
-			>
-				<p class=" transparent ft14 user-no-select">{{$t('public.channel')}}(ONI)</p>
-				<p class="ftpx24 mt10">{{effectiveNumber(filterFloat(channelSelected.BalanceFormat || 0))}}</p>
-			</div>
-			<div
-				v-else
-				class="flex1 text-left"
-			>
-				<p class="transparent ft14 user-no-select">{{$t('public.wallet')}}(ONI)</p>
-				<p class="ftpx24 mt10">{{effectiveNumber(filterFloat(mainCount))}}</p>
-			</div>
 			<div class="flex column between">
+				<p>From</p>
 				<i class="ofont ofont-fasong"></i>
+				<p>To</p>
+			</div>
+			<div class="middle flex1">
+				<div
+					v-if="withDraw && channelSelected.IsOnline"
+					class="flex1 flex between rectangle mb10"
+				>
+					<p class="tertiary-font-color ft14 user-no-select">{{$t('public.channel')}}</p>
+					<p class="ftpx14 bold">{{effectiveNumber(filterFloat(channelSelected.BalanceFormat || 0))}}</p>
+					<p class="bold">ONI</p>
+				</div>
+				<div
+					v-else
+					class="flex1 flex between rectangle  mb10"
+				>
+					<p class="tertiary-font-color ft14 user-no-select">{{$t('public.wallet')}}</p>
+					<p class="ftpx14 bold">{{effectiveNumber(filterFloat(mainCount))}}</p>
+					<p class="bold">ONI</p>
+				</div>
+				<div
+					v-if="!withDraw || !channelSelected.IsOnline"
+					class="flex1 flex between rectangle"
+				>
+					<p class="tertiary-font-color ft14 user-no-select">{{$t('public.channel')}}</p>
+					<p class="ftpx14 bold">{{effectiveNumber(filterFloat(channelSelected.BalanceFormat || 0))}}</p>
+					<p class="bold">ONI</p>
+				</div>
+				<div
+					v-else
+					class="flex1 flex between rectangle"
+				>
+					<p class="tertiary-font-color ft14 user-no-select">{{$t('public.wallet')}}</p>
+					<p class="ftpx14 bold">{{effectiveNumber(filterFloat(mainCount))}}</p>
+					<p class="bold">ONI</p>
+				</div>
+			</div>
+			<div class="right transfer-button">
 				<i
-					class="ofont ofont-huazhuan ftpx20 user-no-select"
+					class="el-icon-sort ftpx20 user-no-select"
 					:class="{'ex-change': channelSelected.IsOnline,'grey-xs cursor-not-allowed':!channelSelected.IsOnline}"
 					:title="channelSelected.IsOnline?$t('public.switchover'):$t('public.SorryYouCannotWithdrawInOfflineStatus')"
 					@click="exWithDraw()"
-				></i></div>
-			<div
-				v-if="!withDraw || !channelSelected.IsOnline"
-				class="flex1 text-right"
-			>
-				<p class="transparent ft14 user-no-select">{{$t('public.channel')}}(ONI)</p>
-				<p class="ftpx24 mt10">{{effectiveNumber(filterFloat(channelSelected.BalanceFormat || 0))}}</p>
-			</div>
-			<div
-				v-else
-				class="flex1 text-right"
-			>
-				<p class="transparent ft14 user-no-select">{{$t('public.wallet')}}(ONI)</p>
-				<p class="ftpx24 mt10">{{effectiveNumber(filterFloat(mainCount))}}</p>
+				></i>
 			</div>
 		</div>
 		<el-form
@@ -276,10 +287,20 @@ export default {
 	.transferForm {
 		padding: 0 30px;
 	}
+	.rectangle {
+		@include themify {
+			margin-left: 20px;
+			margin-right: 20px;
+			align-items: center;
+			padding: 5px 10px;
+			background: $color;
+		}
+	}
 	.ofont-fasong {
 		color: #cdcfd8;
+		transform: rotate(90deg);
 	}
-	.ofont-huazhuan {
+	.el-icon-sort {
 		width: 36px;
 		height: 36px;
 		text-align: center;
@@ -288,12 +309,6 @@ export default {
 		&.ex-change {
 			color: #2f8ff0;
 			cursor: pointer;
-			&:hover {
-				// background: #edeff4;
-				@include themify {
-					background-color: $filemanager-aside-hover-color;
-				}
-			}
 			&:active {
 				opacity: 0.7;
 				// opacity: 1;
@@ -326,6 +341,16 @@ export default {
 	.rt10 {
 		position: relative;
 		top: -10px;
+	}
+	.transfer-button {
+		display: flex;
+		align-items: center;
+		@include themify {
+			background: $color;
+		}
+		color: blue;
+		width: 40px;
+		justify-content: center;
 	}
 }
 </style>

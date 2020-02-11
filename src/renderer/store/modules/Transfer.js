@@ -152,7 +152,10 @@ const mutations = {
             localStorage.setItem(`waitForUploadOrderList_${address}`, JSON.stringify(state.waitForUploadOrderList));
         }
     },
-
+    SET_WAIT_FOR_UPLOAD_ORDER_LIST(state, result) {
+        state.waitForUploadOrderList = result;
+        localStorage.setItem(`waitForUploadOrderList_${address}`, JSON.stringify(result));
+    },
     /**
      * params:
      * result(type array)
@@ -205,9 +208,15 @@ const mutations = {
             localStorage.setItem(`waitForDownloadOrderList_${address}`, JSON.stringify(state.waitForDownloadOrderList));
         }
     },
+    SET_WAIT_FOR_DOWNLOAD_ORDER_LIST(state, result) {
+        state.waitForDownloadOrderList = result
+        localStorage.setItem(`waitForDownloadOrderList_${address}`, JSON.stringify(result));
+    },
+
 
     GET_LOCAL_STATUS(state, result) {
         state.localStatus = result;
+        localStorage.setItem(`localStatus_${address}`, JSON.stringify(result));
     },
     /**
      * params:

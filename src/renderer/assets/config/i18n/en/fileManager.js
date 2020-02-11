@@ -203,6 +203,8 @@ const result = {
   'thereAre': 'There are ',
   'cancelTaskFailed': ' cancel task failed.',
   'filesUploadFailed': ' files upload failed',
+  'whiteListExists': 'The address already exists on the white list',
+  'transferTaskPausing': 'Transfer Task Pausing...',
 }
 
 export default result;

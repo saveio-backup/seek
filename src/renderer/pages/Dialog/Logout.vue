@@ -43,8 +43,22 @@ export default {
 		closeDialog() {
 			this.$emit("closeDialog", { timeout: 0 });
 		},
-		logout() {
+		async logout() {
 			const vm = this;
+			vm.logoutLoding = vm.$loading({
+				text: vm.$t("fileManager.transferTaskPausing"),
+				target: ".loading-content.logout-loading",
+        lock: true
+			});
+
+			let falg = await vm.$parent.logoutPauseAllTask();
+			if(!falg) {
+				vm.logoutLoding && vm.logoutLoding.close();
+				this.$message.error(this.$t(`dialog.taskNotPauseWaitForOpeation`));
+				return;
+			}
+			vm.logoutLoding && vm.logoutLoding.close();
+			
 			this.$axios
 				.post(
 					this.$api.account + "/logout",

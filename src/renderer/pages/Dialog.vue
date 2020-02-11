@@ -1117,7 +1117,7 @@ export default {
 				let pauseList = remoteDownloadingList.splice(this.$config.maxNumUpload);
 				this.addUploading(pauseList);
 				this.unshiftWaitForDownloadOrderList(pauseList);
-				commitAll.push(this.toPauseDownload(pauseList));
+				commitAll.push(vm.toPauseDownload(pauseList));
 				flag = true;
 			}
 
@@ -1171,6 +1171,78 @@ export default {
 				type: "lang",
 				rendTo: 1
 			});
+		},
+		// pause all transfering task(at edge)
+		// return is not success
+		async pauseAll() {
+			let uploadingArr = [];
+			let flag = false;
+			for(let value of this.uploadingTransferList) {
+				if(value.Status === 2 && value.DetailStatus !== 5 && value.DetailStatus !== 23) {
+					uploadingArr.push(value.Id)
+				} else if(value.Status === 2 && (value.DetailStatus === 5 || value.DetailStatus === 23)){
+					flag = true
+				}
+			}
+
+			let downloadingArr = [];
+			for(let value of this.downloadingTransferList) {
+				if(value.Status === 2 && value.DetailStatus !== 5 && value.DetailStatus !== 23) {
+					downloadingArr.push(value.Id)
+				} else if(value.Status === 2 && (value.DetailStatus === 5 || value.DetailStatus === 23)){
+					flag = true
+				}
+			}
+			let arr = [];
+			if(uploadingArr.length !== 0){
+				arr.push(this.toPause(uploadingArr));
+			}
+			if(downloadingArr.length !== 0) {
+				arr.push(this.toPauseDownload(downloadingArr));
+			}
+			if(arr.length === 0) {
+				return flag;
+			}
+
+			return Promise.all(arr).then(Ress => {
+				for(let i = 0;i < Ress.length;i ++) {
+					let Res = Ress[i];
+					if(Res.Error !== 0) return true;
+					for(let j = 0;j < Res.Tasks.length;j ++) {
+						let _task = Res.Tasks[j];
+						if(_task.State === 2 || _task.State === 1) return true;
+					}
+					return flag;
+				}
+			}).catch(err => {
+				return true;
+			})
+		},
+		// logout pause all task
+		async logoutPauseAllTask() {
+			// update task(at local cache task)
+			this.$store.commit('SET_WAIT_FOR_DOWNLOAD_ORDER_LIST', []);
+			this.$store.commit('SET_WAIT_FOR_UPLOAD_ORDER_LIST', []);
+			this.$store.commit('GET_LOCAL_STATUS', {
+        pausing: [],
+        uploading: []
+			});
+			let _waitForUploadList = JSON.parse(JSON.stringify(this.waitForUploadList));
+			for(let value of _waitForUploadList) {
+				value.Status = 0;
+			}
+			this.$store.commit('SET_WAIT_FOR_UPLOAD_LIST', _waitForUploadList);
+			let _waitForDownloadList = JSON.parse(JSON.stringify(this.waitForDownloadList));
+			for(let value of _waitForDownloadList) {
+				value.Status = 0;
+			}
+			this.$store.commit('SET_WAIT_FOR_DOWNLOAD_LIST', _waitForDownloadList);
+			let pauseRes = await this.pauseAll();
+			if(pauseRes || this.readyUpload.length > 0 || this.readyDownload.length > 0) {
+				return false;
+			} else {
+				return true;
+			}
 		}
 	}
 };

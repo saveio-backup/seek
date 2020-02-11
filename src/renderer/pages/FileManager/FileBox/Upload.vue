@@ -460,10 +460,15 @@ export default {
 			const vm = this;
 			const whiteListRex = /^A[1-9A-HJ-NP-Za-km-z]{33}$/;
 			if (
-				vm.advancedData.wihteListString.length === 0 ||
-				whiteListRex.test(vm.advancedData.wihteListString)
+				vm.advancedData.wihteListString.length === 0
 			) {
 				callback();
+			} else if(whiteListRex.test(vm.advancedData.wihteListString)) {
+				if(vm.advancedData.WhiteList.indexOf(vm.advancedData.wihteListString) !== -1) {
+					callback(new Error(vm.$t('fileManager.whiteListExists')));
+				} else {
+					callback();
+				}
 			} else {
 				callback(new Error(vm.$t("fileManager.wrongWalletAddressFormat")));
 			}
@@ -481,9 +486,11 @@ export default {
 			validateEncryptFileSize,
 			validateEncryptPassword,
 			validateWhiteListRex,
+			DEFAULT_STORAGE_CYCLE,
 			util,
 			baseKeys,
 			BASE,
+			DEFAULT_KEY,
 			verificationCycleSelected: baseKeys[1], // default Second
 			verificationCycleNumber: 30, // Integrity verification cycle
 			storageCycleSelected: DEFAULT_KEY, // default Year
@@ -555,7 +562,7 @@ export default {
 				wihteListString: [
 					{
 						validator: validateWhiteListRex,
-						trigger: "blur"
+						trigger: "change"
 					}
 				]
 			},
@@ -584,7 +591,69 @@ export default {
 		this.setDataInterval();
 		this.getfscontractsetting();
 	},
+	beforeRouteEnter(to, from, next) {
+		next(vm => {
+			vm.init();
+			vm.getSpaceIsZero();
+			vm.setDataInterval();
+			vm.getfscontractsetting();
+		});
+	},
 	methods: {
+		init() {
+			const vm = this;
+			this.verificationCycleSelected = this.baseKeys[1], // default Second
+			this.verificationCycleNumber = 30, // Integrity verification cycle
+			this.storageCycleSelected = this.DEFAULT_KEY, // default Year
+			this.storageCycleNumber = 1;
+			this.contractSetting = {
+				// axios.get
+				DefaultCopyNum: "",
+				MaxCopyNum: 5,
+				DefaultProvePeriod: "",
+				MinProveInterval: "",
+				MinVolume: ""
+			}
+			this.passwordForm = {
+				Password: "",
+				show: false
+			}
+			this.switchToggle = {
+				loading: null,
+				whiteListInput: false,
+				advanced: false, // advanced form
+				upload: true,
+				uploadToggle: true,
+				uploadToggleError: false,
+				getPriceNumber: 0,
+			}
+			this.fileSize = 0;
+			this.encryptionToggle = false;
+			this.uploadFormData = {
+				Path: "",
+				FileSize: "",
+				Files: [],
+				EncryptPassword: "" // Encryption
+			}
+			this.advancedData = {
+				Duration: vm.DEFAULT_STORAGE_CYCLE, // storage cycle  default forever
+				Interval: 0, // Integrity verification cycle
+				// Times: 1, // Integrity Times
+				Privilege: 1, // Authority
+				CopyNum: 1, // axios.get
+				wihteListString: "",
+				WhiteList: []
+			},
+			this.remindToggle = {
+				show: false,
+				// is not allow change upload model to advanced have remind dialog
+				noAllowRemind: localStorage.getItem("uploadToNoAllowRemind") || false
+			},
+			this.noStorageDialog = {
+				show: false
+			}
+			this.uploadPriceInfo = null;
+		},
 		resetFileList() {
 			this.uploadFormData.Files = [];
 			this.toGetPrice();
@@ -738,11 +807,12 @@ export default {
 				this.advancedData.wihteListString.length != 0 &&
 				!whiteListRex.test(this.advancedData.wihteListString)
 			) {
-				// this.$refs.saveTagInput.$refs.input.focus();
-				// this.$message("Wrong Wallet Address Format");
 				return;
 			}
 			let inputValue = this.advancedData.wihteListString.trim();
+			if(this.advancedData.WhiteList.indexOf(inputValue) !== -1) {
+				return;
+			}
 			if (inputValue) {
 				this.advancedData.WhiteList.push(inputValue);
 			}

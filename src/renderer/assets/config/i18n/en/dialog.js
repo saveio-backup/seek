@@ -13,7 +13,8 @@ const result = {
   'recommendDNS': 'Recommend DNS',
   'loading': 'loading...',
   'loggingOut': 'logging out',
-  'channelLostRemind': 'The current channel is invalid. Please create or replace another channel'
+  'channelLostRemind': 'The current channel is invalid. Please create or replace another channel',
+  'taskNotPauseWaitForOpeation': 'Have task cannot be paused. Please try again later',
 }
 
 export default result;

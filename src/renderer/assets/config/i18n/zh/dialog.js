@@ -12,7 +12,8 @@ const result = {
   'recommendDNS': '推荐DNS',
   'loading': '加载中...',
   'loggingOut': '正在登出',
-  'channelLostRemind': '当前通道失效,请新建或者替换其他通道'
+  'channelLostRemind': '当前通道失效,请新建或者替换其他通道',
+  'taskNotPauseWaitForOpeation': '有任务无法暂停，请稍后重试',
 }
 
 export default result;

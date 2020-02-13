@@ -122,11 +122,12 @@ function saveStreamProtocol(request, callback) {
 
   })
 
-  ipcMain.once('load-third-page', (event, result, fileName, id) => {
+  ipcMain.once('load-third-page', (event, result, fileName, id, url) => {
     try {
       const zip = new AdmZip(result)
       const parse = path.parse(result);
-      const unzipTo = path.join(parse.dir, fileName + '_' + id)
+      // const unzipTo = path.join(parse.dir, fileName + '_' + id)
+      const unzipTo = path.join(parse.dir, url)
       zip.extractAllTo(unzipTo);
       const fileRootName = fs.readdirSync(unzipTo)[0];
       // console.log('unzip success, will load path is:');

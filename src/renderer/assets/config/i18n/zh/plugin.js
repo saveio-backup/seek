@@ -5,6 +5,7 @@ const result = {
   'startDownload':'开始下载',
   'installing': '安装中',
   'update': '更新',
+  'uninstall,':'卸载',
   'continue':'继续',
   'plugin':'插件'
 }

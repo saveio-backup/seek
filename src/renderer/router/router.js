@@ -158,6 +158,11 @@ export default new Router({
       component: require('../pages/Settings.vue').default
     },
     {
+      path: '/test',
+      name: 'settings',
+      component: require('../pages/test.vue').default
+    },
+    {
       path: '/orderpay',
       name: 'orderpay',
       component: require('../pages/OrderPay/OrderPay.vue').default

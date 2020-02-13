@@ -44,6 +44,11 @@
 								@click="downloadPlugin(plugin.Url,plugin)"
 								v-if="plugin.detail.Status ===5"
 							>{{$t("plugin.update")}}</ripper-button>
+							<ripper-button
+								class="primary"
+								v-if="plugin.detail.Progress >= 1"
+								@click="toDeletePlugin(plugin.detail.FileHash)"
+							>{{$t("plugin.uninstall")}}</ripper-button>
 						</div>
 						<ripper-button
 							class="primary"
@@ -148,6 +153,8 @@ export default {
 				"getUsermeta",
 				"LocalUrlPlugins"
 			);
+			console.log('localUrlPlugins is');
+			console.log(localUrlPlugins);
 			for (let i = 0; i < plugins.length; i++) {
 				let detail = await this.getTransferDetail(plugins[i].Url);
 				// set isShow
@@ -410,6 +417,15 @@ export default {
 						rejest(err);
 					});
 			});
+		},
+		toDeletePlugin(plugin) {
+			this.$axios
+				.post(this.$api.deletedownloadfile, { Hash: plugin.detail.FileHash })
+				.then(res => {
+					console.log("delete file is");
+					console.log(res);
+					plugin.detail = null;
+				});
 		}
 	},
 	watch: {

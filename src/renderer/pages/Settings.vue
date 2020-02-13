@@ -55,6 +55,7 @@
 				</el-select> -->
 				<div class="flex ai-center">
 					<el-slider
+						:show-tooltip="false"
 						v-model="settings.maxNumUpload"
 						@change="frontConfigUploadRender"
 						:max="10"
@@ -73,6 +74,7 @@
 				<div class="flex ai-center">
 					<el-slider
 						v-model="settings.maxPeerNum"
+						:show-tooltip="false"
 						@change="updateSettings('maxPeerNum',settings.maxPeerNum)"
 						:max="20"
 					></el-slider>
@@ -121,6 +123,27 @@
 						:value="item.id"
 					></el-option>
 				</el-select>
+			</div>
+			<div class="settings-box">
+				<div class="tag">
+					<p>{{$t('settings.logSize')}}</p>
+				</div>
+				<div class="flex ai-center">
+					<el-slider
+						v-model="pathDir.LogMaxSize"
+						:show-tooltip="false"
+						@change="setConfig('LogMaxSize',pathDir.LogMaxSize)"
+						:max="10737418240"
+						:step="1073741824"
+						:min="1073741824"
+					></el-slider>
+					<div
+						style="width: 24px;"
+						class="ml10 ftpx14"
+					>
+						{{pathDir.LogMaxSize / 1073741824}} G
+					</div>
+				</div>
 			</div>
 			<div class="settings-box">
 				<div class="tag">
@@ -403,6 +426,12 @@ export default {
 							this.$message.error("Request Timeout!");
 						}
 					});
+			});
+		},
+		setConfig(type, value) {
+			this.$axios.post(this.$api.config, { [type]: value }).then(res => {
+				console.log("Config Update");
+				console.log(res);
 			});
 		},
 		showInFolder(path) {

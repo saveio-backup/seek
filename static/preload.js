@@ -85,7 +85,7 @@ class Seek {
   }) {
     remote.getCurrentWindow().views.find(item => item.isActive).openComponent(path)
   }
-  static openThirdPage(url){
+  static openThirdPage(url) {
     remote.getCurrentWindow().views.find(item => item.isActive).openThirdPage(url)
   }
   static openNewWindow(url) {
@@ -121,10 +121,11 @@ async function loadThirdPage(url, uuid, loadView) {
   let {
     Path,
     FileName,
+    Url,
     Id
   } = localUrlPlugins[url].detail
   if (fs.existsSync(Path)) {
-    ipcRenderer.send('load-third-page', Path, FileName, Id);
+    ipcRenderer.send('load-third-page', Path, FileName, Id, Url);
     return;
   }
   try {

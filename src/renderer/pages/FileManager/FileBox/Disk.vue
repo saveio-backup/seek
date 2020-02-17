@@ -586,6 +586,7 @@ export default {
 			);
 		},
 		goAdvanceUpload() {
+			this.switchToggle.noStorageDialog = false;
 			this.$router.push({ name: "upload" });
 		},
 		toCloseUploadFileDetail() {
@@ -602,6 +603,7 @@ export default {
 			this.$refs.uploadFileDetailDialog.selectType(1);
 		},
 		goStorage() {
+			this.switchToggle.noStorageDialog = false;
 			this.$router.push({ name: "expand" });
 		},
 		goUpload() {

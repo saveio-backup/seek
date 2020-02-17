@@ -165,7 +165,7 @@
 									{{Math.ceil((scope.row.Progress||0)*100)}}%
 								</span>
 								<span class="grey-color">
-									({{taskSpeed[scope.row.Id] && util.bytesToSize((taskSpeed[scope.row.Id].speed * 1024 || 0)) || '0 Byte'}}/{{$t('fileManager.s')}})
+									({{speedByS(scope.row)}}/{{$t('fileManager.s')}})
 								</span>
 							</span>
 						</div>
@@ -460,7 +460,7 @@
 										{{util.bytesToSize(item.DownloadSize*1024)}}
 									</div>
 									<div class="node-content-third ">
-										{{nodeSpeed[item.HostAddr] && util.bytesToSize(nodeSpeed[item.HostAddr].speed*1024) || '0 Byte'}}/{{$t('fileManager.s')}}
+										{{nodeSpeed[item.HostAddr] && ( util.bytesToSize(nodeSpeed[item.HostAddr].speed*1024 || item.Speed))}}/{{$t('fileManager.s')}}
 									</div>
 								</div>
 							</div>
@@ -759,6 +759,20 @@ export default {
 		}
 	},
 	computed: {
+		speedByS() {
+			return function(row) {
+				let _speed = this.taskSpeed[row.Id] && this.taskSpeed[row.Id].speed * 1024 || 0;
+				if(!_speed) {
+					let _total = 0;
+					for(let i = 0;i < row.Nodes.length;i ++) {
+						_total += row.Nodes[i].Speed;
+					}
+					return this.util.bytesToSize(_total);
+				} else {
+					return  this.util.bytesToSize(_speed) || '0 Byte'
+				}
+			}
+		},
 		lang() {
 			return this.$i18n.locale;
 		},
@@ -771,7 +785,7 @@ export default {
 			// let transferTotal = 0;
 			this.fileList.map(file => {
 				if (vm.transferType === 1) {
-					transferSize += (file.Nodes && file.Nodes[0] && file.Nodes[0].RealFileSize || 0);
+					transferSize += (file.Nodes && file.Nodes[0] && file.Nodes[0].RealUploadSize || 0);
 				} else {
 					transferSize += file.DownloadSize || 0;
 				}

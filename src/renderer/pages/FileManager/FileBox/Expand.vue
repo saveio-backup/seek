@@ -422,6 +422,7 @@ export default {
 			return true;
 		},
 		linkUpload() {
+			this.linkUploadDialogVisible = false;
 			this.$router.push({
 				name: "upload"
 			});

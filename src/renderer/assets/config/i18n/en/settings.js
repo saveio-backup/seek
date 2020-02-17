@@ -10,6 +10,7 @@ const result = {
   'logDir': 'Log Path',
   'open': 'open',
   'themeColor': 'Theme Color',
+  'logCache':'Log cache',
   'theme': {
     'light': 'Light',
     'dark': 'Dark'

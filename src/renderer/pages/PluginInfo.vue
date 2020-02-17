@@ -47,7 +47,7 @@
 							<ripper-button
 								class="primary"
 								v-if="plugin.detail.Progress >= 1"
-								@click="toDeletePlugin(plugin.detail.FileHash)"
+								@click="openConfirmDeletePlugin(plugin.detail.FileHash)"
 							>{{$t("plugin.uninstall")}}</ripper-button>
 						</div>
 						<ripper-button
@@ -68,6 +68,34 @@
 				</li>
 			</ul>
 		</div>
+		<el-dialog
+			width="600px"
+			:close-on-click-modal='false'
+			:visible.sync="switchToggle.confirmDeletePluginDialog"
+			class="download-file-detail"
+			center
+		>
+			<div slot="title">
+				<h2>{{$t('plugin.uninstall')}}</h2>
+				<div class="dialog-title-border"></div>
+			</div>
+			<div class="loading-content confirm-cancel-download-dialog">
+				<p class="mb20 mt10">
+					{{$t('fileManager.areYouSureYouWantToUninstallTheSelectedPlugin')}}
+				</p>
+				<div slot="footer">
+					<ripper-button
+						type="primary"
+						@click="switchToggle.confirmDeletePluginDialog=false"
+					>{{$t('public.cancel')}}</ripper-button>
+					<ripper-button
+						class="primary ml10"
+						type="primary"
+						@click="deletePlugin"
+					>{{$t('public.confirm')}}</ripper-button>
+				</div>
+			</div>
+		</el-dialog>
 	</div>
 </template>
 <script>
@@ -104,7 +132,11 @@ export default {
 	data() {
 		return {
 			plugins: [],
-			taskByUrl: {}
+			taskByUrl: {},
+			switchToggle: {
+				confirmDeletePluginDialog: false
+			},
+			pluginSelected: null
 		};
 	},
 	mounted() {
@@ -153,7 +185,7 @@ export default {
 				"getUsermeta",
 				"LocalUrlPlugins"
 			);
-			console.log('localUrlPlugins is');
+			console.log("localUrlPlugins is");
 			console.log(localUrlPlugins);
 			for (let i = 0; i < plugins.length; i++) {
 				let detail = await this.getTransferDetail(plugins[i].Url);
@@ -418,7 +450,10 @@ export default {
 					});
 			});
 		},
-		toDeletePlugin(plugin) {
+		openConfirmDeletePlugin(plugin) {
+			this.switchToggle.confirmDeletePluginDialog = true;
+		},
+		deletePlugin(plugin) {
 			this.$axios
 				.post(this.$api.deletedownloadfile, { Hash: plugin.detail.FileHash })
 				.then(res => {

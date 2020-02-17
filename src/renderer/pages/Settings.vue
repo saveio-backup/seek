@@ -126,7 +126,7 @@
 			</div>
 			<div class="settings-box">
 				<div class="tag">
-					<p>{{$t('settings.logSize')}}</p>
+					<p>{{$t('settings.logCache')}}</p>
 				</div>
 				<div class="flex ai-center">
 					<el-slider

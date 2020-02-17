@@ -9,6 +9,7 @@ const result = {
   'downloadPath': '下载保存地址',
   'logDir': '日志目录',
   'open': '打 开',
+  'logCache':'日志缓存',
   'themeColor': '主题颜色',
   'theme': {
     'light': '浅色',

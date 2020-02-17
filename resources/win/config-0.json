@@ -2,7 +2,7 @@
     "Base": {
         "BaseDir": ".",
         "LogPath": "./SeekLog_Config_0",
-        "LogMaxSize": 10240,
+        "LogMaxSize": 5368709120,
         "ChainId": "0",
         "BlockTime": 5,
         "NetworkId": 1567481543,

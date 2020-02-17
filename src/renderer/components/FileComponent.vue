@@ -17,13 +17,14 @@
 				<el-progress
 					v-if="fileList.length>0"
 					class="progress"
-					:percentage="Math.ceil(totalProgress * 100)"
+					:percentage="Math.ceil(totalProgress * 100) >= 100 ? 99 : Math.ceil(totalProgress * 100)"
 					:show-text="false"
 				></el-progress>
+				{{totalProgress}}
 				<p
 					class="ft14 mt10 theme-font-color"
 					v-if="fileList.length>0"
-				>{{$t('fileManager.complete')}} {{Math.ceil(totalProgress * 100)}}%,
+				>{{$t('fileManager.complete')}} {{Math.ceil(totalProgress * 100) >= 100 ? 99 : Math.ceil(totalProgress * 100)}}%,
 					<span class="ml10 light-blue">{{util.bytesToSize(getAllTaskSpeedTotal*1024)}}/{{$t('fileManager.s')}}</span>
 				</p>
 			</div>
@@ -546,6 +547,24 @@
 							<p class=" ftpx14 mr20">{{fileObjById[detailId].DownloadSize * 1024 / Math.pow(10, 9) || '0'}} ONI</p>
 						</div>
 					</div>
+					<div class="adjust-item">
+						<div class="adjust-title">{{$t('fileManager.sourceNode')}}:</div>
+						<div class="adjust-info flex column">
+							<div
+								style="width:100%"
+								class="flex mb10"
+								v-for="(item, index) in fileObjById[detailId].Nodes"
+								:key="item.HostAddr"
+							>
+								<div :title="item.HostAddr">
+									{{$t('fileManager.node')}}{{index+1}}
+								</div>
+								<div class="ml50">
+									{{util.bytesToSize(item.DownloadSize*1024)}}
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 				<div slot="footer">
 					<ripper-button
@@ -744,26 +763,26 @@ export default {
 			return this.$i18n.locale;
 		},
 		totalProgress: function() {
-			// let progress = 0;
-			// let fileList = 0;
 			const vm = this;
+			if(this.transferType === 0) {
+				return 0;
+			}
 			let transferSize = 0;
-			let transferTotal = 0;
+			// let transferTotal = 0;
 			this.fileList.map(file => {
-				if (
-					(file.Status !== 0 && file.Status !== 4) ||
-					this.localStatus.uploading.indexOf(file.Id) >= 0
-				) {
-					if (vm.transferType === 1) {
-						transferSize += file.UploadSize || 0;
-						transferTotal += file.FileSize;
-					} else {
-						transferSize += file.DownloadSize || 0;
-						transferTotal += file.FileSize;
-					}
+				if (vm.transferType === 1) {
+					transferSize += (file.Nodes && file.Nodes[0] && file.Nodes[0].RealFileSize || 0);
+				} else {
+					transferSize += file.DownloadSize || 0;
 				}
 			});
-			return transferSize / transferTotal || 0;
+			if(this.transferType === 1) {
+				let _progress = this.uploadProgressTotal !== 0 ? ((this.uploadProgressDone + transferSize) / this.uploadProgressTotal) : 0;
+				return _progress
+			} else if(this.transferType === 2) {
+				let _progress = this.downloadProgressTotal !== 0 ? ((this.downloadProgressDone + transferSize) / this.downloadProgressTotal) : 0;
+				return _progress;
+			}
 		},
 		waitForUploadOrderList: function() {
 			return this.$store.state.Transfer.waitForUploadOrderList;
@@ -862,7 +881,19 @@ export default {
 					return value.BalanceFormat;
 				}
 			}
-		}
+		},
+		downloadProgressTotal() {
+			return this.$store.state.Transfer.downloadProgressTotal;
+		},
+		downloadProgressDone() {
+			return this.$store.state.Transfer.downloadProgressDone;
+		},
+		uploadProgressTotal() {
+			return this.$store.state.Transfer.uploadProgressTotal;
+		},
+		uploadProgressDone() {
+			return this.$store.state.Transfer.uploadProgressDone;
+		},
 	},
 	methods: {
 		filterUploadArr(arr) {
@@ -1356,14 +1387,25 @@ export default {
 			let arr = []; // uploading file
 			let waitForUploadArr = []; // wait for upload file, data at front
 			let waitForDownloadArr = []; // wait for download file, data at front
+			let removeProgressFilesize = 0; // cancel task file size
 			if (isArray) {
 				for (let value of row) {
 					arr.push(value.Id);
+					if(type === 1) {
+						removeProgressFilesize += (value.RealFileSize || 0);
+					} else {
+						removeProgressFilesize += value.FileSize;
+					}
 				}
 				params = {
 					Ids: arr
 				};
 			} else {
+				if(type === 1) {
+					removeProgressFilesize += (row.RealFileSize || 0);
+				} else {
+					removeProgressFilesize += row.FileSize;
+				}
 				params = {
 					Ids: [row.Id]
 				};
@@ -1402,7 +1444,12 @@ export default {
 					// pass password check wait for to delete wait for upload file
 					let newWaitForUploadList =
 						this.waitForUploadList.filter(value => {
-							return waitForUploadArr.indexOf(value.Id) === -1;
+							if(waitForUploadArr.indexOf(value.Id) === -1) {
+								return true;
+							} else {
+								return false;
+							}
+							return ;
 						}) || [];
 					this.$store.commit("SET_WAIT_FOR_UPLOAD_LIST", newWaitForUploadList);
 					ipcRenderer.send("run-dialog-event", {
@@ -1415,6 +1462,10 @@ export default {
 					this.passwordCancel.loadingObj &&
 						this.passwordCancel.loadingObj.close();
 					this.switchToggle.passwordDialog = false;
+					ipcRenderer.send("run-dialog-event", {
+						name: "removeUploadProgressTotal",
+						data: removeProgressFilesize
+					});
 					return;
 				}
 			} else {
@@ -1429,7 +1480,7 @@ export default {
 					// wait for to delete wait for download file
 					let newWaitForDownloadList =
 						this.waitForDownloadList.filter(value => {
-							return waitForDownloadArr.indexOf(value.Id) === -1;
+							return waitForDownloadArr.indexOf(value.Id) === -1
 						}) || [];
 					this.$store.commit(
 						"SET_WAIT_FOR_DOWNLOAD_LIST",
@@ -1445,6 +1496,10 @@ export default {
 					this.switchToggle.confirmCancelDownloadDialogLoading &&
 						this.switchToggle.confirmCancelDownloadDialogLoading.close();
 					this.switchToggle.confirmCancelDownloadDialog = false;
+					ipcRenderer.send("run-dialog-event", {
+						name: "removeDownloadProgressTotal",
+						data: removeProgressFilesize
+					});
 					return;
 				}
 			}
@@ -1498,7 +1553,23 @@ export default {
 						for (let value of res.Result.Tasks) {
 							if (value && value.Code) {
 								errorNumber++;
+								if (type === 1) {
+									removeProgressFilesize -= (vm.fileObjById[value.Id] && vm.fileObjById[value.Id].RealFileSize || 0)
+								} else {
+									removeProgressFilesize -= (vm.fileObjById[value.Id] && vm.fileObjById[value.Id].FileSize || 0)
+								}
 							}
+						}
+						if(type === 1) {
+							ipcRenderer.send("run-dialog-event", {
+								name: "removeUploadProgressTotal",
+								data: removeProgressFilesize
+							});
+						} else {
+							ipcRenderer.send("run-dialog-event", {
+								name: "removeDownloadProgressTotal",
+								data: removeProgressFilesize
+							});
 						}
 
 						//if no err

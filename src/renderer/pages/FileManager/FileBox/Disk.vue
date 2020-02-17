@@ -558,7 +558,10 @@ export default {
 						: false
 			},
 			justNowCompleteNumberTimeoutObj: null,
-			updateFileRequestCancel: null
+			updateFileRequestCancel: null,
+			// computed process total
+			downloadTotalSize: 0,
+			surplusDownloadTotalSize: 0
 		};
 	},
 	components: {
@@ -863,11 +866,13 @@ export default {
 
 			this.$axios.all(commitAll).then(resArr => {
 				let errorArr = [];
-				for (let res of resArr) {
+				for(let i = 0;i < resArr.length;i ++) {
+					let res = resArr[i];
 					if (res.Error === 0) {
 						flag = true;
 					} else {
 						errorArr.push(res);
+						this.downloadTotalSize -= waitForNowDownloadList[i].FileSize;
 					}
 				}
 
@@ -951,6 +956,8 @@ export default {
 				target: ".loading-content.disk-download-loading"
 			});
 			let arr = [];
+			this.downloadTotalSize = 0;
+			ipcRenderer.send("run-dialog-event", { name: "downloadProgressRestart" });
 			for (let downloadFile of downloadFiles) {
 				arr.push({
 					Url: downloadFile.Url,
@@ -968,6 +975,7 @@ export default {
 					Id: "waitfor_" + uuid.v4(),
 					Nodes: []
 				});
+				this.downloadTotalSize += downloadFile.Size;
 			}
 
 			let waitForNowDownloadLength =
@@ -983,6 +991,7 @@ export default {
 					query: { transferType: 2 }
 				});
 				this.addTask(arr);
+				ipcRenderer.send("run-dialog-event", { name: "addDownloadProgressTotal", data:  this.downloadTotalSize});
 				return;
 			}
 
@@ -994,6 +1003,7 @@ export default {
 				errorMsg,
 				flag
 			});
+			ipcRenderer.send("run-dialog-event", { name: "addDownloadProgressTotal", data:  this.downloadTotalSize});
 		},
 		deleteFile(file) {
 			this.fileToDelete = [file];

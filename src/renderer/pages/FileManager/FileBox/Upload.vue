@@ -583,7 +583,8 @@ export default {
 			noStorageDialog: {
 				show: false
 			},
-			uploadPriceInfo: null
+			uploadPriceInfo: null,
+			uploadTotalSize: 0,
 		};
 	},
 	mounted() {
@@ -907,6 +908,9 @@ export default {
 							return;
 						}
 
+						this.uploadTotalSize = 0;
+						ipcRenderer.send("run-dialog-event", { name: "uploadProgressRestart" });
+
 						// get all upload file params
 						let arr = [];
 						for (let file of this.uploadFormData.Files) {
@@ -918,6 +922,7 @@ export default {
 								Password: passwordEncode,
 								// cache upload data↓
 								FileSize: file.fileBytes / 1024,
+								RealFileSize: parseInt(file.fileBytes / 1024),
 								DetailStatus: "uploadLoading",
 								FileName: file.fileName,
 								FileHash: "",
@@ -933,6 +938,7 @@ export default {
 								: params;
 							delete params.wihteListString;
 							arr.push(params);
+							this.uploadTotalSize += parseInt(file.fileBytes / 1024);
 						}
 
 						let waitForNowUploadLength =
@@ -948,8 +954,10 @@ export default {
 								query: { transferType: 1 }
 							});
 							this.addTask(arr);
+							ipcRenderer.send("run-dialog-event", { name: "addUploadProgressTotal", data: vm.uploadTotalSize});
 							return;
 						}
+
 
 						let errorMsg = 0; // error message
 						let flag = false; // is have success
@@ -986,7 +994,9 @@ export default {
 		},
 		// Call upload interface and joint errorMsg
 		waitForNowUpload({ arr, len, errorMsg, flag }) {
+			const vm = this;
 			if (!arr || arr.length === 0 || len === 0) {
+				ipcRenderer.send("run-dialog-event", { name: "addUploadProgressTotal", data:  vm.uploadTotalSize});
 				this.uploadDone({ arr, errorMsg, flag });
 				return;
 			}
@@ -1004,23 +1014,22 @@ export default {
 			this.$axios.all(commitAll).then(resArr => {
 				// console
 				let errorArr = [];
-				for (let res of resArr) {
+				for(let i = 0;i < resArr.length; i ++) {
+					let res = resArr[i]
 					if (res.Error === 0) {
 						flag = true;
 					} else {
+						this.uploadTotalSize -= (waitForNowUploadList[i] && waitForNowUploadList[i].RealFileSize || 0);
 						errorArr.push(res);
 					}
 				}
 
 				if (errorArr.length === 0) {
+					ipcRenderer.send("run-dialog-event", { name: "addUploadProgressTotal", data:  vm.uploadTotalSize});
 					this.uploadDone({ arr, errorMsg, flag });
 				} else {
 					//if have error task joint errorMsg and run me again(argumnets.callee())
 					for (let value of errorArr) {
-						// errorMsg += `<p>`;
-						// errorMsg += `${value.FileName || ""}`;
-						// errorMsg += this.$t(`error["${value.Error}"]`);
-						// errorMsg += `</p>`;
 						errorMsg ++;
 					}
 					let errorLength = errorArr.length;
@@ -1028,7 +1037,7 @@ export default {
 				}
 			});
 		},
-		// Processing after the interface call is complete
+		// Progressing after the interface call is complete
 		uploadDone({ errorMsg, flag, arr = [] }) {
 			const vm = this;
 			// close loading...

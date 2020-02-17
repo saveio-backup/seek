@@ -149,7 +149,16 @@ const actions = {
           } else {
             commit('SET_CURRENT_ACCOUNT', 0) // login fail
             // window.localStorage.clear(); // remove all local infomation
-            const notClear = ['waitForUploadOrderList', 'uploadTask', 'localStatus', 'showSmallContract']
+            const notClear = [
+              'waitForUploadOrderList',
+              'uploadTask',
+              'localStatus',
+              'showSmallContract',
+              "uploadProgressTotal",
+              "uploadProgressDone",
+              "downloadProgressTotal",
+              "downloadProgressDone"
+            ]
             outer: for (let value of window.localStorage) {
               if (!window.localStorage.propertyIsEnumerable(value)) continue;
               for (let notClearItem of notClear) {

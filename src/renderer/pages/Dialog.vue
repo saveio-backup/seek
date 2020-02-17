@@ -131,10 +131,6 @@ export default {
 		// downloading file list
 		downloadTransferList: function() {
 			let arr = this.$store.state.Transfer.downloadTransferList || [];
-			// this.rendToFileManage({
-			// 	type: 'downloadList',
-			// 	result: arr
-			// });
 			return arr;
 		},
 		// complete transfer file list
@@ -172,6 +168,18 @@ export default {
 		},
 		realDownloadingLength: function() {
 			return this.$store.state.Transfer.realDownloadingLength;
+		},
+		downloadProgressTotal() {
+			return this.$store.state.Transfer.downloadProgressTotal;
+		},
+		downloadProgressDone() {
+			return this.$store.state.Transfer.downloadProgressDone;
+		},
+		uploadProgressTotal() {
+			return this.$store.state.Transfer.uploadProgressTotal;
+		},
+		uploadProgressDone() {
+			return this.$store.state.Transfer.uploadProgressDone;
 		}
 	},
 	mounted() {
@@ -191,6 +199,30 @@ export default {
 		this.initWebSocket();
 	},
 	watch: {
+		downloadProgressTotal(val) {
+			this.rendToFileManage({
+				type: "downloadProgressTotal",
+				result: val
+			});
+		},
+		downloadProgressDone(val) {
+			this.rendToFileManage({
+				type: "downloadProgressDone",
+				result: val
+			});
+		},
+		uploadProgressTotal(val) {
+			this.rendToFileManage({
+				type: "uploadProgressTotal",
+				result: val
+			});
+		},
+		uploadProgressDone(val) {
+			this.rendToFileManage({
+				type: "uploadProgressDone",
+				result: val
+			});
+		},
 		uploadingTransferListForce(val) {
 			clearTimeout(this.intervalObj.setTimeUploadingTransferListObj);
 			this.intervalObj.setTimeUploadingTransferListObj = setTimeout(() => {
@@ -236,6 +268,7 @@ export default {
 			this.channelNum = null;
 			localStorage.setItem("DNSAdress", "");
 			this.$store.dispatch("getWaitForTransferList");
+			this.$store.dispatch("getTransferProgressList");
 		},
 		Balance(newVal, oldVal) {
 			if (!oldVal && newVal && this.channelNum === 0) {
@@ -283,6 +316,17 @@ export default {
 							}`,
 							type: "success"
 						});
+						if(this.transferObj[value.Id].Type === 1) {
+							vm.addUploadProgressDone(vm.transferObj[value.Id].RealFileSize);
+							if(vm.realUploadingLength === 0 && vm.readyUpload.length === 0) {
+								vm.clearUploadProgress();
+							}
+						} else {
+							vm.addDownloadProgressDone(vm.transferObj[value.Id].FileSize);
+							if(vm.realDownloadingLength === 0 && vm.readyDownload.length === 0) {
+								vm.clearDownloadProgress();
+							}
+						}
 					}
 					this.transferObj[value.Id] = value;
 				}
@@ -1069,6 +1113,65 @@ export default {
 		removeUploading(data) {
 			this.$store.commit("REMOVE_UPLOADING", data);
 			this.getUpload();
+		},
+		addDownloadProgressDone(data = 0) {
+			let _num = this.downloadProgressDone + data;
+			this.$store.commit("SET_DOWNLOAD_PROGRESS_DONE", _num);
+			localStorage.setItem(`downloadProgressDone_${this.Address}`, _num);
+		},
+		removeDownloadProgressTotal(data = 0) {
+			let _total = this.downloadProgressTotal - data;
+			this.$store.commit("SET_DOWNLOAD_PROGRESS_TOTAL", _total);
+			localStorage.setItem(`downloadProgressTotal_${this.Address}`, _total);
+		},
+		addDownloadProgressTotal(data = 0) {
+			let _total = this.downloadProgressTotal + data;
+			this.$store.commit("SET_DOWNLOAD_PROGRESS_TOTAL", _total);
+			localStorage.setItem(`downloadProgressTotal_${this.Address}`, _total);
+		},
+		downloadProgressRestart() {
+			let _total = this.downloadProgressTotal - this.downloadProgressDone || 0;
+			this.$store.commit("SET_DOWNLOAD_PROGRESS_TOTAL", _total);
+			this.$store.commit("SET_DOWNLOAD_PROGRESS_DONE", 0);
+			localStorage.setItem(`downloadProgressTotal_${this.Address}`, _total);
+			localStorage.setItem(`downloadProgressDone_${this.Address}`, 0);
+		},
+		clearDownloadProgress() {
+			this.$store.commit("SET_DOWNLOAD_PROGRESS_TOTAL", 0);
+			this.$store.commit("SET_DOWNLOAD_PROGRESS_DONE", 0);
+			localStorage.setItem(`downloadProgressTotal_${this.Address}`, 0);
+			localStorage.setItem(`downloadProgressDone_${this.Address}`, 0);
+		},
+		addUploadProgressDone(data = 0) {
+			let _num = this.uploadProgressDone + data;
+			this.$store.commit("SET_UPLOAD_PROGRESS_DONE", _num);
+			localStorage.setItem(`uploadProgressDone_${this.Address}`, _num);
+		},
+		removeUploadProgressTotal(data = 0) {
+			let _total = this.uploadProgressTotal - data;
+			console.log("data")
+			console.log(data)
+			console.log(_total)
+			this.$store.commit("SET_UPLOAD_PROGRESS_TOTAL", _total);
+			localStorage.setItem(`uploadProgressTotal_${this.Address}`, _total);
+		},
+		addUploadProgressTotal(data = 0) {
+			let _total = this.uploadProgressTotal + data;
+			this.$store.commit("SET_UPLOAD_PROGRESS_TOTAL", _total);
+			localStorage.setItem(`uploadProgressTotal_${this.Address}`, _total);
+		},
+		uploadProgressRestart() {
+			let _total = this.uploadProgressTotal - this.uploadProgressDone || 0;
+			this.$store.commit("SET_UPLOAD_PROGRESS_TOTAL", _total);
+			this.$store.commit("SET_UPLOAD_PROGRESS_DONE", 0);
+			localStorage.setItem(`uploadProgressTotal_${this.Address}`, _total);
+			localStorage.setItem(`uploadProgressDone_${this.Address}`, 0);
+		},
+		clearUploadProgress() {
+			this.$store.commit("SET_UPLOAD_PROGRESS_TOTAL", 0);
+			this.$store.commit("SET_UPLOAD_PROGRESS_DONE", 0);
+			localStorage.setItem(`uploadProgressTotal_${this.Address}`, 0);
+			localStorage.setItem(`uploadProgressDone_${this.Address}`, 0);
 		},
 		/**
 		 * set config maxNumUpload

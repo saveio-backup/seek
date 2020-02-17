@@ -187,6 +187,18 @@ export default {
 		},
 		userspaceUpdate({ result }) {
 			this.$store.commit("SET_SPACE", result);
+		},
+		downloadProgressTotalUpdate({ result }) {
+			this.$store.commit('SET_DOWNLOAD_PROGRESS_TOTAL', result);
+		},
+		downloadProgressDoneUpdate({ result }) {
+			this.$store.commit('SET_DOWNLOAD_PROGRESS_DONE', result);
+		},
+		uploadProgressTotalUpdate({ result }) {
+			this.$store.commit('SET_UPLOAD_PROGRESS_TOTAL', result);
+		},
+		uploadProgressDoneUpdate({ result }) {
+			this.$store.commit('SET_UPLOAD_PROGRESS_DONE', result);
 		}
 	}
 };

@@ -154,6 +154,7 @@ export default {
 			this.$router.push({ name: "transfer", query: query });
 		});
 		this.$store.dispatch("getWaitForTransferList"); // get wait for upload list
+		this.$store.dispatch("getTransferProgressList");
 		this.$store.dispatch("setCurrentAccount"); // get login status
 		this.$store.dispatch("getDns"); // get login status
 		this.initBalanceRequest();

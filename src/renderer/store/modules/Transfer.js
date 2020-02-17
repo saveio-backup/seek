@@ -36,8 +36,24 @@ const state = {
     syncList: [],
     syncListLimit: 0,
     fileboxLeave: true,
+    uploadProgressTotal: 0,
+    uploadProgressDone: 0,
+    downloadProgressTotal: 0,
+    downloadProgressDone: 0
 }
 const mutations = {
+    SET_UPLOAD_PROGRESS_TOTAL(state, result) {
+        state.uploadProgressTotal = result;
+    },
+    SET_UPLOAD_PROGRESS_DONE(state, result) {
+        state.uploadProgressDone = result;
+    },
+    SET_DOWNLOAD_PROGRESS_TOTAL(state, result) {
+        state.downloadProgressTotal = result;
+    },
+    SET_DOWNLOAD_PROGRESS_DONE(state, result) {
+        state.downloadProgressDone = result;
+    },
     GET_DOWNLOAD_TRANSFER(state, result) {
         state.downloadingTransferList = result;
 
@@ -346,6 +362,25 @@ const actions = {
         let list5 = localStorage.getItem(`waitForDownloadOrderList_${address}`);
         if (list5) {
             commit('GET_WAIT_FOR_DOWNLOAD_ORDER_LIST', JSON.parse(list5));
+        }
+    },
+    getTransferProgressList({commit}) {
+        address = localStorage.getItem('Address');
+        let _uploadTotal = localStorage.getItem(`uploadProgressTotal_${address}`);
+        if (_uploadTotal) {
+            commit('SET_UPLOAD_PROGRESS_TOTAL', (parseInt(_uploadTotal) || 0));
+        }
+        let _uploadDone = localStorage.getItem(`uploadProgressDone_${address}`);
+        if (_uploadDone) {
+            commit('SET_UPLOAD_PROGRESS_DONE', (parseInt(_uploadDone) || 0));
+        }
+        let _downloadTotal = localStorage.getItem(`downloadProgressTotal_${address}`);
+        if (_downloadTotal) {
+            commit('SET_DOWNLOAD_PROGRESS_TOTAL', (parseInt(_downloadTotal) || 0));
+        }
+        let _downloadDone = localStorage.getItem(`downloadProgressDone_${address}`);
+        if (_downloadDone) {
+            commit('SET_DOWNLOAD_PROGRESS_DONE', (parseInt(_downloadDone) || 0));
         }
     },
     getUpload({

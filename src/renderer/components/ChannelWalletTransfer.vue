@@ -11,32 +11,32 @@
 					v-if="withDraw && channelSelected.IsOnline"
 					class="flex1 flex between rectangle mb10"
 				>
-					<p class="tertiary-font-color ft14 user-no-select">{{$t('public.channel')}}</p>
-					<p class="ftpx14 bold">{{effectiveNumber(filterFloat(channelSelected.BalanceFormat || 0))}}</p>
+					<p class="tertiary-font-color ft14 transfer-title">{{$t('public.channel')}}</p>
+					<p class="ftpx14 bold flex1 tl">{{effectiveNumber(filterFloat(channelSelected.BalanceFormat || 0))}}</p>
 					<p class="bold">ONI</p>
 				</div>
 				<div
 					v-else
 					class="flex1 flex between rectangle  mb10"
 				>
-					<p class="tertiary-font-color ft14 user-no-select">{{$t('public.wallet')}}</p>
-					<p class="ftpx14 bold">{{effectiveNumber(filterFloat(mainCount))}}</p>
+					<p class="tertiary-font-color ft14 transfer-title">{{$t('public.wallet')}}</p>
+					<p class="ftpx14 bold flex1 tl">{{effectiveNumber(filterFloat(mainCount)) || 0}}</p>
 					<p class="bold">ONI</p>
 				</div>
 				<div
 					v-if="!withDraw || !channelSelected.IsOnline"
 					class="flex1 flex between rectangle"
 				>
-					<p class="tertiary-font-color ft14 user-no-select">{{$t('public.channel')}}</p>
-					<p class="ftpx14 bold">{{effectiveNumber(filterFloat(channelSelected.BalanceFormat || 0))}}</p>
+					<p class="tertiary-font-color ft14 transfer-title">{{$t('public.channel')}}</p>
+					<p class="ftpx14 bold flex1 tl">{{effectiveNumber(filterFloat(channelSelected.BalanceFormat || 0))}}</p>
 					<p class="bold">ONI</p>
 				</div>
 				<div
 					v-else
 					class="flex1 flex between rectangle"
 				>
-					<p class="tertiary-font-color ft14 user-no-select">{{$t('public.wallet')}}</p>
-					<p class="ftpx14 bold">{{effectiveNumber(filterFloat(mainCount))}}</p>
+					<p class="tertiary-font-color ft14 transfer-title">{{$t('public.wallet')}}</p>
+					<p class="ftpx14 bold flex1 tl">{{effectiveNumber(filterFloat(mainCount)) || 0}}</p>
 					<p class="bold">ONI</p>
 				</div>
 			</div>
@@ -296,7 +296,13 @@ export default {
 			background: $color;
 		}
 	}
+	.transfer-title {
+		width: 60px;
+		margin-right: 10px;
+		text-align: left;
+	}
 	.ofont-fasong {
+		font-size: 10px;
 		color: #cdcfd8;
 		transform: rotate(90deg);
 	}
@@ -349,7 +355,7 @@ export default {
 			background: $color;
 		}
 		color: blue;
-		width: 40px;
+		width: 45px;
 		justify-content: center;
 	}
 }

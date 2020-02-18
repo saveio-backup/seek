@@ -288,12 +288,16 @@ class View {
       newIsSave = false;
     }
     if (this.isSave !== newIsSave) {
+      const tempBrowserView = this.browserView;
+      this.browserView = null;
+      tempBrowserView.destroy();
+      tempBrowserView = null;
       console.log('newIsSave: ', newIsSave);
       event && event.preventDefault();
       // this.browserView = null;
       this.isSave = newIsSave;
       // this.url = url; // Set this.url will not take effect, because forceUpdate will reset
-      this.willLoadUrl = url; // store new url which we will load while we load new url but WebContents is not ready
+      this.willLoadUrl = urlFormat.href; // store new url which we will load while we load new url but WebContents is not ready
       this.initBrowserView({
         sandbox: !newIsSave
       });

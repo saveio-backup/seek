@@ -193,7 +193,7 @@ export default {
 				// let detail = await this.getTransferDetail(item.Url);
 				// detail = detail.Result;
 				let detail = item.detail;
-				if (fs.existsSync(detail.Path)) {
+				if (detail && fs.existsSync(detail.Path)) {
 					fs.statSync(detail.Path);
 					tempPluginsInstalled.push(item);
 				} else {

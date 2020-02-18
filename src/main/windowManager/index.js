@@ -64,25 +64,30 @@ class View {
   initBrowserView(webOpt = {
     sandbox: !this.isSave
   }) {
-    this.browserView = new BrowserView({
-      webPreferences: {
-        preload: path.join(path.join(__static, 'webpackPreloadOutput.js')),
-        // preload: './static/preload.js',
-        contextIsolation: false,
-        webviewTag: false,
-        sandbox: webOpt.sandbox,
-        // sandbox: false,
-        // enableRemoteModule: !webOpt.sandbox, // disable remote module
-        // enableRemoteModule: true, // disable remote module
-        nodeIntegration: !webOpt.sandbox,
-        // nodeIntegration: true,
-        defaultEncoding: 'utf-8'
-      }
-    });
-    global.settingDB.queryData('console').then(async (res) => {
-      if (res) {
-        this.browserView.webContents.openDevTools();
-      }
+    return new Promise((resolve, reject) => {
+      this.browserView = new BrowserView({
+        webPreferences: {
+          preload: path.join(path.join(__static, 'webpackPreloadOutput.js')),
+          // preload: './static/preload.js',
+          contextIsolation: false,
+          webviewTag: false,
+          sandbox: webOpt.sandbox,
+          // sandbox: false,
+          // enableRemoteModule: !webOpt.sandbox, // disable remote module
+          // enableRemoteModule: true, // disable remote module
+          nodeIntegration: !webOpt.sandbox,
+          // nodeIntegration: true,
+          defaultEncoding: 'utf-8'
+        }
+      });
+      this.browserView.webContents.once('dom-ready', ()=>{
+        resolve();
+      });
+      global.settingDB.queryData('console').then(async (res) => {
+        if (res) {
+          this.browserView.webContents.openDevTools();
+        }
+      })
     })
     // if (process.env.NODE_ENV === 'development' || frontCfgObj().console) {
     //   this.browserView.webContents.openDevTools();
@@ -290,8 +295,6 @@ class View {
     if (this.isSave !== newIsSave) {
       let tempBrowserView = this.browserView;
       this.browserView = null;
-      tempBrowserView.destroy();
-      tempBrowserView = null;
       console.log('newIsSave: ', newIsSave);
       event && event.preventDefault();
       // this.browserView = null;
@@ -300,6 +303,11 @@ class View {
       this.willLoadUrl = urlFormat.href; // store new url which we will load while we load new url but WebContents is not ready
       this.initBrowserView({
         sandbox: !newIsSave
+      }).then(() => {
+        // we must destroy this old process(browserView) after init a new process(browserView),
+        //if we destroy this old process before that, it will crash in macOS
+        tempBrowserView.destroy();Í
+        tempBrowserView = null;
       });
       this.updateEvent();
       this.resize();

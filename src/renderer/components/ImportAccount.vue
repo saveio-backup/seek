@@ -165,7 +165,7 @@ export default {
 	data() {
 		let validatePassword = (rule, value, callback) => {
 			const vm = this;
-			if (!value.trim().length) {
+			if (!value.length) {
 				this.switchToggle.passwordStrength = -1;
 				callback(new Error(vm.$t("account.pleaseFillYourPassword")));
 			} else if (value.length > 16) {

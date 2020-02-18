@@ -201,7 +201,7 @@ export default {
 	data() {
 		let validatePassword = (rule, value, callback) => {
 			const vm = this;
-			if (!value.trim().length) {
+			if (!value.length) {
 				this.switchToggle.passwordStrength = -1;
 				callback(new Error(vm.$t("account.pleaseFillYourPassword")));
 			} else if (value.length > 16) {
@@ -220,22 +220,22 @@ export default {
 				);
 			}
 		};
-		let validateLength = (rule, value, callback) => {
+		let validateAccount = (rule, value, callback) => {
 			const vm = this;
-			if (util.getCharLength(value) <= 18) {
-				callback();
+			if (util.getCharLength(value) > 18) {
+				callback(new Error(vm.$t("account.inputLengthLimit18Chars")));
+			} else if (/\\|\/|:|\*|\?|\"|\<|\>|\||\(|\)|\-/g.test(value)) {
+				callback(new Error(vm.$t("account.invaildword")));
 			} else {
-				callback(
-					new Error(vm.$t("account.inputLengthLimit18Chars"))
-					// new Error(vm.$t("account.inconsistentPasswordsFilledInTwice"))
-				);
+				callback();
+				// new Error(vm.$t("account.inconsistentPasswordsFilledInTwice"))
 			}
 		};
 		return {
 			util,
 			validatePassword,
 			validatePasswordConfirm,
-			validateLength,
+			validateAccount,
 			clipboard,
 			loopFontIndex: 0,
 			accountStatus: "", // 0: no account, 1:account exist
@@ -267,7 +267,7 @@ export default {
 						trigger: "blur"
 					},
 					{
-						validator: validateLength,
+						validator: validateAccount,
 						trigger: ["blur"]
 					}
 				],

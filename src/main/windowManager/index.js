@@ -288,7 +288,7 @@ class View {
       newIsSave = false;
     }
     if (this.isSave !== newIsSave) {
-      const tempBrowserView = this.browserView;
+      let tempBrowserView = this.browserView;
       this.browserView = null;
       tempBrowserView.destroy();
       tempBrowserView = null;

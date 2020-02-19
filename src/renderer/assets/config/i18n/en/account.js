@@ -48,7 +48,8 @@ const result = {
   'pr7': 'light',
   'creating': 'Creating',
   'networkErrorCreateFailed': 'Network Error. Create Failed!',
-  'inputLengthLimit18Chars': 'Input more than 18 characters (one Chinese for 2 characters, one English, one digit and one special character).'
+  'inputLengthLimit18Chars': 'Input more than 18 characters (one Chinese for 2 characters, one English, one digit and one special character).',
+  'invaildword':'Invaild word'
 }
 
 export default result;

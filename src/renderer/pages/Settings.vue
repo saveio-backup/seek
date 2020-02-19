@@ -62,7 +62,6 @@
 						:min="1"
 					></el-slider>
 					<div
-						style="width: 24px;"
 						class="ml10 ftpx14"
 					>
 						{{settings.maxNumUpload}}
@@ -78,8 +77,7 @@
 						@change="updateSettings('maxPeerNum',settings.maxPeerNum)"
 						:max="20"
 					></el-slider>
-					<div
-						style="width: 24px;"
+					<div						
 						class="ml10 ftpx14"
 					>
 						{{settings.maxPeerNum}}
@@ -138,7 +136,6 @@
 						:min="1073741824"
 					></el-slider>
 					<div
-						style="width: 24px;"
 						class="ml10 ftpx14"
 					>
 						{{pathDir.LogMaxSize / 1073741824}} G

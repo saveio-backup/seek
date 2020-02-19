@@ -36,7 +36,7 @@
 						prop='Password'
 					>
 						<el-input
-							v-model="form.Password"
+							v-model.trim="form.Password"
 							type="password"
 							:placeholder="$t('public.pleaseInputWalletPassword')"
 							show-password
@@ -68,7 +68,7 @@
 						prop='Confirm'
 					>
 						<el-input
-							v-model="form.Confirm"
+							v-model.trim="form.Confirm"
 							@keyup.enter.native="submitForm('form')"
 							:placeholder="$t('account.confirmWalletPassword')"
 							show-password
@@ -283,16 +283,28 @@ export default {
 				}
 			},
 			checkStrength(value, callback) {
-				var highRegex = new RegExp(
+				let highRegex = new RegExp(
 					"^(?=.{8,})(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*).*$",
 					"g"
 				);
-				var middleRegex = new RegExp(
+				let highRegex2 = new RegExp(
+					"^(?=.{8,})(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*()_+])(?=.*).*$",
+					"g"
+				);
+				let highRegex3 = new RegExp(
+					"^(?=.{8,})(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+])(?=.*).*$",
+					"g"
+				);
+				let highRegex4 = new RegExp(
+					"^(?=.{8,})(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+])(?=.*).*$",
+					"g"
+				);
+				let middleRegex = new RegExp(
 					"^(?=.{7,})(((?=.*[A-Z])(?=.*[a-z])(?=.*\\W))|((?=.*[A-Z])(?=.*[0-9])(?=.*\\W))|((?=.*[a-z])(?=.*[0-9]))(?=.*)).*$",
 					"g"
 				);
-				var lowRegex = new RegExp("(?=.{0,}).*", "g");
-				if (highRegex.test(value)) {
+				let lowRegex = new RegExp("(?=.{0,}).*", "g");
+				if (highRegex.test(value) || highRegex2.test(value) || highRegex3.test(value) || highRegex4.test(value)) {
 					this.switchToggle.passwordStrength = 2;
 					callback();
 				} else if (middleRegex.test(value)) {
@@ -341,6 +353,10 @@ export default {
 						required: true,
 						message: vm.$t("account.pleaseFillYourName"),
 						trigger: "blur"
+					},
+					{
+						validator: validateAccount,
+						trigger: ["blur"]
 					}
 				],
 				Password: {

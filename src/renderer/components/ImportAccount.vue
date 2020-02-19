@@ -106,7 +106,7 @@
 							prop='Password'
 						>
 							<el-input
-								v-model="privateKeyForm.Password"
+								v-model.trim="privateKeyForm.Password"
 								:placeholder="$t('account.inputNewWalletPassword')"
 								show-password
 								type="password"
@@ -138,7 +138,7 @@
 							prop='Confirm'
 						>
 							<el-input
-								v-model="privateKeyForm.Confirm"
+								v-model.trim="privateKeyForm.Confirm"
 								@keyup.enter.native='importAccount'
 								show-password
 								type="password"
@@ -161,6 +161,7 @@
 </template>
 <script>
 const { ipcRenderer } = require("electron");
+import util from "./../assets/config/util";
 export default {
 	data() {
 		let validatePassword = (rule, value, callback) => {
@@ -184,9 +185,22 @@ export default {
 				);
 			}
 		};
+		let validateAccount = (rule, value, callback) => {
+			const vm = this;
+			if (util.getCharLength(value) > 18) {
+				callback(new Error(vm.$t("account.inputLengthLimit18Chars")));
+			} else if (/\\|\/|:|\*|\?|\"|\<|\>|\||\(|\)|\-/g.test(value)) {
+				callback(new Error(vm.$t("account.invaildword")));
+			} else {
+				callback();
+				// new Error(vm.$t("account.inconsistentPasswordsFilledInTwice"))
+			}
+		};
 		return {
+			util,
 			validatePassword,
 			validatePasswordConfirm,
+			validateAccount,
 			switchToggle: {
 				passwordStrength: -1,
 				loading: null
@@ -211,6 +225,10 @@ export default {
 						required: true,
 						message: this.$t("account.pleaseFillYourName"),
 						trigger: "blur"
+					},
+					{
+						validator: validateAccount,
+						trigger: ["blur"]
 					}
 				],
 				Password: {
@@ -225,8 +243,20 @@ export default {
 				}
 			},
 			checkStrength(value, callback) {
-				var highRegex = new RegExp(
+				let highRegex = new RegExp(
 					"^(?=.{8,})(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*).*$",
+					"g"
+				);
+				let highRegex2 = new RegExp(
+					"^(?=.{8,})(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*()_+])(?=.*).*$",
+					"g"
+				);
+				let highRegex3 = new RegExp(
+					"^(?=.{8,})(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+])(?=.*).*$",
+					"g"
+				);
+				let highRegex4 = new RegExp(
+					"^(?=.{8,})(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+])(?=.*).*$",
 					"g"
 				);
 				var middleRegex = new RegExp(
@@ -234,7 +264,12 @@ export default {
 					"g"
 				);
 				var lowRegex = new RegExp("(?=.{0,}).*", "g");
-				if (highRegex.test(value)) {
+				if (
+					highRegex.test(value) ||
+					highRegex2.test(value) ||
+					highRegex3.test(value) ||
+					highRegex4.test(value)
+				) {
 					this.switchToggle.passwordStrength = 2;
 					callback();
 				} else if (middleRegex.test(value)) {
@@ -272,6 +307,10 @@ export default {
 						required: true,
 						message: vm.$t("account.pleaseFillYourName"),
 						trigger: "blur"
+					},
+					{
+						validator: validateAccount,
+						trigger: ["blur"]
 					}
 				],
 				Password: {

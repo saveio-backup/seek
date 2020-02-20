@@ -474,8 +474,7 @@ export default {
 				this.waitForUploadOrderList.length === 0 ||
 				this.readyUpload.length !== 0 ||
 				needUploadLen <= 0
-			)
-				return;
+			)	return;
 			// update readyUpload
 			let realUploadLen = Math.min(
 				needUploadLen,
@@ -493,52 +492,71 @@ export default {
 			});
 
 			let commitAll = [];
-			commitAll.concat(
-				this.getStartWaitForUploadPromise(filterWaitForUploadList)
+			commitAll = commitAll.concat(
+				vm.getStartWaitForUploadPromise(filterWaitForUploadList)
 			);
-			commitAll.concat(vm.getContinueUploadPromise(filterUploadingList));
+			commitAll = commitAll.concat(vm.getContinueUploadPromise(filterUploadingList));
+			if(commitAll.length === 0) {
+				vm.$store.commit(
+					"REMOVE_WAIT_FOR_UPLOAD_ORDER_LIST",
+					vm.readyUpload
+				);
+				vm.$nextTick(() => {
+					vm.readyUpload = [];
+				});
+				return;
+			}
 			this.toStartUpload(commitAll);
 		},
 		// to upload and callback
 		toStartUpload(commitAll) {
 			const vm = this;
 			this.$axios.all(commitAll).then(resArr => {
-				let newWaitForList = this.waitForUploadList.filter(item => {
-					return this.readyUpload.indexOf(item.Id) < 0;
+				let newWaitForList = vm.waitForUploadList.filter(item => {
+					return vm.readyUpload.indexOf(item.Id) < 0;
+				});
+				let newUploadFiles = vm.waitForUploadList.filter(item => {
+					return vm.readyUpload.indexOf(item.Id) >= 0;
 				});
 				// wait for 1s for wait for get upload file done
-				// setTimeout(() => {
 				vm.$nextTick(() => {
-					this.$store.commit("SET_WAIT_FOR_UPLOAD_LIST", newWaitForList);
-					this.$store.commit(
+					vm.$store.commit("SET_WAIT_FOR_UPLOAD_LIST", newWaitForList);
+					vm.$store.commit(
 						"REMOVE_WAIT_FOR_UPLOAD_ORDER_LIST",
-						this.readyUpload
+						vm.readyUpload
 					);
-					this.$store.commit("REMOVE_UPLOADING", this.readyUpload);
-					this.$store.commit("REMOVE_PAUSING", this.readyUpload);
+					vm.$store.commit("REMOVE_UPLOADING", vm.readyUpload);
+					vm.$store.commit("REMOVE_PAUSING", vm.readyUpload);
 					// this.$store.dispatch("getUpload"); // force update
-					this.uploadingTransferListForce++;
+					vm.uploadingTransferListForce++;
 					setTimeout(() => {
-						this.readyUpload = [];
-						// this.$store.dispatch("getUpload"); // force update
-						this.uploadingTransferListForce++;
+						vm.readyUpload = [];
+						vm.uploadingTransferListForce++;
 					}, 2000);
 				});
-				// }, 1000);
 
 				// error message
 				let errorArr = [];
 				let errorMsg = "";
-				for (let value of resArr) {
+				// TO DO!!!
+				let _removeSize = 0; // computed progress total;
+				for (let i = 0;i < resArr.length; i ++) {
+					let value = resArr[i];
 					if (value.Error !== 0) {
 						errorMsg += `<p>`;
 						errorMsg += `${value.FileName || ""}`;
-						errorMsg += this.$t(`error["${value.Error}"]`);
+						errorMsg += vm.$t(`error["${value.Error}"]`);
 						errorMsg += `</p>`;
+						if(i < newUploadFiles.length) {
+							_removeSize += (newUploadFiles[i].RealFileSize || 0);
+						}
 					}
 				}
+				if(_removeSize !== 0) {
+					vm.removeUploadProgressTotal(_removeSize);
+				}
 				if (errorMsg !== "") {
-					this.message({
+					vm.message({
 						info: errorMsg,
 						type: "error",
 						dangerouslyUseHTMLString: true
@@ -588,6 +606,7 @@ export default {
 		},
 		// wait for download file to download when max Download length gt current Downloading length
 		waitForDownloadFileToDownload() {
+			const vm = this;
 			let needDownloadLen =
 				this.$config.maxNumUpload - this.realDownloadingLength;
 			if (
@@ -616,36 +635,43 @@ export default {
 			});
 
 			let commitAll = [];
-			commitAll.concat(
+			commitAll = commitAll.concat(
 				this.getStartWaitForDownloadPromise(filterWaitForDownloadList)
 			);
-			commitAll.concat(this.getContinueDownloadPromise(filterDownloadingList));
+			commitAll = commitAll.concat(this.getContinueDownloadPromise(filterDownloadingList));
+			if(commitAll.length === 0) {
+				vm.$store.commit(
+					"REMOVE_WAIT_FOR_DOWNLOAD_ORDER_LIST",
+					vm.readyDownload
+				);
+				vm.$nextTick(() => {
+					vm.readyDownload = [];
+				});
+				return;
+			}
 			this.toStartDownload(commitAll);
 		},
 		// to download and callback
 		toStartDownload(commitAll) {
 			const vm = this;
 			this.$axios.all(commitAll).then(resArr => {
-				let newWaitForList = this.waitForDownloadList.filter(item => {
-					return this.readyDownload.indexOf(item.Id) < 0;
+				let newWaitForList = vm.waitForDownloadList.filter(item => {
+					return vm.readyDownload.indexOf(item.Id) < 0;
 				});
-				// wait for 1s for wait for get download file done
-				setTimeout(() => {
-					this.$store.commit("SET_WAIT_FOR_DOWNLOAD_LIST", newWaitForList);
-					this.$store.commit(
+				vm.$nextTick(() => {
+					vm.$store.commit("SET_WAIT_FOR_DOWNLOAD_LIST", newWaitForList);
+					vm.$store.commit(
 						"REMOVE_WAIT_FOR_DOWNLOAD_ORDER_LIST",
 						this.readyDownload
 					);
-					this.$store.commit("REMOVE_UPLOADING", this.readyDownload);
-					this.$store.commit("REMOVE_PAUSING", this.readyDownload);
-					// this.$store.dispatch("getDownload");
-					this.downloadingTransferListForce++; // force update
+					vm.$store.commit("REMOVE_UPLOADING", vm.readyDownload);
+					vm.$store.commit("REMOVE_PAUSING", vm.readyDownload);
+					vm.downloadingTransferListForce++; // force update
 					setTimeout(() => {
-						this.readyDownload = [];
-						// this.$store.dispatch("getDownload");
-						this.downloadingTransferListForce++; // force update
+						vm.readyDownload = [];
+						vm.downloadingTransferListForce++; // force update
 					}, 2000);
-				}, 1000);
+				});
 
 				// error message
 				let errorArr = [];
@@ -654,12 +680,12 @@ export default {
 					if (value.Error !== 0) {
 						errorMsg += `<p>`;
 						errorMsg += `${value.FileName || ""}`;
-						errorMsg += this.$t(`error["${value.Error}"]`);
+						errorMsg += vm.$t(`error["${value.Error}"]`);
 						errorMsg += `</p>`;
 					}
 				}
 				if (errorMsg !== "") {
-					this.message({
+					vm.message({
 						info: errorMsg,
 						type: "error",
 						dangerouslyUseHTMLString: true
@@ -1120,6 +1146,8 @@ export default {
 			localStorage.setItem(`downloadProgressDone_${this.Address}`, _num);
 		},
 		removeDownloadProgressTotal(data = 0) {
+			console.log("this.downloadProgressTotal")
+			console.log(data)
 			let _total = this.downloadProgressTotal - data;
 			this.$store.commit("SET_DOWNLOAD_PROGRESS_TOTAL", _total);
 			localStorage.setItem(`downloadProgressTotal_${this.Address}`, _total);
@@ -1238,6 +1266,8 @@ export default {
 				return;
 			}
 			this.isNotDonePause = true;
+			this.waitForDownloadFileToDownload();
+			this.waitForUploadFileToUpload();
 			if (
 				this.$config.maxNumUpload !== this.maxNumUpload &&
 				this.maxNumUpload

@@ -195,6 +195,7 @@
 						>
 						</el-input>
 					</el-form-item>
+				<div class="minerfee tr rt10"><span class="theme-font-color user-no-select">{{$t('fileManager.gasFee')}}:</span> <span>{{parseInt(channelForm.amount) > 0 ? 0.02: 0.01}}</span> {{balanceLists[balanceSelected] && (balanceLists[balanceSelected].Symbol === 'SAVE' ? 'ONI': balanceLists[balanceSelected].Symbol)}}</div>
 				</el-form>
 				<div slot="footer">
 					<ripper-button @click="channelToggle.channelCloseDialog = false">{{$t('public.cancel')}}</ripper-button>
@@ -281,6 +282,7 @@ export default {
 			filterFloat,
 			effectiveNumber,
 			channelSelected: {},
+			balanceSelected: 0,
 			mockChannels: [
 				{
 					ChannelId: 126,
@@ -532,8 +534,8 @@ export default {
 			const vm = this;
 			if (
 				(this.channelForm.amount > 0 &&
-					this.currentBalanceFormat >
-						parseFloat(this.channelForm.amount) + 0.02) ||
+					this.currentBalanceFormat*Math.pow(10, 9) >=
+						(Number(this.channelForm.amount)*Math.pow(10, 9)) + (0.02*Math.pow(10, 9))) ||
 				(this.channelForm.amount == 0 &&
 					parseFloat(this.currentBalanceFormat) >= 0.01)
 			) {

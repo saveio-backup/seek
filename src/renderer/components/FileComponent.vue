@@ -20,7 +20,6 @@
 					:percentage="Math.ceil(totalProgress * 100) >= 100 ? 99 : Math.ceil(totalProgress * 100)"
 					:show-text="false"
 				></el-progress>
-				{{totalProgress}}
 				<p
 					class="ft14 mt10 theme-font-color"
 					v-if="fileList.length>0"
@@ -258,7 +257,7 @@
 							><i class="ofont ofont-guanbi"></i></span>
 							<span
 								class="active-blue cursor-pointer"
-								:title="$t('fileManager.fileDistribution')"
+								:title="$t('fileManager.fileDetail')"
 								@click="openDetailDialog(scope.row)"
 							><i class="ofont ofont-xiangqing"></i></span>
 							<span
@@ -442,7 +441,7 @@
 						<div
 							class="node-value"
 							v-if="fileObjById[detailId]"
-						>{{fileObjById[detailId].DownloadSize * 1024 / Math.pow(10, 9)}} ONI</div>
+						>{{fileObjById[detailId].DownloadSize * 1024 / Math.pow(10, 9) || 0}} ONI</div>
 					</li>
 					<template v-if="transferType === 2">
 						<li class="flex tr no-border">
@@ -760,16 +759,17 @@ export default {
 	},
 	computed: {
 		speedByS() {
+			const vm = this;
 			return function(row) {
-				let _speed = this.taskSpeed[row.Id] && this.taskSpeed[row.Id].speed * 1024 || 0;
-				if(!_speed) {
+				let _speed = vm.taskSpeed[row.Id] && vm.taskSpeed[row.Id].speed * 1024 || 0;
+				if(!_speed && vm.transferType === 2) {
 					let _total = 0;
 					for(let i = 0;i < row.Nodes.length;i ++) {
 						_total += row.Nodes[i].Speed;
 					}
-					return this.util.bytesToSize(_total);
+					return vm.util.bytesToSize(_total);
 				} else {
-					return  this.util.bytesToSize(_speed) || '0 Byte'
+					return  vm.util.bytesToSize(_speed) || '0 Byte'
 				}
 			}
 		},
@@ -1408,7 +1408,7 @@ export default {
 					if(type === 1) {
 						removeProgressFilesize += (value.RealFileSize || 0);
 					} else {
-						removeProgressFilesize += value.FileSize;
+						removeProgressFilesize += (value.FileSize || 0);
 					}
 				}
 				params = {
@@ -1418,7 +1418,7 @@ export default {
 				if(type === 1) {
 					removeProgressFilesize += (row.RealFileSize || 0);
 				} else {
-					removeProgressFilesize += row.FileSize;
+					removeProgressFilesize += (row.FileSize || 0);
 				}
 				params = {
 					Ids: [row.Id]

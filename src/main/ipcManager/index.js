@@ -6,4 +6,4 @@ import './fileOperation';
 import './dialogOperation';
 import './nodeTools.js';
 import './dbOperation';
-import './globalSetting.js'
+import './globalSetting.js';

@@ -47,6 +47,9 @@
 	</div>
 </template>
 <script>
+import {
+  remote
+} from 'electron';
 export default {
 	name: "login",
 	data() {
@@ -100,10 +103,12 @@ export default {
 				})
 				.then(res => {
 					if (res.Error === 0) {
+						remote.getCurrentWindow().send('login-status', true);
 						this.$router.replace({
 							name: "Home"
 						});
 					} else {
+						remote.getCurrentWindow().send('login-status', false);
 						this.$message.error(this.$t(`error[${res.Error}]`));
 					}
 				})

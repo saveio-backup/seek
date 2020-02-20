@@ -711,6 +711,7 @@ export default {
 		},
 		// link to expand page
 		goStorage() {
+			this.noStorageDialog.show = false;
 			this.$router.push({ name: "expand" });
 		},
 		// notAllowRemind change to set localstorage
@@ -959,7 +960,7 @@ export default {
 						}
 
 
-						let errorMsg = 0; // error message
+						let errorMsg = {}; // error message
 						let flag = false; // is have success
 						this.waitForNowUpload({
 							arr,
@@ -1029,8 +1030,10 @@ export default {
 					this.uploadDone({ arr, errorMsg, flag });
 				} else {
 					//if have error task joint errorMsg and run me again(argumnets.callee())
-					for (let value of errorArr) {
-						errorMsg ++;
+					for (let i = 0;i < errorArr.length;i ++) {
+						let value =  errorArr[i];
+						if(!errorMsg[value.Error]) errorMsg[value.Error] = [];
+						errorMsg[value.Error].push(waitForNowUploadList[i]);
 					}
 					let errorLength = errorArr.length;
 					this.waitForNowUpload({ arr, len: errorLength, errorMsg, flag });
@@ -1043,28 +1046,43 @@ export default {
 			// close loading...
 			this.switchToggle.loading && this.switchToggle.loading.close();
 			this.switchToggle.upload = true; // set toggle
-			if (flag === false) {
-				// is have upload success task
-				if (errorMsg) {
-					// dangerouslyUseHTMLString: true,
-					this.$message.error({
-						message: `${vm.$t('fileManager.thereAre')}${errorMsg}${vm.$t('fileManager.filesUploadFailed')}`
-					});
-				} else {
-					this.$message.error(vm.$t("fileManager.uploadError"));
+			console.log("errorMsg")
+			console.log(errorMsg)
+			let content = '';
+			for(let key in errorMsg) {
+				let item = errorMsg[key];
+				let _content = ''
+				for(let i = 0;i < item.length;i ++) {
+					_content += item[i].FileName;
 				}
+				if(item.length > 1) {
+					let _sub = _content.substring(0, 20);
+					content += `
+						<p>
+							${_sub}...(${item.length} ${vm.$t('fileManager.files2')}) ${vm.$t('error["'+key+'"]')}
+						</p>
+					`
+				} else {
+					content += `
+					<p>
+						${_content} ${vm.$t('fileManager.files2')} ${vm.$t('error["'+key+'"]')}
+					</p>`
+				}
+			}
+			if(content.length === 0) {
+				this.$message({
+					type: "success",
+					message: vm.$t("fileManager.startUpload")
+				});
 			} else {
-				if (!errorMsg) {
-					this.$message({
-						type: "success",
-						message: vm.$t("fileManager.startUpload")
-					});
-				} else {
-					// dangerouslyUseHTMLString: true,
-					this.$message.error({
-						message: `${vm.$t('fileManager.thereAre')}${errorMsg}${vm.$t('fileManager.filesUploadFailed')}`
-					});
-				}
+				this.$message({
+					message: content,
+					type: "error",
+					dangerouslyUseHTMLString: true
+				})
+			}
+
+			if (flag) {
 				this.passwordForm.show = false;
 				ipcRenderer.send("run-dialog-event", { name: "getUpload" });
 				if (arr.length > 0) {
@@ -1495,8 +1513,5 @@ $inputFocusBg: #dee2ea;
 			padding-bottom: 0;
 		}
 	}
-	// .el-dialog__body {
-	// 	padding-bottom: 0;
-	// }
 }
 </style>

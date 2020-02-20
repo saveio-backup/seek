@@ -116,6 +116,9 @@ export default {
 			this.$forceUpdate();
 			this.views = remote.getCurrentWindow().views;
 		});
+		ipcRenderer.on('login-status', (event, status) => {
+			this.loginStatus = status;
+		})
 	},
 	data() {
 		return {
@@ -127,7 +130,8 @@ export default {
 				name: localStorage.getItem("Label") || ""
 			},
 			pluginsInstalled: [],
-			statusIntervalObj: null
+			statusIntervalObj: null,
+			loginStatus: false,
 		};
 	},
 	computed: {
@@ -224,20 +228,18 @@ export default {
 		toPopCustomControlMenu() {
 			const that = this;
 			const customControlMenuItems = [
-				{
-					label: that.$t("window.exportKeystoreFile"),
-					// visible: new Boolean(user.name),
-					click() {
-						that.exportWallet();
-					}
-				},
-				{
-					label: that.$t("window.exportPrivateKey"),
-					// visible: new Boolean(user.name),
-					click() {
-						that.exportPrivateKey();
-					}
-				},
+				// {
+				// 	label: that.$t("window.exportKeystoreFile"),
+				// 	click() {
+				// 		that.exportWallet();
+				// 	}
+				// },
+				// {
+				// 	label: that.$t("window.exportPrivateKey"),
+				// 	click() {
+				// 		that.exportPrivateKey();
+				// 	}
+				// },
 				{
 					label: that.$t("window.helpDocument"),
 					click() {
@@ -267,12 +269,25 @@ export default {
 				},
 				{
 					label: that.$t("window.logOut"),
-					// visible: new Boolean(user.name),
 					click() {
 						that.logout();
 					}
 				}
 			];
+			if(this.loginStatus) {
+				customControlMenuItems.unshift({
+					label: that.$t("window.exportPrivateKey"),
+					click() {
+						that.exportPrivateKey();
+					}
+				})
+				customControlMenuItems.unshift({
+					label: that.$t("window.exportKeystoreFile"),
+					click() {
+						that.exportWallet();
+					}
+				})
+			}
 			let menu = Menu.buildFromTemplate(customControlMenuItems);
 			menu.popup({});
 		},

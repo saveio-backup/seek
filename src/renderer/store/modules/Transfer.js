@@ -4,12 +4,12 @@ const CancelToken = axios.CancelToken;
 let syncFileRequestCancel;
 
 const transferClear = clearInterval;
-let address = ''
 // const transferClear = function () { };
 const state = {
     completeTransferList: [],
     uploadingTransferList: [],
     downloadingTransferList: [],
+    address: '',
     // just now complete task;
     justNowCompleteNumber: 0,
 
@@ -42,6 +42,9 @@ const state = {
     downloadProgressDone: 0
 }
 const mutations = {
+    SET_ADDRESS(state, result) {
+        state.address = result
+    },
     SET_UPLOAD_PROGRESS_TOTAL(state, result) {
         state.uploadProgressTotal = result;
     },
@@ -82,7 +85,7 @@ const mutations = {
     },
     // set uploadTask (Data set api) 
     SET_WAIT_FOR_UPLOAD_LIST(state, result) {
-        localStorage.setItem(`uploadTask_${address}`, JSON.stringify(result));
+        localStorage.setItem(`uploadTask_${state.address}`, JSON.stringify(result));
         state.waitForUploadList = result;
 
         // update uploadTransfer and uploadLength content
@@ -106,7 +109,7 @@ const mutations = {
     },
     // set downloadTask (Data set api) 
     SET_WAIT_FOR_DOWNLOAD_LIST(state, result) {
-        localStorage.setItem(`downloadTask_${address}`, JSON.stringify(result));
+        localStorage.setItem(`downloadTask_${state.address}`, JSON.stringify(result));
         state.waitForDownloadList = result;
 
         // update downloadTransfer and downloadLength content
@@ -132,7 +135,7 @@ const mutations = {
         }
         if (flag) {
             state.waitForUploadOrderList = _waitForUploadOrderList;
-            localStorage.setItem(`waitForUploadOrderList_${address}`, JSON.stringify(state.waitForUploadOrderList));
+            localStorage.setItem(`waitForUploadOrderList_${state.address}`, JSON.stringify(state.waitForUploadOrderList));
         }
     },
     UNSHIFT_WAIT_FOR_UPLOAD_ORDER_LIST(state, result) {
@@ -147,7 +150,7 @@ const mutations = {
         }
         if (flag) {
             state.waitForUploadOrderList = _waitForUploadOrderList;
-            localStorage.setItem(`waitForUploadOrderList_${address}`, JSON.stringify(state.waitForUploadOrderList));
+            localStorage.setItem(`waitForUploadOrderList_${state.address}`, JSON.stringify(state.waitForUploadOrderList));
         }
     },
     /**
@@ -155,6 +158,9 @@ const mutations = {
      * result(type array)
      *  */
     REMOVE_WAIT_FOR_UPLOAD_ORDER_LIST(state, result) {
+        console.log("result==========------------>")
+        console.log(result)
+        console.log(state.waitForUploadOrderList)
         let _waitForUploadOrderList = JSON.parse(JSON.stringify(state.waitForUploadOrderList));
         let flag = false; // look for is not update
         for (let value of result) {
@@ -163,14 +169,15 @@ const mutations = {
             _waitForUploadOrderList.splice(index, 1);
             flag = true;
         }
+        console.log(_waitForUploadOrderList);
         if (flag) {
             state.waitForUploadOrderList = _waitForUploadOrderList
-            localStorage.setItem(`waitForUploadOrderList_${address}`, JSON.stringify(state.waitForUploadOrderList));
+            localStorage.setItem(`waitForUploadOrderList_${state.address}`, JSON.stringify(state.waitForUploadOrderList));
         }
     },
     SET_WAIT_FOR_UPLOAD_ORDER_LIST(state, result) {
         state.waitForUploadOrderList = result;
-        localStorage.setItem(`waitForUploadOrderList_${address}`, JSON.stringify(result));
+        localStorage.setItem(`waitForUploadOrderList_${state.address}`, JSON.stringify(result));
     },
     /**
      * params:
@@ -188,7 +195,7 @@ const mutations = {
         }
         if (flag) {
             state.waitForDownloadOrderList = _waitForDownloadOrderList;
-            localStorage.setItem(`waitForDownloadOrderList_${address}`, JSON.stringify(state.waitForDownloadOrderList));
+            localStorage.setItem(`waitForDownloadOrderList_${state.address}`, JSON.stringify(state.waitForDownloadOrderList));
         }
     },
     UNSHIFT_WAIT_FOR_DOWNLOAD_ORDER_LIST(state, result) {
@@ -203,7 +210,7 @@ const mutations = {
         }
         if (flag) {
             state.waitForDownloadOrderList = _waitForDownloadOrderList;
-            localStorage.setItem(`waitForDownloadOrderList_${address}`, JSON.stringify(state.waitForDownloadOrderList));
+            localStorage.setItem(`waitForDownloadOrderList_${state.address}`, JSON.stringify(state.waitForDownloadOrderList));
         }
     },
     /**
@@ -221,18 +228,18 @@ const mutations = {
         }
         if (flag) {
             state.waitForDownloadOrderList = _waitForDownloadOrderList
-            localStorage.setItem(`waitForDownloadOrderList_${address}`, JSON.stringify(state.waitForDownloadOrderList));
+            localStorage.setItem(`waitForDownloadOrderList_${state.address}`, JSON.stringify(state.waitForDownloadOrderList));
         }
     },
     SET_WAIT_FOR_DOWNLOAD_ORDER_LIST(state, result) {
         state.waitForDownloadOrderList = result
-        localStorage.setItem(`waitForDownloadOrderList_${address}`, JSON.stringify(result));
+        localStorage.setItem(`waitForDownloadOrderList_${state.address}`, JSON.stringify(result));
     },
 
 
     GET_LOCAL_STATUS(state, result) {
         state.localStatus = result;
-        localStorage.setItem(`localStatus_${address}`, JSON.stringify(result));
+        localStorage.setItem(`localStatus_${state.address}`, JSON.stringify(result));
     },
     /**
      * params:
@@ -256,7 +263,7 @@ const mutations = {
         }
         if (flag) {
             state.localStatus = _localStatus;
-            localStorage.setItem(`localStatus_${address}`, JSON.stringify(state.localStatus));
+            localStorage.setItem(`localStatus_${state.address}`, JSON.stringify(state.localStatus));
         }
     },
     /**
@@ -274,7 +281,7 @@ const mutations = {
         }
         if (flag) {
             state.localStatus = _localStatus
-            localStorage.setItem(`localStatus_${address}`, JSON.stringify(state.localStatus));
+            localStorage.setItem(`localStatus_${state.address}`, JSON.stringify(state.localStatus));
         }
     },
     /**
@@ -299,7 +306,7 @@ const mutations = {
         }
         if (flag) {
             state.localStatus = _localStatus;
-            localStorage.setItem(`localStatus_${address}`, JSON.stringify(state.localStatus));
+            localStorage.setItem(`localStatus_${state.address}`, JSON.stringify(state.localStatus));
         }
     },
     REMOVE_UPLOADING(state, result) {
@@ -313,7 +320,7 @@ const mutations = {
         }
         if (flag) {
             state.localStatus = _localStatus;
-            localStorage.setItem(`localStatus_${address}`, JSON.stringify(state.localStatus));
+            localStorage.setItem(`localStatus_${state.address}`, JSON.stringify(state.localStatus));
         }
     },
     SET_SYNC_LIST(state, result) {
@@ -342,7 +349,8 @@ const actions = {
     getWaitForTransferList({
         commit
     }) {
-        address = localStorage.getItem('Address');
+        let address = localStorage.getItem('Address');
+        commit('SET_ADDRESS', address);
         let list = localStorage.getItem(`uploadTask_${address}`);
         if (list) {
             commit('GET_WAIT_FOR_UPLOAD_LIST', JSON.parse(list));
@@ -365,7 +373,8 @@ const actions = {
         }
     },
     getTransferProgressList({commit}) {
-        address = localStorage.getItem('Address');
+        let address = localStorage.getItem('Address');
+        commit('SET_ADDRESS', address);
         let _uploadTotal = localStorage.getItem(`uploadProgressTotal_${address}`);
         if (_uploadTotal) {
             commit('SET_UPLOAD_PROGRESS_TOTAL', (parseInt(_uploadTotal) || 0));

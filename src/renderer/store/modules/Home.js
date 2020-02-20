@@ -2,7 +2,8 @@ import axios from 'axios';
 import api from '../../assets/config/api'
 import router from '../../router/router';
 import {
-  ipcRenderer
+  ipcRenderer,
+  remote
 } from 'electron';
 const state = {
   balanceTotal: 0,
@@ -118,6 +119,8 @@ const actions = {
       .then((res) => {
         if (res.Error === 0) {
           if (res.Result.Address) { // Wallet(Account) exist
+            remote.getCurrentWindow().send('login-status', true)
+            console.log(12312312312);
             const result = res.Result;
             ipcRenderer.sendSync("updateSettings", 'currentAddress', res.Result.Address);
             ipcRenderer.send('initUsermetaDB', res.Result.Address); // set Usermeta db
@@ -147,6 +150,7 @@ const actions = {
               console.log(e);
             }
           } else {
+            remote.getCurrentWindow().send('login-status', false);
             commit('SET_CURRENT_ACCOUNT', 0) // login fail
             // window.localStorage.clear(); // remove all local infomation
             const notClear = [
@@ -171,11 +175,13 @@ const actions = {
           }
         } else if (res.Error === 50012) {
           if (location.href.indexOf('login') < 0) {
+            remote.getCurrentWindow().send('login-status', false);
             router.replace({
               name: 'login'
-            })
+            });
           }
         } else {
+          remote.getCurrentWindow().send('login-status', false);
           if (location.href.indexOf('Home') < 0) {
             router.replace({
               name: 'Home'

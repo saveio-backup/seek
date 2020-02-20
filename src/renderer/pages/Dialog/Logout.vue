@@ -72,6 +72,7 @@ export default {
 				)
 				.then(res => {
 					if (res.Error === 0) {
+            remote.getCurrentWindow().send('login-status', false);
 						const notClear = [
 							"waitForUploadOrderList",
 							"uploadTask",

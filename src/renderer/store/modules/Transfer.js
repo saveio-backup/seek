@@ -350,7 +350,6 @@ const actions = {
         commit
     }) {
         let address = localStorage.getItem('Address');
-        commit('SET_ADDRESS', address);
         let list = localStorage.getItem(`uploadTask_${address}`);
         if (list) {
             commit('GET_WAIT_FOR_UPLOAD_LIST', JSON.parse(list));

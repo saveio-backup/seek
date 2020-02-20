@@ -267,6 +267,7 @@ export default {
 			this.Balance = null;
 			this.channelNum = null;
 			localStorage.setItem("DNSAdress", "");
+			if(!newVal) return;
 			this.$store.dispatch("getWaitForTransferList");
 			this.$store.dispatch("getTransferProgressList");
 		},
@@ -1261,18 +1262,22 @@ export default {
 					this.isNotDonePause = true;
 					if (vm.$config.maxNumUpload !== vm.maxNumUpload && vm.maxNumUpload) {
 						vm.settingUpdate({ maxNumUpload: vm.maxNumUpload });
+					} else {
+						this.waitForDownloadFileToDownload();
+						this.waitForUploadFileToUpload();
 					}
 				});
 				return;
 			}
 			this.isNotDonePause = true;
-			this.waitForDownloadFileToDownload();
-			this.waitForUploadFileToUpload();
 			if (
 				this.$config.maxNumUpload !== this.maxNumUpload &&
 				this.maxNumUpload
 			) {
 				this.settingUpdate({ maxNumUpload: this.maxNumUpload });
+			} else {
+				this.waitForDownloadFileToDownload();
+				this.waitForUploadFileToUpload();
 			}
 		},
 		// to pause task

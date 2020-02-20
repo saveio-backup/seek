@@ -120,7 +120,6 @@ const actions = {
         if (res.Error === 0) {
           if (res.Result.Address) { // Wallet(Account) exist
             remote.getCurrentWindow().send('login-status', true)
-            console.log(12312312312);
             const result = res.Result;
             ipcRenderer.sendSync("updateSettings", 'currentAddress', res.Result.Address);
             ipcRenderer.send('initUsermetaDB', res.Result.Address); // set Usermeta db

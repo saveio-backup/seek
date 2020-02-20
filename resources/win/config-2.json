@@ -5,7 +5,6 @@
 		"ChainId": "2",
 		"BlockTime": 5,
 		"NetworkId": 1567481543,
-		"PublicIP": "",
 		"PortBase": 10000,
 		"LogLevel": 0,
 		"LocalRpcPortOffset": 338,

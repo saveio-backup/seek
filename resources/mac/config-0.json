@@ -6,7 +6,6 @@
         "ChainId": "0",
         "BlockTime": 5,
         "NetworkId": 1567481543,
-        "PublicIP": "40.96.20.103",
         "IntranetIP": "",
         "PortBase": 10000,
         "LogLevel": 1,

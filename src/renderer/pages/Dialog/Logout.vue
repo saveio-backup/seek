@@ -78,10 +78,8 @@ export default {
 							"uploadTask",
 							"localStatus",
 							"showSmallContract",
-							"uploadProgressTotal",
-							"uploadProgressDone",
-							"downloadProgressTotal",
-							"downloadProgressDone"
+							"downloadDoneList",
+							"uploadDoneList"
 						];
 						outer: for (let value in window.localStorage) {
 							if (!window.localStorage.propertyIsEnumerable(value)) continue;

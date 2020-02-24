@@ -12,10 +12,13 @@
 </template>
 
 <script>
-import { ipcRenderer } from "electron";
+import { ipcRenderer, remote } from "electron";
 export default {
 	name: "browser",
 	mounted() {
+		// setInterval(() => {
+		// 	console.log(remote);
+		// }, 5000)
 		document.querySelector(
 			"#theme-ui"
 		).href = `./static/css/${this.themeColor}/theme/index.css`;
@@ -188,17 +191,11 @@ export default {
 		userspaceUpdate({ result }) {
 			this.$store.commit("SET_SPACE", result);
 		},
-		downloadProgressTotalUpdate({ result }) {
-			this.$store.commit('SET_DOWNLOAD_PROGRESS_TOTAL', result);
+		uploadDoneListUpdate({result}) {
+			this.$store.commit("SET_UPLOAD_DONE_LIST", result);
 		},
-		downloadProgressDoneUpdate({ result }) {
-			this.$store.commit('SET_DOWNLOAD_PROGRESS_DONE', result);
-		},
-		uploadProgressTotalUpdate({ result }) {
-			this.$store.commit('SET_UPLOAD_PROGRESS_TOTAL', result);
-		},
-		uploadProgressDoneUpdate({ result }) {
-			this.$store.commit('SET_UPLOAD_PROGRESS_DONE', result);
+		downloadDoneListUpdate({ result }) {
+			this.$store.commit("SET_DOWNLOAD_DONE_LIST", result);
 		}
 	}
 };

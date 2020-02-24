@@ -560,8 +560,6 @@ export default {
 			justNowCompleteNumberTimeoutObj: null,
 			updateFileRequestCancel: null,
 			// computed process total
-			downloadTotalSize: 0,
-			surplusDownloadTotalSize: 0
 		};
 	},
 	components: {
@@ -874,7 +872,6 @@ export default {
 						flag = true;
 					} else {
 						errorArr.push(res);
-						this.downloadTotalSize -= waitForNowDownloadList[i].FileSize;
 					}
 				}
 
@@ -926,6 +923,7 @@ export default {
 					});
 				}
 				this.switchToggle.confrimDownloadDialog = false;
+				ipcRenderer.send("run-dialog-event", { name: "clearDownloadDone" });
 				ipcRenderer.send("run-dialog-event", { name: "getDownload" });
 
 				if (arr.length > 0) {
@@ -958,8 +956,6 @@ export default {
 				target: ".loading-content.disk-download-loading"
 			});
 			let arr = [];
-			this.downloadTotalSize = 0;
-			ipcRenderer.send("run-dialog-event", { name: "downloadProgressRestart" });
 			for (let downloadFile of downloadFiles) {
 				arr.push({
 					Url: downloadFile.Url,
@@ -977,7 +973,6 @@ export default {
 					Id: "waitfor_" + uuid.v4(),
 					Nodes: []
 				});
-				this.downloadTotalSize += downloadFile.Size;
 			}
 
 			let waitForNowDownloadLength =
@@ -988,12 +983,12 @@ export default {
 				this.switchToggle.confrimDownloadDialog = false;
 				// this.$store.dispatch("getUpload");
 				ipcRenderer.send("run-dialog-event", { name: "getDownload" });
+				ipcRenderer.send("run-dialog-event", { name: "clearDownloadDone" });
 				this.$router.push({
 					name: "transfer",
 					query: { transferType: 2 }
 				});
 				this.addTask(arr);
-				ipcRenderer.send("run-dialog-event", { name: "addDownloadProgressTotal", data:  this.downloadTotalSize});
 				return;
 			}
 
@@ -1005,7 +1000,6 @@ export default {
 				errorMsg,
 				flag
 			});
-			ipcRenderer.send("run-dialog-event", { name: "addDownloadProgressTotal", data:  this.downloadTotalSize});
 		},
 		deleteFile(file) {
 			this.fileToDelete = [file];

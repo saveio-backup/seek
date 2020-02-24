@@ -758,6 +758,12 @@ export default {
 		}
 	},
 	computed: {
+		downloadDoneList() {
+			return this.$store.state.Transfer.downloadDoneList || [];
+		},
+		uploadDoneList() {
+			return this.$store.state.Transfer.uploadDoneList || [];
+		},	
 		speedByS() {
 			const vm = this;
 			return function(row) {
@@ -765,7 +771,7 @@ export default {
 				if(!_speed && vm.transferType === 2) {
 					let _total = 0;
 					for(let i = 0;i < row.Nodes.length;i ++) {
-						_total += row.Nodes[i].Speed;
+						_total += (row.Nodes[i].Speed || 0);
 					}
 					return vm.util.bytesToSize(_total);
 				} else {
@@ -779,23 +785,40 @@ export default {
 		totalProgress: function() {
 			const vm = this;
 			if(this.transferType === 0) {
-				return 0;
+				return;
 			}
-			let transferSize = 0;
-			// let transferTotal = 0;
-			this.fileList.map(file => {
-				if (vm.transferType === 1) {
-					transferSize += (file.Nodes && file.Nodes[0] && file.Nodes[0].RealUploadSize || 0);
-				} else {
-					transferSize += file.DownloadSize || 0;
-				}
-			});
-			if(this.transferType === 1) {
-				let _progress = this.uploadProgressTotal !== 0 ? ((this.uploadProgressDone + transferSize) / this.uploadProgressTotal) : 0;
-				return _progress
-			} else if(this.transferType === 2) {
-				let _progress = this.downloadProgressTotal !== 0 ? ((this.downloadProgressDone + transferSize) / this.downloadProgressTotal) : 0;
-				return _progress;
+			let _total = 0;
+			let _use = 0;
+			try {
+				if(this.transferType === 1) {
+					for(let value of vm.fileList) {
+						_total += value.RealFileSize;
+						_use += (value.Nodes && value.Nodes[0] && value.Nodes[0].RealUploadSize || 0);
+					}
+					for(let value of vm.uploadDoneList) {
+						_total += value;
+						_use += value;
+					}
+					return (_total && (_use/_total) || 0);
+				} else if(this.transferType === 2) {
+					for(let i = 0;i < vm.fileList.length; i ++) {
+						let value = vm.fileList[i];
+						if(value.Nodes) {
+							for(let node of value.Nodes) {
+								_use +=	node.DownloadSize || 0;
+							}
+							_total += value.FileSize;
+						}
+					}
+					for(let value of vm.downloadDoneList) {
+						_total += value;
+						_use += value;
+					}
+					return (_total && (_use/_total) || 0);
+				} 
+				return 0;
+			}catch(e) {
+				return (_total && (_use/_total) || 0);
 			}
 		},
 		waitForUploadOrderList: function() {
@@ -805,7 +828,6 @@ export default {
 			return this.$store.state.Transfer.waitForDownloadOrderList;
 		},
 		fileList: function() {
-			// return this.mockFileList;
 			this.taskSpeedNum = 0;
 			let arr =
 				this.$store.state.Transfer[this.TransferConfig[this.transferType]] ||
@@ -864,10 +886,22 @@ export default {
 		},
 		getAllTaskSpeedTotal: function() {
 			let speedTotal = 0;
-			for (let value of Object.keys(this.taskSpeed)) {
-				speedTotal += this.taskSpeed[value].speed || 0;
+			try {
+				for (let value of Object.keys(this.taskSpeed)) {
+					let _speed = this.taskSpeed[value].speed || 0;
+					if(_speed === 0 && this.transferType === 2) {
+						for(let i = 0;i < this.fileObjById[value].Nodes.length;i ++) {
+							_speed += (this.fileObjById[value].Nodes[i].Speed || 0);
+						}
+						speedTotal += (_speed/1024);
+					} else {
+						speedTotal += _speed;
+					}
+				}
+				return speedTotal;
+			}catch(e) {
+				return speedTotal;
 			}
-			return speedTotal;
 		},
 		isSync: function() {
 			return this.$store.state.Home.isSync || false;
@@ -895,19 +929,7 @@ export default {
 					return value.BalanceFormat;
 				}
 			}
-		},
-		downloadProgressTotal() {
-			return this.$store.state.Transfer.downloadProgressTotal;
-		},
-		downloadProgressDone() {
-			return this.$store.state.Transfer.downloadProgressDone;
-		},
-		uploadProgressTotal() {
-			return this.$store.state.Transfer.uploadProgressTotal;
-		},
-		uploadProgressDone() {
-			return this.$store.state.Transfer.uploadProgressDone;
-		},
+		}
 	},
 	methods: {
 		filterUploadArr(arr) {
@@ -1401,25 +1423,14 @@ export default {
 			let arr = []; // uploading file
 			let waitForUploadArr = []; // wait for upload file, data at front
 			let waitForDownloadArr = []; // wait for download file, data at front
-			let removeProgressFilesize = 0; // cancel task file size
 			if (isArray) {
 				for (let value of row) {
 					arr.push(value.Id);
-					if(type === 1) {
-						removeProgressFilesize += (value.RealFileSize || 0);
-					} else {
-						removeProgressFilesize += (value.FileSize || 0);
-					}
 				}
 				params = {
 					Ids: arr
 				};
 			} else {
-				if(type === 1) {
-					removeProgressFilesize += (row.RealFileSize || 0);
-				} else {
-					removeProgressFilesize += (row.FileSize || 0);
-				}
 				params = {
 					Ids: [row.Id]
 				};
@@ -1476,10 +1487,6 @@ export default {
 					this.passwordCancel.loadingObj &&
 						this.passwordCancel.loadingObj.close();
 					this.switchToggle.passwordDialog = false;
-					ipcRenderer.send("run-dialog-event", {
-						name: "removeUploadProgressTotal",
-						data: removeProgressFilesize
-					});
 					return;
 				}
 			} else {
@@ -1510,10 +1517,6 @@ export default {
 					this.switchToggle.confirmCancelDownloadDialogLoading &&
 						this.switchToggle.confirmCancelDownloadDialogLoading.close();
 					this.switchToggle.confirmCancelDownloadDialog = false;
-					ipcRenderer.send("run-dialog-event", {
-						name: "removeDownloadProgressTotal",
-						data: removeProgressFilesize
-					});
 					return;
 				}
 			}
@@ -1567,23 +1570,7 @@ export default {
 						for (let value of res.Result.Tasks) {
 							if (value && value.Code) {
 								errorNumber++;
-								if (type === 1) {
-									removeProgressFilesize -= (vm.fileObjById[value.Id] && vm.fileObjById[value.Id].RealFileSize || 0)
-								} else {
-									removeProgressFilesize -= (vm.fileObjById[value.Id] && vm.fileObjById[value.Id].FileSize || 0)
-								}
 							}
-						}
-						if(type === 1) {
-							ipcRenderer.send("run-dialog-event", {
-								name: "removeUploadProgressTotal",
-								data: removeProgressFilesize
-							});
-						} else {
-							ipcRenderer.send("run-dialog-event", {
-								name: "removeDownloadProgressTotal",
-								data: removeProgressFilesize
-							});
 						}
 
 						//if no err

@@ -584,7 +584,6 @@ export default {
 				show: false
 			},
 			uploadPriceInfo: null,
-			uploadTotalSize: 0,
 		};
 	},
 	mounted() {
@@ -909,9 +908,6 @@ export default {
 							return;
 						}
 
-						this.uploadTotalSize = 0;
-						ipcRenderer.send("run-dialog-event", { name: "uploadProgressRestart" });
-
 						// get all upload file params
 						let arr = [];
 						for (let file of this.uploadFormData.Files) {
@@ -939,7 +935,6 @@ export default {
 								: params;
 							delete params.wihteListString;
 							arr.push(params);
-							this.uploadTotalSize += parseInt(file.fileBytes / 1024);
 						}
 
 						let waitForNowUploadLength =
@@ -948,14 +943,13 @@ export default {
 						if (waitForNowUploadLength <= 0) {
 							this.switchToggle.loading && this.switchToggle.loading.close();
 							this.passwordForm.show = false;
-							// this.$store.dispatch("getUpload");
 							ipcRenderer.send("run-dialog-event", { name: "getUpload" });
+							ipcRenderer.send("run-dialog-event", { name: "clearUploadDone" });
 							this.$router.push({
 								name: "transfer",
 								query: { transferType: 1 }
 							});
 							this.addTask(arr);
-							ipcRenderer.send("run-dialog-event", { name: "addUploadProgressTotal", data: vm.uploadTotalSize});
 							return;
 						}
 
@@ -997,7 +991,6 @@ export default {
 		waitForNowUpload({ arr, len, errorMsg, flag }) {
 			const vm = this;
 			if (!arr || arr.length === 0 || len === 0) {
-				ipcRenderer.send("run-dialog-event", { name: "addUploadProgressTotal", data:  vm.uploadTotalSize});
 				this.uploadDone({ arr, errorMsg, flag });
 				return;
 			}
@@ -1020,13 +1013,11 @@ export default {
 					if (res.Error === 0) {
 						flag = true;
 					} else {
-						this.uploadTotalSize -= (waitForNowUploadList[i] && waitForNowUploadList[i].RealFileSize || 0);
 						errorArr.push(res);
 					}
 				}
 
 				if (errorArr.length === 0) {
-					ipcRenderer.send("run-dialog-event", { name: "addUploadProgressTotal", data:  vm.uploadTotalSize});
 					this.uploadDone({ arr, errorMsg, flag });
 				} else {
 					//if have error task joint errorMsg and run me again(argumnets.callee())
@@ -1046,8 +1037,6 @@ export default {
 			// close loading...
 			this.switchToggle.loading && this.switchToggle.loading.close();
 			this.switchToggle.upload = true; // set toggle
-			console.log("errorMsg")
-			console.log(errorMsg)
 			let content = '';
 			for(let key in errorMsg) {
 				let item = errorMsg[key];
@@ -1084,6 +1073,7 @@ export default {
 
 			if (flag) {
 				this.passwordForm.show = false;
+				ipcRenderer.send("run-dialog-event", { name: "clearUploadDone" });
 				ipcRenderer.send("run-dialog-event", { name: "getUpload" });
 				if (arr.length > 0) {
 					setTimeout(() => {

@@ -74,7 +74,14 @@
       "oneClick": false,
       "perMachine": true,
       "allowToChangeInstallationDirectory": true
-    }
+    },
+    "fileAssociations": [
+      {
+        "name": "test file associations",
+        "ext": "elefile",
+        "description": "test file associations"
+      }
+    ]
   },
   "dependencies": {
     "adm-zip": "^0.4.13",

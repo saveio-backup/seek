@@ -179,6 +179,7 @@ export default {
 		ActivityBar: require("./components/ActivityBar.vue").default
 	},
 	mounted() {
+		window.vue = this;
 		ipcRenderer.on("forceUpdate", () => {
 			this.$forceUpdate();
 			this.views = remote.getCurrentWindow().views;

@@ -2,7 +2,8 @@
 
 import {
   app,
-  protocol
+  protocol,
+  dialog
 } from 'electron'
 import './ipcManager'
 import './protocols/protocols' // custom protocol
@@ -23,6 +24,10 @@ const i18n = {
   zh,
   en
 }
+// const log = require('electron-log')
+
+
+
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
@@ -70,7 +75,13 @@ app.on('activate', () => {
   if (Object.keys(windows).length === 0) {
     createWindow(winURL)
   }
-})
+});
+// app.on('second-instance', (e, argv) => {
+//   dialog.showMessageBox({
+//     title: "second",
+//     message: "second:" + argv.join(""),
+//   });
+// });
 /**
  * Auto Updater
  *

@@ -84,7 +84,9 @@ export default {
 				setTimeTransferObj: null,
 				setTimeUploadingTransferListObj: null,
 				setTimeDownloadingTransferListObj: null,
-				setTimelocalStatusObj: null
+				setTimelocalStatusObj: null,
+				setTimeUploadDoneList: null,
+				setTimeDownloadDoneList: null,
 			},
 
 			isNeedSync: false,
@@ -98,7 +100,6 @@ export default {
 			},
 			maxNumUpload: 0,
 			isNotDonePause: true,
-			isNotDonePause2: true,
 
 			// ready upload list
 			readyUpload: [],
@@ -111,7 +112,9 @@ export default {
 			},
 			// for force update data ↓
 			uploadingTransferListForce: 0,
-			downloadingTransferListForce: 0
+			downloadingTransferListForce: 0,
+			uploadDoneList: [],
+			downloadDoneList: []
 		};
 	},
 	computed: {
@@ -168,18 +171,6 @@ export default {
 		},
 		realDownloadingLength: function() {
 			return this.$store.state.Transfer.realDownloadingLength;
-		},
-		downloadProgressTotal() {
-			return this.$store.state.Transfer.downloadProgressTotal;
-		},
-		downloadProgressDone() {
-			return this.$store.state.Transfer.downloadProgressDone;
-		},
-		uploadProgressTotal() {
-			return this.$store.state.Transfer.uploadProgressTotal;
-		},
-		uploadProgressDone() {
-			return this.$store.state.Transfer.uploadProgressDone;
 		}
 	},
 	mounted() {
@@ -199,30 +190,6 @@ export default {
 		this.initWebSocket();
 	},
 	watch: {
-		downloadProgressTotal(val) {
-			this.rendToFileManage({
-				type: "downloadProgressTotal",
-				result: val
-			});
-		},
-		downloadProgressDone(val) {
-			this.rendToFileManage({
-				type: "downloadProgressDone",
-				result: val
-			});
-		},
-		uploadProgressTotal(val) {
-			this.rendToFileManage({
-				type: "uploadProgressTotal",
-				result: val
-			});
-		},
-		uploadProgressDone(val) {
-			this.rendToFileManage({
-				type: "uploadProgressDone",
-				result: val
-			});
-		},
 		uploadingTransferListForce(val) {
 			clearTimeout(this.intervalObj.setTimeUploadingTransferListObj);
 			this.intervalObj.setTimeUploadingTransferListObj = setTimeout(() => {
@@ -269,7 +236,18 @@ export default {
 			localStorage.setItem("DNSAdress", "");
 			if(!newVal) return;
 			this.$store.dispatch("getWaitForTransferList");
-			this.$store.dispatch("getTransferProgressList");
+			let _uploadDoneList = localStorage.getItem(`uploadDoneList_${this.Address}`);
+			if(_uploadDoneList) {
+				this.uploadDoneList = JSON.parse(_uploadDoneList);
+			} else {
+				this.uploadDoneList = [];
+			}
+			let _downloadDoneList = localStorage.getItem(`downloadDoneList_${this.Address}`);
+			if(_downloadDoneList) {
+				this.downloadDoneList = JSON.parse(_downloadDoneList)
+			} else {
+				this.downloadDoneList = [];
+			}
 		},
 		Balance(newVal, oldVal) {
 			if (!oldVal && newVal && this.channelNum === 0) {
@@ -317,16 +295,10 @@ export default {
 							}`,
 							type: "success"
 						});
-						if(this.transferObj[value.Id].Type === 1) {
-							vm.addUploadProgressDone(vm.transferObj[value.Id].RealFileSize);
-							if(vm.realUploadingLength === 0 && vm.readyUpload.length === 0) {
-								vm.clearUploadProgress();
-							}
+						if(value.IsUploadAction) {
+							vm.uploadDoneList.push(value.RealFileSize);
 						} else {
-							vm.addDownloadProgressDone(vm.transferObj[value.Id].FileSize);
-							if(vm.realDownloadingLength === 0 && vm.readyDownload.length === 0) {
-								vm.clearDownloadProgress();
-							}
+							vm.downloadDoneList.push(value.FileSize);
 						}
 					}
 					this.transferObj[value.Id] = value;
@@ -374,6 +346,28 @@ export default {
 				type: "realDownloadingLength",
 				result: val
 			});
+		},
+		uploadDoneList(val, oldVal) {
+			const vm = this;
+			clearTimeout(this.intervalObj.setTimeUploadDoneList);
+			this.intervalObj.setTimeUploadDoneList = setTimeout(() => {
+				this.rendToFileManage({
+					type: "uploadDoneList",
+					result: val
+				});
+				localStorage.setItem(`uploadDoneList_${vm.Address}`, JSON.stringify(val));
+			});
+		},
+		downloadDoneList(val, oldVal) {
+			const vm = this;
+			clearTimeout(this.intervalObj.setTimeDownloadDoneList);
+			this.intervalObj.setTimeDownloadDoneList = setTimeout(() => {
+				vm.rendToFileManage({
+					type: "downloadDoneList",
+					result: val
+				});
+				localStorage.setItem(`downloadDoneList_${vm.Address}`, JSON.stringify(val));
+			}, 200);
 		}
 	},
 	methods: {
@@ -539,8 +533,6 @@ export default {
 				// error message
 				let errorArr = [];
 				let errorMsg = "";
-				// TO DO!!!
-				let _removeSize = 0; // computed progress total;
 				for (let i = 0;i < resArr.length; i ++) {
 					let value = resArr[i];
 					if (value.Error !== 0) {
@@ -548,13 +540,7 @@ export default {
 						errorMsg += `${value.FileName || ""}`;
 						errorMsg += vm.$t(`error["${value.Error}"]`);
 						errorMsg += `</p>`;
-						if(i < newUploadFiles.length) {
-							_removeSize += (newUploadFiles[i].RealFileSize || 0);
-						}
 					}
-				}
-				if(_removeSize !== 0) {
-					vm.removeUploadProgressTotal(_removeSize);
 				}
 				if (errorMsg !== "") {
 					vm.message({
@@ -1140,68 +1126,7 @@ export default {
 		removeUploading(data) {
 			this.$store.commit("REMOVE_UPLOADING", data);
 			this.getUpload();
-		},
-		addDownloadProgressDone(data = 0) {
-			let _num = this.downloadProgressDone + data;
-			this.$store.commit("SET_DOWNLOAD_PROGRESS_DONE", _num);
-			localStorage.setItem(`downloadProgressDone_${this.Address}`, _num);
-		},
-		removeDownloadProgressTotal(data = 0) {
-			console.log("this.downloadProgressTotal")
-			console.log(data)
-			let _total = this.downloadProgressTotal - data;
-			this.$store.commit("SET_DOWNLOAD_PROGRESS_TOTAL", _total);
-			localStorage.setItem(`downloadProgressTotal_${this.Address}`, _total);
-		},
-		addDownloadProgressTotal(data = 0) {
-			let _total = this.downloadProgressTotal + data;
-			this.$store.commit("SET_DOWNLOAD_PROGRESS_TOTAL", _total);
-			localStorage.setItem(`downloadProgressTotal_${this.Address}`, _total);
-		},
-		downloadProgressRestart() {
-			let _total = this.downloadProgressTotal - this.downloadProgressDone || 0;
-			this.$store.commit("SET_DOWNLOAD_PROGRESS_TOTAL", _total);
-			this.$store.commit("SET_DOWNLOAD_PROGRESS_DONE", 0);
-			localStorage.setItem(`downloadProgressTotal_${this.Address}`, _total);
-			localStorage.setItem(`downloadProgressDone_${this.Address}`, 0);
-		},
-		clearDownloadProgress() {
-			this.$store.commit("SET_DOWNLOAD_PROGRESS_TOTAL", 0);
-			this.$store.commit("SET_DOWNLOAD_PROGRESS_DONE", 0);
-			localStorage.setItem(`downloadProgressTotal_${this.Address}`, 0);
-			localStorage.setItem(`downloadProgressDone_${this.Address}`, 0);
-		},
-		addUploadProgressDone(data = 0) {
-			let _num = this.uploadProgressDone + data;
-			this.$store.commit("SET_UPLOAD_PROGRESS_DONE", _num);
-			localStorage.setItem(`uploadProgressDone_${this.Address}`, _num);
-		},
-		removeUploadProgressTotal(data = 0) {
-			let _total = this.uploadProgressTotal - data;
-			console.log("data")
-			console.log(data)
-			console.log(_total)
-			this.$store.commit("SET_UPLOAD_PROGRESS_TOTAL", _total);
-			localStorage.setItem(`uploadProgressTotal_${this.Address}`, _total);
-		},
-		addUploadProgressTotal(data = 0) {
-			let _total = this.uploadProgressTotal + data;
-			this.$store.commit("SET_UPLOAD_PROGRESS_TOTAL", _total);
-			localStorage.setItem(`uploadProgressTotal_${this.Address}`, _total);
-		},
-		uploadProgressRestart() {
-			let _total = this.uploadProgressTotal - this.uploadProgressDone || 0;
-			this.$store.commit("SET_UPLOAD_PROGRESS_TOTAL", _total);
-			this.$store.commit("SET_UPLOAD_PROGRESS_DONE", 0);
-			localStorage.setItem(`uploadProgressTotal_${this.Address}`, _total);
-			localStorage.setItem(`uploadProgressDone_${this.Address}`, 0);
-		},
-		clearUploadProgress() {
-			this.$store.commit("SET_UPLOAD_PROGRESS_TOTAL", 0);
-			this.$store.commit("SET_UPLOAD_PROGRESS_DONE", 0);
-			localStorage.setItem(`uploadProgressTotal_${this.Address}`, 0);
-			localStorage.setItem(`uploadProgressDone_${this.Address}`, 0);
-		},
+		},		
 		/**
 		 * set config maxNumUpload
 		 * params:
@@ -1381,6 +1306,12 @@ export default {
 			} else {
 				return true;
 			}
+		},
+		clearUploadDone() {
+			this.uploadDoneList = [];
+		},
+		clearDownloadDone() {
+			this.downloadDoneList = [];
 		}
 	}
 };

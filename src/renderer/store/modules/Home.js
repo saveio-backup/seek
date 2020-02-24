@@ -157,10 +157,8 @@ const actions = {
               'uploadTask',
               'localStatus',
               'showSmallContract',
-              "uploadProgressTotal",
-              "uploadProgressDone",
-              "downloadProgressTotal",
-              "downloadProgressDone"
+              'downloadDoneList',
+              'uploadDoneList',
             ]
             outer: for (let value of window.localStorage) {
               if (!window.localStorage.propertyIsEnumerable(value)) continue;

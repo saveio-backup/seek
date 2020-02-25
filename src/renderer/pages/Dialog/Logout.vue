@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { ipcRenderer, dialog, remote } from "electron";
+import { ipcRenderer, remote } from "electron";
 export default {
 	name: "Logout",
 	data() {
@@ -72,7 +72,11 @@ export default {
 				)
 				.then(res => {
 					if (res.Error === 0) {
-            remote.getCurrentWindow().send('login-status', false);
+						// remote.getCurrentWindow().send('login-status', false);
+						ipcRenderer.send("run-dialog-event", {
+              name: "setLoginStatus",
+              data: false
+            });
 						const notClear = [
 							"waitForUploadOrderList",
 							"uploadTask",

@@ -48,7 +48,7 @@
 </template>
 <script>
 import {
-  remote
+  ipcRenderer
 } from 'electron';
 export default {
 	name: "login",
@@ -103,12 +103,20 @@ export default {
 				})
 				.then(res => {
 					if (res.Error === 0) {
-						remote.getCurrentWindow().send('login-status', true);
+						// remote.getCurrentWindow().send('login-status', true);
+						ipcRenderer.send("run-dialog-event", {
+              name: "setLoginStatus",
+              data: true
+            });
 						this.$router.replace({
 							name: "Home"
 						});
 					} else {
-						remote.getCurrentWindow().send('login-status', false);
+						// remote.getCurrentWindow().send('login-status', false);
+						ipcRenderer.send("run-dialog-event", {
+              name: "setLoginStatus",
+              data: false
+            });
 						this.$message.error(this.$t(`error[${res.Error}]`));
 					}
 				})

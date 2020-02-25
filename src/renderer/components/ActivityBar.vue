@@ -110,15 +110,17 @@ import fs from "fs";
 const { Menu } = remote;
 export default {
 	mounted() {
+		const vm = this;
 		this.getPlugins();
 		this.watchPlugins();
 		ipcRenderer.on("forceUpdate", () => {
 			this.$forceUpdate();
 			this.views = remote.getCurrentWindow().views;
 		});
-		ipcRenderer.on('login-status', (event, status) => {
-			this.loginStatus = status;
-		})
+		ipcRenderer.on("login-status", (e, status) => {
+			vm.loginStatus = status;
+			console.log('this.loginStatus', vm.loginStatus)
+		});
 	},
 	data() {
 		return {

@@ -17,6 +17,12 @@
 			@closeDialog="closeDialog"
 			v-if="menuSelector === 'channelLoseEfficacy'"
 		></channel-lose-efficacy>
+		<decode-file
+			@closeDialog="closeDialog"
+			:path="decodeFilePath"
+			v-if="menuSelector === 'decodeFile'"
+		>
+		</decode-file>
 		<div
 			class="downloadDialog"
 			v-if="menuSelector === 'downloadDialog'"
@@ -48,6 +54,7 @@ import exportPrivateKey from "./Dialog/ExportPrivateKey.vue";
 import logout from "./Dialog/Logout.vue";
 import isCreateChannel from "./Dialog/IsCreateChannel.vue";
 import channelLoseEfficacy from "./Dialog/ChannelLoseEfficacy.vue";
+import decodeFile from "./Dialog/decodeFile.vue";
 import downloadDialog from "../components/DownloadDialog.vue";
 // import io from 'socket.io-client';
 export default {
@@ -57,7 +64,8 @@ export default {
 		logout,
 		isCreateChannel,
 		downloadDialog,
-		channelLoseEfficacy
+		channelLoseEfficacy,
+		decodeFile
 	},
 	data() {
 		const COUNT_INTERVAL = 5000;
@@ -67,6 +75,8 @@ export default {
 			},
 
 			menuSelector: "",
+			decodeFilePath: '',
+			loginStatus: false,
 			// current main browserWindow
 			win: null,
 			downloadUrl: "", // downloadDialog url
@@ -174,20 +184,31 @@ export default {
 		}
 	},
 	mounted() {
+		const vm = this;
+		if(remote.process.argv[1].endsWith('.ept')) {
+			vm.decodeFilePath = remote.process.argv[(remote.process.argv.length - 1)];
+			console.log('.ept', remote);
+			console.log('.ept', vm.decodeFilePath);
+			vm.checkOpenDecodeDialog();
+		}
 		ipcRenderer.on("setSelector", (e, selector) => {
-			this.menuSelector = selector;
-			this.$forceUpdate();
+			vm.menuSelector = selector;
+			vm.$forceUpdate();
 		});
 		ipcRenderer.on("setDownloadUrl", (e, url) => {
-			this.downloadUrl = url;
+			vm.downloadUrl = url;
 		});
 		ipcRenderer.on("runDialogEvent", (e, { name, data }) => {
 			// this.downloadUrl = url;
-			this[name](data);
+			vm[name](data);
+		});
+		ipcRenderer.on("setDecodeFilePath", (e, paths) => {
+			console.log('setDecodeFilePath', paths);
+			vm.decodeFilePath = paths[(paths.length - 1)];
+			this.checkOpenDecodeDialog();
 		});
 		localStorage.setItem("DNSAdress", "");
-		// this.isNeedCreateChannel();
-		this.initWebSocket();
+		vm.initWebSocket();
 	},
 	watch: {
 		uploadingTransferListForce(val) {
@@ -371,6 +392,26 @@ export default {
 		}
 	},
 	methods: {
+		setLoginStatus(status) {
+			this.loginStatus = status;
+			this.checkOpenDecodeDialog();
+			let arrWin = remote.BrowserWindow.getAllWindows();
+			for (let win of arrWin) {
+				if (win.webContents.getURL().indexOf("#/navigation") > 0) {
+					let winContentId = win.webContents.id;
+					ipcRenderer.sendTo(winContentId, "login-status", status);
+				}
+			}
+		},
+		checkOpenDecodeDialog() {
+			console.log('.ept', this.decodeFilePath);
+			if(this.decodeFilePath.endsWith('.ept')) {
+				console.log('.ept', this.loginStatus);
+				if(this.loginStatus === true) {
+					ipcRenderer.send("dialog-open", "decodeFile");
+				}
+			}
+		},
 		// init ws
 		initWebSocket() {
 			// clear heart beat interval

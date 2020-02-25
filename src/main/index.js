@@ -2,8 +2,7 @@
 
 import {
   app,
-  protocol,
-  dialog
+  BrowserWindow
 } from 'electron'
 import './ipcManager'
 import './protocols/protocols' // custom protocol
@@ -24,7 +23,7 @@ const i18n = {
   zh,
   en
 }
-// const log = require('electron-log')
+const log = require('electron-log')
 
 
 
@@ -76,12 +75,9 @@ app.on('activate', () => {
     createWindow(winURL)
   }
 });
-// app.on('second-instance', (e, argv) => {
-//   dialog.showMessageBox({
-//     title: "second",
-//     message: "second:" + argv.join(""),
-//   });
-// });
+app.on('second-instance', (e, argv) => {
+  windows['1'].driftViews[0].browserView.webContents.send('setDecodeFilePath', argv);
+});
 /**
  * Auto Updater
  *

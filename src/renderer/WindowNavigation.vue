@@ -189,9 +189,6 @@ export default {
 		});
 		this.setIsMaximized();
 		window.addEventListener("resize", this.setIsMaximized);
-		// ipcRenderer.on("runWindowNavigationEvent", (e, { name, data }) => {
-		// 	this[name](data);
-		// });
 	},
 	computed: {
 		currentHeihgt: function() {

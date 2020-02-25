@@ -16,9 +16,6 @@ import { ipcRenderer, remote } from "electron";
 export default {
 	name: "browser",
 	mounted() {
-		// setInterval(() => {
-		// 	console.log(remote);
-		// }, 5000)
 		document.querySelector(
 			"#theme-ui"
 		).href = `./static/css/${this.themeColor}/theme/index.css`;
@@ -51,6 +48,9 @@ export default {
 			if (res.Error === 0) {
 				localStorage.setItem("edgeVersion", res.Result || "");
 			}
+		});
+		ipcRenderer.on("setDecodeFilePath", (e, path) => {
+			console.log('app.vue', path);
 		});
 		// .catch(error => {
 		// 	if (error.message.includes('timeout')) {

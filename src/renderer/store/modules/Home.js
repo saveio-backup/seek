@@ -1,6 +1,5 @@
 import axios from 'axios';
 import api from '../../assets/config/api'
-import router from '../../router/router';
 import {
   ipcRenderer
 } from 'electron';
@@ -113,6 +112,7 @@ const actions = {
     commit
   }) {
     // commit('SET_CURRENT_ACCOUNT', 1) // login success
+    const router = require('../../router/router');
     axios
       .get(api.account)
       .then((res) => {
@@ -134,7 +134,7 @@ const actions = {
                 if (progress.Error === 0) {
                   if (progress.Result.End - progress.Result.Now > 100000) { // but no Channel
                     if (location.href.indexOf('CreateAccount') < 0) {
-                      router.replace({
+                      router.default.replace({
                         name: 'CreateAccount'
                       })
                       commit('SET_CURRENT_HEIGHT', progress.Result.Now);
@@ -180,11 +180,7 @@ const actions = {
         } else if (res.Error === 50012) {
           if (location.href.indexOf('login') < 0) {
             // remote.getCurrentWindow().send('login-status', false);
-            ipcRenderer.send("run-dialog-event", {
-              name: "setLoginStatus",
-              data: false
-            });
-            router.replace({
+            router.default.replace({
               name: 'login'
             });
           }
@@ -195,7 +191,7 @@ const actions = {
             data: false
           });
           if (location.href.indexOf('Home') < 0) {
-            router.replace({
+            router.default.replace({
               name: 'Home'
             })
           }
@@ -205,7 +201,7 @@ const actions = {
       .catch(err => { // network wrong
         console.error(err);
         if (location.href.indexOf('Home') < 0) {
-          router.replace({
+          router.default.replace({
             name: 'Home'
           })
         }

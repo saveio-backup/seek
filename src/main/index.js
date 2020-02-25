@@ -80,8 +80,6 @@ app.on('ready', function () {
     global.HistoryDB.initDB();
     global.usermetaDB.initDB();
     global.lang = i18n[lang];
-    console.log('global.lang is');
-    console.log(global.lang);
   })
 })
 

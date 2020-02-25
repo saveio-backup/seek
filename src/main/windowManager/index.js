@@ -2,7 +2,8 @@ import {
   app,
   BrowserWindow,
   BrowserView,
-  Menu
+  Menu,
+  MenuItem
 } from 'electron'
 import dialogView from './dialogView'
 import path from 'path'
@@ -80,7 +81,7 @@ class View {
           defaultEncoding: 'utf-8'
         }
       });
-      this.browserView.webContents.once('dom-ready', ()=>{
+      this.browserView.webContents.once('dom-ready', () => {
         resolve();
       });
       global.settingDB.queryData('console').then(async (res) => {
@@ -122,15 +123,23 @@ class View {
   }
   updateEvent() {
     const vm = this;
-    this.webContents.on('context-menu', () => {
+    this.webContents.on('before-input-event', (e, input) => {
+      if (input.control && input.key === 'r') {
+        e.preventDefault();
+        getActive(this.browserWindow).browserView.webContents.reload();
+      }
+    })
+    this.webContents.on('context-menu', (e, props) => {
       const menuItems = [];
       menuItems.push({
           role: 'copy',
           label: global.lang.contextMenu.copy,
+          enabled: props.editFlags.canCopy,
           accelerator: 'CommandOrControl+C'
         }, {
           role: 'paste',
           label: global.lang.contextMenu.paste,
+          enabled: props.editFlags.canPaste,
           accelerator: 'CommandOrControl+V'
         }, {
           label: global.lang.contextMenu.refresh,
@@ -306,7 +315,7 @@ class View {
       }).then(() => {
         // we must destroy this old process(browserView) after init a new process(browserView),
         //if we destroy this old process before that, it will crash in macOS
-        tempBrowserView.destroy();Í
+        tempBrowserView.destroy();
         tempBrowserView = null;
       });
       this.updateEvent();
@@ -482,6 +491,9 @@ export function createWindow(url) {
   mainWindow.menuWindow = new MenuWindow(mainWindow);
   mainWindow.url = url;
   mainWindow.loadURL(url)
+  mainWindow.webContents.on('before-input-event', (e, input) => {
+    registerKeyBinding(mainWindow, input);
+  })
   mainWindow.on('app-command', (e, cmd) => {
     console.log('on app command')
     onAppCommand(mainWindow, cmd)
@@ -634,5 +646,11 @@ function decodeURIComponentExtend(url) {
     return decodeURIComponent(url);
   } catch (error) {
     return '';
+  }
+}
+
+function registerKeyBinding(win, input) {
+  if (input.control && input.key === 'r') {    
+    getActive(win).browserView.webContents.reload();
   }
 }

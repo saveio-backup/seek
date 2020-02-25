@@ -4,22 +4,26 @@ import '../assets/css/reset.scss'
 import api from '../assets/config/api';
 Vue.use(Router)
 
+function loadComponent(path) {
+  return () => import( /* webpackChunkName: "view-[request]" */ `@/${path}`)
+}
+
 export default new Router({
   mode: 'hash',
   routes: [{
       path: '/Navigation',
       name: 'Navigation',
-      component: require('../WindowNavigation.vue').default
+      component: loadComponent('WindowNavigation.vue')
     },
     {
       path: '/Markdown',
       name: 'Markdown',
-      component: require('../pages/Markdown').default
+      component: loadComponent('pages/Markdown.vue')
     },
     {
       path: '/Home',
       name: 'Home',
-      component: require('../pages/Home').default,
+      component: loadComponent('pages/Home.vue'),
       meta: {
         keepAlive: true
       }
@@ -27,7 +31,7 @@ export default new Router({
     {
       path: '/CreateAccount',
       name: 'CreateAccount',
-      component: require('@/components/CreateAccount').default,
+      component: loadComponent('components/CreateAccount.vue'),
       meta: {
         keepAlive: true
       }
@@ -35,45 +39,45 @@ export default new Router({
     {
       path: '/ImportAccount',
       name: 'ImportAccount',
-      component: require('@/components/ImportAccount').default,
+      component: loadComponent('components/ImportAccount.vue'),
       meta: {
         keepAlive: true
       }
     },
     {
       path: '/FileManager',
-      component: require('../pages/FileManager.vue').default,
+      component: loadComponent('pages/FileManager.vue'),
       meta: {
         keepAlive: false
       },
       children: [{
           path: 'filebox',
           name: 'filebox',
-          component: require('../pages/FileManager/FileBox.vue').default,
+          component: loadComponent('pages/FileManager/FileBox.vue'),
           children: [{
               path: 'disk',
               name: 'disk',
-              component: require('../pages/FileManager/FileBox/Disk.vue').default
+              component: loadComponent('pages/FileManager/FileBox/Disk.vue')
             }, {
               path: 'domain',
               name: 'domain',
-              component: require('../pages/FileManager/FileBox/Domain.vue').default
+              component: loadComponent('pages/FileManager/FileBox/Domain.vue')
             }, {
               path: 'expand',
               name: 'expand',
-              component: require('../pages/FileManager/FileBox/Expand.vue').default
+              component: loadComponent('pages/FileManager/FileBox/Expand.vue')
             },
             {
               path: 'upload',
               name: 'upload',
-              component: require('../pages/FileManager/FileBox/Upload.vue').default
+              component: loadComponent('pages/FileManager/FileBox/Upload.vue')
             }
           ]
         },
         {
           path: 'transfer',
           name: 'transfer',
-          component: require('../pages/FileManager/Transfer.vue').default,
+          component: loadComponent('pages/FileManager/Transfer.vue'),
           meta: {
             keepAlive: false
           },
@@ -81,7 +85,7 @@ export default new Router({
         {
           path: 'discovery',
           name: 'discovery',
-          component: require('../pages/FileManager/Discovery.vue').default
+          component: loadComponent('pages/FileManager/Discovery.vue')
         },
         {
           path: '',
@@ -96,18 +100,18 @@ export default new Router({
     },
     {
       path: '/Miner',
-      component: require('../pages/Miner.vue').default,
+      component: loadComponent('pages/Miner.vue'),
       meta: {
         keepAlive: true
       },
       children: [{
         path: 'minerdisk',
         name: 'minerdisk',
-        component: require('../pages/FileManager/FileBox/Disk.vue').default
+        component: loadComponent('pages/FileManager/FileBox/Disk.vue')
       }, {
         path: 'income',
         name: 'income',
-        component: require('../pages/Miner/Income.vue').default
+        component: loadComponent('pages/Miner/Income.vue')
       }, {
         path: '',
         redirect: {
@@ -123,7 +127,7 @@ export default new Router({
     {
       path: '/wallet',
       name: 'Wallet',
-      component: require('../pages/Wallet.vue').default,
+      component: loadComponent('pages/Wallet.vue'),
       meta: {
         keepAlive: true
       }
@@ -131,56 +135,51 @@ export default new Router({
     {
       path: '/dialog',
       name: 'Dialog',
-      component: require('../pages/Dialog.vue').default,
+      component: loadComponent('pages/Dialog.vue'),
       meta: {
         keepAlive: true
       },
       children: [{
           path: 'exportPrivateKey',
           name: 'exportPrivateKey',
-          component: require('../pages/Dialog/ExportPrivateKey.vue').default
+          component: loadComponent('pages/Dialog/ExportPrivateKey.vue')
         },
         {
           path: 'logout',
           name: 'logout',
-          component: require('../pages/Dialog/Logout.vue').default
+          component: loadComponent('pages/Dialog/Logout.vue')
         }
       ]
     },
     {
       path: '/menuwindow',
       name: 'menuWindow',
-      component: require('../pages/menuWindow.vue').default
+      component: loadComponent('pages/menuWindow.vue')
     },
     {
       path: '/settings',
       name: 'settings',
-      component: require('../pages/Settings.vue').default
-    },
-    {
-      path: '/test',
-      name: 'settings',
-      component: require('../pages/test.vue').default
+      component: loadComponent('pages/Settings.vue')
     },
     {
       path: '/orderpay',
       name: 'orderpay',
-      component: require('../pages/OrderPay/OrderPay.vue').default
+      component: loadComponent('pages/OrderPay/OrderPay.vue')
     },
     {
       path: '/history',
       name: 'history',
-      component: require('../pages/History/History.vue').default
+      component: loadComponent('pages/History/History.vue')
     },
     {
       path: '/login',
       name: 'login',
-      component: require('../pages/Login/Login.vue').default
+      component: loadComponent('pages/Login/Login.vue')
     },
     {
       path: '/plugin',
       name: 'plugin',
-      component: require('../pages/PluginInfo.vue').default
+      component: loadComponent('pages/PluginInfo.vue')
     },
     {
       path: '*',

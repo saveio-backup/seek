@@ -476,8 +476,6 @@ export default {
 				// const task = val[index];
 				taskByUrl[val[index].Url] = val[index];
 			}
-			console.log("this.plugins is");
-			console.log(this.plugins);
 			for (let i = 0; i < this.plugins.length; i++) {
 				const pluginItem = this.plugins[i];
 				pluginItem.detail = taskByUrl[pluginItem.Url]

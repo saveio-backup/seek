@@ -191,8 +191,6 @@ export default {
 		},
 		async getPlugins() {
 			const plugins = ipcRenderer.sendSync("getUsermeta", "Plugins");
-			console.log("plugins is");
-			console.log(plugins);
 			const tempPluginsInstalled = [];
 			for (let i = 0; i < plugins.length; i++) {
 				const item = plugins[i];

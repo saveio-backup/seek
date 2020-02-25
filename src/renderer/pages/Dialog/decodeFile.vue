@@ -8,12 +8,12 @@
 			:visible.sync="decodeFileToggle"
 		>
 			<div slot="title">
-				<h2>解密文件</h2>
+				<h2>{{$t('dialog.decodeFile')}}</h2>
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="decode-file-wrapper loading-content decode-file-loading">
 				<div>
-					<p class="mt20 mb20 ft14 tl break-word">解密{{path}}文件</p>
+					<p class="mt20 mb20 ft14 tl break-word">{{$t('dialog.decode')}} {{path}} {{$t('dialog.file')}}</p>
 				</div>
 				<el-form
 					class="mb90"
@@ -43,7 +43,7 @@
 						type="primary"
 						class="primary ml10"
 						@click="decodeFile"
-					>解密</ripper-button>
+					>{{$t('dialog.decodes')}}</ripper-button>
 				</div>
 			</div>
 		</el-dialog>

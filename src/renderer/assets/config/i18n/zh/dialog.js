@@ -14,6 +14,10 @@ const result = {
   'loggingOut': '正在登出',
   'channelLostRemind': '当前通道失效,请新建或者替换其他通道',
   'taskNotPauseWaitForOpeation': '有任务无法暂停，请稍后重试',
+  'decodeFile': '解密文件',
+  'decode': '解密',
+  'decodes': '解密',
+  'file': '文件'
 }
 
 export default result;

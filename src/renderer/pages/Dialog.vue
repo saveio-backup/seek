@@ -185,10 +185,9 @@ export default {
 	},
 	mounted() {
 		const vm = this;
-		if(remote.process.argv[1].endsWith('.ept')) {
+		console.log(remote);
+		if(remote.process.argv[(remote.process.argv.length - 1)].endsWith('.ept')) {
 			vm.decodeFilePath = remote.process.argv[(remote.process.argv.length - 1)];
-			console.log('.ept', remote);
-			console.log('.ept', vm.decodeFilePath);
 			vm.checkOpenDecodeDialog();
 		}
 		ipcRenderer.on("setSelector", (e, selector) => {
@@ -204,7 +203,7 @@ export default {
 		});
 		ipcRenderer.on("setDecodeFilePath", (e, paths) => {
 			console.log('setDecodeFilePath', paths);
-			vm.decodeFilePath = paths[(paths.length - 1)];
+			vm.decodeFilePath = paths;
 			this.checkOpenDecodeDialog();
 		});
 		localStorage.setItem("DNSAdress", "");

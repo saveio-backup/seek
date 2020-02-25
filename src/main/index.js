@@ -2,7 +2,8 @@
 
 import {
   app,
-  BrowserWindow
+  BrowserWindow,
+  dialog
 } from 'electron'
 import './ipcManager'
 import './protocols/protocols' // custom protocol
@@ -44,6 +45,24 @@ const winURL = process.env.NODE_ENV === 'development' ?
   `file://${__dirname}/index.html#/navigation`
 
 import * as node from "./node"
+
+app.on('will-finish-launching',() => {
+  app.on('open-file', (e, urlStr) => {
+    log.error('urlStr:',urlStr);
+    try {
+      const fw = BrowserWindow.getFocusedWindow();
+      if(fw) {
+        windows['1'].driftViews[0].browserView.webContents.send('setDecodeFilePath', urlStr);
+      } else {
+        setTimeout(() => {
+          windows['1'].driftViews[0].browserView.webContents.send('setDecodeFilePath', urlStr);
+        }, 3000)
+      }
+    }catch(e) {
+      log.error(e);
+    }
+  })
+});
 app.on('ready', function () {
   global.settingDB = new SettingDB(); // store SettingDB in global var
   global.HistoryDB = new HistoryDB(); // store HistoryDB in global var
@@ -72,11 +91,15 @@ app.on('window-all-closed', () => {
 })
 app.on('activate', () => {
   if (Object.keys(windows).length === 0) {
-    createWindow(winURL)
+    createWindow(winURL);
   }
 });
 app.on('second-instance', (e, argv) => {
-  windows['1'].driftViews[0].browserView.webContents.send('setDecodeFilePath', argv);
+  try {
+    windows['1'].driftViews[0].browserView.webContents.send('setDecodeFilePath', argv[(argv.length - 1)]);
+  }catch(e) {
+    log.error(e);
+  }
 });
 /**
  * Auto Updater

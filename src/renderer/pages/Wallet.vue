@@ -1098,6 +1098,12 @@ $light-grey: #f7f7f7;
 						position: relative;
 					}
 					.prefix-icon {
+						margin-left: 15px;
+						height: 100%;
+						display: flex;
+						align-items: center;
+					}
+					.prefix-icon {
 						margin-left: 20px;
 					}
 				}
@@ -1146,10 +1152,6 @@ $light-grey: #f7f7f7;
 								width: 40%;
 								text-align: left;
 								float: left;
-								.asset-icon {
-									position: relative;
-									top: 2px;
-								}
 								.asset-display-logo-name {
 									margin-left: 5px;
 								}
@@ -1468,5 +1470,17 @@ $light-grey: #f7f7f7;
 			padding: 8px 22px;
 		}
 	}
+}
+.asset-item {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 1.6rem;
+}
+.asset-icon {
+	display: inline-block;
+	position: relative;
+	width: 15px;
+	height: 15px;
 }
 </style>

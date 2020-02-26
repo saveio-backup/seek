@@ -931,23 +931,6 @@ $input-color: rgba(203, 203, 203, 1);
 	// border: solid 1px #fff;
 	border-top: none;
 }
-.asset-item {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	font-size: 1.6rem;
-}
-.prefix-icon {
-	margin-left: 15px;
-	height: 100%;
-	display: flex;
-	align-items: center;
-}
-.asset-icon {
-	display: inline-block;
-	width: 15px;
-	height: 15px;
-}
 #home {
 	display: flex;
 	flex: 1;

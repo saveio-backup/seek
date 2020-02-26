@@ -54,6 +54,7 @@ const result = {
   'download': 'Download',
   'sorryThereAreNoValidFilesFoundTheFileMayHaveBeenDeleted': 'Sorry, there are no valid files found, the file may have been deleted.',
   'networkErrorDownloadFailed': 'Network Error. Download Failed!',
-  'copy': 'Copy'
+  'copy': 'Copy',
+  'closeSuccess': ' close success!'
 }
 export default result;

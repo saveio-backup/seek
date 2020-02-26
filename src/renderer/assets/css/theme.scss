@@ -19,6 +19,7 @@ $themes: ( // no coment, just for format code
     'filemanager-aside-hover-color':#edeff4,
     'progress-bar-bg':#EBEEF5,
     'table-hover-bg':#F5F7FA,
+    'state-font-disabled': #C7CAD0,
     'font-color': #000 // General font color
   ),
 
@@ -42,6 +43,7 @@ $themes: ( // no coment, just for format code
     'filemanager-aside-hover-color':#202125,
     'progress-bar-bg':#1c1d21,
     'table-hover-bg':#303036,
+    'state-font-disabled': #444444,
     'font-color': #fff)) !default;
 $color: null;
 $card-color:null;
@@ -74,6 +76,7 @@ $font-color:null;
       $filemanager-aside-hover-color: map-get($props, 'filemanager-aside-hover-color') !global;
       $progress-bar-bg: map-get($props, 'progress-bar-bg') !global;
       $table-hover-bg: map-get($props, 'table-hover-bg') !global;
+      $state-font-disabled: map-get($props, 'state-font-disabled') !global;
       @content;
 
       $primary-font-color: null !global;
@@ -96,6 +99,7 @@ $font-color:null;
       $filemanager-aside-hover-color: null !global;
       $progress-bar-bg: null !global;
       $table-hover-bg: null !global;
+      $state-font-disabled: null !global;
     }
 
   }

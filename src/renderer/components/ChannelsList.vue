@@ -237,6 +237,7 @@ export default {
 			callback();
 		};
 		return {
+			settleList: [],
 			validateMount,
 			switchToggle: {
 				assetTransferDialog: false
@@ -374,7 +375,8 @@ export default {
 				}
 			],
 			dns: [],
-			timeout: null
+			timeout: null,
+			channelTimeout:null
 		};
 	},
 	mounted() {
@@ -587,7 +589,7 @@ export default {
 					if (res.Error === 0) {
 						this.channelToggle.channelDialog = false;
 						this.$message({
-							message: vm.$t("public.closeChannelSuccessed"),
+							message: vm.$t("fileManager.opeationSuccess"),
 							type: "success"
 						});
 						this.channelToggle.channelCloseDialog = false;
@@ -634,6 +636,33 @@ export default {
 					}
 				]
 			};
+		},
+		channels() {
+			const vm = this;
+			clearTimeout(this.channelTimeout);
+			this.channelTimeout = setTimeout(() => {
+				let channels = this.channels;
+				let _settleList = JSON.parse(JSON.stringify(vm.settleList));
+				for(let value of channels) {
+					let _index = _settleList.indexOf(value.ChannelId);
+					if(_index !== -1) {
+						_settleList.splice(_index, 1);
+					} else {
+						if(value.Participant1State !== value.ParticiPant2State){
+							vm.settleList.push(value.ChannelId);
+						}
+					}
+				}
+				if(_settleList.length === 0) return;
+				for(let value of _settleList) {
+					this.$message({
+						message: `${vm.$t("public.channel")}${value}${vm.$t("public.closeSuccess")}`,
+						type: "success"
+					});
+					let _index = vm.settleList.indexOf(value);
+					vm.settleList.splice(_index, 1);
+				}
+			}, 1000)
 		}
 	},
 	computed: {
@@ -641,8 +670,7 @@ export default {
 			return this.$i18n.locale;
 		},
 		channels: function() {
-			// return this.mockChannels;
-			return this.$store.state.Home.channels;
+			return this.$store.state.Home.channels || [];
 		},
 		allDns: function() {
 			return this.$store.state.Home.dns || [];
@@ -651,11 +679,6 @@ export default {
 			if (!this.channels) return [];
 			const channelsDns = this.channels.filter(item => {
 				return item.IsDNS;
-				// if (this.allDns.indexOf(item.HostAddr) >= 0) {
-				// 	return true;
-				// } else {
-				// 	false;
-				// }
 			});
 			return channelsDns;
 		},

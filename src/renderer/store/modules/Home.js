@@ -119,6 +119,10 @@ const actions = {
         if (res.Error === 0) {
           if (res.Result.Address) { // Wallet(Account) exist
             const result = res.Result;
+            ipcRenderer.send("run-dialog-event", {
+              name: "setLoginStatus",
+              data: true
+            });
             ipcRenderer.sendSync("updateSettings", 'currentAddress', res.Result.Address);
             ipcRenderer.send('initUsermetaDB', res.Result.Address); // set Usermeta db
             for (let key in result) {
@@ -139,14 +143,13 @@ const actions = {
                       })
                       commit('SET_CURRENT_HEIGHT', progress.Result.Now);
                       commit('SET_TOTAL_HEIGHT', progress.Result.End);
+                      ipcRenderer.send("run-dialog-event", {
+                        name: "setLoginStatus",
+                        data: true
+                      });
                     }
                   }
                 }
-              }).finally(() => {
-                ipcRenderer.send("run-dialog-event", {
-                  name: "setLoginStatus",
-                  data: true
-                });
               })
             } catch (e) {
               console.log(e);

@@ -170,6 +170,7 @@ export default {
 <style lang="scss">
 #history {
 	padding: 10px 0px;
+	min-height: 100%;
 	.card-container {
 		@include themify {
 			background-color: $card-color;

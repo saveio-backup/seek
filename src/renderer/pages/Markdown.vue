@@ -1,5 +1,5 @@
 <template>
-	<div class="markdown" style="background-color:#fff">
+	<div class="markdown">
 		<div v-html="mdHtml"></div>
 	</div>
 </template>
@@ -89,7 +89,9 @@ $gray-100: rgb(200, 200, 200);
 	height: 100%;
 	font-size: 16px;
 	overflow-y: auto;
-	background: white;
+	@include themify {
+		background: $card-color;
+	}
 
 	& > div {
 		margin: 0 auto 25px;
@@ -98,7 +100,9 @@ $gray-100: rgb(200, 200, 200);
 		width: calc(100% - 100px);
 		// reset markdown style
 		font-family: "Microsoft YaHei", "ubuntu", "Tahoma",  arial, sans-serif;
-		color: #444444;
+		@include themify {
+			color: $tertiary-font-color;
+		}
 		line-height: 1;
 		padding: 0px;
 
@@ -110,7 +114,9 @@ $gray-100: rgb(200, 200, 200);
 		h2,
 		h3,
 		h4 {
-			color: #111111;
+			@include themify {
+				color: $primary-font-color;
+			}
 			font-weight: 700;
 			margin-top: 1em;
 		}
@@ -147,7 +153,9 @@ $gray-100: rgb(200, 200, 200);
 		}
 		h1,
 		h2 {
-			border-bottom: 1px solid #efeaea;
+			@include themify {
+				border-bottom: 1px solid $navigation-bg;
+			}
 			padding-bottom: 10px;
 		}
 		h3 {
@@ -224,21 +232,25 @@ $gray-100: rgb(200, 200, 200);
 			width: 390px;
 		}
 		blockquote {
-			border-left: 0.5em solid #eee;
+				border-left: 0.5em solid #eee;
 			padding: 0 0 0 2em;
 			margin-left: 0;
 		}
 		blockquote cite {
 			font-size: 14px;
 			line-height: 20px;
-			color: #bfbfbf;
+			@include themify {
+				color: $nav-button-bg;
+			}
 		}
 		blockquote cite:before {
 			content: "\2014 \00A0";
 		}
 
 		blockquote p {
-			color: #666;
+			@include themify {
+				color: $nav-button-bg;
+			}
 		}
 		hr {
 			text-align: left;
@@ -291,7 +303,9 @@ $gray-100: rgb(200, 200, 200);
 		table th {
 			font-weight: bold; /*加粗*/
 			text-align: center !important; /*内容居中，加上 !important 避免被 Markdown 样式覆盖*/
-			background: rgba(158, 188, 226, 0.2); /*背景色*/
+			@include themify {
+				background: $card-shadow; /*背景色*/
+			}
 		}
 
 		table th {
@@ -299,7 +313,9 @@ $gray-100: rgb(200, 200, 200);
 		}
 
 		table tbody tr:nth-child(2n) {
-			background: rgba(158, 188, 226, 0.12);
+			@include themify {
+				background: $card-shadow; /*背景色*/
+			}
 		}
 
 		table td:nth-child(1) {

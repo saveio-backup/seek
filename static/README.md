@@ -17,8 +17,8 @@
 
 ### 三，用户导入导出
 在注册登录之后，用户仍然可以在任何时候备份自己的Keystore文件和privatekey文件  
-**<font size=4 color=#000>文件导出：</font>**可从左下角的菜单项中以及个人中心页面的名片签上导出钱包文件和私钥文件  
-**<font size=4 color=#000>文件导入：</font>**登出后点击Import Account导入账户文件。文件导入可以分为Keystore File 导入和Pirvate Key导入，其中Keystore File 导入需要验证密码。而Private Key导入不需要密码，而是需要导入后重新设定密码
+**<font size=4>文件导出：</font>**可从左下角的菜单项中以及个人中心页面的名片签上导出钱包文件和私钥文件  
+**<font size=4>文件导入：</font>**登出后点击Import Account导入账户文件。文件导入可以分为Keystore File 导入和Pirvate Key导入，其中Keystore File 导入需要验证密码。而Private Key导入不需要密码，而是需要导入后重新设定密码
 
 ### 四，个人中心
 

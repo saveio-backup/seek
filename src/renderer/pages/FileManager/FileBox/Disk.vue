@@ -84,7 +84,10 @@
 								<span
 									class="row-name flex ai-center"
 									:class="scope.row.Undone ? 'grey-color':''"
-								>{{ scope.row.Name }}
+								>
+									<span :title="scope.row.Name">
+										{{ scope.row.Name }}
+									</span>
 									<span
 										v-if="syncProcess(scope.row.Hash) > -1"
 										class="sync-process cursor-pointer"

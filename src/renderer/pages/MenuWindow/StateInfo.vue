@@ -14,7 +14,10 @@
 				<i
 					class="process-status"
 					:class="{'process-all-error': statusList.DNS.State === 0 && statusList.DNS.HostAddr, 'process-all-offline': statusList.DNS.State === 0 && !statusList.DNS.HostAddr}"
-				></i> {{$t('menuWindow.dnsState')}}
+				></i> 
+				<span :class="{'state-font-disabled': statusList.DNS.State === 0 && !statusList.DNS.HostAddr}">
+					{{$t('menuWindow.dnsState')}}
+				</span>
 				<i
 					v-show="statusList.DNS.State === 0 && statusList.DNS.HostAddr && UpdatedAt(statusList.DNS.UpdatedAt)"
 					class="ofont ofont-chonglian ftpx18 ml10 light-blue cursor-click cursor-pointer"
@@ -91,6 +94,13 @@ export default {
 	padding: 15px;
 	width: 100%;
 	height:100%;
+
+	.state-font-disabled {
+		@include themify {
+			color: $state-font-disabled;
+		}
+	}
+
 	li {
 		padding-top: 10px;
 		.process-status {

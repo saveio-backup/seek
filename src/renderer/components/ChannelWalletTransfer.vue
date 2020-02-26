@@ -180,7 +180,8 @@ export default {
 			if (this.transferInfo.Amount >= 1000000000) {
 				this.transferInfo.Amount = "999999999.999999999";
 			} else {
-				this.transferInfo.Amount = effectiveNumber(this.transferInfo.Amount);
+				let num = parseFloat(this.transferInfo.Amount).toFixed(9);
+				this.transferInfo.Amount = effectiveNumber(num);
 			}
 		},
 		toTransfer() {

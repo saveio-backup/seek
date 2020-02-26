@@ -32,6 +32,18 @@
   }
 }
 
+.nav-button-disabled {
+  @include themify {
+    color: $nav-button-disabled;
+  }
+}
+
+.state-font-disabled {
+  @include themify {
+    color: $state-font-disabled;
+  }
+}
+
 ::-webkit-scrollbar-track-piece {
   @include themify {
     background-color: $color;

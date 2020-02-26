@@ -303,7 +303,7 @@ export default {
 			});
 		},
 		indexMethod(index) {
-			return `Node${index}`;
+			return `${this.$t('fileManager.node')}${index + 1}`;
 		}
 	},
 	mounted() {

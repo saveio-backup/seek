@@ -103,13 +103,12 @@ export default {
 				})
 				.then(res => {
 					if (res.Error === 0) {
-						// remote.getCurrentWindow().send('login-status', true);
 						ipcRenderer.send("run-dialog-event", {
               name: "setLoginStatus",
               data: true
-            });
+						});
 						this.$router.replace({
-							name: "Home"
+							name: "LoginLog"
 						});
 					} else {
 						// remote.getCurrentWindow().send('login-status', false);

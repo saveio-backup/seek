@@ -100,6 +100,7 @@ export default {
 			},
 
 			isNeedSync: false,
+			isLoginShowLog: false,
 
 			// transfer correlation
 			transferObj: {},
@@ -186,6 +187,7 @@ export default {
 	mounted() {
 		const vm = this;
 		console.log(remote);
+		localStorage.setItem('localStorage', false);
 		if(remote.process.argv[(remote.process.argv.length - 1)].endsWith('.ept')) {
 			vm.decodeFilePath = remote.process.argv[(remote.process.argv.length - 1)];
 			vm.checkOpenDecodeDialog();
@@ -254,7 +256,10 @@ export default {
 			this.Balance = null;
 			this.channelNum = null;
 			localStorage.setItem("DNSAdress", "");
-			if(!newVal) return;
+			if(!newVal) {
+				this.setIsLoginShowLog(false);
+				return;
+			};
 			this.$store.dispatch("getWaitForTransferList");
 			let _uploadDoneList = localStorage.getItem(`uploadDoneList_${this.Address}`);
 			if(_uploadDoneList) {
@@ -403,9 +408,7 @@ export default {
 			}
 		},
 		checkOpenDecodeDialog() {
-			console.log('.ept', this.decodeFilePath);
 			if(this.decodeFilePath.endsWith('.ept')) {
-				console.log('.ept', this.loginStatus);
 				if(this.loginStatus === true) {
 					ipcRenderer.send("dialog-open", "decodeFile");
 				}
@@ -825,6 +828,7 @@ export default {
 				} else {
 					progressResult.Result.isNeedSync = this.isNeedSync;
 				}
+				progressResult.Result.isLoginShowLog = this.isLoginShowLog;
 				this.renderDataToBrowserView({
 					result: progressResult.Result,
 					type: "progress",
@@ -1352,6 +1356,18 @@ export default {
 		},
 		clearDownloadDone() {
 			this.downloadDoneList = [];
+		},
+		setIsLoginShowLog(data) {
+			this.isLoginShowLog = data;
+			this.isLoginShowLog = data;
+			localStorage.setItem('localStorage', data);
+			if(data) {
+				this.renderDataToBrowserView({
+					result: null,
+					type: "goHome",
+					rendTo: 1
+				});
+			}
 		}
 	}
 };

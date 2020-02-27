@@ -66,9 +66,9 @@ export default class MenuWindow {
       this.win.webContents.send('setMenuDialog', params);
       this.win.setBounds({
         x: parentBounds.x + 45,
-        y: parentBounds.y - 175 + parentBounds.height,
+        y: parentBounds.y - 145 + parentBounds.height,
         width: 240,
-        height: 170
+        height: 140
       })
       // this.win.getParentWindow().focus();
       this.win.showInactive();

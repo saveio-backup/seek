@@ -177,6 +177,11 @@ export default new Router({
       component: loadComponent('pages/Login/Login.vue')
     },
     {
+      path: '/loginLog',
+      name: 'LoginLog',
+      component: loadComponent('pages/LoginLog.vue')
+    },
+    {
       path: '/plugin',
       name: 'plugin',
       component: loadComponent('pages/PluginInfo.vue')

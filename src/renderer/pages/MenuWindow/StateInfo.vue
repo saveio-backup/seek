@@ -31,12 +31,12 @@
 					:class="{'process-all-error': statusList.DspProxy.State === 0}"
 				></i> {{$t('menuWindow.dspProxyState')}}
 			</li>
-			<li class="flex">
+			<!-- <li class="flex">
 				<i
 					class="process-status"
 					:class="{'process-all-error': statusList.ChannelProxy.State === 0}"
 				></i> {{$t('menuWindow.channelProxyState')}}
-			</li>
+			</li> -->
 		</ul>
 	</div>
 </template>

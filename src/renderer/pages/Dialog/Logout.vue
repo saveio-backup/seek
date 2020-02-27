@@ -74,9 +74,13 @@ export default {
 					if (res.Error === 0) {
 						// remote.getCurrentWindow().send('login-status', false);
 						ipcRenderer.send("run-dialog-event", {
+							name: "setIsLoginShowLog",
+							data: false
+						});
+						ipcRenderer.send("run-dialog-event", {
               name: "setLoginStatus",
               data: false
-            });
+						});
 						const notClear = [
 							"waitForUploadOrderList",
 							"uploadTask",

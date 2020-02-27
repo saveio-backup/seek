@@ -49,16 +49,6 @@ export default {
 				localStorage.setItem("edgeVersion", res.Result || "");
 			}
 		});
-		ipcRenderer.on("setDecodeFilePath", (e, path) => {
-			console.log('app.vue', path);
-		});
-		// .catch(error => {
-		// 	if (error.message.includes('timeout')) {
-		//     Message.error({
-		//       message: 'Request Timeout!'
-		//     })
-		//   }
-		// })
 	},
 	watch: {
 		$route(val, old) {
@@ -103,6 +93,14 @@ export default {
 		},
 		accountUpdate({ result }) {
 			this.$store.commit("SET_ACCOUNT", result);
+			if(!result) {
+				this.$store.commit("SET_STAET", {
+					ChainState: {},
+					DNSState: {},
+					DspProxyState: {},
+					ChannelProxyState: {}
+				});
+			}
 		},
 		channelUpdate({ result }) {
 			this.$store.commit("SET_BALANCE_TOTAL", result);
@@ -112,6 +110,16 @@ export default {
 		},
 		revenceUpdate({ result }) {
 			this.$store.commit("SET_REVENUE", result);
+		},
+		goHomeUpdate({ result, page }) {
+			if (page === "tab") {
+				if (this.routerName === "settings") return;
+				if (location.href.indexOf("Home") < 0) {
+					this.$router.replace({
+						name: "Home"
+					});
+				}
+			}
 		},
 		progressUpdate({ result, page }) {
 			if (page === "tab") {
@@ -123,10 +131,19 @@ export default {
 						});
 					}
 				} else {
-					if (location.href.indexOf("CreateAccount") > 0) {
-						this.$router.replace({
-							name: "Home"
-						});
+					if(result.isLoginShowLog === true) {
+						if (location.href.indexOf("CreateAccount") > 0 || location.href.indexOf("loginLog") > 0) {
+							this.$router.replace({
+								name: "Home"
+							});
+						}
+					} else {
+						let address = localStorage.getItem('Address');
+						if (location.href.indexOf("loginLog") < 0 && address) {
+							this.$router.replace({
+								name: "LoginLog"
+							});
+						}
 					}
 				}
 			}

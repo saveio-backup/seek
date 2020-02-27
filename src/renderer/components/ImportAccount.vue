@@ -366,7 +366,16 @@ export default {
 						for (let key in result) {
 							window.localStorage.setItem(key, result[key]);
 						}
-						window.location.href = location.origin + location.pathname; // success login link to home page
+						// window.location.href = location.origin + location.pathname; // success login link to home page
+						// console.log(location.pathname)
+						// window.location.href = location.origin + location.pathname; // success login link to home page
+						ipcRenderer.send("run-dialog-event", {
+							name: "setLoginStatus",
+							data: true
+						});
+						vm.$router.replace({
+							name: "LoginLog"
+						});
 					} else {
 						this.$message.error(this.$t(`error[${res.Error}]`));
 					}
@@ -404,7 +413,14 @@ export default {
 								for (let key in result) {
 									window.localStorage.setItem(key, result[key]);
 								}
-								window.location.href = location.origin + location.pathname; // success login link to home page
+								// window.location.href = location.origin + location.pathname; // success login link to home page
+								ipcRenderer.send("run-dialog-event", {
+									name: "setLoginStatus",
+									data: true
+								});
+								vm.$router.replace({
+									name: "LoginLog"
+								});
 							} else {
 								this.$message.error(this.$t(`error[${res.Error}]`));
 							}

@@ -102,7 +102,7 @@
 						></channel-list>
 					</div>
 
-					<div class="adjust-item flex margin-center mt10 mb10">
+					<div class="adjust-item flex margin-center mt10 mb10" style="display:inline-block;">
 						<el-form
 							ref="switchChannelForm"
 							:model="switchChannelForm"

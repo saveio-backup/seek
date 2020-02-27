@@ -1477,6 +1477,7 @@ export default {
 							return ;
 						}) || [];
 					this.$store.commit("SET_WAIT_FOR_UPLOAD_LIST", newWaitForUploadList);
+					this.$store.commit("REMOVE_WAIT_FOR_UPLOAD_ORDER_LIST", waitForUploadArr);
 					ipcRenderer.send("run-dialog-event", {
 						name: "setWaitForUploadList",
 						data: newWaitForUploadList
@@ -1507,6 +1508,7 @@ export default {
 						"SET_WAIT_FOR_DOWNLOAD_LIST",
 						newWaitForDownloadList
 					);
+					this.$store.commit("REMOVE_WAIT_FOR_DOWNLOAD_ORDER_LIST", waitForUploadArr);
 					ipcRenderer.send("run-dialog-event", {
 						name: "setWaitForDownloadList",
 						data: newWaitForDownloadList

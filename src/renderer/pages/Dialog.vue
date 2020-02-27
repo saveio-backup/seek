@@ -539,6 +539,8 @@ export default {
 					"REMOVE_WAIT_FOR_UPLOAD_ORDER_LIST",
 					vm.readyUpload
 				);
+				vm.$store.commit("REMOVE_UPLOADING", vm.readyUpload);
+				vm.$store.commit("REMOVE_PAUSING", vm.readyUpload);
 				vm.$nextTick(() => {
 					vm.readyUpload = [];
 				});
@@ -570,7 +572,7 @@ export default {
 					setTimeout(() => {
 						vm.readyUpload = [];
 						vm.uploadingTransferListForce++;
-					}, 2000);
+					}, 200);
 				});
 
 				// error message
@@ -674,6 +676,8 @@ export default {
 					"REMOVE_WAIT_FOR_DOWNLOAD_ORDER_LIST",
 					vm.readyDownload
 				);
+				vm.$store.commit("REMOVE_UPLOADING", vm.readyDownload);
+				vm.$store.commit("REMOVE_PAUSING", vm.readyDownload);
 				vm.$nextTick(() => {
 					vm.readyDownload = [];
 				});
@@ -700,7 +704,7 @@ export default {
 					setTimeout(() => {
 						vm.readyDownload = [];
 						vm.downloadingTransferListForce++; // force update
-					}, 2000);
+					}, 200);
 				});
 
 				// error message
@@ -1358,7 +1362,6 @@ export default {
 			this.downloadDoneList = [];
 		},
 		setIsLoginShowLog(data) {
-			this.isLoginShowLog = data;
 			this.isLoginShowLog = data;
 			localStorage.setItem('localStorage', data);
 			if(data) {

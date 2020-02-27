@@ -77,9 +77,9 @@
     },
     "fileAssociations": [
       {
-        "name": "test file associations",
+        "name": "seeker encrypt file",
         "ext": "ept",
-        "description": "test file associations"
+        "description": "seeker encrypt file"
       }
     ]
   },

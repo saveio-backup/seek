@@ -73,6 +73,7 @@ const mutations = {
     },
     // set uploadTask (Data set api) 
     SET_WAIT_FOR_UPLOAD_LIST(state, result) {
+        console.log('SET_WAIT_FOR_UPLOAD_LIST:===========================', result);
         if(!address) {
             address = localStorage.getItem('Address');
         }
@@ -100,6 +101,7 @@ const mutations = {
     },
     // set downloadTask (Data set api) 
     SET_WAIT_FOR_DOWNLOAD_LIST(state, result) {
+        console.log('SET_WAIT_FOR_DOWNLOAD_LIST:===========================',result);
         if(!address) {
             address = localStorage.getItem('Address');
         }
@@ -118,6 +120,8 @@ const mutations = {
      * result(type array)
      *  */
     PUSH_WAIT_FOR_UPLOAD_ORDER_LIST(state, result) {
+        console.log('PUSH_WAIT_FOR_UPLOAD_ORDER_LIST:===========================', result);
+        console.log('state.waitForUploadOrderList:', state.waitForUploadOrderList);
         let _waitForUploadOrderList = JSON.parse(JSON.stringify(state.waitForUploadOrderList));
         let flag = false;
         for (let value of result) {
@@ -132,10 +136,13 @@ const mutations = {
             if(!address) {
                 address = localStorage.getItem('Address');
             }
+            console.log("state.waitForUploadOrderList:",state.waitForUploadOrderList);
             localStorage.setItem(`waitForUploadOrderList_${address}`, JSON.stringify(state.waitForUploadOrderList));
         }
     },
     UNSHIFT_WAIT_FOR_UPLOAD_ORDER_LIST(state, result) {
+        console.log("UNSHIFT_WAIT_FOR_UPLOAD_ORDER_LIST:===========================", result);
+        console.log("state.waitForUploadOrderList:",state.waitForUploadOrderList);
         let _waitForUploadOrderList = JSON.parse(JSON.stringify(state.waitForUploadOrderList));
         let flag = false;
         for (let value of result) {
@@ -150,6 +157,7 @@ const mutations = {
             if(!address) {
                 address = localStorage.getItem('Address');
             }
+            console.log("state.waitForUploadOrderList:", state.waitForUploadOrderList);
             localStorage.setItem(`waitForUploadOrderList_${address}`, JSON.stringify(state.waitForUploadOrderList));
         }
     },
@@ -158,6 +166,8 @@ const mutations = {
      * result(type array)
      *  */
     REMOVE_WAIT_FOR_UPLOAD_ORDER_LIST(state, result) {
+        console.log("REMOVE_WAIT_FOR_UPLOAD_ORDER_LIST:===========================", result);
+        console.log("state.waitForUploadOrderList:",state.waitForUploadOrderList);
         let _waitForUploadOrderList = JSON.parse(JSON.stringify(state.waitForUploadOrderList));
         let flag = false; // look for is not update
         for (let value of result) {
@@ -171,10 +181,12 @@ const mutations = {
             if(!address) {
                 address = localStorage.getItem('Address');
             }
+            console.log("state.waitForUploadOrderList:",state.waitForUploadOrderList);
             localStorage.setItem(`waitForUploadOrderList_${address}`, JSON.stringify(state.waitForUploadOrderList));
         }
     },
     SET_WAIT_FOR_UPLOAD_ORDER_LIST(state, result) {
+        console.log("SET_WAIT_FOR_UPLOAD_ORDER_LIST:===========================", result);
         state.waitForUploadOrderList = result;
         if(!address) {
             address = localStorage.getItem('Address');
@@ -186,6 +198,8 @@ const mutations = {
      * result(type array)
      *  */
     PUSH_WAIT_FOR_DOWNLOAD_ORDER_LIST(state, result) {
+        console.log("PUSH_WAIT_FOR_DOWNLOAD_ORDER_LIST:===========================", result);
+        console.log("state.waitForDownloadOrderList:", state.waitForDownloadOrderList);
         let _waitForDownloadOrderList = JSON.parse(JSON.stringify(state.waitForDownloadOrderList));
         let flag = false;
         for (let value of result) {
@@ -200,10 +214,13 @@ const mutations = {
             if(!address) {
                 address = localStorage.getItem('Address');
             }
+            console.log("state.waitForDownloadOrderList:", state.waitForDownloadOrderList);
             localStorage.setItem(`waitForDownloadOrderList_${address}`, JSON.stringify(state.waitForDownloadOrderList));
         }
     },
     UNSHIFT_WAIT_FOR_DOWNLOAD_ORDER_LIST(state, result) {
+        console.log("UNSHIFT_WAIT_FOR_DOWNLOAD_ORDER_LIST:===========================", result);
+        console.log("state.waitForDownloadOrderList:", state.waitForDownloadOrderList);
         let _waitForDownloadOrderList = JSON.parse(JSON.stringify(state.waitForDownloadOrderList));
         let flag = false;
         for (let value of result) {
@@ -218,6 +235,7 @@ const mutations = {
             if(!address) {
                 address = localStorage.getItem('Address');
             }
+            console.log("state.waitForDownloadOrderList:", state.waitForDownloadOrderList);
             localStorage.setItem(`waitForDownloadOrderList_${address}`, JSON.stringify(state.waitForDownloadOrderList));
         }
     },
@@ -226,6 +244,8 @@ const mutations = {
      * result(type array)
      *  */
     REMOVE_WAIT_FOR_DOWNLOAD_ORDER_LIST(state, result) {
+        console.log("REMOVE_WAIT_FOR_DOWNLOAD_ORDER_LIST:===========================", result);
+        console.log("state.waitForDownloadOrderList:", state.waitForDownloadOrderList);
         let _waitForDownloadOrderList = JSON.parse(JSON.stringify(state.waitForDownloadOrderList));
         let flag = false; // look for is not update
         for (let value of result) {
@@ -239,10 +259,12 @@ const mutations = {
             if(!address) {
                 address = localStorage.getItem('Address');
             }
+            console.log("state.waitForDownloadOrderList:", state.waitForDownloadOrderList);
             localStorage.setItem(`waitForDownloadOrderList_${address}`, JSON.stringify(state.waitForDownloadOrderList));
         }
     },
     SET_WAIT_FOR_DOWNLOAD_ORDER_LIST(state, result) {
+        console.log("SET_WAIT_FOR_DOWNLOAD_ORDER_LIST:===========================", result);
         state.waitForDownloadOrderList = result
         if(!address) {
             address = localStorage.getItem('Address');
@@ -252,6 +274,7 @@ const mutations = {
 
 
     GET_LOCAL_STATUS(state, result) {
+        console.log("GET_LOCAL_STATUS:===========================", result);
         state.localStatus = result;
         if(!address) {
             address = localStorage.getItem('Address');
@@ -263,6 +286,8 @@ const mutations = {
      * result(type array)
      *  */
     ADD_PAUSING(state, result) {
+        console.log("ADD_PAUSING:===========================", result);
+        console.log("state.localStatus:", state.localStatus);
         let _localStatus = JSON.parse(JSON.stringify(state.localStatus));
         let flag = false; // look for is not update
         for (let vaule of result) {
@@ -283,6 +308,7 @@ const mutations = {
             if(!address) {
                 address = localStorage.getItem('Address');
             }
+            console.log("state.localStatus:", state.localStatus)
             localStorage.setItem(`localStatus_${address}`, JSON.stringify(state.localStatus));
         }
     },
@@ -291,6 +317,8 @@ const mutations = {
      * result(type array)
      *  */
     REMOVE_PAUSING(state, result) {
+        console.log("REMOVE_PAUSING:===========================",result);
+        console.log("state.localStatus:", state.localStatus);
         let _localStatus = JSON.parse(JSON.stringify(state.localStatus));
         let flag = false; // look for is not update
         for (let value of result) {
@@ -304,6 +332,7 @@ const mutations = {
             if(!address) {
                 address = localStorage.getItem('Address');
             }
+            console.log("state.localStatus:", state.localStatus);
             localStorage.setItem(`localStatus_${address}`, JSON.stringify(state.localStatus));
         }
     },
@@ -312,6 +341,8 @@ const mutations = {
      * result(type array)
      *  */
     ADD_UPLOADING(state, result) {
+        console.log("ADD_UPLOADING:===========================", result);
+        console.log("state.localStatus:", state.localStatus);
         let _localStatus = JSON.parse(JSON.stringify(state.localStatus));
         let flag = false; // look for is not update
         for (let value of result) {
@@ -332,10 +363,13 @@ const mutations = {
             if(!address) {
                 address = localStorage.getItem('Address');
             }
+            console.log("state.localStatus:", state.localStatus);
             localStorage.setItem(`localStatus_${address}`, JSON.stringify(state.localStatus));
         }
     },
     REMOVE_UPLOADING(state, result) {
+        console.log("REMOVE_UPLOADING:===========================", result);
+        console.log("state.localStatus:", state.localStatus)
         let _localStatus = JSON.parse(JSON.stringify(state.localStatus));
         let flag = false; // look for is not update
         for (let value of result) {
@@ -349,6 +383,7 @@ const mutations = {
             if(!address) {
                 address = localStorage.getItem('Address');
             }
+            console.log("state.localStatus:", state.localStatus);
             localStorage.setItem(`localStatus_${address}`, JSON.stringify(state.localStatus));
         }
     },
@@ -484,7 +519,7 @@ const actions = {
 }
 
 function completeTransferListRequest(commit) {
-    axios.get(api.transferlist + '/0/0/0').then(res => {
+    axios.get(api.transferlist + '/0/0/0/0/0').then(res => {
         toCompleteTransferListRequest.bind(this, {
             commit,
             res
@@ -503,7 +538,7 @@ function toCompleteTransferListRequest({
 }
 
 function downloadTransferListRequest(commit) {
-    axios.get(api.transferlist + '/2/0/0').then(res => {
+    axios.get(api.transferlist + '/2/0/0/0/0').then(res => {
         toDownloadTransferListRequest.bind(this, {
             commit,
             res
@@ -536,7 +571,7 @@ function toDownloadTransferListRequest({
 }
 
 function uploadTransferListRequest(commit) {
-    axios.get(api.transferlist + '/1/0/0').then(res => {
+    axios.get(api.transferlist + '/1/0/0/0/0').then(res => {
         toUploadTransferListRequest.bind(this, {
             commit,
             res
@@ -569,7 +604,7 @@ function toUploadTransferListRequest({
 
 function syncFileRequest(commit, state, limit) {
     clearTimeout(syncFileTimer);
-    axios.get(api.getFileList + `0/0/${limit}/1`, {
+    axios.get(api.getFileList + `0/0/${limit}/1/0/0`, {
         cancelToken: new CancelToken(c => {
             syncFileRequestCancel = c;
         }),

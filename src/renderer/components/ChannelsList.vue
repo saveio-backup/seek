@@ -83,7 +83,7 @@
 				>
 					<template slot-scope="scope">
 						<span
-							v-show="scope.row.Participant1State !== 0 && scope.row.ParticiPant2State !== 0"
+							v-show="!scope.row.IsParticipant1Closer && !scope.row.IsParticipant2Closer"
 							class="opeation-icon light-blue user-no-select"
 							@click="openTransfer(scope.row)"
 							:title="$t('public.transfer')"
@@ -91,7 +91,7 @@
 							<i class="ofont ofont-huazhuan ftpx16"></i>
 						</span>
 						<span
-							v-show="scope.row.Participant1State !== 0 && scope.row.ParticiPant2State !== 0"
+							v-show="!scope.row.IsParticipant1Closer && !scope.row.IsParticipant2Closer"
 							class="opeation-icon light-blue ml20 user-no-select"
 							@click="openClose(scope.row)"
 							:title="$t('public.closeChannel')"
@@ -100,7 +100,7 @@
 						</span>
 						<span
 							class="closingWrapper"
-							v-show="scope.row.Participant1State !== scope.row.ParticiPant2State"
+							v-show="scope.row.IsParticipant1Closer !== scope.row.IsParticipant2Closer"
 						>{{$t('public.settle')}}...</span>
 					</template>
 				</el-table-column>
@@ -648,7 +648,7 @@ export default {
 					if(_index !== -1) {
 						_settleList.splice(_index, 1);
 					} else {
-						if(value.Participant1State !== value.ParticiPant2State){
+						if(value.IsParticipant1Closer !== value.IsParticipant2Closer){
 							vm.settleList.push(value.ChannelId);
 						}
 					}

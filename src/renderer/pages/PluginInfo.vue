@@ -140,6 +140,13 @@ export default {
 		};
 	},
 	mounted() {
+		ipcRenderer.send("run-dialog-event", {
+			name: "attach",
+			data: {
+				names: ['progress', 'account', 'downloadList', 'completeList'],
+				id: remote.getCurrentWebContents().id
+			}
+		});
 		document.title = this.$t("plugin.plugin");
 		this.getPluginsInfo();
 		document.addEventListener("visibilitychange", () => {

@@ -135,7 +135,7 @@
 	</div>
 </template>
 <script>
-const { ipcRenderer, clipboard } = require("electron");
+const { ipcRenderer, clipboard, remote } = require("electron");
 import { filterFloat, effectiveNumber } from "../assets/config/util";
 import channelsList from "../components/ChannelsList.vue";
 import canvasBg from "./Home/CanvasBg.vue";
@@ -148,6 +148,14 @@ export default {
 	mounted() {
 		document.title = this.$t("home.home");
 		const vm = this;
+		ipcRenderer.send("run-dialog-event", {
+			name: "attach",
+			data: {
+				names: ['progress', 'account', 'channel', 'balance', 'revence'],
+				id: remote.getCurrentWebContents().id
+			}
+		});
+
 
 		if (this.loginStatus === 1) {
 			this.chartInit();

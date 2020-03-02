@@ -186,7 +186,7 @@
 	</div>
 </template>
 <script>
-import { clipboard, ipcRenderer } from "electron";
+import { clipboard, ipcRenderer, remote } from "electron";
 import util from "./../assets/config/util";
 export default {
 	created() {
@@ -195,6 +195,11 @@ export default {
 			: this.$t("account.createAccount");
 	},
 	mounted() {
+		const vm = this;
+		ipcRenderer.on("dialog-load", e => {
+			vm.attach();
+		});
+		vm.attach();
 		this.loopFont();
 		this.getAccountStatus();
 	},
@@ -304,7 +309,12 @@ export default {
 					"g"
 				);
 				let lowRegex = new RegExp("(?=.{0,}).*", "g");
-				if (highRegex.test(value) || highRegex2.test(value) || highRegex3.test(value) || highRegex4.test(value)) {
+				if (
+					highRegex.test(value) ||
+					highRegex2.test(value) ||
+					highRegex3.test(value) ||
+					highRegex4.test(value)
+				) {
 					this.switchToggle.passwordStrength = 2;
 					callback();
 				} else if (middleRegex.test(value)) {
@@ -379,6 +389,15 @@ export default {
 		}
 	},
 	methods: {
+		attach() {
+			ipcRenderer.send("run-dialog-event", {
+				name: "attach",
+				data: {
+					names: ["progress", "account", "state"],
+					id: remote.getCurrentWebContents().id
+				}
+			});
+		},
 		exportFile(contents, fileName) {
 			const vm = this;
 			this.$exportFile(contents, fileName, function() {

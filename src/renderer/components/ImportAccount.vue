@@ -160,7 +160,7 @@
 	</div>
 </template>
 <script>
-const { ipcRenderer } = require("electron");
+const { ipcRenderer, remote } = require("electron");
 import util from "./../assets/config/util";
 export default {
 	data() {
@@ -437,6 +437,15 @@ export default {
 				}
 			});
 		}
+	},
+	mounted() {
+		ipcRenderer.send("run-dialog-event", {
+			name: "attach",
+			data: {
+				names: ['progress', 'account'],
+				id: remote.getCurrentWebContents().id
+			}
+		});
 	}
 };
 </script>

@@ -145,10 +145,17 @@
 import { filterFloat } from "../assets/config/util";
 import channelList from "../components/ChannelsList.vue";
 import channelWalletTransfer from "../components/ChannelWalletTransfer.vue";
-import { ipcRenderer } from "electron";
+import { ipcRenderer, remote } from "electron";
 import crypto from "crypto";
 export default {
 	mounted() {
+		ipcRenderer.send("run-dialog-event", {
+			name: "attach",
+			data: {
+				names: ['progress', 'channel', 'account', 'balance', 'uploadList', 'downloadList', 'completeList', 'waitForUploadList', 'waitForDownloadList', 'waitForUploadOrderList', 'waitForDownloadOrderList', 'realUploadingLength', 'realDownloadingLength', 'localStatus', 'userspace', 'uploadDoneList', 'downloadDoneList'],
+				id: remote.getCurrentWebContents().id
+			}
+		});
 		document.title = this.$t("fileManager.fileManager");
 		ipcRenderer.on("queryto", (sender, query) => {
 			this.$router.push({ name: "transfer", query: query });

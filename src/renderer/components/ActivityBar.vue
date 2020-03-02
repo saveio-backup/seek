@@ -160,7 +160,7 @@ export default {
 		status: function() {
 			let online = false;
 			let offline = false;
-			let statusKey = ["Chain", "DNS", "DspProxy", "ChannelProxy"];
+			let statusKey = ["Chain", "DNS", "DspProxy"];
 			for (let value of statusKey) {
 				if (
 					this.statusList &&

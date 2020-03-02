@@ -941,12 +941,12 @@ export default {
 				return newArr;
 			}
 			for (let value of newArr) {
-				if (this.localStatus.pausing.indexOf(value.Id) >= 0) {
+				if (this.localStatus.pausing.indexOf(value.Id) >= 0  && value.Status !== 0) {
 					value.Status = 0;
 					value.DetailStatus = "1";
 					continue;
 				}
-				if (this.localStatus.uploading.indexOf(value.Id) >= 0) {
+				if (this.localStatus.uploading.indexOf(value.Id) >= 0 && value.Status !== 2) {
 					value.Status = 2;
 					value.DetailStatus = "uploadLoading";
 					continue;
@@ -963,12 +963,12 @@ export default {
 				return newArr;
 			}
 			for (let value of newArr) {
-				if (this.localStatus.pausing.indexOf(value.Id) >= 0) {
+				if (this.localStatus.pausing.indexOf(value.Id) >= 0 && value.Status !== 0) {
 					value.Status = 0;
 					value.DetailStatus = "1";
 					continue;
 				}
-				if (this.localStatus.uploading.indexOf(value.Id) >= 0) {
+				if (this.localStatus.uploading.indexOf(value.Id) >= 0 && value.Status !== 2) {
 					value.Status = 2;
 					value.DetailStatus = "downloadLoading";
 					continue;

@@ -180,6 +180,11 @@ export default {
 	},
 	mounted() {
 		window.vue = this;
+		const vm = this;
+		ipcRenderer.on("dialog-load", (e) => {
+			vm.attach();
+		});
+		vm.attach();
 		ipcRenderer.on("forceUpdate", () => {
 			this.$forceUpdate();
 			this.views = remote.getCurrentWindow().views;
@@ -261,6 +266,15 @@ export default {
 		};
 	},
 	methods: {
+		attach() {
+			ipcRenderer.send("run-dialog-event", {
+				name: "attach",
+				data: {
+					names: ['progress', 'account', 'channel', 'state'],
+					id: remote.getCurrentWebContents().id
+				}
+			});
+		},
 		remoteSetActive(view, viewIndex) {
 			this.currentWindow.views.map((viewItem, index) => {
 				if (viewIndex === index) {

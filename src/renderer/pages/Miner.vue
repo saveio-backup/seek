@@ -21,8 +21,17 @@
 	</div>
 </template>
 <script>
+import { remote, ipcRenderer } from "electron";
+
 export default {
 	mounted() {
+		ipcRenderer.send("run-dialog-event", {
+			name: "attach",
+			data: {
+				names: ['progress', 'account', 'revence'],
+				id: remote.getCurrentWebContents().id
+			}
+		});
 		document.title = this.$t("miner.miner");
 		this.$store.dispatch("setCurrentAccount"); // get login status
 	},

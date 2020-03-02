@@ -36,7 +36,7 @@
 			></i>
 			<div
 				class="connect-success"
-				v-if="!statusList.DNS && (statusList.DNS.State || (statusList.DNS.HostAddr === '' && currentHeight === totalHeight && totalHeight !== 0))"
+				v-if="statusList.DNS && (statusList.DNS.State || (statusList.DNS.HostAddr === '' && currentHeight === totalHeight && totalHeight !== 0))"
 			>
 				<i
 					class="el-icon-check"
@@ -92,7 +92,7 @@
 </template>
 
 <script>
-import { ipcRenderer } from "electron";
+import { ipcRenderer, remote } from "electron";
 export default {
 	name: "LoginLog",
 	data() {
@@ -166,6 +166,13 @@ export default {
 		}
 	},
 	mounted() {
+		ipcRenderer.send("run-dialog-event", {
+			name: "attach",
+			data: {
+				names: ['progress', 'state', 'account', 'channel'],
+				id: remote.getCurrentWebContents().id
+			}
+		});
 		this.getNetworkState();
 	}
 };

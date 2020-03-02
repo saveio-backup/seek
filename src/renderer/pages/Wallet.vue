@@ -389,9 +389,16 @@ import QRCode from "../assets/tool/qrcode.min";
 import { effectiveNumber } from "../assets/config/util";
 import { round } from "mathjs";
 import crypto from "crypto";
-const { clipboard } = require("electron");
+const { clipboard, remote, ipcRenderer } = require("electron");
 export default {
 	mounted() {
+		ipcRenderer.send("run-dialog-event", {
+			name: "attach",
+			data: {
+				names: ['progress', 'account', 'balance'],
+				id: remote.getCurrentWebContents().id
+			}
+		});
 		document.title = this.$t("wallet.wallet");
 		this.$store.dispatch("setCurrentAccount"); // get login status
 		this.$store.dispatch("setBalanceLists");

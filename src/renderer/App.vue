@@ -122,8 +122,7 @@ export default {
 			}
 		},
 		progressUpdate({ result, page }) {
-			if (page === "tab") {
-				if (this.routerName === "settings") return;
+			if (this.routerName && this.routerName !== "menuWindow" && this.routerName !== "Navigation" && this.routerName !== "settings") {
 				if (result.isNeedSync) {
 					if (location.href.indexOf("CreateAccount") < 0) {
 						this.$router.replace({

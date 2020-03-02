@@ -70,6 +70,7 @@ export default {
 	data() {
 		const COUNT_INTERVAL = 5000;
 		return {
+			// change all attribute use setAttribute
 			switchToggle: {
 				downloadDialog: true
 			},
@@ -125,7 +126,10 @@ export default {
 			uploadingTransferListForce: 0,
 			downloadingTransferListForce: 0,
 			uploadDoneList: [],
-			downloadDoneList: []
+			downloadDoneList: [],
+
+			// subject
+			subject: {}
 		};
 	},
 	computed: {
@@ -150,10 +154,7 @@ export default {
 		// complete transfer file list
 		completeTransferList: function() {
 			let arr = this.$store.state.Transfer.completeTransferList || [];
-			this.rendToFileManage({
-				type: "completeList",
-				result: arr
-			});
+			this.notifyObserversByName("completeList", arr);
 			return arr;
 		},
 
@@ -186,7 +187,6 @@ export default {
 	},
 	mounted() {
 		const vm = this;
-		console.log(remote);
 		localStorage.setItem('localStorage', false);
 		if(remote.process.argv[(remote.process.argv.length - 1)].endsWith('.ept')) {
 			vm.decodeFilePath = remote.process.argv[(remote.process.argv.length - 1)];
@@ -210,6 +210,13 @@ export default {
 		});
 		localStorage.setItem("DNSAdress", "");
 		vm.initWebSocket();
+		// ipcRenderer.
+		// this.renderDataToBrowserView({})
+		let arrWin = remote.BrowserWindow.getAllWindows();
+		for (let win of arrWin) {
+			let winContentId = win.webContents.id;
+			ipcRenderer.sendTo(winContentId, "dialog-load");
+		}
 	},
 	watch: {
 		uploadingTransferListForce(val) {
@@ -234,10 +241,7 @@ export default {
 				if (this.realUploadingLength < this.$config.maxNumUpload) {
 					this.waitForUploadFileToUpload();
 				}
-				this.rendToFileManage({
-					type: "uploadList",
-					result: val
-				});
+				this.notifyObserversByName("uploadList", val);
 			}, 200);
 		},
 		downloadingTransferList(val, oldVal) {
@@ -246,10 +250,7 @@ export default {
 				if (this.realDownloadingLength < this.$config.maxNumUpload) {
 					this.waitForDownloadFileToDownload();
 				}
-				this.rendToFileManage({
-					type: "downloadList",
-					result: val
-				});
+				this.notifyObserversByName("downloadList", val);
 			}, 200);
 		},
 		Address(newVal, oldVal) {
@@ -331,55 +332,31 @@ export default {
 			}, 50);
 		},
 		waitForUploadList(val, oldVal) {
-			this.rendToFileManage({
-				type: "waitForUploadList",
-				result: val
-			});
+			this.notifyObserversByName("waitForUploadList", val);
 		},
 		waitForUploadOrderList(val, oldVal) {
-			this.rendToFileManage({
-				type: "waitForUploadOrderList",
-				result: val
-			});
+			this.notifyObserversByName("waitForUploadOrderList", val);
 		},
 		waitForDownloadList(val, oldVal) {
-			this.rendToFileManage({
-				type: "waitForDownloadList",
-				result: val
-			});
+			this.notifyObserversByName("waitForDownloadList", val);
 		},
 		waitForDownloadOrderList(val, oldVal) {
-			this.rendToFileManage({
-				type: "waitForDownloadOrderList",
-				result: val
-			});
+			this.notifyObserversByName("waitForDownloadOrderList", val);
 		},
 		localStatus(val, oldVal) {
-			this.rendToFileManage({
-				type: "localStatus",
-				result: val
-			});
+			this.notifyObserversByName("localStatus", val);
 		},
 		realUploadingLength(val, oldVal) {
-			this.rendToFileManage({
-				type: "realUploadingLength",
-				result: val
-			});
+			this.notifyObserversByName("realUploadingLength", val);
 		},
 		realDownloadingLength(val, oldVal) {
-			this.rendToFileManage({
-				type: "realDownloadingLength",
-				result: val
-			});
+			this.notifyObserversByName("realDownloadingLength", val);
 		},
 		uploadDoneList(val, oldVal) {
 			const vm = this;
 			clearTimeout(this.intervalObj.setTimeUploadDoneList);
 			this.intervalObj.setTimeUploadDoneList = setTimeout(() => {
-				this.rendToFileManage({
-					type: "uploadDoneList",
-					result: val
-				});
+				this.notifyObserversByName("uploadDoneList", val);
 				localStorage.setItem(`uploadDoneList_${vm.Address}`, JSON.stringify(val));
 			});
 		},
@@ -387,15 +364,41 @@ export default {
 			const vm = this;
 			clearTimeout(this.intervalObj.setTimeDownloadDoneList);
 			this.intervalObj.setTimeDownloadDoneList = setTimeout(() => {
-				vm.rendToFileManage({
-					type: "downloadDoneList",
-					result: val
-				});
+				vm.notifyObserversByName("downloadDoneList", val);
 				localStorage.setItem(`downloadDoneList_${vm.Address}`, JSON.stringify(val));
 			}, 200);
 		}
 	},
 	methods: {
+		attach({names = [], id}) {
+			this.subject[id] = names;
+			for(let name of names) {
+				if(!this.subject[name]) this.subject[name] = [];
+				if (this.subject[name].indexOf(id) === -1) {
+					this.subject[name].push(id);
+				}
+			}
+		},
+		unsubscribeById(id) {
+			if(this.subject[observer.id]) {
+				for(let i = 0;i < this.subject[observer.id].length; i++) {
+					let observerName = this.subject[observer.id][i];
+					let _index = this.subject[observerName].indexOf(observer.id);
+					this.subject[observerName].splice(_index, 0);
+				}
+			}
+			delete this.subject[observer.id];
+		},
+		notifyObserversByName(observerName, content) {
+			if(!this.subject[observerName]) return;
+			for(let observerId of this.subject[observerName]) {
+				try {
+					ipcRenderer.sendTo(observerId, "get-data", { result: content, type: observerName });
+				}catch(e) {
+					console.log(e);
+				}
+			}
+		},
 		setLoginStatus(status) {
 			this.loginStatus = status;
 			this.checkOpenDecodeDialog();
@@ -453,28 +456,28 @@ export default {
 			console.log(redata);
 			switch (redata.Action) {
 				case "channelinitprogress":
-					this.getProcess(redata);
+					this.channelinitprogressWs(redata);
 					break;
 				case "getallchannels":
-					this.getChannel(redata);
+					this.getChannelWs(redata);
 					break;
 				case "getbalance":
-					this.getBalance(redata);
+					this.getBalanceWs(redata);
 					break;
 				case "getfilesharerevenue":
-					this.getRevenue(redata);
+					this.getRevenueWs(redata);
 					break;
 				case "networkstate":
-					this.getState(redata);
+					this.getStateWs(redata);
 					break;
 				case "currentchannel":
-					this.getCurrentChannel(redata);
+					this.getCurrentChannelWs(redata);
 					break;
 				case "getuserspace":
-					this.getuserspace(redata);
+					this.getuserspaceWs(redata);
 					break;
 				case "getcurrentaccount":
-					this.getAddress(redata);
+					this.getAddressWs(redata);
 					break;
 				case "gettransferlist":
 					this.gettransferlist(redata);
@@ -511,7 +514,7 @@ export default {
 			if (
 				this.waitForUploadOrderList.length === 0 ||
 				this.readyUpload.length !== 0 ||
-				needUploadLen <= 0
+				needUploadLen <= 0 || !this.isLoginShowLog
 			)	return;
 			// update readyUpload
 			let realUploadLen = Math.min(
@@ -572,7 +575,7 @@ export default {
 					setTimeout(() => {
 						vm.readyUpload = [];
 						vm.uploadingTransferListForce++;
-					}, 200);
+					}, 2000);
 				});
 
 				// error message
@@ -639,12 +642,13 @@ export default {
 		// wait for download file to download when max Download length gt current Downloading length
 		waitForDownloadFileToDownload() {
 			const vm = this;
+			console.log(this.realDownloadingLength);
 			let needDownloadLen =
 				this.$config.maxNumUpload - this.realDownloadingLength;
 			if (
 				this.waitForDownloadOrderList.length === 0 ||
 				this.readyDownload.length !== 0 ||
-				needDownloadLen <= 0
+				needDownloadLen <= 0 || !this.isLoginShowLog
 			)
 				return;
 			// update readyDownload
@@ -704,7 +708,7 @@ export default {
 					setTimeout(() => {
 						vm.readyDownload = [];
 						vm.downloadingTransferListForce++; // force update
-					}, 200);
+					}, 2000);
 				});
 
 				// error message
@@ -757,12 +761,9 @@ export default {
 		getToDownloadFilePromise(data) {
 			return this.$axios.post(this.$api.download, data);
 		},
-		getuserspace(res) {
+		getuserspaceWs(res) {
 			if (res.Error === 0) {
-				this.rendToFileManage({
-					type: "userspace",
-					result: res.Result
-				});
+				this.notifyObserversByName("userspace", res.Result);
 			}
 		},
 		gettransferlist(res) {
@@ -798,27 +799,19 @@ export default {
 			}
 		},
 		// get wallet address
-		getAddress(res) {
+		getAddressWs(res) {
 			if (res.Error === 0) {
 				if (res.Result.Address) {
 					this.Address = res.Result.Address;
-					this.renderDataToBrowserView({
-						result: res.Result,
-						type: "account",
-						rendTo: 1
-					});
+					this.notifyObserversByName("account", res.Result);
 				}
 			} else {
 				this.Address = "";
-				this.renderDataToBrowserView({
-					result: res.Result,
-					type: "account",
-					rendTo: 1
-				});
+				this.notifyObserversByName("account", res.Result);
 			}
 		},
 		// get current sync process
-		getProcess(progressResult) {
+		channelinitprogressWs(progressResult) {
 			if (progressResult.Error === 0) {
 				if (progressResult.Result.End - progressResult.Result.Now > 50) {
 					progressResult.Result.isSync = true;
@@ -833,31 +826,28 @@ export default {
 					progressResult.Result.isNeedSync = this.isNeedSync;
 				}
 				progressResult.Result.isLoginShowLog = this.isLoginShowLog;
-				this.renderDataToBrowserView({
-					result: progressResult.Result,
-					type: "progress",
-					rendTo: 1
-				});
+				// this.renderDataToBrowserView({
+				// 	result: progressResult.Result,
+				// 	type: "progress",
+				// 	rendTo: 1
+				// });
+				this.notifyObserversByName('progress', progressResult.Result);
 			}
 		},
 		// logout success change block height is default;
 		logoutCb() {
 			this.$nextTick(() => {
 				// avoid ws delay issue
-				this.renderDataToBrowserView({
-					result: {
-						isNeedSync: false,
-						isSync: false,
-						Progress: 0,
-						Start: 0,
-						End: 0,
-						Now: 0
-					},
-					type: "progress",
-					rendTo: 1
+				this.notifyObserversByName("progress", {
+					isNeedSync: false,
+					isSync: false,
+					Progress: 0,
+					Start: 0,
+					End: 0,
+					Now: 0
 				});
-				this.renderDataToBrowserView({
-					result: {
+				this.notifyObserversByName(
+					"state", {
 						Chain: {
 							HostAddr: "",
 							State: 0,
@@ -872,23 +862,15 @@ export default {
 							HostAddr: "",
 							State: 0,
 							UpdatedAt: 0
-						},
-						ChannelProxy: {
-							HostAddr: "",
-							State: 0,
-							UpdatedAt: 0
 						}
-					},
-					type: "progress",
-					rendTo: 1
-				});
+					});
 			});
 		},
 		// get balance for show create channel dialog
-		getBalance(res) {
+		getBalanceWs(res) {
 			const vm = this;
 			if (res.Error === 0) {
-				this.renderDataToBrowserView({ result: res.Result, type: "balance" });
+				this.notifyObserversByName("balance", res.Result);
 				for (let i = 0; i < res.Result.length; i++) {
 					const item = res.Result[i];
 					if (item.Symbol === "SAVE") {
@@ -899,21 +881,15 @@ export default {
 			}
 		},
 		// get revenue
-		getRevenue(res) {
+		getRevenueWs(res) {
 			if (res.Error === 0) {
-				this.renderDataToBrowserView({
-					result: res.Result,
-					type: "revence"
-				});
+				this.notifyObserversByName("revence", res.Result);
 			}
 		},
 		// get channel
-		getChannel(res) {
+		getChannelWs(res) {
 			if (res.Error === 0) {
-				this.renderDataToBrowserView({
-					result: res.Result,
-					type: "channel"
-				});
+				this.notifyObserversByName("channel", res.Result);
 				if (
 					res.Result &&
 					res.Result.Channels &&
@@ -925,7 +901,7 @@ export default {
 					res.Result && res.Result.Channels && res.Result.Channels.length;
 			}
 		},
-		getCurrentChannel(res) {
+		getCurrentChannelWs(res) {
 			if (res.Error === 0) {
 				if (res.Result.IsOnline === false) {
 					if (!this.usable) return;
@@ -939,15 +915,12 @@ export default {
 			}
 		},
 		// get connect state
-		getState(res) {
-			if (res.Error === 0) {
-				this.renderDataToBrowserView({
-					result: res.Result,
-					type: "state",
-					rendTo: 1
-				});
+		getStateWs(res) {
+			if (res.Error === 0) {		
+				this.notifyObserversByName("state", res.Result);
 			}
 		},
+		
 		/**
 		 * params:
 		 * rendTo: send to type
@@ -1228,10 +1201,7 @@ export default {
 
 			if (flag) {
 				this.$axios.all(commitAll).finally(res => {
-					vm.rendToFileManage({
-						type: "localStatus",
-						result: vm.localStatus
-					});
+					vm.notifyObserversByName("localStatus", vm.localStatus);
 					this.isNotDonePause = true;
 					if (vm.$config.maxNumUpload !== vm.maxNumUpload && vm.maxNumUpload) {
 						vm.settingUpdate({ maxNumUpload: vm.maxNumUpload });

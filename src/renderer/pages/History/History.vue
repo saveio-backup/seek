@@ -157,6 +157,13 @@ export default {
 		}
 	},
 	mounted() {
+		ipcRenderer.send("run-dialog-event", {
+			name: "attach",
+			data: {
+				names: ['progress', 'account'],
+				id: remote.getCurrentWebContents().id
+			}
+		});
 		document.title = this.$t("history.historyRecord");
 		this.init();
 		document.addEventListener("scroll", this.scrollInit);

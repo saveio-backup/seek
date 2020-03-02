@@ -41,6 +41,10 @@ export default {
 		pluginInfo
 	},
 	mounted() {
+		ipcRenderer.on("dialog-load", (e) => {
+			this.attach();
+		});
+		this.attach();
 		document.querySelector("body").style.background = "transparent";
 		this.eventListener();
 	},
@@ -64,6 +68,15 @@ export default {
 		}
 	},
 	methods: {
+		attach() {
+			ipcRenderer.send("run-dialog-event", {
+				name: "attach",
+				data: {
+					names: ['progress', 'state'],
+					id: remote.getCurrentWebContents().id
+				}
+			});
+		},
 		eventListener() {
 			ipcRenderer.on("setMenuDialog", (event, { id }) => {
 				this.menuid = id;

@@ -101,8 +101,9 @@ export default {
 				setTimeCurrentchannel: null,
 				setTimeGetuserspace: null,
 				setTimeGetcurrentaccount: null,
-				setTimeGettransferlist: null,
-
+				setTimeGettransferlistUpload: null,
+				setTimeGettransferlistDownload: null,
+				setTimeGettransferlistComplete: null,
 				upload: null,
 				download: null,
 				complete: null
@@ -171,28 +172,40 @@ export default {
 		// wait for upload file list
 		waitForUploadList: function() {
 			let arr = this.$store.state.Transfer.waitForUploadList || [];
+			// this.notifyObserversByName("waitForUploadList", arr);
 			return arr;
 		},
 		waitForUploadOrderList: function() {
-			return this.$store.state.Transfer.waitForUploadOrderList || [];
+			let arr = this.$store.state.Transfer.waitForUploadOrderList || [];
+			// this.notifyObserversByName("waitForUploadOrderList", arr);
+			return arr;
 		},
 		localStatus: function() {
-			return this.$store.state.Transfer.localStatus;
+			let obj = this.$store.state.Transfer.localStatus; 
+			// this.notifyObserversByName("localStatus", obj);
+			return obj;
 		},
 		realUploadingLength: function() {
-			return this.$store.state.Transfer.realUploadingLength;
+			let len = this.$store.state.Transfer.realUploadingLength;
+			// this.notifyObserversByName("realUploadingLength", len);
+			return len;
 		},
 
 		// wait for download file list
 		waitForDownloadList: function() {
 			let arr = this.$store.state.Transfer.waitForDownloadList || [];
+			// this.notifyObserversByName("waitForDownloadList", arr);
 			return arr;
 		},
 		waitForDownloadOrderList: function() {
-			return this.$store.state.Transfer.waitForDownloadOrderList || [];
+			let arr = this.$store.state.Transfer.waitForDownloadOrderList || [];
+			// this.notifyObserversByName("waitForDownloadOrderList", arr);
+			return arr;
 		},
 		realDownloadingLength: function() {
-			return this.$store.state.Transfer.realDownloadingLength;
+			let len = this.$store.state.Transfer.realDownloadingLength;
+			// this.notifyObserversByName("realDownloadingLength", len);
+			return len;
 		}
 	},
 	mounted() {
@@ -389,9 +402,9 @@ export default {
 	methods: {
 		getNewComplete() {
 			const vm = this;
-			let start = this.limitTimestamp;
+			let end = this.limitTimestamp;
 			this.limitTimestamp = (new Date()).getTime();
-			this.$axios.get(`${this.$api.transferlist}/0/0/0/${start}/${this.limitTimestamp}`).then(res => {
+			this.$axios.get(`${this.$api.transferlist}/0/0/0/0/${end}`).then(res => {
 				if (res.Error === 0) {
 					const result = res.Result.Transfers;
 					for(let value of result) {
@@ -452,6 +465,9 @@ export default {
 				if (this.subject[name].indexOf(id) === -1) {
 					this.subject[name].push(id);
 				}
+				if(this.isNotSend[name] && this.isNotSend[name]['content']) {
+					ipcRenderer.sendTo(id, "get-data", { result: this.isNotSend[name].content, type: name});
+				}
 			}
 		},
 		unsubscribeById(id) {
@@ -465,14 +481,14 @@ export default {
 			delete this.subject[observer.id];
 		},
 		notifyObserversByName(observerName, content) {
+			if(!this.isNotSend[observerName]) this.isNotSend[observerName] = {};
+			this.isNotSend[observerName]['content'] = content;
 			if(!this.subject[observerName]) return;
 			for(let observerId of this.subject[observerName]) {
 				try {
 					if(this.viewsIds.includes(observerId)) {
 						ipcRenderer.sendTo(observerId, "get-data", { result: content, type: observerName });
 					} else {
-						if(!this.isNotSend[observerName]) this.isNotSend[observerName] = {};
-						this.isNotSend[observerName]['content'] = content;
 						this.isNotSend[observerName][observerId] = true;
 					}
 				}catch(e) {
@@ -586,10 +602,10 @@ export default {
 					}, vm.timeoutObj.COUNT_TIMEOUT);
 					break;
 				case "gettransferlist":
-					clearTimeout(vm.timeoutObj.setTimeGettransferlist);
-					vm.timeoutObj.setTimeGettransferlist = setTimeout(() => {
+					// clearTimeout(vm.timeoutObj.setTimeGettransferlist);
+					// vm.timeoutObj.setTimeGettransferlist = setTimeout(() => {
 						vm.gettransferlist(redata);
-					}, vm.timeoutObj.COUNT_TIMEOUT);
+					// }, vm.timeoutObj.COUNT_TIMEOUT);
 					break;
 			}
 		},
@@ -619,6 +635,8 @@ export default {
 		// wait for upload file to upload when max Upload length gt current Uploading length
 		waitForUploadFileToUpload() {
 			const vm = this;
+			console.log(`${this.$config.maxNumUpload}----${this.realUploadingLength}----${this.waitForUploadOrderList.length}----
+			${this.readyUpload.length}----${this.isLoginShowLog}`)
 			let needUploadLen = this.$config.maxNumUpload - this.realUploadingLength;
 			if (
 				this.waitForUploadOrderList.length === 0 ||
@@ -876,13 +894,23 @@ export default {
 			}
 		},
 		gettransferlist(res) {
+			const vm = this;
 			if (res.Error === 0) {
 				if (res.Result.Type === 0) {
-					this.$store.dispatch("setComplete", res);
+					clearTimeout(this.timeoutObj.setTimeGettransferlistComplete);
+					vm.timeoutObj.setTimeGettransferlistComplete = setTimeout(() => {
+						vm.$store.dispatch("setComplete", res);
+					}, vm.timeoutObj.COUNT_TIMEOUT);
 				} else if (res.Result.Type === 1) {
-					this.$store.dispatch("setUpload", res);
+					clearTimeout(this.timeoutObj.setTimeGettransferlistUpload);
+					vm.timeoutObj.setTimeGettransferlistUpload = setTimeout(() => {
+						vm.$store.dispatch("setUpload", res);
+					}, vm.timeoutObj.COUNT_TIMEOUT);
 				} else if (res.Result.Type === 2) {
-					this.$store.dispatch("setDownload", res);
+					clearTimeout(this.timeoutObj.setTimeGettransferlistDownload);
+					vm.timeoutObj.setTimeGettransferlistDownload = setTimeout(() => {
+						vm.$store.dispatch("setDownload", res);
+					}, vm.timeoutObj.COUNT_TIMEOUT);
 				}
 			}
 		},
@@ -1441,9 +1469,12 @@ export default {
 			this.downloadDoneList = [];
 		},
 		setIsLoginShowLog(data) {
+			let oldVal = this.isLoginShowLog;
 			this.isLoginShowLog = data;
 			localStorage.setItem('localStorage', data);
-			if(data) {
+			if(data && !oldVal) {
+				this.uploadingTransferListForce++;
+				this.downloadingTransferListForce++;
 				this.renderDataToBrowserView({
 					result: null,
 					type: "goHome",

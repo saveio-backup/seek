@@ -197,6 +197,7 @@ const result = {
   'link': '链 接',
   'basicInfo': '基本信息',
   'nodesInfo': '节点信息',
+  'getGasFeeFailed': '获取手续费失败',
   'calculating': '计算中...',
   'recalculation': '重新计算',
   'thereAre': '有',

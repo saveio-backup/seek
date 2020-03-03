@@ -158,7 +158,7 @@ export default {
 		ipcRenderer.on("queryto", (sender, query) => {
 			this.$router.push({ name: "transfer", query: query });
 		});
-		this.$store.dispatch("getWaitForTransferList"); // get wait for upload list
+		// this.$store.dispatch("getWaitForTransferList"); // get wait for upload list
 		this.$store.dispatch("setCurrentAccount"); // get login status
 		this.$store.dispatch("getDns"); // get login status
 		this.initBalanceRequest();

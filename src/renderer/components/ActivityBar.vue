@@ -166,7 +166,7 @@ export default {
 					this.statusList &&
 					this.statusList[value] &&
 					(this.statusList[value].State === 1 ||
-						(value === "DNS" && this.statusList[value].HostAddr === ""))
+						(value === "DNS" && !this.statusList[value].HostAddr))
 				) {
 					online = true;
 				} else {

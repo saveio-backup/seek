@@ -148,15 +148,10 @@ export default {
 	mounted() {
 		document.title = this.$t("home.home");
 		const vm = this;
-		ipcRenderer.send("run-dialog-event", {
-			name: "attach",
-			data: {
-				names: ['progress', 'account', 'channel', 'balance', 'revence'],
-				id: remote.getCurrentWebContents().id
-			}
+		ipcRenderer.on("dialog-load", (e) => {
+			vm.attach();
 		});
-
-
+		vm.attach();
 		if (this.loginStatus === 1) {
 			this.chartInit();
 		}
@@ -267,6 +262,15 @@ export default {
 		};
 	},
 	methods: {
+		attach() {
+			ipcRenderer.send("run-dialog-event", {
+				name: "attach",
+				data: {
+					names: ['progress', 'account', 'channel', 'balance', 'revence'],
+					id: remote.getCurrentWebContents().id
+				}
+			});
+		},
 		goPage(path) {
 			this.$router.push({
 				path: path

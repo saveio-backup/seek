@@ -163,16 +163,23 @@ export default {
 					this.$store.commit("SET_STAET", res.Result);
 				}
 			});
+		},
+		attach() {
+			ipcRenderer.send("run-dialog-event", {
+			name: "attach",
+				data: {
+					names: ['progress', 'state', 'account', 'channel'],
+					id: remote.getCurrentWebContents().id
+				}
+			});
 		}
 	},
 	mounted() {
-		ipcRenderer.send("run-dialog-event", {
-			name: "attach",
-			data: {
-				names: ['progress', 'state', 'account', 'channel'],
-				id: remote.getCurrentWebContents().id
-			}
+		const vm = this;
+		ipcRenderer.on("dialog-load", (e) => {
+			vm.attach();
 		});
+		vm.attach();
 		this.getNetworkState();
 	}
 };

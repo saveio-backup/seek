@@ -149,13 +149,11 @@ import { ipcRenderer, remote } from "electron";
 import crypto from "crypto";
 export default {
 	mounted() {
-		ipcRenderer.send("run-dialog-event", {
-			name: "attach",
-			data: {
-				names: ['progress', 'channel', 'account', 'balance', 'uploadList', 'downloadList', 'completeList', 'waitForUploadList', 'waitForDownloadList', 'waitForUploadOrderList', 'waitForDownloadOrderList', 'realUploadingLength', 'realDownloadingLength', 'localStatus', 'userspace', 'uploadDoneList', 'downloadDoneList'],
-				id: remote.getCurrentWebContents().id
-			}
+		const vm = this;
+		ipcRenderer.on("dialog-load", (e) => {
+			vm.attach();
 		});
+		vm.attach();
 		document.title = this.$t("fileManager.fileManager");
 		ipcRenderer.on("queryto", (sender, query) => {
 			this.$router.push({ name: "transfer", query: query });
@@ -198,6 +196,15 @@ export default {
 		};
 	},
 	methods: {
+		attach() {
+			ipcRenderer.send("run-dialog-event", {
+				name: "attach",
+				data: {
+					names: ['progress', 'channel', 'account', 'balance', 'uploadList', 'downloadList', 'completeList', 'waitForUploadList', 'waitForDownloadList', 'waitForUploadOrderList', 'waitForDownloadOrderList', 'realUploadingLength', 'realDownloadingLength', 'localStatus', 'userspace', 'uploadDoneList', 'downloadDoneList'],
+					id: remote.getCurrentWebContents().id
+				}
+			});
+		},
 		openAssetTransferDialog() {
 			this.switchToggle.assetTransferDialog = true;
 		},

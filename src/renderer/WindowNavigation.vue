@@ -187,7 +187,13 @@ export default {
 		vm.attach();
 		ipcRenderer.on("forceUpdate", () => {
 			this.$forceUpdate();
-			this.views = remote.getCurrentWindow().views;
+			vm.views = remote.getCurrentWindow().views;
+			clearTimeout(vm.timeoutForceUpdate);
+			vm.timeoutForceUpdate = setTimeout(() => {
+				ipcRenderer.send("run-dialog-event", {
+					name: "getViewIds"
+				});
+			}, 20);
 		});
 		ipcRenderer.on("focus", () => {
 			this.$refs.inputUrl.select();
@@ -255,6 +261,7 @@ export default {
 			view => view.isActive
 		);
 		return {
+			timeoutForceUpdate: null,
 			isMaximized: true,
 			platform: remote.process.platform,
 			inputDisplayUrl: activeView.displayURL || "",
@@ -270,7 +277,7 @@ export default {
 			ipcRenderer.send("run-dialog-event", {
 				name: "attach",
 				data: {
-					names: ['progress', 'account', 'channel', 'state'],
+					names: ['progress', 'account', 'channel', 'state', 'revence'],
 					id: remote.getCurrentWebContents().id
 				}
 			});

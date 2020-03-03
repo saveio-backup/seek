@@ -25,13 +25,11 @@ import { remote, ipcRenderer } from "electron";
 
 export default {
 	mounted() {
-		ipcRenderer.send("run-dialog-event", {
-			name: "attach",
-			data: {
-				names: ['progress', 'account', 'revence'],
-				id: remote.getCurrentWebContents().id
-			}
+		const vm = this;
+		ipcRenderer.on("dialog-load", (e) => {
+			vm.attach();
 		});
+		vm.attach();
 		document.title = this.$t("miner.miner");
 		this.$store.dispatch("setCurrentAccount"); // get login status
 	},
@@ -39,6 +37,17 @@ export default {
 		return {
 			fileType: 0
 		};
+	},
+	methods: {
+		attach() {
+			ipcRenderer.send("run-dialog-event", {
+				name: "attach",
+				data: {
+					names: ['progress', 'account', 'revence'],
+					id: remote.getCurrentWebContents().id
+				}
+			});
+		}
 	},
 	watch: {
 		lang() {

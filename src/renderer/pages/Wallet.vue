@@ -392,13 +392,10 @@ import crypto from "crypto";
 const { clipboard, remote, ipcRenderer } = require("electron");
 export default {
 	mounted() {
-		ipcRenderer.send("run-dialog-event", {
-			name: "attach",
-			data: {
-				names: ['progress', 'account', 'balance'],
-				id: remote.getCurrentWebContents().id
-			}
+		ipcRenderer.on("dialog-load", (e) => {
+			vm.attach();
 		});
+		vm.attach();
 		document.title = this.$t("wallet.wallet");
 		this.$store.dispatch("setCurrentAccount"); // get login status
 		this.$store.dispatch("setBalanceLists");
@@ -690,6 +687,15 @@ export default {
 		};
 	},
 	methods: {
+		attach() {
+			ipcRenderer.send("run-dialog-event", {
+				name: "attach",
+				data: {
+					names: ['progress', 'account', 'balance'],
+					id: remote.getCurrentWebContents().id
+				}
+			});
+		},
 		setTxType(val) {
 			this.txType = val;
 			this.txDetailIndex = -1;

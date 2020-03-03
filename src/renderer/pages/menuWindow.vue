@@ -69,6 +69,7 @@ export default {
 	},
 	methods: {
 		attach() {
+			console.log(remote.getCurrentWebContents().id);
 			ipcRenderer.send("run-dialog-event", {
 				name: "attach",
 				data: {

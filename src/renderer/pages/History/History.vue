@@ -144,6 +144,15 @@ export default {
 			} else {
 				window.open(href);
 			}
+		},
+		attach() {
+			ipcRenderer.send("run-dialog-event", {
+				name: "attach",
+				data: {
+					names: ['progress', 'account'],
+					id: remote.getCurrentWebContents().id
+				}
+			});
 		}
 	},
 	computed: {
@@ -157,13 +166,11 @@ export default {
 		}
 	},
 	mounted() {
-		ipcRenderer.send("run-dialog-event", {
-			name: "attach",
-			data: {
-				names: ['progress', 'account'],
-				id: remote.getCurrentWebContents().id
-			}
+		const vm = this;
+		ipcRenderer.on("dialog-load", (e) => {
+			vm.attach();
 		});
+		vm.attach();
 		document.title = this.$t("history.historyRecord");
 		this.init();
 		document.addEventListener("scroll", this.scrollInit);

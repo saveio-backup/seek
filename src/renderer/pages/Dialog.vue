@@ -68,7 +68,7 @@ export default {
 		decodeFile
 	},
 	data() {
-		const COUNT_INTERVAL = 5000;
+		const COUNT_TIMEOUT = 1000;
 		return {
 			// change all attribute use setAttribute
 			switchToggle: {
@@ -87,17 +87,25 @@ export default {
 			channelNum: null,
 			Balance: null,
 			Address: "",
-			intervalObj: {
-				COUNT_INTERVAL: COUNT_INTERVAL,
-				setTimeObj: null,
-				setTimeAddressObj: null,
-				setTimeProcessObj: null,
-				setTimeTransferObj: null,
+			timeoutObj: {
+				COUNT_TIMEOUT: COUNT_TIMEOUT,
 				setTimeUploadingTransferListObj: null,
 				setTimeDownloadingTransferListObj: null,
-				setTimelocalStatusObj: null,
 				setTimeUploadDoneList: null,
 				setTimeDownloadDoneList: null,
+				setTimeChannelinitprogress: null,
+				setTimeGetallchannels: null,
+				setTimeGetbalance: null,
+				setTimeGetfilesharerevenue:null,
+				setTimeNetworkstate: null,
+				setTimeCurrentchannel: null,
+				setTimeGetuserspace: null,
+				setTimeGetcurrentaccount: null,
+				setTimeGettransferlist: null,
+
+				upload: null,
+				download: null,
+				complete: null
 			},
 
 			isNeedSync: false,
@@ -105,11 +113,6 @@ export default {
 
 			// transfer correlation
 			transferObj: {},
-			setTimeoutObj: {
-				upload: null,
-				download: null,
-				complete: null
-			},
 			maxNumUpload: 0,
 			isNotDonePause: true,
 
@@ -129,7 +132,14 @@ export default {
 			downloadDoneList: [],
 
 			// subject
-			subject: {}
+			subject: {},
+			viewsIds: [],
+			/** 
+			 * cache send data/view id(isActive=false)
+			 * wait for send when isActive = true
+			**/
+			isNotSend: {},
+			limitTimestamp: (new Date()).getTime()
 		};
 	},
 	computed: {
@@ -187,6 +197,7 @@ export default {
 	},
 	mounted() {
 		const vm = this;
+		this.getViewIds();
 		localStorage.setItem('localStorage', false);
 		if(remote.process.argv[(remote.process.argv.length - 1)].endsWith('.ept')) {
 			vm.decodeFilePath = remote.process.argv[(remote.process.argv.length - 1)];
@@ -213,45 +224,50 @@ export default {
 		// ipcRenderer.
 		// this.renderDataToBrowserView({})
 		let arrWin = remote.BrowserWindow.getAllWindows();
-		for (let win of arrWin) {
+		for (let i = 0;i < arrWin.length; i ++ ) {
+			let win = arrWin[i];
 			let winContentId = win.webContents.id;
 			ipcRenderer.sendTo(winContentId, "dialog-load");
+			if(!win.views) continue;
+			for(let view of win.views) {
+				ipcRenderer.sendTo(view.browserView.webContents.id, "dialog-load");
+			}
 		}
 	},
 	watch: {
 		uploadingTransferListForce(val) {
-			clearTimeout(this.intervalObj.setTimeUploadingTransferListObj);
-			this.intervalObj.setTimeUploadingTransferListObj = setTimeout(() => {
+			clearTimeout(this.timeoutObj.setTimeUploadingTransferListObj);
+			this.timeoutObj.setTimeUploadingTransferListObj = setTimeout(() => {
 				if (this.realUploadingLength < this.$config.maxNumUpload) {
 					this.waitForUploadFileToUpload();
 				}
-			}, 200);
+			}, this.timeoutObj.COUNT_TIMEOUT);
 		},
 		downloadingTransferListForce(val) {
-			clearTimeout(this.intervalObj.setTimeDownloadingTransferListObj);
-			this.intervalObj.setTimeDownloadingTransferListObj = setTimeout(() => {
+			clearTimeout(this.timeoutObj.setTimeDownloadingTransferListObj);
+			this.timeoutObj.setTimeDownloadingTransferListObj = setTimeout(() => {
 				if (this.realDownloadingLength < this.$config.maxNumUpload) {
 					this.waitForDownloadFileToDownload();
 				}
-			}, 200);
+			}, this.timeoutObj.COUNT_TIMEOUT);
 		},
 		uploadingTransferList(val, oldVal) {
-			clearTimeout(this.intervalObj.setTimeUploadingTransferListObj);
-			this.intervalObj.setTimeUploadingTransferListObj = setTimeout(() => {
+			clearTimeout(this.timeoutObj.setTimeUploadingTransferListObj);
+			this.timeoutObj.setTimeUploadingTransferListObj = setTimeout(() => {
 				if (this.realUploadingLength < this.$config.maxNumUpload) {
 					this.waitForUploadFileToUpload();
 				}
 				this.notifyObserversByName("uploadList", val);
-			}, 200);
+			}, this.timeoutObj.COUNT_TIMEOUT);
 		},
 		downloadingTransferList(val, oldVal) {
-			clearTimeout(this.intervalObj.setTimeDownloadingTransferListObj);
-			this.intervalObj.setTimeDownloadingTransferListObj = setTimeout(() => {
+			clearTimeout(this.timeoutObj.setTimeDownloadingTransferListObj);
+			this.timeoutObj.setTimeDownloadingTransferListObj = setTimeout(() => {
 				if (this.realDownloadingLength < this.$config.maxNumUpload) {
 					this.waitForDownloadFileToDownload();
 				}
 				this.notifyObserversByName("downloadList", val);
-			}, 200);
+			}, this.timeoutObj.COUNT_TIMEOUT);
 		},
 		Address(newVal, oldVal) {
 			this.Balance = null;
@@ -285,50 +301,51 @@ export default {
 				this.toGetDns();
 			}
 		},
-		uploadTransferList(newVal, oldVal) {
-			clearTimeout(this.setTimeoutObj.upload);
-			this.setTimeoutObj.upload = setTimeout(() => {
-				for (let value of newVal) {
-					this.transferObj[value.Id] = value;
-				}
-			}, 50);
-		},
-		downloadTransferList(newVal, oldVal) {
-			const vm = this;
-			clearTimeout(this.setTimeoutObj.download);
-			this.setTimeoutObj.download = setTimeout(() => {
-				for (let value of newVal) {
-					vm.transferObj[value.Id] = value;
-				}
-			}, 50);
-		},
+		// uploadTransferList(newVal, oldVal) {
+		// 	clearTimeout(this.timeoutObj.upload);
+		// 	this.timeoutObj.upload = setTimeout(() => {
+		// 		for (let value of newVal) {
+		// 			this.transferObj[value.Id] = value;
+		// 		}
+		// 	}, 50);
+		// },
+		// downloadTransferList(newVal, oldVal) {
+		// 	const vm = this;
+		// 	clearTimeout(this.timeoutObj.download);
+		// 	this.timeoutObj.download = setTimeout(() => {
+		// 		for (let value of newVal) {
+		// 			vm.transferObj[value.Id] = value;
+		// 		}
+		// 	}, 50);
+		// },
 		completeTransferList(newVal, oldVal) {
 			const vm = this;
-			clearTimeout(this.setTimeoutObj.complete);
-			this.setTimeoutObj.complete = setTimeout(() => {
-				let justNowCompleteObj = {};
-				for (let value of newVal) {
-					if (
-						value.Id &&
-						this.transferObj[value.Id] &&
-						this.transferObj[value.Id].Status !== 3
-					) {
-						this.message({
-							info: `${value.FileName} ${
-								this.transferObj[value.Id].Type === 1
-									? vm.$t("dialog.uploadSuccess")
-									: vm.$t("dialog.downloadSuccess")
-							}`,
-							type: "success"
-						});
-						if(value.IsUploadAction) {
-							vm.uploadDoneList.push(value.RealFileSize);
-						} else {
-							vm.downloadDoneList.push(value.FileSize);
-						}
-					}
-					this.transferObj[value.Id] = value;
-				}
+			clearTimeout(this.timeoutObj.complete);
+			this.timeoutObj.complete = setTimeout(() => {
+				vm.getNewComplete();
+				// let justNowCompleteObj = {};
+				// for (let value of newVal) {
+				// 	if (
+				// 		value.Id &&
+				// 		this.transferObj[value.Id] &&
+				// 		this.transferObj[value.Id].Status !== 3
+				// 	) {
+				// 		this.message({
+				// 			info: `${value.FileName} ${
+				// 				this.transferObj[value.Id].Type === 1
+				// 					? vm.$t("dialog.uploadSuccess")
+				// 					: vm.$t("dialog.downloadSuccess")
+				// 			}`,
+				// 			type: "success"
+				// 		});
+				// 		if(value.IsUploadAction) {
+				// 			vm.uploadDoneList.push(value.RealFileSize);
+				// 		} else {
+				// 			vm.downloadDoneList.push(value.FileSize);
+				// 		}
+				// 	}
+				// 	this.transferObj[value.Id] = value;
+				// }
 			}, 50);
 		},
 		waitForUploadList(val, oldVal) {
@@ -354,22 +371,80 @@ export default {
 		},
 		uploadDoneList(val, oldVal) {
 			const vm = this;
-			clearTimeout(this.intervalObj.setTimeUploadDoneList);
-			this.intervalObj.setTimeUploadDoneList = setTimeout(() => {
+			clearTimeout(this.timeoutObj.setTimeUploadDoneList);
+			this.timeoutObj.setTimeUploadDoneList = setTimeout(() => {
 				this.notifyObserversByName("uploadDoneList", val);
 				localStorage.setItem(`uploadDoneList_${vm.Address}`, JSON.stringify(val));
-			});
+			}, this.timeoutObj.COUNT_TIMEOUT);
 		},
 		downloadDoneList(val, oldVal) {
 			const vm = this;
-			clearTimeout(this.intervalObj.setTimeDownloadDoneList);
-			this.intervalObj.setTimeDownloadDoneList = setTimeout(() => {
+			clearTimeout(this.timeoutObj.setTimeDownloadDoneList);
+			this.timeoutObj.setTimeDownloadDoneList = setTimeout(() => {
 				vm.notifyObserversByName("downloadDoneList", val);
 				localStorage.setItem(`downloadDoneList_${vm.Address}`, JSON.stringify(val));
-			}, 200);
+			}, this.timeoutObj.COUNT_TIMEOUT);
 		}
 	},
 	methods: {
+		getNewComplete() {
+			const vm = this;
+			let start = this.limitTimestamp;
+			this.limitTimestamp = (new Date()).getTime();
+			this.$axios.get(`${this.$api.transferlist}/0/0/0/${start}/${this.limitTimestamp}`).then(res => {
+				if (res.Error === 0) {
+					const result = res.Result.Transfers;
+					for(let value of result) {
+						vm.message({
+							info: `${value.FileName} ${
+								value.IsUploadAction
+									? vm.$t("dialog.uploadSuccess")
+									: vm.$t("dialog.downloadSuccess")
+							}`,
+							type: "success"
+						});
+						if(value.IsUploadAction) {
+							vm.uploadDoneList.push(value.RealFileSize);
+						} else {
+							vm.downloadDoneList.push(value.FileSize);
+						}
+					}
+				}
+			});
+		},
+		runIsNotSendToSend(id) {
+			for(let key in this.isNotSend) {
+				if(this.isNotSend[key] && this.isNotSend[key][id]) {
+					ipcRenderer.sendTo(id, "get-data", { result: this.isNotSend[key].content, type: key});
+					if(id !== 1 && id !== 2) {
+						delete this.isNotSend[key][id];
+					}
+				}
+			}
+		},
+		getViewIds() {
+			let wins = remote.BrowserWindow.getAllWindows();
+			for (let i = 0; i < wins.length; i ++) {
+				let win = wins[i];
+				if(!this.viewsIds.includes(win.id)) {
+					this.viewsIds.push(win.id);
+				}
+				if (win.views) {
+					for(let view of win.views) {
+						if(view.isActive) {
+							if(!this.viewsIds.includes(view.browserView.webContents.id)) {
+								this.viewsIds.push(view.browserView.webContents.id);
+								this.runIsNotSendToSend(view.browserView.webContents.id);
+							}
+						} else if(this.viewsIds.includes(view.browserView.webContents.id)) {
+							let index = this.viewsIds.indexOf(view.browserView.webContents.id);
+							this.viewsIds.splice(index, 1);
+						}
+					}
+				}
+			}
+			console.log(this.viewsIds);
+		},
 		attach({names = [], id}) {
 			this.subject[id] = names;
 			for(let name of names) {
@@ -393,7 +468,13 @@ export default {
 			if(!this.subject[observerName]) return;
 			for(let observerId of this.subject[observerName]) {
 				try {
-					ipcRenderer.sendTo(observerId, "get-data", { result: content, type: observerName });
+					if(this.viewsIds.includes(observerId)) {
+						ipcRenderer.sendTo(observerId, "get-data", { result: content, type: observerName });
+					} else {
+						if(!this.isNotSend[observerName]) this.isNotSend[observerName] = {};
+						this.isNotSend[observerName]['content'] = content;
+						this.isNotSend[observerName][observerId] = true;
+					}
 				}catch(e) {
 					console.log(e);
 				}
@@ -452,35 +533,63 @@ export default {
 		},
 		// get data from server
 		websocketonmessage(e) {
+			const vm = this;
 			const redata = JSON.parse(e.data);
 			console.log(redata);
 			switch (redata.Action) {
 				case "channelinitprogress":
-					this.channelinitprogressWs(redata);
+					clearTimeout(vm.timeoutObj.setTimeChannelinitprogress);
+					vm.timeoutObj.setTimeChannelinitprogress = setTimeout(() => {
+						vm.channelinitprogressWs(redata);
+					}, vm.timeoutObj.COUNT_TIMEOUT);
 					break;
 				case "getallchannels":
-					this.getChannelWs(redata);
+					clearTimeout(vm.timeoutObj.setTimeGetallchannels);
+					vm.timeoutObj.setTimeGetallchannels = setTimeout(() => {
+						vm.getChannelWs(redata);
+					}, vm.timeoutObj.COUNT_TIMEOUT);
 					break;
 				case "getbalance":
-					this.getBalanceWs(redata);
+					clearTimeout(vm.timeoutObj.setTimeGetbalance);
+					vm.timeoutObj.setTimeGetbalance = setTimeout(() => {
+						vm.getBalanceWs(redata);
+					}, vm.timeoutObj.COUNT_TIMEOUT);
 					break;
 				case "getfilesharerevenue":
-					this.getRevenueWs(redata);
+					clearTimeout(vm.timeoutObj.setTimeGetfilesharerevenue);
+					vm.timeoutObj.setTimeGetfilesharerevenue = setTimeout(() => {
+						vm.getRevenueWs(redata);
+					}, vm.timeoutObj.COUNT_TIMEOUT);
 					break;
 				case "networkstate":
-					this.getStateWs(redata);
+					clearTimeout(vm.timeoutObj.setTimeNetworkstate);
+					vm.timeoutObj.setTimeNetworkstate = setTimeout(() => {
+						vm.getStateWs(redata);
+					}, vm.timeoutObj.COUNT_TIMEOUT);
 					break;
 				case "currentchannel":
-					this.getCurrentChannelWs(redata);
+					clearTimeout(vm.timeoutObj.setTimeCurrentchannel);
+					vm.timeoutObj.setTimeCurrentchannel = setTimeout(() => {
+						vm.getCurrentChannelWs(redata);
+					}, vm.timeoutObj.COUNT_TIMEOUT);
 					break;
 				case "getuserspace":
-					this.getuserspaceWs(redata);
+					clearTimeout(vm.timeoutObj.setTimeGetuserspace);
+					vm.timeoutObj.setTimeGetuserspace = setTimeout(() => {
+						vm.getuserspaceWs(redata);
+					}, vm.timeoutObj.COUNT_TIMEOUT);
 					break;
 				case "getcurrentaccount":
-					this.getAddressWs(redata);
+					clearTimeout(vm.timeoutObj.setTimeGetcurrentaccount);
+					vm.timeoutObj.setTimeGetcurrentaccount = setTimeout(() => {
+						vm.getAddressWs(redata);
+					}, vm.timeoutObj.COUNT_TIMEOUT);
 					break;
 				case "gettransferlist":
-					this.gettransferlist(redata);
+					clearTimeout(vm.timeoutObj.setTimeGettransferlist);
+					vm.timeoutObj.setTimeGettransferlist = setTimeout(() => {
+						vm.gettransferlist(redata);
+					}, vm.timeoutObj.COUNT_TIMEOUT);
 					break;
 			}
 		},
@@ -572,7 +681,7 @@ export default {
 					vm.$store.commit("REMOVE_PAUSING", vm.readyUpload);
 					// this.$store.dispatch("getUpload"); // force update
 					vm.uploadingTransferListForce++;
-					setTimeout(() => {
+					setTimeout(() => { // wait for 2s to change readyUpload for check is have upload file length to upload
 						vm.readyUpload = [];
 						vm.uploadingTransferListForce++;
 					}, 2000);

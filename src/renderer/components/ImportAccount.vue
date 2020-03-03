@@ -436,16 +436,23 @@ export default {
 						});
 				}
 			});
+		},
+		attach() {
+			ipcRenderer.send("run-dialog-event", {
+				name: "attach",
+				data: {
+					names: ['progress', 'account'],
+					id: remote.getCurrentWebContents().id
+				}
+			});
 		}
 	},
 	mounted() {
-		ipcRenderer.send("run-dialog-event", {
-			name: "attach",
-			data: {
-				names: ['progress', 'account'],
-				id: remote.getCurrentWebContents().id
-			}
+		const vm = this;
+		ipcRenderer.on("dialog-load", (e) => {
+			vm.attach();
 		});
+		vm.attach();
 	}
 };
 </script>

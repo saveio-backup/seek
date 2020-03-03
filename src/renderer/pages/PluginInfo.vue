@@ -140,13 +140,11 @@ export default {
 		};
 	},
 	mounted() {
-		ipcRenderer.send("run-dialog-event", {
-			name: "attach",
-			data: {
-				names: ['progress', 'account', 'downloadList', 'completeList'],
-				id: remote.getCurrentWebContents().id
-			}
+		const vm = this;
+		ipcRenderer.on("dialog-load", (e) => {
+			vm.attach();
 		});
+		vm.attach();
 		document.title = this.$t("plugin.plugin");
 		this.getPluginsInfo();
 		document.addEventListener("visibilitychange", () => {
@@ -167,6 +165,15 @@ export default {
 		}
 	},
 	methods: {
+		attach() {
+			ipcRenderer.send("run-dialog-event", {
+				name: "attach",
+				data: {
+					names: ['progress', 'account', 'downloadList', 'completeList'],
+					id: remote.getCurrentWebContents().id
+				}
+			});
+		},
 		setIsShow(plugin) {
 			const localUrlPlugins = ipcRenderer.sendSync(
 				"getUsermeta",

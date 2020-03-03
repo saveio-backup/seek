@@ -16,6 +16,7 @@ import { ipcRenderer, remote } from "electron";
 export default {
 	name: "browser",
 	mounted() {
+		console.log(remote.getCurrentWebContents().id);
 		document.querySelector(
 			"#theme-ui"
 		).href = `./static/css/${this.themeColor}/theme/index.css`;
@@ -36,6 +37,8 @@ export default {
 			}
 		);
 		ipcRenderer.on("get-data", (event, { result, type, page }) => {
+			console.log(type);
+			console.log(result);
 			this[type + "Update"]({ result, page });
 		});
 		ipcRenderer.on("set-theme", (event, theme) => {

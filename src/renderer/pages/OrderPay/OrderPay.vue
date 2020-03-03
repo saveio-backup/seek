@@ -175,13 +175,11 @@ import { round } from "mathjs";
 import crypto from 'crypto'
 export default {
 	mounted() {
-		ipcRenderer.send("run-dialog-event", {
-			name: "attach",
-			data: {
-				names: ['progress', 'account'],
-				id: remote.getCurrentWebContents().id
-			}
+		const vm = this;
+		ipcRenderer.on("dialog-load", (e) => {
+			vm.attach();
 		});
+		vm.attach();
 		Seek.getAccount().then(res => {
 			this.contractData.Address = res.Result.Address;
 			this.contractData.Label = res.Result.Label;
@@ -227,6 +225,15 @@ export default {
 		}
 	},
 	methods: {
+		attach() {
+			ipcRenderer.send("run-dialog-event", {
+				name: "attach",
+				data: {
+					names: ['progress', 'account'],
+					id: remote.getCurrentWebContents().id
+				}
+			});
+		},
 		OpenPasswordDialog() {
 			this.passwordForm.show = true;
 			this.$nextTick(() => {

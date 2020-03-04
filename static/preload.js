@@ -125,7 +125,7 @@ async function loadThirdPage(url, uuid, loadView) {
     Id
   } = localUrlPlugins[url].detail
   if (fs.existsSync(Path)) {
-    ipcRenderer.send('load-third-page', Path, FileName, Id, Url);
+    ipcRenderer.send('load-third-page', Path, FileName, Id, encodeURIComponent(Url));
     return;
   }
   try {
@@ -164,7 +164,7 @@ async function loadThirdPage(url, uuid, loadView) {
       loadView.pageLoadProgress = data.Progress; // set load progress
       try {
         fs.statSync(data.Path);
-        ipcRenderer.send('load-third-page', data.Path, data.FileName, data.Id);
+        ipcRenderer.send('load-third-page', data.Path, data.FileName, data.Id, encodeURIComponent(data.Url));
       } catch (error) {
         console.error(`error ${error}`);
         loadView.pageLoadProgress = 0;

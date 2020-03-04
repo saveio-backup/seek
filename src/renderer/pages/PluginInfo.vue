@@ -14,15 +14,15 @@
 							@change="setIsShow(plugin)"
 						></el-switch>
 						<img
-							:src="plugin.img"
+							:src="plugin.Img"
 							alt="save"
 						>
-						<h3>{{plugin.title}}</h3>
-						<p :title="plugin.note[lang]">{{plugin.note[lang]}}</p>
+						<h3>{{plugin.Title}}</h3>
+						<p :title="plugin.ChangeLog[lang.toUpperCase()]">{{plugin.ChangeLog[lang.toUpperCase()]}}</p>
 						<div v-if="plugin.detail">
 							<ripper-button
 								class="primary"
-								v-if="(plugin.detail.Progress >= 1) && (plugin.detail.Status !=5)"
+								v-if="(plugin.detail.Status === 3) && (plugin.isNeedUpdate === false)"
 								@click="openPlugin(plugin.Url,plugin)"
 							>{{$t("plugin.open")}}</ripper-button>
 							<ripper-button
@@ -42,12 +42,12 @@
 							<ripper-button
 								class="primary"
 								@click="downloadPlugin(plugin.Url,plugin)"
-								v-if="plugin.detail.Status ===5"
+								v-if="plugin.isNeedUpdate === true"
 							>{{$t("plugin.update")}}</ripper-button>
 							<ripper-button
 								class="primary"
 								v-if="plugin.detail.Progress >= 1"
-								@click="openConfirmDeletePlugin(plugin.detail.FileHash)"
+								@click="openConfirmDeletePlugin(plugin)"
 							>{{$t("plugin.uninstall")}}</ripper-button>
 						</div>
 						<ripper-button
@@ -55,7 +55,6 @@
 							@click="downloadPlugin(plugin.Url,plugin)"
 							v-else
 						>{{$t("plugin.install")}}</ripper-button>
-
 						<el-progress
 							v-if="plugin.detail"
 							class="plugin-progress"
@@ -71,8 +70,8 @@
 		<el-dialog
 			width="600px"
 			:close-on-click-modal='false'
-			:visible.sync="switchToggle.confirmDeletePluginDialog"
 			class="download-file-detail"
+			:visible.sync="switchToggle.confirmDeletePluginDialog"
 			center
 		>
 			<div slot="title">
@@ -81,7 +80,7 @@
 			</div>
 			<div class="loading-content confirm-cancel-download-dialog">
 				<p class="mb20 mt10">
-					{{$t('fileManager.areYouSureYouWantToUninstallTheSelectedPlugin')}}
+					{{$t('plugin.areYouSureYouWantToUninstallTheSelectedPlugin')}}
 				</p>
 				<div slot="footer">
 					<ripper-button
@@ -91,7 +90,7 @@
 					<ripper-button
 						class="primary ml10"
 						type="primary"
-						@click="deletePlugin"
+						@click="deletePlugin(pluginSelected)"
 					>{{$t('public.confirm')}}</ripper-button>
 				</div>
 			</div>
@@ -101,24 +100,15 @@
 <script>
 import { ipcRenderer, remote } from "electron";
 import fs from "fs";
-window.remote = remote;
+import path from "path";
 const G_plugins = [
-	// {
-	// 	Url: "oni://www.filmlabbeta.com",
-	// 	icon: "FS",
-	// 	img: "https://i.loli.net/2019/11/18/tjBDFyKTpQsXuza.png",
-	// 	title: "filmlabbeta",
-	// 	note:
-	// 		"filmlabbeta test, transfer information, node information and other important information in save network",
-	// 	progress: 0,
-	// 	detail: null
-	// },
 	{
 		Url: "oni://www.explorer.com",
-		icon: "DNS",
+		FileHash: "",
+		Platform: "1",
 		img: "https://i.loli.net/2019/11/18/tjBDFyKTpQsXuza.png",
 		title: "Explorer",
-		note: {
+		changeLog: {
 			en:
 				"ONI Explorer is a plug-in that queries ONI block, transaction, ONI token, wallet, storage space and other information, and updates all ONI node information in real time.",
 			zh:
@@ -132,24 +122,24 @@ export default {
 	data() {
 		return {
 			plugins: [],
+			pluginSelected: null,
 			taskByUrl: {},
 			switchToggle: {
 				confirmDeletePluginDialog: false
-			},
-			pluginSelected: null
+			}
 		};
 	},
 	mounted() {
 		const vm = this;
-		ipcRenderer.on("dialog-load", (e) => {
+		ipcRenderer.on("dialog-load", e => {
 			vm.attach();
 		});
 		vm.attach();
 		document.title = this.$t("plugin.plugin");
-		this.getPluginsInfo();
-		document.addEventListener("visibilitychange", () => {
-			if (document.visibilityState === "visible") this.sendPluginInfo();
-		});
+		this.newCheckPluginInfos();
+		// document.addEventListener("visibilitychange", () => {
+		// 	if (document.visibilityState === "visible") this.sendPluginInfo();
+		// });
 		this.$store.dispatch("setCurrentAccount"); // get login status
 	},
 	computed: {
@@ -165,11 +155,26 @@ export default {
 		}
 	},
 	methods: {
+		deleteFolderRecursive(path) {
+			if (fs.existsSync(path)) {
+				fs.readdirSync(path).forEach(file => {
+					var curPath = path + "/" + file;
+					if (fs.lstatSync(curPath).isDirectory()) {
+						// recurse
+						this.deleteFolderRecursive(curPath);
+					} else {
+						// delete file
+						fs.unlinkSync(curPath);
+					}
+				});
+				fs.rmdirSync(path);
+			}
+		},
 		attach() {
 			ipcRenderer.send("run-dialog-event", {
 				name: "attach",
 				data: {
-					names: ['progress', 'account', 'downloadList', 'completeList'],
+					names: ["progress", "account", "downloadList", "completeList"],
 					id: remote.getCurrentWebContents().id
 				}
 			});
@@ -191,10 +196,17 @@ export default {
 					"updatePlugin"
 				);
 		},
-		async getPluginsInfo() {
-			const plugins = G_plugins; // todo  get from http request
+		async getPluginInfos() {
+			return new Promise((resolve, reject) => {
+				this.$axios.get(this.$api.plugininfos).then(res => {
+					resolve(res);
+				});
+			});
+		},
+		async newCheckPluginInfos() {
+			let plugins = await this.getPluginInfos();
+			plugins = plugins.Result;
 			const pluginInstaled = [];
-			// todo  修改结构
 			const localUrlPlugins = ipcRenderer.sendSync(
 				"getUsermeta",
 				"LocalUrlPlugins"
@@ -202,10 +214,8 @@ export default {
 			console.log("localUrlPlugins is");
 			console.log(localUrlPlugins);
 			for (let i = 0; i < plugins.length; i++) {
-				let detail = await this.getTransferDetail(plugins[i].Url);
-				// set isShow
 				if (
-					// to do  may change to false
+					// set isShow, if localUrlPlugins[plugins[i].Url] exists
 					localUrlPlugins[plugins[i].Url] &&
 					localUrlPlugins[plugins[i].Url].isShow === false
 				) {
@@ -213,167 +223,70 @@ export default {
 				} else {
 					plugins[i].isShow = true;
 				}
-				detail = detail.Result;
-				plugins[i].detail = detail;
-				this.$set(this.plugins, i, plugins[i]);
-				try {
-					if (plugins[i].detail) {
-						fs.statSync(detail.Path);
-						pluginInstaled.push(plugins[i]);
-						console.log("plugins[i] is");
-						console.log(plugins[i]);
-						// if plugin loaded from 'Enter address to load', we should update LocalUrlPlugins
-						console.log("localUrlPluginis is");
-						console.log(localUrlPlugins);
-						// localUrlPlugins[plugins[i].Url] = localUrlPlugins[plugins[i].Url]
-						// 	? localUrlPlugins[plugins[i].Url]
-						// 	: plugins[i];
-						localUrlPlugins[plugins[i].Url] = plugins[i];
-					} else if (localUrlPlugins[plugins[i].Url]) {
-						// check if path exist in localUrlplugins
-						if (fs.existsSync(localUrlPlugins[plugins[i].Url].detail.Path)) {
-							// need update
-							plugins[i].detail = localUrlPlugins[plugins[i].Url].detail;
-							plugins[i].detail.Status = 5;
-							pluginInstaled.push(plugins[i]);
-						} else {
-							delete localUrlPlugins[plugins[i].Url]; // no longer exists, there is no need to save the local database.
-							plugins[i].detail = null;
-						}
+				if (this.isPluginExist(plugins[i].Url, localUrlPlugins)) {
+					console.log(
+						"isPluginExist is true,Plugins is exist in DB, and plugins[i] is"
+					);
+					console.log(plugins[i]);
+					plugins[i].detail = localUrlPlugins[plugins[i].Url].detail;
+					if (
+						// if filehash is lastest, just update infoi
+						plugins[i].FileHash !==
+						localUrlPlugins[plugins[i].Url].detail.FileHash
+					) {
+						localUrlPlugins[plugins[i].Url] = plugins[i]; // update info (not plugin)
+						plugins[i].isNeedUpdate =
+							plugins[i].detail.Status === 3 ? true : false; // need update plugin;
+					} else {
+						plugins[i].isNeedUpdate = false; // no need  to update plugin;
 					}
-				} catch (error) {
-					console.log("error");
-					console.log(error);
-					plugins[i].detail = null;
+					pluginInstaled.push(plugins[i]);
+				} else {
+					const detail = await this.isPluginInTransferDetail(plugins[i].Url);
+					if (detail) {
+						plugins[i].detail = detail;
+						localUrlPlugins[plugins[i].Url] = plugins[i];
+						pluginInstaled.push(plugins[i]);
+					} else {
+						delete localUrlPlugins[plugins[i].Url]; // no longer exists, there is no need to save the local database.
+						plugins[i].detail = null;
+					}
 				}
+				this.$set(this.plugins, i, plugins[i]);
 			}
-			try {
-				ipcRenderer.sendSync("setUsermeta", "Plugins", pluginInstaled);
-				ipcRenderer.sendSync("setUsermeta", "LocalUrlPlugins", localUrlPlugins);
-				console.log("pluginInstaled");
-				console.log(pluginInstaled);
-				console.log("localUrlPlugins");
-				console.log(localUrlPlugins);
-				this.sendPluginInfo();
-			} catch (error) {}
+			ipcRenderer.sendSync("setUsermeta", "Plugins", pluginInstaled);
+			ipcRenderer.sendSync("setUsermeta", "LocalUrlPlugins", localUrlPlugins);
+		},
+		isPluginExist(pluginUrl, localUrlPlugins) {
+			console.log("localUrlPlugins[pluginUrl] is");
+			console.log(localUrlPlugins[pluginUrl]);
+			if (
+				localUrlPlugins[pluginUrl] &&
+				localUrlPlugins[pluginUrl].detail &&
+				fs.existsSync(localUrlPlugins[pluginUrl].detail.Path)
+			) {
+				return true;
+			} else {
+				return false;
+			}
+		},
+		/**
+		 * if plugin loaded from 'Enter address to load', we should update LocalUrlPlugins
+		 */
+		async isPluginInTransferDetail(pluginUrl) {
+			console.log("exec isPluginInTransferDetail");
+			let detail = await this.getTransferDetail(pluginUrl);
+			detail = detail.Result;
+			if (detail && fs.existsSync(detail.Path)) {
+				return detail;
+			} else {
+				return false;
+			}
 		},
 		openPlugin(url, plugItem) {
 			// window.open(url);
 			Seek.openThirdPage(url);
 		},
-		async loadPlugin(url, plugItem) {
-			let detail = null;
-			try {
-				detail = await this.getTransferDetail(url);
-			} catch (error) {
-				console.log("loadThirdPage throw a error from await");
-				console.log(error);
-				detail = {
-					data: null
-				};
-			}
-			if (detail.Result) {
-				const data = detail.Result;
-				if (data.Progress >= 0 && data.Progress < 1) {
-					// task has exist
-					if (data.Status === 0) {
-						// but in Pause state
-						this.$message({
-							message: this.$t("plugin.startDownload"),
-							type: "success"
-						});
-						this.$axios
-							.post(this.$api.downloadResume, {
-								Ids: [data.Id]
-							})
-							.then(res => {
-								if (res.Error === 0) {
-									setTimeout(() => {
-										this.loadPlugin(url, plugItem);
-									}, 2000);
-								}
-							})
-							.catch(error => {
-								if (error.message.includes("timeout")) {
-									this.$message.error("Request Timeout!");
-								}
-							});
-					} else if (data.Status === 4) {
-						// task error
-						plugItem.detail = data;
-					} else {
-						// in processing
-						plugItem.detail = data;
-						setTimeout(() => {
-							this.loadPlugin(url, plugItem);
-						}, 2000);
-					}
-				} else if (data.Progress >= 1) {
-					// task has finished
-					if (fs.existsSync(data.Path)) {
-						plugItem.detail = data;
-						const plugins = ipcRenderer.sendSync("getUsermeta", "Plugins");
-						const localUrlPlugins = ipcRenderer.sendSync(
-							"getUsermeta",
-							"LocalUrlPlugins"
-						);
-						if (
-							!plugins.some(item => {
-								if (item.Url === plugItem.Url) {
-									item.detail = plugItem.detail;
-									// everytime we update plugin, we update url:plugin data as key:value to store in localUrlPlugins
-									localUrlPlugins[plugItem.Url].detail = plugItem.detail;
-									return true;
-								} else {
-									return false;
-								}
-							})
-						) {
-							plugins.push(plugItem);
-							// everytime we add plugin, we add url:plugin data as key:value to store in localUrlPlugins
-							localUrlPlugins[plugItem.Url] = plugItem;
-							localUrlPlugins[plugItem.Url].isShow = true;
-						}
-						ipcRenderer.sendSync("setUsermeta", "Plugins", plugins);
-						ipcRenderer.sendSync(
-							"setUsermeta",
-							"LocalUrlPlugins",
-							localUrlPlugins
-						);
-						this.sendPluginInfo();
-						window.open(url);
-					} else {
-						const plugins = ipcRenderer.sendSync("getUsermeta", "Plugins");
-						const localUrlPlugins = ipcRenderer.sendSync(
-							"getUsermeta",
-							"LocalUrlPlugins"
-						);
-						for (let i = 0; i < plugins.length; i++) {
-							const element = plugins[i];
-							if (element.detail.Path === data.Path) {
-								plugins.splice(i, 1);
-								// while remove plugin, del url:plugin
-								delete localUrlPlugins[element.Url];
-								break;
-							}
-						}
-						ipcRenderer.sendSync("setUsermeta", "Plugins", plugins);
-						ipcRenderer.sendSync(
-							"setUsermeta",
-							"LocalUrlPlugins",
-							localUrlPlugins
-						);
-						plugItem.detail = data;
-						plugItem.detail.Status = 0;
-						plugItem.detail.Progress = 0;
-						this.downloadPlugin(url, plugItem); // task exist but file not found
-					}
-				}
-			} else {
-				this.downloadPlugin(url, plugItem);
-			}
-		},
-
 		downloadPlugin(url, plugItem) {
 			this.$axios
 				.post(this.$api.download, {
@@ -465,20 +378,34 @@ export default {
 			});
 		},
 		openConfirmDeletePlugin(plugin) {
+			this.pluginSelected = plugin;
 			this.switchToggle.confirmDeletePluginDialog = true;
 		},
 		deletePlugin(plugin) {
+			const dir = path.parse(plugin.detail.Path).dir;
+			const subDir = encodeURIComponent(plugin.detail.Url);
+			const finalPath = path.join(dir, subDir);
 			this.$axios
-				.post(this.$api.deletedownloadfile, { Hash: plugin.detail.FileHash })
+				.post(this.$api.deletedownloadfile, {
+					Hash: plugin.detail.FileHash,
+					Password:
+						"a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3"
+				})
 				.then(res => {
-					console.log("delete file is");
-					console.log(res);
-					plugin.detail = null;
+					if (res.Error === 0) {
+						console.log("delete file is");
+						console.log(res);
+						plugin.detail = null;
+						// delete unzip file dir
+						this.deleteFolderRecursive(finalPath);
+						this.switchToggle.confirmDeletePluginDialog = false;
+					}
 				});
 		}
 	},
 	watch: {
 		downloadingTransferList(val) {
+			if (!this.plugins.length) return;
 			console.log("downloading changed");
 			console.log(val);
 			let taskByUrl = {};
@@ -493,13 +420,14 @@ export default {
 			for (let i = 0; i < this.plugins.length; i++) {
 				const pluginItem = this.plugins[i];
 				pluginItem.detail = taskByUrl[pluginItem.Url]
-					? taskByUrl[pluginItem.Url]
+					? taskByUrl[pluginItem.Url] // if plugin in in task, replace it with task
 					: localUrlPlugins[pluginItem.Url]
 					? localUrlPlugins[pluginItem.Url].detail
 					: null; // if plguin is not in task, will reset to localUrlPlugins
 			}
 		},
 		completeTransferList(val) {
+			if (!this.plugins.length) return;
 			console.log("complete transfer");
 			console.log(val);
 			let taskByUrl = {};
@@ -527,6 +455,7 @@ export default {
 				} else {
 					pluginItem.isShow = true;
 				}
+				pluginItem.isNeedUpdate = false; // no need to update, because it was downloaded from net
 				pluginsTemp.push(pluginItem);
 				localUrlPlugins[pluginItem.Url] = localUrlPlugins[pluginItem.Url] || {};
 				localUrlPlugins[pluginItem.Url].detail = pluginItem.detail;

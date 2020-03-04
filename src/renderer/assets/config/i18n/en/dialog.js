@@ -21,7 +21,8 @@ const result = {
   'decoding': 'Decoding...',
   'decodeSuccess': 'Decode Success!',
   'filePassword': 'File Password',
-  'pleaseInputFilePasswordPassword': 'Please Fill Password'
+  'pleaseInputFilePasswordPassword': 'Please Fill Password',
+  'about': 'about'
 }
 
 export default result;

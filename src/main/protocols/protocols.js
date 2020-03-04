@@ -128,6 +128,8 @@ function saveStreamProtocol(request, callback) {
       const parse = path.parse(result);
       // const unzipTo = path.join(parse.dir, fileName + '_' + id)
       const unzipTo = path.join(parse.dir, url)
+      console.log('unzipTo is');
+      console.log(unzipTo);
       zip.extractAllTo(unzipTo);
       const fileRootName = fs.readdirSync(unzipTo)[0];
       // console.log('unzip success, will load path is:');

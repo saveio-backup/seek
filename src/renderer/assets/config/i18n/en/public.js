@@ -20,7 +20,7 @@ const result = {
   'RecommendedNoLessThan100ONI': 'Recommended no less than 100 ONI',
   'walletPassword': 'Wallet Password',
   'pleaseInputWalletPassword': 'Please Fill Password',
-  'pleaseAdjustYourSpaceAndDate':'Please adjust your space and date.',
+  'pleaseAdjustYourSpaceAndDate': 'Please adjust your space and date.',
   'pleaseEnterTheCorrectFormat': 'Please Enter the Correct Format',
   'pleaseFillAmount': 'Please Fill Amount',
   'pleaseFillPassword': 'Please Fill Password',
@@ -57,5 +57,7 @@ const result = {
   'copy': 'Copy',
   'closeSuccess': ' close success!',
   'fileTotal': 'File Total',
+  'checkUpdate': 'Check Update ',
+  'theCurrentVersionIsTheLatestVersion': 'The current version is the latest version'
 }
 export default result;

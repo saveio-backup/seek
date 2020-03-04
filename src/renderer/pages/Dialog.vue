@@ -23,6 +23,11 @@
 			v-if="menuSelector === 'decodeFile'"
 		>
 		</decode-file>
+		<about-client
+			@closeDialog="closeDialog"
+			v-if="menuSelector === 'aboutClient'"
+		>
+		</about-client>
 		<div
 			class="downloadDialog"
 			v-if="menuSelector === 'downloadDialog'"
@@ -56,6 +61,7 @@ import isCreateChannel from "./Dialog/IsCreateChannel.vue";
 import channelLoseEfficacy from "./Dialog/ChannelLoseEfficacy.vue";
 import decodeFile from "./Dialog/decodeFile.vue";
 import downloadDialog from "../components/DownloadDialog.vue";
+import aboutClient from "./Dialog/AboutClient.vue";
 // import io from 'socket.io-client';
 export default {
 	name: "Dialog",
@@ -65,7 +71,8 @@ export default {
 		isCreateChannel,
 		downloadDialog,
 		channelLoseEfficacy,
-		decodeFile
+		decodeFile,
+		aboutClient
 	},
 	data() {
 		const COUNT_TIMEOUT = 1000;
@@ -76,7 +83,7 @@ export default {
 			},
 
 			menuSelector: "",
-			decodeFilePath: '',
+			decodeFilePath: "",
 			loginStatus: false,
 			// current main browserWindow
 			win: null,
@@ -96,7 +103,7 @@ export default {
 				setTimeChannelinitprogress: null,
 				setTimeGetallchannels: null,
 				setTimeGetbalance: null,
-				setTimeGetfilesharerevenue:null,
+				setTimeGetfilesharerevenue: null,
 				setTimeNetworkstate: null,
 				setTimeCurrentchannel: null,
 				setTimeGetuserspace: null,
@@ -111,8 +118,8 @@ export default {
 			},
 
 			isNeedSync: false,
-			isLoginShowLog: false,
-			
+			isLoginShowLog: process.env.NODE_ENV === "development" ? true : false,
+
 			// transfer correlation
 			transferObj: {},
 			maxNumUpload: 0,
@@ -136,12 +143,12 @@ export default {
 			// subject
 			subject: {},
 			viewsIds: [],
-			/** 
+			/**
 			 * cache send data/view id(isActive=false)
 			 * wait for send when isActive = true
-			**/
+			 **/
 			isNotSend: {},
-			limitTimestamp: (new Date()).getTime()
+			limitTimestamp: new Date().getTime()
 		};
 	},
 	computed: {
@@ -182,7 +189,7 @@ export default {
 			return arr;
 		},
 		localStatus: function() {
-			let obj = this.$store.state.Transfer.localStatus; 
+			let obj = this.$store.state.Transfer.localStatus;
 			// this.notifyObserversByName("localStatus", obj);
 			return obj;
 		},
@@ -212,9 +219,9 @@ export default {
 	mounted() {
 		const vm = this;
 		this.getViewIds();
-		localStorage.setItem('localStorage', false);
-		if(remote.process.argv[(remote.process.argv.length - 1)].endsWith('.ept')) {
-			vm.decodeFilePath = remote.process.argv[(remote.process.argv.length - 1)];
+		localStorage.setItem("localStorage", false);
+		if (remote.process.argv[remote.process.argv.length - 1].endsWith(".ept")) {
+			vm.decodeFilePath = remote.process.argv[remote.process.argv.length - 1];
 			vm.checkOpenDecodeDialog();
 		}
 		ipcRenderer.on("setSelector", (e, selector) => {
@@ -229,10 +236,10 @@ export default {
 			vm[name](data);
 		});
 		ipcRenderer.on("setDecodeFilePath", (e, paths) => {
-			console.log('setDecodeFilePath', paths);
-			if(!vm.win) vm.getWin();
-			if(vm.win.isMinimized()) {
-				vm.win.restore()
+			console.log("setDecodeFilePath", paths);
+			if (!vm.win) vm.getWin();
+			if (vm.win.isMinimized()) {
+				vm.win.restore();
 			}
 			vm.decodeFilePath = paths;
 			vm.checkOpenDecodeDialog();
@@ -242,12 +249,12 @@ export default {
 		// ipcRenderer.
 		// this.renderDataToBrowserView({})
 		let arrWin = remote.BrowserWindow.getAllWindows();
-		for (let i = 0;i < arrWin.length; i ++ ) {
+		for (let i = 0; i < arrWin.length; i++) {
 			let win = arrWin[i];
 			let winContentId = win.webContents.id;
 			ipcRenderer.sendTo(winContentId, "dialog-load");
-			if(!win.views) continue;
-			for(let view of win.views) {
+			if (!win.views) continue;
+			for (let view of win.views) {
 				ipcRenderer.sendTo(view.browserView.webContents.id, "dialog-load");
 			}
 		}
@@ -291,20 +298,24 @@ export default {
 			this.Balance = null;
 			this.channelNum = null;
 			localStorage.setItem("DNSAdress", "");
-			if(!newVal) {
+			if (!newVal) {
 				this.setIsLoginShowLog(false);
 				return;
-			};
+			}
 			this.$store.dispatch("getWaitForTransferList");
-			let _uploadDoneList = localStorage.getItem(`uploadDoneList_${this.Address}`);
-			if(_uploadDoneList) {
+			let _uploadDoneList = localStorage.getItem(
+				`uploadDoneList_${this.Address}`
+			);
+			if (_uploadDoneList) {
 				this.uploadDoneList = JSON.parse(_uploadDoneList);
 			} else {
 				this.uploadDoneList = [];
 			}
-			let _downloadDoneList = localStorage.getItem(`downloadDoneList_${this.Address}`);
-			if(_downloadDoneList) {
-				this.downloadDoneList = JSON.parse(_downloadDoneList)
+			let _downloadDoneList = localStorage.getItem(
+				`downloadDoneList_${this.Address}`
+			);
+			if (_downloadDoneList) {
+				this.downloadDoneList = JSON.parse(_downloadDoneList);
 			} else {
 				this.downloadDoneList = [];
 			}
@@ -392,7 +403,10 @@ export default {
 			clearTimeout(this.timeoutObj.setTimeUploadDoneList);
 			this.timeoutObj.setTimeUploadDoneList = setTimeout(() => {
 				this.notifyObserversByName("uploadDoneList", val);
-				localStorage.setItem(`uploadDoneList_${vm.Address}`, JSON.stringify(val));
+				localStorage.setItem(
+					`uploadDoneList_${vm.Address}`,
+					JSON.stringify(val)
+				);
 			}, this.timeoutObj.COUNT_TIMEOUT);
 		},
 		downloadDoneList(val, oldVal) {
@@ -400,7 +414,10 @@ export default {
 			clearTimeout(this.timeoutObj.setTimeDownloadDoneList);
 			this.timeoutObj.setTimeDownloadDoneList = setTimeout(() => {
 				vm.notifyObserversByName("downloadDoneList", val);
-				localStorage.setItem(`downloadDoneList_${vm.Address}`, JSON.stringify(val));
+				localStorage.setItem(
+					`downloadDoneList_${vm.Address}`,
+					JSON.stringify(val)
+				);
 			}, this.timeoutObj.COUNT_TIMEOUT);
 		}
 	},
@@ -408,11 +425,11 @@ export default {
 		getNewComplete() {
 			const vm = this;
 			let end = this.limitTimestamp;
-			this.limitTimestamp = (new Date()).getTime();
+			this.limitTimestamp = new Date().getTime();
 			this.$axios.get(`${this.$api.transferlist}/0/0/0/0/${end}`).then(res => {
 				if (res.Error === 0) {
 					const result = res.Result.Transfers;
-					for(let value of result) {
+					for (let value of result) {
 						vm.message({
 							info: `${value.FileName} ${
 								value.IsUploadAction
@@ -421,7 +438,7 @@ export default {
 							}`,
 							type: "success"
 						});
-						if(value.IsUploadAction) {
+						if (value.IsUploadAction) {
 							vm.uploadDoneList.push(value.RealFileSize);
 						} else {
 							vm.downloadDoneList.push(value.FileSize);
@@ -431,10 +448,13 @@ export default {
 			});
 		},
 		runIsNotSendToSend(id) {
-			for(let key in this.isNotSend) {
-				if(this.isNotSend[key] && this.isNotSend[key][id]) {
-					ipcRenderer.sendTo(id, "get-data", { result: this.isNotSend[key].content, type: key});
-					if(id !== 1 && id !== 2) {
+			for (let key in this.isNotSend) {
+				if (this.isNotSend[key] && this.isNotSend[key][id]) {
+					ipcRenderer.sendTo(id, "get-data", {
+						result: this.isNotSend[key].content,
+						type: key
+					});
+					if (id !== 1 && id !== 2) {
 						delete this.isNotSend[key][id];
 					}
 				}
@@ -442,20 +462,24 @@ export default {
 		},
 		getViewIds() {
 			let wins = remote.BrowserWindow.getAllWindows();
-			for (let i = 0; i < wins.length; i ++) {
+			for (let i = 0; i < wins.length; i++) {
 				let win = wins[i];
-				if(!this.viewsIds.includes(win.id)) {
+				if (!this.viewsIds.includes(win.id)) {
 					this.viewsIds.push(win.id);
 				}
 				if (win.views) {
-					for(let view of win.views) {
-						if(view.isActive) {
-							if(!this.viewsIds.includes(view.browserView.webContents.id)) {
+					for (let view of win.views) {
+						if (view.isActive) {
+							if (!this.viewsIds.includes(view.browserView.webContents.id)) {
 								this.viewsIds.push(view.browserView.webContents.id);
 								this.runIsNotSendToSend(view.browserView.webContents.id);
 							}
-						} else if(this.viewsIds.includes(view.browserView.webContents.id)) {
-							let index = this.viewsIds.indexOf(view.browserView.webContents.id);
+						} else if (
+							this.viewsIds.includes(view.browserView.webContents.id)
+						) {
+							let index = this.viewsIds.indexOf(
+								view.browserView.webContents.id
+							);
 							this.viewsIds.splice(index, 1);
 						}
 					}
@@ -463,21 +487,24 @@ export default {
 			}
 			console.log(this.viewsIds);
 		},
-		attach({names = [], id}) {
+		attach({ names = [], id }) {
 			this.subject[id] = names;
-			for(let name of names) {
-				if(!this.subject[name]) this.subject[name] = [];
+			for (let name of names) {
+				if (!this.subject[name]) this.subject[name] = [];
 				if (this.subject[name].indexOf(id) === -1) {
 					this.subject[name].push(id);
 				}
-				if(this.isNotSend[name] && this.isNotSend[name]['content']) {
-					ipcRenderer.sendTo(id, "get-data", { result: this.isNotSend[name].content, type: name});
+				if (this.isNotSend[name] && this.isNotSend[name]["content"]) {
+					ipcRenderer.sendTo(id, "get-data", {
+						result: this.isNotSend[name].content,
+						type: name
+					});
 				}
 			}
 		},
 		unsubscribeById(id) {
-			if(this.subject[observer.id]) {
-				for(let i = 0;i < this.subject[observer.id].length; i++) {
+			if (this.subject[observer.id]) {
+				for (let i = 0; i < this.subject[observer.id].length; i++) {
 					let observerName = this.subject[observer.id][i];
 					let _index = this.subject[observerName].indexOf(observer.id);
 					this.subject[observerName].splice(_index, 0);
@@ -486,17 +513,20 @@ export default {
 			delete this.subject[observer.id];
 		},
 		notifyObserversByName(observerName, content) {
-			if(!this.isNotSend[observerName]) this.isNotSend[observerName] = {};
-			this.isNotSend[observerName]['content'] = content;
-			if(!this.subject[observerName]) return;
-			for(let observerId of this.subject[observerName]) {
+			if (!this.isNotSend[observerName]) this.isNotSend[observerName] = {};
+			this.isNotSend[observerName]["content"] = content;
+			if (!this.subject[observerName]) return;
+			for (let observerId of this.subject[observerName]) {
 				try {
-					if(this.viewsIds.includes(observerId)) {
-						ipcRenderer.sendTo(observerId, "get-data", { result: content, type: observerName });
+					if (this.viewsIds.includes(observerId)) {
+						ipcRenderer.sendTo(observerId, "get-data", {
+							result: content,
+							type: observerName
+						});
 					} else {
 						this.isNotSend[observerName][observerId] = true;
 					}
-				}catch(e) {
+				} catch (e) {
 					console.log(e);
 				}
 			}
@@ -513,8 +543,8 @@ export default {
 			}
 		},
 		checkOpenDecodeDialog() {
-			if(this.decodeFilePath.endsWith('.ept')) {
-				if(this.loginStatus === true) {
+			if (this.decodeFilePath.endsWith(".ept")) {
+				if (this.loginStatus === true) {
 					ipcRenderer.send("dialog-open", "decodeFile");
 				}
 			}
@@ -609,11 +639,16 @@ export default {
 				case "gettransferlist":
 					// clearTimeout(vm.timeoutObj.setTimeGettransferlist);
 					// vm.timeoutObj.setTimeGettransferlist = setTimeout(() => {
-						vm.gettransferlist(redata);
+					vm.gettransferlist(redata);
 					// }, vm.timeoutObj.COUNT_TIMEOUT);
 					break;
-				case 'smartcontractevents':
-					if(redata.Error !== 0 || !redata.Result || redata.Result.eventId !== 1) break;
+				case "smartcontractevents":
+					if (
+						redata.Error !== 0 ||
+						!redata.Result ||
+						redata.Result.eventId !== 1
+					)
+						break;
 					clearTimeout(vm.timeoutObj.setTimeSmartcontractevents);
 					vm.timeoutObj.setTimeSmartcontractevents = setTimeout(() => {
 						vm.getSmartcontracteventsWs(redata);
@@ -648,13 +683,15 @@ export default {
 		waitForUploadFileToUpload() {
 			const vm = this;
 			console.log(`${this.$config.maxNumUpload}----${this.realUploadingLength}----${this.waitForUploadOrderList.length}----
-			${this.readyUpload.length}----${this.isLoginShowLog}`)
+			${this.readyUpload.length}----${this.isLoginShowLog}`);
 			let needUploadLen = this.$config.maxNumUpload - this.realUploadingLength;
 			if (
 				this.waitForUploadOrderList.length === 0 ||
 				this.readyUpload.length !== 0 ||
-				needUploadLen <= 0 || !this.isLoginShowLog
-			)	return;
+				needUploadLen <= 0 ||
+				!this.isLoginShowLog
+			)
+				return;
 			// update readyUpload
 			let realUploadLen = Math.min(
 				needUploadLen,
@@ -675,12 +712,11 @@ export default {
 			commitAll = commitAll.concat(
 				vm.getStartWaitForUploadPromise(filterWaitForUploadList)
 			);
-			commitAll = commitAll.concat(vm.getContinueUploadPromise(filterUploadingList));
-			if(commitAll.length === 0) {
-				vm.$store.commit(
-					"REMOVE_WAIT_FOR_UPLOAD_ORDER_LIST",
-					vm.readyUpload
-				);
+			commitAll = commitAll.concat(
+				vm.getContinueUploadPromise(filterUploadingList)
+			);
+			if (commitAll.length === 0) {
+				vm.$store.commit("REMOVE_WAIT_FOR_UPLOAD_ORDER_LIST", vm.readyUpload);
 				vm.$store.commit("REMOVE_UPLOADING", vm.readyUpload);
 				vm.$store.commit("REMOVE_PAUSING", vm.readyUpload);
 				vm.$nextTick(() => {
@@ -703,15 +739,13 @@ export default {
 				// wait for 1s for wait for get upload file done
 				vm.$nextTick(() => {
 					vm.$store.commit("SET_WAIT_FOR_UPLOAD_LIST", newWaitForList);
-					vm.$store.commit(
-						"REMOVE_WAIT_FOR_UPLOAD_ORDER_LIST",
-						vm.readyUpload
-					);
+					vm.$store.commit("REMOVE_WAIT_FOR_UPLOAD_ORDER_LIST", vm.readyUpload);
 					vm.$store.commit("REMOVE_UPLOADING", vm.readyUpload);
 					vm.$store.commit("REMOVE_PAUSING", vm.readyUpload);
 					// this.$store.dispatch("getUpload"); // force update
 					vm.uploadingTransferListForce++;
-					setTimeout(() => { // wait for 2s to change readyUpload for check is have upload file length to upload
+					setTimeout(() => {
+						// wait for 2s to change readyUpload for check is have upload file length to upload
 						vm.readyUpload = [];
 						vm.uploadingTransferListForce++;
 					}, 2000);
@@ -720,7 +754,7 @@ export default {
 				// error message
 				let errorArr = [];
 				let errorMsg = "";
-				for (let i = 0;i < resArr.length; i ++) {
+				for (let i = 0; i < resArr.length; i++) {
 					let value = resArr[i];
 					if (value.Error !== 0) {
 						errorMsg += `<p>`;
@@ -787,7 +821,8 @@ export default {
 			if (
 				this.waitForDownloadOrderList.length === 0 ||
 				this.readyDownload.length !== 0 ||
-				needDownloadLen <= 0 || !this.isLoginShowLog
+				needDownloadLen <= 0 ||
+				!this.isLoginShowLog
 			)
 				return;
 			// update readyDownload
@@ -813,8 +848,10 @@ export default {
 			commitAll = commitAll.concat(
 				this.getStartWaitForDownloadPromise(filterWaitForDownloadList)
 			);
-			commitAll = commitAll.concat(this.getContinueDownloadPromise(filterDownloadingList));
-			if(commitAll.length === 0) {
+			commitAll = commitAll.concat(
+				this.getContinueDownloadPromise(filterDownloadingList)
+			);
+			if (commitAll.length === 0) {
 				vm.$store.commit(
 					"REMOVE_WAIT_FOR_DOWNLOAD_ORDER_LIST",
 					vm.readyDownload
@@ -980,7 +1017,7 @@ export default {
 					progressResult.Result.isNeedSync = this.isNeedSync;
 				}
 				progressResult.Result.isLoginShowLog = this.isLoginShowLog;
-				this.notifyObserversByName('progress', progressResult.Result);
+				this.notifyObserversByName("progress", progressResult.Result);
 			}
 		},
 		// logout success change block height is default;
@@ -995,24 +1032,23 @@ export default {
 					End: 0,
 					Now: 0
 				});
-				this.notifyObserversByName(
-					"state", {
-						Chain: {
-							HostAddr: "",
-							State: 0,
-							UpdatedAt: 0
-						},
-						DNS: {
-							HostAddr: "",
-							State: 0,
-							UpdatedAt: 0
-						},
-						DspProxy: {
-							HostAddr: "",
-							State: 0,
-							UpdatedAt: 0
-						}
-					});
+				this.notifyObserversByName("state", {
+					Chain: {
+						HostAddr: "",
+						State: 0,
+						UpdatedAt: 0
+					},
+					DNS: {
+						HostAddr: "",
+						State: 0,
+						UpdatedAt: 0
+					},
+					DspProxy: {
+						HostAddr: "",
+						State: 0,
+						UpdatedAt: 0
+					}
+				});
 			});
 		},
 		// get balance for show create channel dialog
@@ -1065,11 +1101,11 @@ export default {
 		},
 		// get connect state
 		getStateWs(res) {
-			if (res.Error === 0) {		
+			if (res.Error === 0) {
 				this.notifyObserversByName("state", res.Result);
 			}
 		},
-		
+
 		/**
 		 * params:
 		 * rendTo: send to type
@@ -1296,7 +1332,7 @@ export default {
 		removeUploading(data) {
 			this.$store.commit("REMOVE_UPLOADING", data);
 			this.getUpload();
-		},		
+		},
 		/**
 		 * set config maxNumUpload
 		 * params:
@@ -1407,68 +1443,92 @@ export default {
 		async pauseAll() {
 			let uploadingArr = [];
 			let flag = false;
-			for(let value of this.uploadingTransferList) {
-				if(value.Status === 2 && value.DetailStatus !== 5 && value.DetailStatus !== 23) {
-					uploadingArr.push(value.Id)
-				} else if(value.Status === 2 && (value.DetailStatus === 5 || value.DetailStatus === 23)){
-					flag = true
+			for (let value of this.uploadingTransferList) {
+				if (
+					value.Status === 2 &&
+					value.DetailStatus !== 5 &&
+					value.DetailStatus !== 23
+				) {
+					uploadingArr.push(value.Id);
+				} else if (
+					value.Status === 2 &&
+					(value.DetailStatus === 5 || value.DetailStatus === 23)
+				) {
+					flag = true;
 				}
 			}
 
 			let downloadingArr = [];
-			for(let value of this.downloadingTransferList) {
-				if(value.Status === 2 && value.DetailStatus !== 5 && value.DetailStatus !== 23) {
-					downloadingArr.push(value.Id)
-				} else if(value.Status === 2 && (value.DetailStatus === 5 || value.DetailStatus === 23)){
-					flag = true
+			for (let value of this.downloadingTransferList) {
+				if (
+					value.Status === 2 &&
+					value.DetailStatus !== 5 &&
+					value.DetailStatus !== 23
+				) {
+					downloadingArr.push(value.Id);
+				} else if (
+					value.Status === 2 &&
+					(value.DetailStatus === 5 || value.DetailStatus === 23)
+				) {
+					flag = true;
 				}
 			}
 			let arr = [];
-			if(uploadingArr.length !== 0){
+			if (uploadingArr.length !== 0) {
 				arr.push(this.toPause(uploadingArr));
 			}
-			if(downloadingArr.length !== 0) {
+			if (downloadingArr.length !== 0) {
 				arr.push(this.toPauseDownload(downloadingArr));
 			}
-			if(arr.length === 0) {
+			if (arr.length === 0) {
 				return flag;
 			}
 
-			return Promise.all(arr).then(Ress => {
-				for(let i = 0;i < Ress.length;i ++) {
-					let Res = Ress[i];
-					if(Res.Error !== 0) return true;
-					for(let j = 0;j < Res.Tasks.length;j ++) {
-						let _task = Res.Tasks[j];
-						if(_task.State === 2 || _task.State === 1) return true;
+			return Promise.all(arr)
+				.then(Ress => {
+					for (let i = 0; i < Ress.length; i++) {
+						let Res = Ress[i];
+						if (Res.Error !== 0) return true;
+						for (let j = 0; j < Res.Tasks.length; j++) {
+							let _task = Res.Tasks[j];
+							if (_task.State === 2 || _task.State === 1) return true;
+						}
+						return flag;
 					}
-					return flag;
-				}
-			}).catch(err => {
-				return true;
-			})
+				})
+				.catch(err => {
+					return true;
+				});
 		},
 		// logout pause all task
 		async logoutPauseAllTask() {
 			// update task(at local cache task)
-			this.$store.commit('SET_WAIT_FOR_DOWNLOAD_ORDER_LIST', []);
-			this.$store.commit('SET_WAIT_FOR_UPLOAD_ORDER_LIST', []);
-			this.$store.commit('GET_LOCAL_STATUS', {
-        pausing: [],
-        uploading: []
+			this.$store.commit("SET_WAIT_FOR_DOWNLOAD_ORDER_LIST", []);
+			this.$store.commit("SET_WAIT_FOR_UPLOAD_ORDER_LIST", []);
+			this.$store.commit("GET_LOCAL_STATUS", {
+				pausing: [],
+				uploading: []
 			});
-			let _waitForUploadList = JSON.parse(JSON.stringify(this.waitForUploadList));
-			for(let value of _waitForUploadList) {
+			let _waitForUploadList = JSON.parse(
+				JSON.stringify(this.waitForUploadList)
+			);
+			for (let value of _waitForUploadList) {
 				value.Status = 0;
 			}
-			this.$store.commit('SET_WAIT_FOR_UPLOAD_LIST', _waitForUploadList);
-			let _waitForDownloadList = JSON.parse(JSON.stringify(this.waitForDownloadList));
-			for(let value of _waitForDownloadList) {
+			this.$store.commit("SET_WAIT_FOR_UPLOAD_LIST", _waitForUploadList);
+			let _waitForDownloadList = JSON.parse(
+				JSON.stringify(this.waitForDownloadList)
+			);
+			for (let value of _waitForDownloadList) {
 				value.Status = 0;
 			}
-			this.$store.commit('SET_WAIT_FOR_DOWNLOAD_LIST', _waitForDownloadList);
+			this.$store.commit("SET_WAIT_FOR_DOWNLOAD_LIST", _waitForDownloadList);
 			let pauseRes = await this.pauseAll();
-			if(pauseRes || this.readyUpload.length > 0 || this.readyDownload.length > 0) {
+			if (
+				pauseRes ||
+				this.readyUpload.length > 0 ||
+				this.readyDownload.length > 0
+			) {
 				return false;
 			} else {
 				return true;
@@ -1483,15 +1543,15 @@ export default {
 		setIsLoginShowLog(data) {
 			const vm = this;
 			let oldVal = this.isLoginShowLog;
-			console.log('setIsLoginShowLog==========');
+			console.log("setIsLoginShowLog==========");
 			console.log(oldVal);
 			console.log(data);
 			this.isLoginShowLog = data;
-			if(data && !oldVal) {
+			if (data && !oldVal) {
 				this.uploadingTransferListForce++;
 				this.downloadingTransferListForce++;
-				if(this.isNotSend['progress'] && this.isNotSend['progress'].content) {
-					this.isNotSend['progress'].content.isLoginShowLog = true;
+				if (this.isNotSend["progress"] && this.isNotSend["progress"].content) {
+					this.isNotSend["progress"].content.isLoginShowLog = true;
 				}
 				vm.$nextTick(() => {
 					vm.renderDataToBrowserView({
@@ -1499,8 +1559,8 @@ export default {
 						type: "goHome",
 						rendTo: 1
 					});
-					localStorage.setItem('localStorage', data);
-				})
+					localStorage.setItem("localStorage", data);
+				});
 			}
 		}
 	}

@@ -56,6 +56,8 @@ const result = {
   'networkErrorDownloadFailed': '网络错误。下载失败!',
   'copy': '复制',
   'closeSuccess': '关闭成功!',
-  'fileTotal': '文件总数量'
+  'fileTotal': '文件总数量',
+  'checkUpdate': '检查更新',
+  'theCurrentVersionIsTheLatestVersion': '当前版本已是最新版'
 }
 export default result;

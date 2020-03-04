@@ -67,7 +67,7 @@ const API = {
   downloadPause: HOST + VERSION + 'dsp/file/download/pause',
   uploadCancel: HOST + VERSION + 'dsp/file/upload/cancel',
   downloadCancel: HOST + VERSION + 'dsp/file/download/cancel',
-  deletedownloadfile:HOST+ VERSION + 'dsp/file/download/delete', 
+  deletedownloadfile: HOST + VERSION + 'dsp/file/download/delete',
   deleteRecord: HOST + VERSION + 'dsp/file/transferlist/delete',
   withdrawChannel: HOST + VERSION + 'channel/withdraw',
   depositChannel: HOST + VERSION + 'channel/deposit',
@@ -93,6 +93,8 @@ const API = {
   dspFilePeersCount: HOST + VERSION + 'dsp/file/peers/count',
   login: HOST + VERSION + 'account/login',
   getHashByUrl: HOST + VERSION + 'dns/hash',
-  dspFilesDeletefee: HOST + VERSION + 'dsp/files/deletefee'
+  dspFilesDeletefee: HOST + VERSION + 'dsp/files/deletefee',
+  plugininfos: HOST + VERSION + 'dns/plugininfos',
+  pluginQuery: HOST + VERSION + 'dns/plugin/query'
 }
 export default API;

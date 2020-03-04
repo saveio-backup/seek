@@ -6,13 +6,22 @@
   }
 }
 
-// #app[data-id=menuWindow] {
-//   .theme-bg {
-//     @include themify {
-//       background-color: $color-menu;
-//     }
-//   }
-// }
+.card-color {
+  @include themify {
+    background-color: $card-color;
+  }
+}
+
+@mixin custom-point($color, $size) {
+  background-color: $color;
+  width: $size;
+  height: $size;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  @content;
+}
 
 .theme-font-color {
   @include themify {

@@ -119,7 +119,7 @@ export default {
 		});
 		ipcRenderer.on("login-status", (e, status) => {
 			vm.loginStatus = status;
-			console.log('this.loginStatus', vm.loginStatus)
+			console.log("this.loginStatus", vm.loginStatus);
 		});
 	},
 	data() {
@@ -133,7 +133,7 @@ export default {
 			},
 			pluginsInstalled: [],
 			statusIntervalObj: null,
-			loginStatus: false,
+			loginStatus: false
 		};
 	},
 	computed: {
@@ -192,6 +192,8 @@ export default {
 		async getPlugins() {
 			const plugins = ipcRenderer.sendSync("getUsermeta", "Plugins");
 			const tempPluginsInstalled = [];
+			console.log('plugins db is');
+			console.log(plugins);
 			for (let i = 0; i < plugins.length; i++) {
 				const item = plugins[i];
 				// let detail = await this.getTransferDetail(item.Url);
@@ -261,7 +263,7 @@ export default {
 				{
 					label: that.$t("window.about"),
 					click() {
-						that.showVersion();
+						that.showAbout();
 					}
 				},
 				{
@@ -274,19 +276,19 @@ export default {
 					}
 				}
 			];
-			if(this.loginStatus) {
+			if (this.loginStatus) {
 				customControlMenuItems.unshift({
 					label: that.$t("window.exportPrivateKey"),
 					click() {
 						that.exportPrivateKey();
 					}
-				})
+				});
 				customControlMenuItems.unshift({
 					label: that.$t("window.exportKeystoreFile"),
 					click() {
 						that.exportWallet();
 					}
-				})
+				});
 			}
 			let menu = Menu.buildFromTemplate(customControlMenuItems);
 			menu.popup({});
@@ -299,6 +301,9 @@ export default {
 		},
 		logout() {
 			ipcRenderer.send("dialog-open", "logout");
+		},
+		showAbout() {
+			ipcRenderer.send("dialog-open", "aboutClient");
 		},
 		exportPrivateKey() {
 			ipcRenderer.send("dialog-open", "exportPrivateKey");

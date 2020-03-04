@@ -392,6 +392,7 @@ import crypto from "crypto";
 const { clipboard, remote, ipcRenderer } = require("electron");
 export default {
 	mounted() {
+		const vm = this;
 		ipcRenderer.on("dialog-load", (e) => {
 			vm.attach();
 		});

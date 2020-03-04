@@ -443,6 +443,12 @@ export default {
 					}
 				}
 			}
+			if((this.space.ExpiredAt * 1000) - (new Date()).getTime() - (12 * 3600 * 1000) < 0) {
+				callback(
+					new Error(vm.$t("error[55063]"))
+				);
+				return;
+			}
 			callback();
 		};
 		let validateEncryptPassword = (rule, value, callback) => {
@@ -1260,7 +1266,7 @@ export default {
 };
 </script>
 <style lang="scss">
-$inputBg: #edeff4;
+// $inputBg: #edeff4;
 $inputFocusBg: #dee2ea;
 #upload {
 	& > .content {
@@ -1328,13 +1334,17 @@ $inputFocusBg: #dee2ea;
 			input {
 				width: 150px;
 				height: 32px;
-				border: 1px solid #dee2ea;
 				border-radius: 2px;
-				background: $inputBg;
-				// color: rgba(32, 32, 32, 0.4);
-				color: rgba(32, 32, 32, 0.7);
+				// background: $inputBg;
+				@include themify {
+					background-color: $filemanager-upload-color;
+					color: $filemanager-font-color;
+					border: 1px solid $filemanager-upload-focus-color
+				}
 				&:focus {
-					background: $inputFocusBg;
+					@include themify {
+						background: $filemanager-upload-focus-color;
+					}
 				}
 			}
 		}
@@ -1348,12 +1358,18 @@ $inputFocusBg: #dee2ea;
 			input {
 				width: 150px;
 				height: 32px;
-				border: 1px solid #dee2ea;
 				border-radius: 2px;
-				background: $inputBg;
-				color: rgba(32, 32, 32, 0.7);
+				// background: $inputBg;
+				@include themify {
+					background-color: $filemanager-upload-color;
+					color: $filemanager-font-color;
+					border: 1px solid $filemanager-upload-focus-color
+				}
+
 				&:focus {
-					background: $inputFocusBg;
+					@include themify {
+						background: $filemanager-upload-focus-color;
+					}
 				}
 			}
 		}
@@ -1486,13 +1502,14 @@ $inputFocusBg: #dee2ea;
 			}
 			.whitelist {
 				padding: 10px 15px;
-				background: #f1f3f7;
-				background: $inputBg;
-				border: 1px solid #dee2ea;
 				width: 100%;
 				height: 110px;
 				margin-bottom: 15px;
 				overflow: auto;
+				@include themify {
+					background-color: $card-color;
+					border: 1px solid $filemanager-upload-focus-color
+				}
 				.el-tag {
 					margin-right: 20px;
 				}

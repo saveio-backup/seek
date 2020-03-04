@@ -74,6 +74,12 @@
 							</ul>
 						</div>
 					</div>
+					<div class="adjust-item">
+						<p class="adjust-title ft14">{{$t('fileManager.encryption')}}:</p>
+						<div class="adjust-info">
+							<p class="ftpx14 mr20">{{fileDetail && (fileDetail.Encrypt===1?$t('fileManager.yes'):$t('fileManager.no'))}}</p>
+						</div>
+					</div>
 				</div>
 				<div class="adjust" v-if="nodes && type === 1">
 					<el-table

@@ -1,52 +1,60 @@
 <template>
 	<div id="disk">
 		<div
-			class="func-nav"
 			v-if="controlBar !== 'close'"
 		>
-			<div class="fun-button">
+			<div class="func-nav">
+				<div class="fun-button">
 
-				<ripper-button
-					class="primary "
-					@click="goUpload"
-				>{{$t('fileManager.uploadButton')}}</ripper-button>
+					<ripper-button
+						class="primary "
+						@click="goUpload"
+					>{{$t('fileManager.uploadButton')}}</ripper-button>
 
-				<ripper-button
-					class="ml10 bt-download "
-					@click="batchDownload"
-				>
-					{{$t('fileManager.downloadButton')}}
-				</ripper-button>
-				<ripper-button
-					class="ml10 bt-download "
-					@click="batchDelete"
-				>
-					{{$t('fileManager.deleteButton')}}
-				</ripper-button>
+					<ripper-button
+						class="ml10 bt-download "
+						@click="batchDownload"
+					>
+						{{$t('fileManager.downloadButton')}}
+					</ripper-button>
+					<ripper-button
+						class="ml10 bt-download "
+						@click="batchDelete"
+					>
+						{{$t('fileManager.deleteButton')}}
+					</ripper-button>
+				</div>
+				<div class="fun-search">
+					<el-input
+						v-model="filterInput"
+						prefix-icon="el-icon-search"
+						:placeholder="$t('fileManager.searchByName')"
+						class="grey-theme-at-grey"
+					></el-input>
+				</div>
 			</div>
-			<div class="fun-search">
-				<el-input
-					v-model="filterInput"
-					prefix-icon="el-icon-search"
-					:placeholder="$t('fileManager.searchByName')"
-					class="grey-theme-at-grey"
-				></el-input>
+			<div class="file-total tertiary-font-color">
+				总文件数量: 1000
 			</div>
 		</div>
 		<div
-			class="func-nav"
 			v-else
 		>
-			<p class='light-theme-title user-no-select'>
-				{{$t('fileManager.minerControl')}}
-			</p>
-			<div class="fun-search">
-				<el-input
-					v-model="filterInput"
-					prefix-icon="el-icon-search"
-					:placeholder="$t('fileManager.searchByName')"
-					class="grey-theme-at-grey"
-				></el-input>
+			<div class="func-nav">
+				<p class='light-theme-title user-no-select'>
+					{{$t('fileManager.minerControl')}}
+				</p>
+				<div class="fun-search">
+					<el-input
+						v-model="filterInput"
+						prefix-icon="el-icon-search"
+						:placeholder="$t('fileManager.searchByName')"
+						class="grey-theme-at-grey"
+					></el-input>
+				</div>
+			</div>
+			<div class="file-total tertiary-font-color">
+				总文件数量: 1000
 			</div>
 		</div>
 		<div class="content">
@@ -1032,7 +1040,9 @@ export default {
 			this.$set(this.switchToggle, 'deleteToggle', false);
 			this.switchToggle.getGasNumber ++;
 			for (let file of this.fileToDelete) {
-				paramUrl += `hash=${file.Hash}&`;
+				if(file.Hash) {
+					paramUrl += `hash=${file.Hash}&`;
+				}
 			}
 			let url = `${this.$api.dspFilesDeletefee}?${paramUrl.slice(0, -1)}`;
 			this.$axios.get(url).then((res) => {
@@ -1465,9 +1475,14 @@ $theme-color: #1b1e2f;
 			}
 		}
 	}
+	.file-total {
+		height: 50px;
+		line-height: 50px;
+	}
 	& > .content {
 		position: absolute;
-		top: 80px;
+		// top: 80px;
+		top: 120px;
 		bottom: 0px;
 		width: 100%;
 		@include themify {

@@ -187,7 +187,7 @@ export default new Router({
       component: loadComponent('pages/PluginInfo.vue')
     },
     {
-      path: '*',
+      path: '/',
       redirect: '/Home',
       meta: {
         keepAlive: false

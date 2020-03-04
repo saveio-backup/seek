@@ -14,7 +14,7 @@ const result = {
   'input': '请输入',
   'address': '地 址',
   'myAssets': '我的资产',
-  'wallet': '钱 包',
+  'wallet': '钱包',
   'pleaseFillAddress': '请输入地址',
   'qrcodeNotFound': '二维码未找到',
   'showSmallContract': '显示小额合约',

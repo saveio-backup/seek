@@ -13,7 +13,7 @@
 			</div>
 			<div class="decode-file-wrapper loading-content decode-file-loading">
 				<div>
-					<p class="mt20 mb20 ft14 tl break-word">{{$t('dialog.decode')}} {{path}} {{$t('dialog.file')}}</p>
+					<p class="mt20 mb20 ft14 tl break-word">{{$t('dialog.decodes')}} {{path}} {{$t('dialog.file')}}</p>
 				</div>
 				<el-form
 					class="mb90"

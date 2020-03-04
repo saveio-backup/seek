@@ -3,6 +3,8 @@ const result = {
   'uploadLoading': '等待上传',
   'downloadLoading': '等待下载',
   'uploadTimeout': '上传文件超时!',
+  'start': '等待继续',
+  'pause': '等待暂停',
   '0':  '',
   '1': '任务暂停',
   '2': '任务开始',

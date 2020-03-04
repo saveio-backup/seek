@@ -3,6 +3,8 @@ const result = {
   'uploadLoading': 'Wait for the Upload',
   'downloadLoading': 'Wait for the Download',
   'uploadTimeout': 'Upload file timeout!',
+  'start': 'Wait for the Start',
+  'pause': 'Wait for the Pause',
   '0':  '',
   '1': 'Task Pause',
   '2': 'Task Start',

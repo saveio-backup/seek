@@ -169,10 +169,10 @@
 							</span>
 						</div>
 						<div
-							class="flex break-word mr20"
+							class="flex break-word mr20 light-blue"
 							v-if="httpWaitForing[scope.row.Id]"
 						>
-							{{$t('fileManager.waitingFor')}} {{httpWaitForing[scope.row.Id].waitFor}}
+							{{$t(`error["${httpWaitForing[scope.row.Id].waitFor}"]`)}}
 						</div>
 						<div
 							class="flex ai-center break-word mr20"
@@ -1052,11 +1052,11 @@ export default {
 			this.switchToggle.getGasNumber++;
 			if (this.passwordCancel.File === null) {
 				for (let file of this.fileList) {
-					if (file.Id.indexOf("waitfor_") >= 0) continue;
+					if (file.Id.indexOf("waitfor_") >= 0 && file.FileHash) continue;
 					paramUrl += `hash=${file.FileHash}&`;
 				}
 			} else {
-				if (this.passwordCancel.File.Id.indexOf("waitfor_") === -1) {
+				if (this.passwordCancel.File.Id.indexOf("waitfor_") === -1 && this.passwordCancel.File.FileHash) {
 					paramUrl += `hash=${this.passwordCancel.File.FileHash}&`;
 				}
 			}
@@ -1920,6 +1920,10 @@ export default {
 			}
 			ipcRenderer.send("run-dialog-event", {
 				name: "addPausing",
+				data: params.Ids
+			});
+			ipcRenderer.send("run-dialog-event", {
+				name: "removeUploading",
 				data: params.Ids
 			});
 

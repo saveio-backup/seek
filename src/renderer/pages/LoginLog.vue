@@ -129,7 +129,6 @@ export default {
 	methods: {
 		checkDoneLog() {
 			const vm = this;
-			// if(vm.account && vm.account.Address) {
 			clearTimeout(vm.statusListTimeoutObj);
 			vm.statusListTimeoutObj = setTimeout(() => {
 				let flag = true;
@@ -154,8 +153,7 @@ export default {
 						data: true
 					});
 				}
-			}, 100);
-			// };
+			}, 10);
 		},
 		getNetworkState() {
 			this.$axios.get(this.$api.networkStatus).then(res => {

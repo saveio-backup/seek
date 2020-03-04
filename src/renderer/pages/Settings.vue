@@ -93,7 +93,7 @@
 						@click="showInFolder(pathDir.DownloadPath)"
 					>{{pathDir.DownloadPath}}</p>
 				</div>
-				<el-button @click="setDir('DownloadPath')">{{$t('settings.change')}}</el-button>
+				<el-button @click="setDir('DownloadPath')" class="settings-button-width">{{$t('settings.change')}}</el-button>
 			</div>
 			<div class="settings-box">
 				<div class="tag">
@@ -104,7 +104,7 @@
 						@click="showInFolder(path.join(pathDir.BaseDir,pathDir.LogDirName))"
 					>{{pathDir.LogDirName}}</p>
 				</div>
-				<el-button @click="showInFolder(path.join(pathDir.BaseDir,pathDir.LogDirName))">{{$t('settings.open')}}</el-button>
+				<el-button @click="showInFolder(path.join(pathDir.BaseDir,pathDir.LogDirName))" class="settings-button-width">{{$t('settings.open')}}</el-button>
 			</div>
 			<div class="settings-box">
 				<div class="tag">
@@ -504,6 +504,9 @@ export default {
 					border: 1px solid rgba(4, 15, 57, 0.2);
 					border-radius: 2px;
 				}
+			}
+			.settings-button-width {
+				width: 110px;
 			}
 		}
 	}

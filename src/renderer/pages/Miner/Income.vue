@@ -15,7 +15,9 @@
 			</el-date-picker>
 			<div class="total-income ft14"> <span class="fixeddddddd">{{$t('miner.totalProfit')}}:</span> <span class="theme-font-color">{{filterFloat(result.TotalIncomeFormat).toLocaleString('en-US') || 0}} ONI</span></div>
 		</div>
-
+		<div class="file-total tertiary-font-color">
+			总文件数量: 1000
+		</div>
 		<!-- border -->
 		<el-table
 			class="flex1 incomeTable"
@@ -212,8 +214,16 @@ export default {
 	flex-direction: column;
 	& > .header {
 		padding: 20px 20px;
-		border-bottom: 1px solid rgba(32, 32, 32, 0.1);
+		// border-bottom: 1px solid rgba(32, 32, 32, 0.1);
 		position: relative;
+		@include themify {
+			border-bottom: 1px solid $line-color;
+		}
+		
+	}
+	.file-total {
+		height: 40px;
+		line-height: 50px;
 	}
 	.common-el-input {
 		border: 1px solid rgba(4, 15, 57, 0.2);
@@ -226,9 +236,9 @@ export default {
 	.incomeTable {
 		height: 100%;
 	}
-	.el-table {
-		padding-top: 20px;
-	}
+	// .el-table {
+	// 	padding-top: 20px;
+	// }
 	.total-income {
 		font-size: 1.4rem;
 		position: absolute;

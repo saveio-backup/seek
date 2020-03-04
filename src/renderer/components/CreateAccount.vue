@@ -652,10 +652,10 @@ export default {
 			}
 		}
 	}
-	.el-form .el-input__inner {
-		background: #edeff4;
-		border: 0;
-		border-radius: 2px;
-	}
+	// .el-form .el-input__inner {
+	// 	background: #edeff4;
+	// 	border: 0;
+	// 	border-radius: 2px;
+	// }
 }
 </style>

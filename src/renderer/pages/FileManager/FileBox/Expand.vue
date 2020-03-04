@@ -302,6 +302,14 @@ export default {
 			}
 		},
 		expired_old() {
+			if(this.Records && this.Records[0] && this.Records[0].ExpiredAt) {
+				this.expired = new Date(
+					this.Records[0].ExpiredAt * 1000
+				);
+				return this.$dateFormat.formatTimeByTimestamp(
+					this.Records[0].ExpiredAt * 1000
+				);
+			}
 			if (
 				this.$store.state.Filemanager.space.ExpiredAt &&
 				this.$store.state.Filemanager.space.ExpiredAt * 1000 > _NOW.getTime()

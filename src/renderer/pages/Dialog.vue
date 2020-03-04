@@ -111,7 +111,7 @@ export default {
 
 			isNeedSync: false,
 			isLoginShowLog: false,
-
+			
 			// transfer correlation
 			transferObj: {},
 			maxNumUpload: 0,
@@ -1470,8 +1470,10 @@ export default {
 		},
 		setIsLoginShowLog(data) {
 			let oldVal = this.isLoginShowLog;
+			console.log('setIsLoginShowLog==========');
+			console.log(oldVal);
+			console.log(data);
 			this.isLoginShowLog = data;
-			localStorage.setItem('localStorage', data);
 			if(data && !oldVal) {
 				this.uploadingTransferListForce++;
 				this.downloadingTransferListForce++;
@@ -1480,6 +1482,7 @@ export default {
 					type: "goHome",
 					rendTo: 1
 				});
+				localStorage.setItem('localStorage', data);
 			}
 		}
 	}

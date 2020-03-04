@@ -17,6 +17,8 @@ $themes: ( // no coment, just for format code
     'pop-menu-shadow':0px 0px 3px 2px rgba(226,226,226,0.2),
     'filemanager-font-color':rgba(32, 32, 32, 0.7),
     'filemanager-aside-hover-color':#edeff4,
+    'filemanager-upload-color':#edeff4,
+    'filemanager-upload-focus-color':#dee2ea,
     'progress-bar-bg':#EBEEF5,
     'table-hover-bg':#F5F7FA,
     'state-font-disabled': #C7CAD0,
@@ -41,6 +43,8 @@ $themes: ( // no coment, just for format code
     'pop-menu-shadow':0px 0px 5px 0px #202020,
     'filemanager-font-color':#fff,
     'filemanager-aside-hover-color':#202125,
+    'filemanager-upload-color':#35363c,
+    'filemanager-upload-focus-color':#35363c,
     'progress-bar-bg':#1c1d21,
     'table-hover-bg':#303036,
     'state-font-disabled': #444444,
@@ -74,6 +78,8 @@ $font-color:null;
       $table-border-color: map-get($props, 'table-border-color') !global;
       $filemanager-font-color: map-get($props, 'filemanager-font-color') !global;
       $filemanager-aside-hover-color: map-get($props, 'filemanager-aside-hover-color') !global;
+      $filemanager-upload-color: map-get($props, 'filemanager-upload-color') !global;
+      $filemanager-upload-focus-color: map-get($props, 'filemanager-upload-focus-color') !global;
       $progress-bar-bg: map-get($props, 'progress-bar-bg') !global;
       $table-hover-bg: map-get($props, 'table-hover-bg') !global;
       $state-font-disabled: map-get($props, 'state-font-disabled') !global;
@@ -97,6 +103,8 @@ $font-color:null;
       $table-border-color: null !global;
       $filemanager-font-color: null !global;
       $filemanager-aside-hover-color: null !global;
+      $filemanager-upload-color: null !global;
+      $filemanager-upload-focus-color: null !global;
       $progress-bar-bg: null !global;
       $table-hover-bg: null !global;
       $state-font-disabled: null !global;

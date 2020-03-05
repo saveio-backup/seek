@@ -55,6 +55,7 @@ const result = {
   'sorryThereAreNoValidFilesFoundTheFileMayHaveBeenDeleted': '对不起，没有找到有效的文件，文件可能已被删除。',
   'networkErrorDownloadFailed': '网络错误。下载失败!',
   'copy': '复制',
-  'closeSuccess': '关闭成功!'
+  'closeSuccess': '关闭成功!',
+  'fileTotal': '文件总数量'
 }
 export default result;

@@ -16,7 +16,7 @@
 			<div class="total-income ft14"> <span class="fixeddddddd">{{$t('miner.totalProfit')}}:</span> <span class="theme-font-color">{{filterFloat(result.TotalIncomeFormat).toLocaleString('en-US') || 0}} ONI</span></div>
 		</div>
 		<div class="file-total tertiary-font-color">
-			总文件数量: 1000
+			{{$t('public.fileTotal')}}: {{total}}
 		</div>
 		<!-- border -->
 		<el-table
@@ -137,7 +137,8 @@ export default {
 			],
 			result: { TotalIncome: 0, TotalIncomeFormat: 0, Incomes: [] },
 			loadSwitch: true,
-			limit: 20
+			limit: 20,
+			total: 0,
 		};
 	},
 	mounted() {
@@ -180,7 +181,8 @@ export default {
 				.get(addr)
 				.then(res => {
 					if (res.Error === 0) {
-						const result = res.Result;
+						const result = res.Result.List;
+						this.total = res.Result.TotalFile;
 						this.result.TotalIncome = result.TotalIncome;
 						this.result.TotalIncomeFormat = result.TotalIncomeFormat;
 						// this.result.TotalIncomeFormat = 20124.123;
@@ -224,6 +226,8 @@ export default {
 	.file-total {
 		height: 40px;
 		line-height: 50px;
+		font-size: 14px;
+		padding-left: 12px;
 	}
 	.common-el-input {
 		border: 1px solid rgba(4, 15, 57, 0.2);

@@ -1,12 +1,16 @@
 import axios from 'axios';
 import api from '../../assets/config/api';
 const state = {
-  space: ''
+  space: '',
+  smartContractEvents: null
 }
 
 const mutations = {
   SET_SPACE(state, space) {
     state.space = space;
+  },
+  SET_SMART_CONTRACT_EVENTS(state, result) {
+    state.smartContractEvents = result;
   }
 }
 

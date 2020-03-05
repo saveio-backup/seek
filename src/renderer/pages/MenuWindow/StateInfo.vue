@@ -13,6 +13,12 @@
 			<li class="flex">
 				<i
 					class="process-status"
+					:class="{'process-all-error': statusList.DspProxy.State === 0}"
+				></i> {{$t('menuWindow.dspProxyState')}}
+			</li>
+			<li class="flex">
+				<i
+					class="process-status"
 					:class="{'process-all-error': statusList.DNS.State === 0 && statusList.DNS.HostAddr, 'process-all-offline': statusList.DNS.State === 0 && !statusList.DNS.HostAddr}"
 				></i> 
 				<span :class="{'state-font-disabled': statusList.DNS.State === 0 && !statusList.DNS.HostAddr}">
@@ -24,12 +30,6 @@
 					:class="{'rotate-animate': isLoading}"
 					@click="reconnect"
 				></i>
-			</li>
-			<li class="flex">
-				<i
-					class="process-status"
-					:class="{'process-all-error': statusList.DspProxy.State === 0}"
-				></i> {{$t('menuWindow.dspProxyState')}}
 			</li>
 			<!-- <li class="flex">
 				<i

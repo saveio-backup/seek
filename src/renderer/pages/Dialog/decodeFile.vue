@@ -24,12 +24,12 @@
 				>
 					<el-form-item
 						class="theme-font-blue-bold"
-						:label="$t('public.walletPassword')"
+						:label="$t('dialog.filePassword')"
 						prop="password"
 					>
 						<el-input
 							v-model="dialogForm.password"
-							:placeholder="$t('public.pleaseInputWalletPassword')"
+							:placeholder="$t('dialog.pleaseInputFilePasswordPassword')"
 							class="grey-theme"
 							@keyup.enter.native='decodeFile'
 							show-password
@@ -82,7 +82,7 @@ export default {
     decodeFile() {
 			const vm = this;
 			vm.decodeFiling = vm.$loading({
-				text: '解码中...',
+				text: vm.$t('dialog.decoding'),
 				target: ".loading-content.decode-file-loading",
         lock: true
 			});
@@ -92,7 +92,7 @@ export default {
 			}).then(res => {
 				vm.decodeFiling && vm.decodeFiling.close();
 				if(res.Error === 0) {
-					vm.$parent.message({ type: "success", info: '解码成功'});
+					vm.$parent.message({ type: "success", info: vm.$t('dialog.decodeSuccess')});
 					vm.closeDialog();
 				} else {
 					vm.$message.error(vm.$t(`error["${res.Error}"]`));

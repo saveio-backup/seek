@@ -633,7 +633,7 @@ function syncFileRequest(commit, state, limit) {
         timeout: 60000
     }).then(res => {
         if (res.Error === 0) {
-            commit('SET_SYNC_LIST', res.Result);
+            commit('SET_SYNC_LIST', res.Result.List);
         }
     }).finally(() => {
         syncFileTimer = setTimeout(() => {

@@ -115,13 +115,14 @@ export default {
 			this.$store.commit("SET_REVENUE", result);
 		},
 		goHomeUpdate({ result, page }) {
+			console.log('goHomeUpdate');
 			if (page === "tab") {
 				if (this.routerName === "settings") return;
-				if (location.href.indexOf("Home") < 0) {
-					this.$router.replace({
-						name: "Home"
-					});
-				}
+				// if (location.href.indexOf("Home") < 0) {
+				this.$router.replace({
+					name: "Home"
+				});
+				// }
 			}
 		},
 		progressUpdate({ result, page }) {
@@ -215,6 +216,9 @@ export default {
 		},
 		downloadDoneListUpdate({ result }) {
 			this.$store.commit("SET_DOWNLOAD_DONE_LIST", result);
+		},
+		smartContractEventsUpdate({ result }) {
+			this.$store.commit("SET_SMART_CONTRACT_EVENTS", result);
 		}
 	}
 };

@@ -104,6 +104,7 @@ export default {
 				setTimeGettransferlistUpload: null,
 				setTimeGettransferlistDownload: null,
 				setTimeGettransferlistComplete: null,
+				setTimeSmartcontractevents: null,
 				upload: null,
 				download: null,
 				complete: null
@@ -229,8 +230,12 @@ export default {
 		});
 		ipcRenderer.on("setDecodeFilePath", (e, paths) => {
 			console.log('setDecodeFilePath', paths);
+			if(!vm.win) vm.getWin();
+			if(vm.win.isMinimized()) {
+				vm.win.restore()
+			}
 			vm.decodeFilePath = paths;
-			this.checkOpenDecodeDialog();
+			vm.checkOpenDecodeDialog();
 		});
 		localStorage.setItem("DNSAdress", "");
 		vm.initWebSocket();
@@ -607,6 +612,13 @@ export default {
 						vm.gettransferlist(redata);
 					// }, vm.timeoutObj.COUNT_TIMEOUT);
 					break;
+				case 'smartcontractevents':
+					if(redata.Error !== 0 || !redata.Result || redata.Result.eventId !== 1) break;
+					clearTimeout(vm.timeoutObj.setTimeSmartcontractevents);
+					vm.timeoutObj.setTimeSmartcontractevents = setTimeout(() => {
+						vm.getSmartcontracteventsWs(redata);
+					}, vm.timeoutObj.COUNT_TIMEOUT);
+					break;
 			}
 		},
 		// send data to server
@@ -620,7 +632,7 @@ export default {
 			console.log(`it's ${++this.wsOpeation.reconnectNumber}th reconnet`);
 			clearTimeout(this.wsOpeation.errorTimeout);
 			setTimeout(() => {
-				this.initWebSocket();
+				this.initWebSocket(redata);
 			}, 3000);
 		},
 		// get wait for upload promise list
@@ -893,6 +905,11 @@ export default {
 				this.notifyObserversByName("userspace", res.Result);
 			}
 		},
+		getSmartcontracteventsWs(res) {
+			if (res.Error === 0) {
+				this.notifyObserversByName("smartcontractevents", res.Result);
+			}
+		},
 		gettransferlist(res) {
 			const vm = this;
 			if (res.Error === 0) {
@@ -963,11 +980,6 @@ export default {
 					progressResult.Result.isNeedSync = this.isNeedSync;
 				}
 				progressResult.Result.isLoginShowLog = this.isLoginShowLog;
-				// this.renderDataToBrowserView({
-				// 	result: progressResult.Result,
-				// 	type: "progress",
-				// 	rendTo: 1
-				// });
 				this.notifyObserversByName('progress', progressResult.Result);
 			}
 		},
@@ -1118,7 +1130,7 @@ export default {
 		getWin() {
 			let arrWin = remote.BrowserWindow.getAllWindows();
 			for (let winItem of arrWin) {
-				if (winItem.webContents.getURL().indexOf("/#/navigation") > 0) {
+				if (winItem.webContents.getURL().indexOf("#/navigation") > 0) {
 					this.win = winItem;
 				}
 			}
@@ -1469,6 +1481,7 @@ export default {
 			this.downloadDoneList = [];
 		},
 		setIsLoginShowLog(data) {
+			const vm = this;
 			let oldVal = this.isLoginShowLog;
 			console.log('setIsLoginShowLog==========');
 			console.log(oldVal);
@@ -1477,12 +1490,17 @@ export default {
 			if(data && !oldVal) {
 				this.uploadingTransferListForce++;
 				this.downloadingTransferListForce++;
-				this.renderDataToBrowserView({
-					result: null,
-					type: "goHome",
-					rendTo: 1
-				});
-				localStorage.setItem('localStorage', data);
+				if(this.isNotSend['progress'] && this.isNotSend['progress'].content) {
+					this.isNotSend['progress'].content.isLoginShowLog = true;
+				}
+				vm.$nextTick(() => {
+					vm.renderDataToBrowserView({
+						result: null,
+						type: "goHome",
+						rendTo: 1
+					});
+					localStorage.setItem('localStorage', data);
+				})
 			}
 		}
 	}

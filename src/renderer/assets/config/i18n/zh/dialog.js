@@ -17,7 +17,11 @@ const result = {
   'decodeFile': '解密文件',
   'decode': '解密',
   'decodes': '解密',
-  'file': '文件'
+  'file': '文件',
+  'decoding': '解密中...',
+  'decodeSuccess': '解密成功!',
+  'filePassword': '文件密码',
+  'pleaseInputFilePasswordPassword': '请输入文件密码'
 }
 
 export default result;

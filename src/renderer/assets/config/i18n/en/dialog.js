@@ -14,11 +14,14 @@ const result = {
   'loggingOut': 'logging out',
   'channelLostRemind': 'The current channel is invalid. Please create or replace another channel',
   'taskNotPauseWaitForOpeation': 'Have task cannot be paused. Please try again later',
-
   'decodeFile': 'Decode File',
   'decode': 'decode',
   'decodes': 'Decode',
-  'file': 'file'
+  'file': 'file',
+  'decoding': 'Decoding...',
+  'decodeSuccess': 'Decode Success!',
+  'filePassword': 'File Password',
+  'pleaseInputFilePasswordPassword': 'Please Fill Password'
 }
 
 export default result;

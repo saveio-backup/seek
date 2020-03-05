@@ -34,7 +34,7 @@
 				</div>
 			</div>
 			<div class="file-total tertiary-font-color">
-				总文件数量: 1000
+				{{$t('public.fileTotal')}}: {{uploadFileTotal}}
 			</div>
 		</div>
 		<div
@@ -54,7 +54,7 @@
 				</div>
 			</div>
 			<div class="file-total tertiary-font-color">
-				总文件数量: 1000
+				{{$t('public.fileTotal')}}: {{total}}
 			</div>
 		</div>
 		<div class="content">
@@ -570,7 +570,7 @@ export default {
 			},
 			justNowCompleteNumberTimeoutObj: null,
 			updateFileRequestCancel: null,
-			// computed process total
+			total: 0,
 		};
 	},
 	components: {
@@ -695,7 +695,8 @@ export default {
 				})
 				.then(res => {
 					if (res.Error === 0) {
-						let result = res.Result;
+						let result = res.Result.List;
+						this.total = res.Result.TotalCount || 0;
 						if (result.length) {
 							result.map(item => {
 								item.Undone =
@@ -745,8 +746,8 @@ export default {
 				.get(addr)
 				.then(res => {
 					if (res.Error === 0) {
-						let result = res.Result;
-						// result = this.mockData;
+						let result = res.Result.List;
+						vm.total = res.Result.TotalCount || 0;
 						if (result.length) {
 							result.map(item => {
 								item.Undone =
@@ -1259,16 +1260,22 @@ export default {
 				]
 			};
 		},
-		uploadLength(val) {
+		smartContractEvents(val) {
 			const vm = this;
-			console.log(val);
-			clearTimeout(this.justNowCompleteNumberTimeoutObj)
-			this.justNowCompleteNumberTimeoutObj = setTimeout(() => {
-				vm.updateFileLists();
-			}, 200)
+			if(controlBar !== 'close') {
+				clearTimeout(this.justNowCompleteNumberTimeoutObj)
+				this.justNowCompleteNumberTimeoutObj = setTimeout(() => {
+					vm.updateFileLists();
+				}, 200)
+			} else {
+				return '';
+			}
 		}
 	},
 	computed: {
+		smartContractEvents() {
+			return this.$store.state.Filemanager.smartContractEvents;
+		},
 		lang() {
 			return this.$i18n.locale;
 		},
@@ -1277,6 +1284,13 @@ export default {
 		},
 		channelBind() {
 			return this.$store.state.Home.channelBind;
+		},
+		uploadFileTotal() {
+			if(this.controlBar !== 'close') {
+				return this.waitForUploadList.length + this.total;
+			} else {
+				return 0;
+			}
 		},
 		filterListData() {
 			const fileListDataAll = this.fileListDataAll;
@@ -1305,7 +1319,6 @@ export default {
 			return arr;
 		},
 		waitForDownloadList() {
-			// return this.$store.state.Transfer.waitForUploadList || [];
 			return this.$store.state.Transfer.waitForDownloadList || [];
 		},
 		syncObj() {
@@ -1360,10 +1373,6 @@ export default {
 					return value.BalanceFormat;
 				}
 			}
-		},
-		uploadLength() {
-			let uploadLength = this.$store.state.Transfer.uploadLength;
-			return uploadLength;
 		}
 	},
 	beforeRouteEnter(to, from, next) {
@@ -1478,6 +1487,8 @@ $theme-color: #1b1e2f;
 	.file-total {
 		height: 50px;
 		line-height: 50px;
+		font-size: 14px;
+		padding-left: 12px;
 	}
 	& > .content {
 		position: absolute;

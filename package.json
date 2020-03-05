@@ -71,8 +71,8 @@
       "icon": "build/icons"
     },
     "nsis": {
-      "oneClick": false,
-      "perMachine": true
+      "oneClick": true,
+      "perMachine": false
     },
     "fileAssociations": [
       {

@@ -31,31 +31,6 @@
 		</div>
 		<div>
 			<i
-				class="first-ofont ofont ofont-DNS-"
-				:class="statusList.DNS && (statusList.DNS.State || (statusList.DNS.HostAddr === '' && currentHeight === totalHeight && totalHeight !== 0)) ? 'active-blue' : 'ofont-grep'"
-			></i>
-			<div
-				class="connect-success"
-				v-if="statusList.DNS && (statusList.DNS.State || (statusList.DNS.HostAddr === '' && currentHeight === totalHeight && totalHeight !== 0))"
-			>
-				<i
-					class="el-icon-check"
-				></i>
-			</div>
-			<div
-				slot="append"
-				v-else
-				class="loading text-center transparent"
-			>
-				<i class="ofont ofont-loading loading-rotate"></i>
-			</div>
-			<p>
-				<!-- DNS状态: -->
-				{{$t('menuWindow.dnsState')}}
-			</p>
-		</div>
-		<div>
-			<i
 				class="first-ofont ofont ofont-ziyuan"
 				:class="statusList.DspProxy && statusList.DspProxy.State ? 'active-blue' : 'ofont-grep'"
 			></i>
@@ -77,6 +52,31 @@
 			<p>
 				<!-- Dsp代理状态 -->
 				{{$t('menuWindow.dspProxyState')}}
+			</p>
+		</div>
+		<div>
+			<i
+				class="first-ofont ofont ofont-DNS-"
+				:class="statusList.DNS && (statusList.DNS.State || (statusList.DNS.HostAddr === '' && currentHeight === totalHeight && totalHeight !== 0)) ? 'active-blue' : 'ofont-grep'"
+			></i>
+			<div
+				class="connect-success"
+				v-if="statusList.DNS && (statusList.DNS.State || (statusList.DNS.HostAddr === '' && currentHeight === totalHeight && totalHeight !== 0))"
+			>
+				<i
+					class="el-icon-check"
+				></i>
+			</div>
+			<div
+				slot="append"
+				v-else
+				class="loading text-center transparent"
+			>
+				<i class="ofont ofont-loading loading-rotate"></i>
+			</div>
+			<p>
+				<!-- DNS状态: -->
+				{{$t('menuWindow.dnsState')}}
 			</p>
 		</div>
 		<!-- <div>

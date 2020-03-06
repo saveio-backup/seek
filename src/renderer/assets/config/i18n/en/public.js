@@ -58,6 +58,8 @@ const result = {
   'closeSuccess': ' close success!',
   'fileTotal': 'File Total',
   'checkUpdate': 'Check Update ',
-  'theCurrentVersionIsTheLatestVersion': 'The current version is the latest version'
+  'theCurrentVersionIsTheLatestVersion': 'The current version is the latest version',
+  'from': 'From',
+  'to': 'To',
 }
 export default result;

@@ -50,7 +50,7 @@ export default {
 				target: ".loading-content.logout-loading",
         lock: true
 			});
-
+			
 			let falg = await vm.$parent.logoutPauseAllTask();
 			if(!falg) {
 				vm.logoutLoding && vm.logoutLoding.close();

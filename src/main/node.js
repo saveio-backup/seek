@@ -366,7 +366,9 @@ const run = async (appDataPath, appName) => {
                         run(cacheRestartObj.appDataPathCache, cacheRestartObj.appNameCache);
                         cacheRestartObj.edgeCloseRestartFailed.reply('edgeClose', '1');
                     } catch (e) {
-                        cacheRestartObj.edgeCloseRestartFailed.reply('edgeClose', '0');
+                        if(cacheRestartObj && cacheRestartObj.edgeCloseRestartFailed) {
+                            cacheRestartObj.edgeCloseRestartFailed.reply('edgeClose', '0');
+                        }
                         log.error('edge restart failed' + e)
                     }
                 }

@@ -58,6 +58,8 @@ const result = {
   'closeSuccess': '关闭成功!',
   'fileTotal': '文件总数量',
   'checkUpdate': '检查更新',
-  'theCurrentVersionIsTheLatestVersion': '当前版本已是最新版'
+  'theCurrentVersionIsTheLatestVersion': '当前版本已是最新版',
+  'from': '从',
+  'to': '到'
 }
 export default result;

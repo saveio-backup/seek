@@ -261,7 +261,7 @@ export default {
 						this.switchToggle.channelListDialog = false;
 						this.$message({
 							type: "success",
-							message: "Switching channel successfully"
+							message: vm.$t('fileManager.switchingChannelSuccessfully')
 						});
 						localStorage.setItem("channelBindId", ChannelId);
 						this.$store.dispatch("setChannelBind", ChannelId);

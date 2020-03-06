@@ -303,10 +303,10 @@ export default {
 				return;
 			}
 			this.$store.dispatch("getWaitForTransferList");
-			let _uploadDoneList = localStorage.getItem(
-				`uploadDoneList_${this.Address}`
-			);
-			if (_uploadDoneList) {
+			this.readyDownload = [];
+			this.readyUpload = [];
+			let _uploadDoneList = localStorage.getItem(`uploadDoneList_${this.Address}`);
+			if(_uploadDoneList) {
 				this.uploadDoneList = JSON.parse(_uploadDoneList);
 			} else {
 				this.uploadDoneList = [];
@@ -1443,34 +1443,22 @@ export default {
 		async pauseAll() {
 			let uploadingArr = [];
 			let flag = false;
-			for (let value of this.uploadingTransferList) {
-				if (
-					value.Status === 2 &&
-					value.DetailStatus !== 5 &&
-					value.DetailStatus !== 23
-				) {
-					uploadingArr.push(value.Id);
-				} else if (
-					value.Status === 2 &&
-					(value.DetailStatus === 5 || value.DetailStatus === 23)
-				) {
+			for(let value of this.uploadingTransferList) {
+				if(value.Status === 2 && value.DetailStatus !== 5 && value.DetailStatus !== 23) {
+					uploadingArr.push(value.Id)
+				} else if(value.Status === 2 && (value.DetailStatus === 5 || value.DetailStatus === 23)){
+					console.log('can\'t pause', value);
 					flag = true;
 				}
 			}
 
 			let downloadingArr = [];
-			for (let value of this.downloadingTransferList) {
-				if (
-					value.Status === 2 &&
-					value.DetailStatus !== 5 &&
-					value.DetailStatus !== 23
-				) {
-					downloadingArr.push(value.Id);
-				} else if (
-					value.Status === 2 &&
-					(value.DetailStatus === 5 || value.DetailStatus === 23)
-				) {
-					flag = true;
+			for(let value of this.downloadingTransferList) {
+				if(value.Status === 2 && value.DetailStatus !== 5 && value.DetailStatus !== 23) {
+					downloadingArr.push(value.Id)
+				} else if(value.Status === 2 && (value.DetailStatus === 5 || value.DetailStatus === 23)){
+					console.log('can\'t pause', value);
+					flag = true
 				}
 			}
 			let arr = [];
@@ -1484,21 +1472,26 @@ export default {
 				return flag;
 			}
 
-			return Promise.all(arr)
-				.then(Ress => {
-					for (let i = 0; i < Ress.length; i++) {
-						let Res = Ress[i];
-						if (Res.Error !== 0) return true;
-						for (let j = 0; j < Res.Tasks.length; j++) {
-							let _task = Res.Tasks[j];
-							if (_task.State === 2 || _task.State === 1) return true;
-						}
-						return flag;
+			return Promise.all(arr).then(Ress => {
+				for(let i = 0;i < Ress.length;i ++) {
+					let Res = Ress[i];
+					if(Res.Error !== 0) {
+						console.log('can\'t pause Res', Res);
+						return true;
 					}
-				})
-				.catch(err => {
-					return true;
-				});
+					for(let j = 0;j < Res.Result.Tasks.length;j ++) {
+						let _task = Res.Result.Tasks[j];
+						if(_task.State === 2 || _task.State === 1) {
+							console.log('can\'t pause Res', _task);
+							return true;
+						}
+					}
+					return flag;
+				}
+			}).catch(err => {
+				console.log('can\'t pause error', err);
+				return true;
+			})
 		},
 		// logout pause all task
 		async logoutPauseAllTask() {
@@ -1524,11 +1517,7 @@ export default {
 			}
 			this.$store.commit("SET_WAIT_FOR_DOWNLOAD_LIST", _waitForDownloadList);
 			let pauseRes = await this.pauseAll();
-			if (
-				pauseRes ||
-				this.readyUpload.length > 0 ||
-				this.readyDownload.length > 0
-			) {
+			if(pauseRes) {
 				return false;
 			} else {
 				return true;

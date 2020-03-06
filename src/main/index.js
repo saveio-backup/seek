@@ -48,8 +48,8 @@ import * as node from "./node"
 
 app.on('will-finish-launching',() => {
   app.on('open-file', (e, urlStr) => {
-    log.error('urlStr:',urlStr);
     try {
+      log.error('urlStr:',urlStr);
       const fw = BrowserWindow.getFocusedWindow();
       if(fw) {
         windows['1'].driftViews[0].browserView.webContents.send('setDecodeFilePath', urlStr);
@@ -93,24 +93,24 @@ app.on('activate', () => {
   }
 });
 app.on('second-instance', (e, argv) => {
-  log.debug("second-instance==============")
-  log.debug("e")
-  log.debug(e)
-  log.debug("window")
-  log.debug(windows);
-  log.debug("window['1']");
-  log.debug(windows['1']);
-  log.debug("window['1'].driftViews");
-  log.debug(windows['1'].driftViews);
-  log.debug("window['1'].driftViews");
-  log.debug(windows['1'].driftViews[0]);
-  log.debug("window['1'].driftViews[0].browserView");
-  log.debug(windows['1'].driftViews[0].browserView);
-  log.debug("window['1'].driftViews[0].browserView.webContents");
-  log.debug(windows['1'].driftViews[0].browserView.webContents);
-  log.debug("argv")
-  log.debug(argv)
   try {
+    log.debug("second-instance==============")
+    log.debug("e")
+    log.debug(e)
+    log.debug("window")
+    log.debug(windows);
+    log.debug("window['1']");
+    log.debug(windows['1']);
+    log.debug("window['1'].driftViews");
+    log.debug(windows['1'].driftViews);
+    log.debug("window['1'].driftViews");
+    log.debug(windows['1'].driftViews[0]);
+    log.debug("window['1'].driftViews[0].browserView");
+    log.debug(windows['1'].driftViews[0].browserView);
+    log.debug("window['1'].driftViews[0].browserView.webContents");
+    log.debug(windows['1'].driftViews[0].browserView.webContents);
+    log.debug("argv")
+    log.debug(argv)
     windows['1'].driftViews[0].browserView.webContents.send('setDecodeFilePath', argv[(argv.length - 1)]);
   }catch(e) {
     log.error(e);

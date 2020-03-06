@@ -1262,17 +1262,27 @@ export default {
 		},
 		smartContractEvents(val) {
 			const vm = this;
-			if(controlBar !== 'close') {
-				clearTimeout(this.justNowCompleteNumberTimeoutObj)
-				this.justNowCompleteNumberTimeoutObj = setTimeout(() => {
+			if(vm.controlBar !== 'close') {
+				clearTimeout(vm.justNowCompleteNumberTimeoutObj)
+				vm.justNowCompleteNumberTimeoutObj = setTimeout(() => {
 					vm.updateFileLists();
 				}, 200)
-			} else {
-				return '';
+			}
+		},
+		uploadLength(val) {
+			const vm = this;
+			if(vm.controlBar !== 'close') {
+				clearTimeout(vm.justNowCompleteNumberTimeoutObj)
+				vm.justNowCompleteNumberTimeoutObj = setTimeout(() => {
+					vm.updateFileLists();
+				}, 200)
 			}
 		}
 	},
 	computed: {
+		uploadLength() {
+			return this.$store.state.Transfer.uploadLength;
+		},
 		smartContractEvents() {
 			return this.$store.state.Filemanager.smartContractEvents;
 		},

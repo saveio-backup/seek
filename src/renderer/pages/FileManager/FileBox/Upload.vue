@@ -443,7 +443,7 @@ export default {
 					}
 				}
 			}
-			if((this.space.ExpiredAt * 1000) - (new Date()).getTime() - (12 * 3600 * 1000) < 0) {
+			if(!this.switchToggle.advanced && ((this.space.ExpiredAt * 1000) - (new Date()).getTime() - (24 * 3600 * 1000) < 0)) {
 				callback(
 					new Error(vm.$t("error[55063]"))
 				);

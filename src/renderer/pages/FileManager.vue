@@ -200,7 +200,7 @@ export default {
 			ipcRenderer.send("run-dialog-event", {
 				name: "attach",
 				data: {
-					names: ['progress', 'channel', 'account', 'balance', 'uploadList', 'downloadList', 'completeList', 'waitForUploadList', 'waitForDownloadList', 'waitForUploadOrderList', 'waitForDownloadOrderList', 'realUploadingLength', 'realDownloadingLength', 'localStatus', 'userspace', 'uploadDoneList', 'downloadDoneList'],
+					names: ['progress', 'channel', 'account', 'balance', 'uploadList', 'downloadList', 'completeList', 'waitForUploadList', 'waitForDownloadList', 'waitForUploadOrderList', 'waitForDownloadOrderList', 'realUploadingLength', 'realDownloadingLength', 'localStatus', 'userspace', 'uploadDoneList', 'downloadDoneList', 'smartContractEvents'],
 					id: remote.getCurrentWebContents().id
 				}
 			});

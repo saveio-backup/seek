@@ -810,6 +810,7 @@ export default {
 			});
 		},
 		loadTxRecords() {
+			console.log('loadTxRecords')
 			if (!this.switchToggle.loadSwitch) return;
 			this.$store.dispatch("cancelTxRequest");
 			this.switchToggle.loadSwitch = false;

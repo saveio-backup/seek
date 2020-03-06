@@ -907,7 +907,7 @@ export default {
 		},
 		getSmartcontracteventsWs(res) {
 			if (res.Error === 0) {
-				this.notifyObserversByName("smartcontractevents", res.Result);
+				this.notifyObserversByName("smartContractEvents", res.Result);
 			}
 		},
 		gettransferlist(res) {

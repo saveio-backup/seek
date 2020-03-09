@@ -263,6 +263,7 @@ export default {
 			if (
 				localUrlPlugins[pluginUrl] &&
 				localUrlPlugins[pluginUrl].detail &&
+				localUrlPlugins[pluginUrl].detail.Progress ==1 &&
 				fs.existsSync(localUrlPlugins[pluginUrl].detail.Path)
 			) {
 				return true;

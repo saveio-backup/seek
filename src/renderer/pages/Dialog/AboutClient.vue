@@ -58,8 +58,7 @@ export default {
 			packageJson,
 			localStorage,
 			pluginNeedUpdate: {
-				note: `1.New Change
-2.New Change`
+				note: ``
 			},
 			pluginDetail: {},
 			clientUrl: "oni://www.client.com",

@@ -183,8 +183,8 @@ export default {
 					if (res.Error === 0) {
 						const result = res.Result.List;
 						this.total = res.Result.TotalFile;
-						this.result.TotalIncome = result.TotalIncome;
-						this.result.TotalIncomeFormat = result.TotalIncomeFormat;
+						this.result.TotalIncome = res.Result.TotalIncome;
+						this.result.TotalIncomeFormat = res.Result.TotalIncomeFormat;
 						// this.result.TotalIncomeFormat = 20124.123;
 						// this.result.Incomes = this.mockData;
 						if (result.Incomes.length > 0) {

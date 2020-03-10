@@ -426,9 +426,9 @@ export default {
 	methods: {
 		getNewComplete() {
 			const vm = this;
-			let end = this.limitTimestamp;
+			let start = this.limitTimestamp;
 			this.limitTimestamp = new Date().getTime();
-			this.$axios.get(`${this.$api.transferlist}/0/0/0/0/${end}`).then(res => {
+			this.$axios.get(`${this.$api.transferlist}/0/0/0/0/0/${start}/${this.limitTimestamp}`).then(res => {
 				if (res.Error === 0) {
 					const result = res.Result.Transfers;
 					for (let value of result) {

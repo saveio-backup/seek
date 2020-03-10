@@ -548,7 +548,7 @@ const actions = {
 }
 
 function completeTransferListRequest(commit) {
-    axios.get(api.transferlist + '/0/0/0/0/0').then(res => {
+    axios.get(api.transferlist + '/0/0/0/0/0/0/0').then(res => {
         toCompleteTransferListRequest.bind(this, {
             commit,
             res
@@ -567,7 +567,7 @@ function toCompleteTransferListRequest({
 }
 
 function downloadTransferListRequest(commit) {
-    axios.get(api.transferlist + '/2/0/0/0/0').then(res => {
+    axios.get(api.transferlist + '/2/0/0/0/0/0/0').then(res => {
         toDownloadTransferListRequest.bind(this, {
             commit,
             res
@@ -600,7 +600,7 @@ function toDownloadTransferListRequest({
 }
 
 function uploadTransferListRequest(commit) {
-    axios.get(api.transferlist + '/1/0/0/0/0').then(res => {
+    axios.get(api.transferlist + '/1/0/0/0/0/0/0').then(res => {
         toUploadTransferListRequest.bind(this, {
             commit,
             res
@@ -634,7 +634,7 @@ function toUploadTransferListRequest({
 
 function syncFileRequest(commit, state, limit) {
     clearTimeout(syncFileTimer);
-    axios.get(api.getFileList + `0/0/${limit}/1/0/0`, {
+    axios.get(api.getFileList + `0/0/${limit}/1/0/0/0/0`, {
         cancelToken: new CancelToken(c => {
             syncFileRequestCancel = c;
         }),

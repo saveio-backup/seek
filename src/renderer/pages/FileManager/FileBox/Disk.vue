@@ -686,7 +686,7 @@ export default {
 				this.updateFileRequestCancel('update upload file list request cancel!')
 			} catch(e) {}
 			let _end = Math.ceil((this.fileListData.length || 1) / this.limitCount) * this.limitCount + 1;
-			let addr = `${this.addrAPI}0/0/${_end}/0/0/0`;
+			let addr = `${this.addrAPI}0/0/${_end}/0/0/0/0/0`;
 			this.$axios
 				.get(addr, {
 					cancelToken: new vm.$axios.CancelToken(c => {
@@ -741,7 +741,7 @@ export default {
 			this.switchToggle.newFile = false;
 			let _start = this.fileListData.length
 			let addr = `${this.addrAPI}${this.type}/${_start}/${this.limitCount
-			}${this.addrAPI === this.$api.getFileList ? "/0/0/0" : ""}`;
+			}${this.addrAPI === this.$api.getFileList ? "/0/0/0/0/0" : ""}`;
 			this.$axios
 				.get(addr)
 				.then(res => {

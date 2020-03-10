@@ -23,6 +23,17 @@
   @content;
 }
 
+@mixin right-conner-point($top, $right, $color, $size) {
+  position: absolute;
+  right: calc(-#{$right/2}px);
+  top: calc(-#{$top/2}px);
+  background-color: $color;
+  width: $size;
+  height: $size;
+  border-radius: 50%;
+  @content;
+}
+
 .theme-font-color {
   @include themify {
     color: $primary-font-color;

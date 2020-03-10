@@ -263,7 +263,7 @@ export default {
 			if (
 				localUrlPlugins[pluginUrl] &&
 				localUrlPlugins[pluginUrl].detail &&
-				localUrlPlugins[pluginUrl].detail.Progress ==1 &&
+				localUrlPlugins[pluginUrl].detail.Progress == 1 &&
 				fs.existsSync(localUrlPlugins[pluginUrl].detail.Path)
 			) {
 				return true;
@@ -388,9 +388,7 @@ export default {
 			const finalPath = path.join(dir, subDir);
 			this.$axios
 				.post(this.$api.deletedownloadfile, {
-					Hash: plugin.detail.FileHash,
-					Password:
-						"a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3"
+					Hash: plugin.detail.FileHas
 				})
 				.then(res => {
 					if (res.Error === 0) {
@@ -471,6 +469,12 @@ export default {
 <style lang="scss">
 #plugin {
 	min-height: 100vh;
+	.primary {
+		.button {
+			padding-top: 3px;
+			padding-bottom: 3px;
+		}
+	}
 }
 .plugin-items {
 	display: flex;

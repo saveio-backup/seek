@@ -15,7 +15,7 @@
 					class="about_logo"
 				>
 				<p class="mt10 ft20 bold">About Seeker</p>
-				<p class="grey-xs mt10 mb5">Seeker Version: {{packageJson.version}} </p>
+				<p class="grey-xs mt10 mb5">Seeker Version: {{version}} </p>
 				<p class="grey-xs">Edge Version : {{localStorage.getItem("edgeVersion") || ""}}</p>
 			</div>
 			<div class="loading-content">
@@ -23,6 +23,10 @@
 					class="flex jc-center ai-center mb5"
 					v-show="updateState === -1"
 				>{{$t('plugin.theCurrentVersionIsTheLatestVersion')}}</p>
+				<p
+					class="flex jc-center ai-center mb5"
+					v-show="updateState === -3"
+				>{{$t('public.networkError')}}</p>
 				<div
 					class="update-info"
 					v-if="updateState >=0 || updateState === null"
@@ -37,8 +41,16 @@
 					>
 					</el-input>
 				</div>
+				<el-progress
+					v-if="pluginDetail"
+					class="plugin-progress"
+					:class="{'progressAnimate': (pluginDetail.Status == 1 )|| (pluginDetail.Status == 2)}"
+					:percentage="Math.ceil(pluginDetail.Progress * 100)"
+					:stroke-width="2"
+					:show-text="false"
+				></el-progress>
 				<ripper-button
-					class="primary"
+					class="primary mt10"
 					@click="buttonEvent"
 				>{{buttonText}}</ripper-button>
 			</div>
@@ -46,24 +58,24 @@
 	</div>
 </template>
 <script>
-import packageJson from "../../../../package.json";
+import { version, clientUrl } from "../../../../package.json";
 import { ipcRenderer, shell } from "electron";
 import fs from "fs";
 export default {
 	mounted() {
 		this.aboutClient = true;
+		this.setUpdateState();
 	},
 	data() {
 		return {
-			packageJson,
+			version,
+			clientUrl,
 			localStorage,
-			pluginNeedUpdate: {
-				note: ``
-			},
-			pluginDetail: {},
-			clientUrl: "oni://www.client.com",
+			pluginNeedUpdate: JSON.parse(localStorage.getItem("lastVersion")) || {},
+			pluginDetail: null,
 			/**
 			 * null need to install
+			 * -3 net work error
 			 * -2 ready to check
 			 * -1 lasted(no need update)
 			 * 0 pausing
@@ -73,12 +85,7 @@ export default {
 			 */
 			updateState: -2,
 			buttonText: this.$t("public.checkUpdate"),
-			aboutClient: false,
-			platform: {
-				win32: "1",
-				drawin: "2",
-				linux: "3"
-			}
+			aboutClient: false
 		};
 	},
 	methods: {
@@ -86,39 +93,38 @@ export default {
 			this.$emit("closeDialog", { timeout: 0 });
 		},
 		buttonEvent() {
-			this.checkClientVersion();
+			this.checkUpdate();
 		},
-		async checkClientVersion() {
-			this.$axios
-				.post(this.$api.pluginQuery, {
-					Url: this.clientUrl,
-					Platrofm: this.platform[process.platform]
-				})
-				.then(async res => {
-					if (res.Error === 0) {
-						const result = res.Result;
-						if (packageJson.version !== result.Version) {
-							this.pluginNeedUpdate = result;
-							let detail = await this.getClientTransferDetail(this.clientUrl);
-							detail = detail.Result;
-							this.pluginDetail = detail;
-							if (detail && detail.Status === 3) {
-								if (fs.existsSync(detail.Path)) {
-									this.updateState = 3;
-								} else {
-									this.updateState = null;
-								}
-							} else {
-								this.updateState = detail ? detail.Status : null;
-							}
-						} else {
-							this.updateState = -1; // no need to update
-						}
+		async checkUpdate() {
+			let result = await this.$checkClientVersion(); // to do
+			console.log("result is");
+			console.log(result);
+			if (!result.Version) {
+				this.updateState = -3;
+				return;
+			}
+			this.pluginNeedUpdate = result;
+			this.setUpdateState();
+		},
+		async setUpdateState() {
+			if (this.pluginNeedUpdate.Version) {
+				let detail = await this.getClientTransferDetail(
+					this.pluginNeedUpdate.Url
+				);
+				detail = detail.Result;
+				this.pluginDetail = detail; // current seeker client transferDetail
+				if (detail && detail.Status === 3) {
+					if (fs.existsSync(detail.Path)) {
+						this.updateState = 3;
 					} else {
-						this.updateState = -1;
-						return;
+						this.updateState = null;
 					}
-				});
+				} else {
+					this.updateState = detail ? detail.Status : null;
+				}
+			} else {
+				this.updateState = -2; // ready to update
+			}
 		},
 		downloadClient() {
 			this.$axios
@@ -205,13 +211,17 @@ export default {
 					this.buttonText = this.$t("plugin.startUpdate");
 					this.buttonEvent = this.downloadClient.bind(this);
 					break;
+				case -3:
+					this.buttonText = this.$t("public.checkUpdate");
+					this.buttonEvent = this.checkUpdate.bind(this);
+					break;
 				case -2:
 					this.buttonText = this.$t("public.checkUpdate");
-					this.buttonEvent = this.checkClientVersion.bind(this);
+					this.buttonEvent = this.checkUpdate.bind(this);
 					break;
 				case -1:
 					this.buttonText = this.$t("public.checkUpdate");
-					this.buttonEvent = this.checkClientVersion.bind(this);
+					this.buttonEvent = this.checkUpdate.bind(this);
 					break;
 				case 0:
 					this.buttonText = this.$t("plugin.continue");
@@ -243,7 +253,7 @@ export default {
 					break;
 				default:
 					this.buttonText = this.$t("public.checkUpdate");
-					this.buttonEvent = this.checkClientVersion.bind(this);
+					this.buttonEvent = this.checkUpdate.bind(this);
 					break;
 			}
 		},

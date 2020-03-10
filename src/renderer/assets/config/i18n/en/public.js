@@ -58,6 +58,7 @@ const result = {
   'closeSuccess': ' close success!',
   'fileTotal': 'File Total',
   'checkUpdate': 'Check Update ',
+  'networkError': 'Network Error',
   'theCurrentVersionIsTheLatestVersion': 'The current version is the latest version',
   'from': 'From',
   'to': 'To',

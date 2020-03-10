@@ -58,6 +58,7 @@ const result = {
   'closeSuccess': '关闭成功!',
   'fileTotal': '文件总数量',
   'checkUpdate': '检查更新',
+  'networkError': '网络异常',
   'theCurrentVersionIsTheLatestVersion': '当前版本已是最新版',
   'from': '从',
   'to': '到'

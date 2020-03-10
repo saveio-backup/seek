@@ -41,13 +41,17 @@
 					<li
 						class="action-item"
 						v-for="item in pluginsInstalled"
-						v-show="(item.isShow !== false) || item.isShow"
+						v-show="item.detail && item.detail.Progress>=1 && item.isShow"
 						:key="item.Url"
 						:title="item.title"
 						@click="openThirdPage(item.Url)"
 					>
 						<div class="nav-button">
-							<i :class="'ofont ofont-'+item.icon"></i>
+							<!-- <i :class="'ofont ofont-'+item.icon"></i> -->
+							<img
+								:src="item.Img"
+								alt=""
+							>
 						</div>
 					</li>
 					<p class="border"></p>
@@ -81,6 +85,7 @@
 				<div style="position:relative; z-index:2">
 					<i
 						class="ofont ofont-caidan user-no-select cursor-pointer cursor-click"
+						:class="{'show-point':switchToggle.showPoint}"
 						@click="toPopCustomControlMenu"
 					></i>
 					<!-- v-if="address" -->
@@ -107,12 +112,14 @@
 <script>
 import { remote, ipcRenderer } from "electron";
 import fs from "fs";
+import path from "path";
 const { Menu } = remote;
 export default {
 	mounted() {
 		const vm = this;
 		this.getPlugins();
 		this.watchPlugins();
+		this.$checkClientVersion();
 		ipcRenderer.on("forceUpdate", () => {
 			this.$forceUpdate();
 			this.views = remote.getCurrentWindow().views;
@@ -125,6 +132,7 @@ export default {
 	data() {
 		return {
 			switchToggle: {
+				showPoint: !!localStorage.getItem("lastVersion"),
 				logoutDialog: false
 			},
 			views: remote.getCurrentWindow().views,
@@ -192,7 +200,7 @@ export default {
 		async getPlugins() {
 			const plugins = ipcRenderer.sendSync("getUsermeta", "Plugins");
 			const tempPluginsInstalled = [];
-			console.log('plugins db is');
+			console.log("plugins db is");
 			console.log(plugins);
 			for (let i = 0; i < plugins.length; i++) {
 				const item = plugins[i];
@@ -262,7 +270,11 @@ export default {
 				},
 				{
 					label: that.$t("window.about"),
+					icon: that.switchToggle.showPoint
+						? path.join(__dirname, "../../../static/images/red_point.png")
+						: null,
 					click() {
+						that.switchToggle.showPoint = false;
 						that.showAbout();
 					}
 				},
@@ -446,6 +458,7 @@ $slidebar-active-color: linear-gradient(
 				// }
 				img {
 					width: calc(100% - 14px);
+					height: calc(100% - 14px);
 				}
 				.nav-button {
 					flex: 1;
@@ -494,7 +507,15 @@ $slidebar-active-color: linear-gradient(
 			text-align: center;
 			font-size: 30px;
 			top: -30px;
-
+			.ofont-caidan {
+				position: relative;
+				&.show-point {
+					&::after {
+						content: "";
+						@include right-conner-point(4, 0, rgb(235, 139, 126), 6px);
+					}
+				}
+			}
 			.setting-ul {
 				opacity: 0;
 				transition: all 0.5s;

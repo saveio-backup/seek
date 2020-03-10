@@ -2,6 +2,15 @@ import {
   ipcRenderer,
   remote
 } from "electron";
+import {
+  version,
+  clientUrl
+} from "../../../../package.json";
+const PLANTFORM_TO_NUMBER_STRING = {
+  win32: "1",
+  drawin: "2",
+  linux: "3"
+};
 const methods = {
   activeMessage({
     info,
@@ -58,8 +67,28 @@ const methods = {
       // Vue.prototype.$axios
       // .get(Vue.prototype.$api.account + "/export/private")
     };
-    Vue.prototype.$clipText = function () {
-
+    Vue.prototype.$checkClientVersion = function () {
+      return new Promise(async (resolve, reject) => {
+        await Vue.prototype.$axios
+          .post(Vue.prototype.$api.pluginQuery, {
+            Url: clientUrl,
+            Platrofm: PLANTFORM_TO_NUMBER_STRING[process.platform]
+          }).then(res => {
+            if (res.Error === 0) {
+              const result = res.Result;
+              if (version < result.Version) {
+                console.log('res.Result is');
+                console.log(JSON.stringify(res.Result));
+                localStorage.setItem('lastVersion', JSON.stringify(res.Result));
+                resolve(res.Result);
+              } else {
+                resolve({})
+              }
+            }
+          }).catch(() => {
+            reject({});
+          })
+      })
     }
   }
 }

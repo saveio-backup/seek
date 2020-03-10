@@ -132,7 +132,7 @@ export default {
 	data() {
 		return {
 			switchToggle: {
-				showPoint: !!localStorage.getItem("lastVersion"),
+				showPoint: localStorage.getItem("lastVersion") && JSON.parse(localStorage.getItem("lastVersion")).Version,
 				logoutDialog: false
 			},
 			views: remote.getCurrentWindow().views,

@@ -82,11 +82,12 @@ const methods = {
                 localStorage.setItem('lastVersion', JSON.stringify(res.Result));
                 resolve(res.Result);
               } else {
-                resolve({})
+                localStorage.setItem('lastVersion', '{}');
+                resolve(res.Result);
               }
             }
           }).catch(() => {
-            reject({});
+            reject(null);
           })
       })
     }

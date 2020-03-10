@@ -99,8 +99,12 @@ export default {
 			let result = await this.$checkClientVersion(); // to do
 			console.log("result is");
 			console.log(result);
-			if (!result.Version) {
+			if (!result) {
 				this.updateState = -3;
+				return;
+			}
+			if (version >= result.Version) {
+				this.updateState = -1;
 				return;
 			}
 			this.pluginNeedUpdate = result;

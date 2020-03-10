@@ -1,93 +1,94 @@
 <template>
 	<div
 		id="login-log"
-		class="flex jc-center ai-center"
 	>
-		<div>
-			<!-- <div> -->
-			<i
-				class="first-ofont ofont ofont-lianjie1"
-				:class="statusList.Chain && statusList.Chain.State ? 'active-blue' : 'ofont-grep'"
-			></i>
-			<div
-				class="connect-success"
-				v-if="statusList.Chain && statusList.Chain.State"
-			>
+		<div  class="flex jc-center ai-center">
+			<div>
+				<!-- <div> -->
 				<i
-					class="el-icon-check"
+					class="first-ofont ofont ofont-lianjie1"
+					:class="statusList.Chain && statusList.Chain.State ? 'active-blue' : 'ofont-grep'"
 				></i>
+				<div
+					class="connect-success"
+					v-if="statusList.Chain && statusList.Chain.State"
+				>
+					<i
+						class="ofont ofont-wancheng-"
+					></i>
+				</div>
+				<div
+					slot="append"
+					v-else
+					class="loading text-center transparent"
+				>
+					<i class="ofont ofont-loading loading-rotate"></i>
+				</div>
+				<!-- </div> -->
+				<p>
+					{{$t('menuWindow.chainState')}}
+				</p>
 			</div>
-			<div
-				slot="append"
-				v-else
-				class="loading text-center transparent"
-			>
-				<i class="ofont ofont-loading loading-rotate"></i>
-			</div>
-			<!-- </div> -->
-			<p>
-				{{$t('menuWindow.chainState')}}
-			</p>
-		</div>
-		<div>
-			<i
-				class="first-ofont ofont ofont-ziyuan"
-				:class="statusList.DspProxy && statusList.DspProxy.State ? 'active-blue' : 'ofont-grep'"
-			></i>
-			<div
-				v-if="statusList.DspProxy && statusList.DspProxy.State"
-				class="connect-success"
-			>
+			<div>
 				<i
-					class="el-icon-check"
+					class="first-ofont ofont ofont-ziyuan"
+					:class="statusList.DspProxy && statusList.DspProxy.State ? 'active-blue' : 'ofont-grep'"
 				></i>
+				<div
+					v-if="statusList.DspProxy && statusList.DspProxy.State"
+					class="connect-success"
+				>
+					<i
+						class="ofont ofont-wancheng-"
+					></i>
+				</div>
+				<div
+					slot="append"
+					v-else
+					class="loading text-center transparent"
+				>
+					<i class="ofont ofont-loading loading-rotate"></i>
+				</div>
+				<p>
+					<!-- Dsp代理状态 -->
+					{{$t('menuWindow.dspProxyState')}}
+				</p>
 			</div>
-			<div
-				slot="append"
-				v-else
-				class="loading text-center transparent"
-			>
-				<i class="ofont ofont-loading loading-rotate"></i>
-			</div>
-			<p>
-				<!-- Dsp代理状态 -->
-				{{$t('menuWindow.dspProxyState')}}
-			</p>
-		</div>
-		<div>
-			<i
-				class="first-ofont ofont ofont-DNS-"
-				:class="statusList.DNS && (statusList.DNS.State || (statusList.DNS.HostAddr === '' && currentHeight === totalHeight && totalHeight !== 0)) ? 'active-blue' : 'ofont-grep'"
-			></i>
-			<div
-				class="connect-success"
-				v-if="statusList.DNS && (statusList.DNS.State || (statusList.DNS.HostAddr === '' && currentHeight === totalHeight && totalHeight !== 0))"
-			>
+			<div>
 				<i
-					class="el-icon-check"
+					class="first-ofont ofont ofont-DNS-"
+					:class="statusList.DNS && (statusList.DNS.State || (statusList.DNS.HostAddr === '' && currentHeight === totalHeight && totalHeight !== 0)) ? 'active-blue' : 'ofont-grep'"
 				></i>
+				<div
+					class="connect-success"
+					v-if="statusList.DNS && (statusList.DNS.State || (statusList.DNS.HostAddr === '' && currentHeight === totalHeight && totalHeight !== 0))"
+				>
+					<i
+						class="ofont ofont-wancheng-"
+					></i>
+				</div>
+				<div
+					slot="append"
+					v-else
+					class="loading text-center transparent"
+				>
+					<i class="ofont ofont-loading loading-rotate"></i>
+				</div>
+				<p>
+					<!-- DNS状态: -->
+					{{$t('menuWindow.dnsState')}}
+				</p>
 			</div>
-			<div
-				slot="append"
-				v-else
-				class="loading text-center transparent"
-			>
-				<i class="ofont ofont-loading loading-rotate"></i>
-			</div>
-			<p>
-				<!-- DNS状态: -->
-				{{$t('menuWindow.dnsState')}}
-			</p>
+			<!-- <div>
+				<div>
+					<i class="ofont ofont-success active-blue" v-if="statusList.ChannelProxy && statusList.ChannelProxy.State"></i>
+					<i class="el-icon-loading" v-else></i>
+				</div>
+				<p>
+					通道代理状态:
+				</p>
+			</div> -->
 		</div>
-		<!-- <div>
-      <div>
-        <i class="ofont ofont-success active-blue" v-if="statusList.ChannelProxy && statusList.ChannelProxy.State"></i>
-        <i class="el-icon-loading" v-else></i>
-      </div>
-			<p>
-				通道代理状态:
-			</p>
-		</div> -->
 	</div>
 </template>
 
@@ -185,58 +186,76 @@ export default {
 <style lang="scss">
 #login-log {
 	min-height: 100%;
+	width: 100%;
+	height: 100%;
+	padding: 80px 108px;
 	@include themify {
 		color: $primary-font-color;
 	}
+
 	& > div {
-		display: flex;
-		text-align: center;
-		align-items: center;
-		flex-direction: column;
-		justify-content: center;
-		font-size: 18px;
-		width: 262px;
-		height: 360px;
-		margin: 0 12px;
-		    
-
-		i {
-			font-size: 30px;
-
-			&.first-ofont {
-				font-size: 50px;
-				margin-bottom: 40px;
-				&.ofont-grep {
-					color: #a6a6a6;
-				}
-			}
-
-			&.ofont-success {
-				color: #8bd179;
-			}
+		width: 100%;;
+		height: 100%;
+		border-radius: 6px;
+		
+		@include themify {
+			box-shadow: $card-shadow;
+			background-color: $card-color;
 		}
 
 		& > div {
-			width: 30px;
-			height: 30px;
-			background: #A6A6A6;
 			display: flex;
-			justify-content: center;
+			text-align: center;
 			align-items: center;
-			border-radius: 15px;
-			&.connect-success {
-				background: #8BD179;
-			}
-
+			flex-direction: column;
+			justify-content: center;
+			font-size: 18px;
+			width: 262px;
+			height: 360px;
+			margin: 0 12px;
+					
+	
 			i {
-				font-size: 22px;
-				color: white;
+				font-size: 30px;
+	
+				&.first-ofont {
+					font-size: 50px;
+					margin-bottom: 40px;
+					&.ofont-grep {
+						color: #a6a6a6;
+					}
+				}
+	
+				&.ofont-success {
+					color: #8bd179;
+				}
 			}
-		}
-
-		& > p {
-			width: 200px;
-			margin-top: 24px;
+	
+			& > div {
+				width: 30px;
+				height: 30px;
+				// background: #A6A6A6;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				border-radius: 15px;
+				&.connect-success {
+					i {
+						color: #8BD179
+					}
+				}
+	
+				i {
+					font-size: 22px;
+					color: #a6a6a6;
+					// color: white;
+				}
+			}
+	
+			& > p {
+				width: 200px;
+				margin-top: 24px;
+			}
 		}
 	}
 }

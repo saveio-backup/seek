@@ -256,6 +256,38 @@ export default {
 		}
 	},
 	watch: {
+		readyUpload(val) {
+			clearTimeout(this.timeoutObj.setTimeUploadingTransferListObj);
+			this.timeoutObj.setTimeUploadingTransferListObj = setTimeout(() => {
+				if (val < this.$config.maxNumUpload) {
+					this.waitForUploadFileToUpload();
+				}
+			}, this.timeoutObj.COUNT_TIMEOUT);
+		},
+		readyDownload(val) {
+			clearTimeout(this.timeoutObj.setTimeDownloadingTransferListObj);
+			this.timeoutObj.setTimeDownloadingTransferListObj = setTimeout(() => {
+				if (val < this.$config.maxNumUpload) {
+					this.waitForDownloadFileToDownload();
+				}
+			}, this.timeoutObj.COUNT_TIMEOUT);
+		},
+		realDownloadingLength(val) {
+			clearTimeout(this.timeoutObj.setTimeDownloadingTransferListObj);
+			this.timeoutObj.setTimeDownloadingTransferListObj = setTimeout(() => {
+				if (val < this.$config.maxNumUpload) {
+					this.waitForDownloadFileToDownload();
+				}
+			}, this.timeoutObj.COUNT_TIMEOUT);
+		},
+		realUploadingLength(val) {
+			clearTimeout(this.timeoutObj.setTimeUploadingTransferListObj);
+			this.timeoutObj.setTimeUploadingTransferListObj = setTimeout(() => {
+				if (val < this.$config.maxNumUpload) {
+					this.waitForUploadFileToUpload();
+				}
+			}, this.timeoutObj.COUNT_TIMEOUT);
+		},
 		uploadingTransferListForce(val) {
 			clearTimeout(this.timeoutObj.setTimeUploadingTransferListObj);
 			this.timeoutObj.setTimeUploadingTransferListObj = setTimeout(() => {
@@ -278,6 +310,7 @@ export default {
 				if (this.realUploadingLength < this.$config.maxNumUpload) {
 					this.waitForUploadFileToUpload();
 				}
+				this.notifyObserversByName("uploadDoneList", this.uploadDoneList);
 				if(this.newTaskUpload.length !== 0) {
 					this.removeNewTask(1);
 				}
@@ -292,6 +325,7 @@ export default {
 				if (this.realDownloadingLength < this.$config.maxNumUpload) {
 					this.waitForDownloadFileToDownload();
 				}
+				this.notifyObserversByName("downloadDoneList", this.downloadDoneList);
 				if(this.newTaskDownload.length !== 0) {
 					this.removeNewTask(2);
 				}
@@ -368,25 +402,25 @@ export default {
 		},
 		uploadDoneList(val, oldVal) {
 			const vm = this;
-			clearTimeout(this.timeoutObj.setTimeUploadDoneList);
-			this.timeoutObj.setTimeUploadDoneList = setTimeout(() => {
-				this.notifyObserversByName("uploadDoneList", val);
-				localStorage.setItem(
-					`uploadDoneList_${vm.Address}`,
-					JSON.stringify(val)
-				);
-			}, this.timeoutObj.COUNT_TIMEOUT);
+			localStorage.setItem(
+				`uploadDoneList_${vm.Address}`,
+				JSON.stringify(val)
+			);
+			// clearTimeout(this.timeoutObj.setTimeUploadDoneList);
+			// this.timeoutObj.setTimeUploadDoneList = setTimeout(() => {
+			// 	this.notifyObserversByName("uploadDoneList", val);
+			// }, this.timeoutObj.COUNT_TIMEOUT);
 		},
 		downloadDoneList(val, oldVal) {
 			const vm = this;
-			clearTimeout(this.timeoutObj.setTimeDownloadDoneList);
-			this.timeoutObj.setTimeDownloadDoneList = setTimeout(() => {
-				vm.notifyObserversByName("downloadDoneList", val);
+			// clearTimeout(this.timeoutObj.setTimeDownloadDoneList);
+			// this.timeoutObj.setTimeDownloadDoneList = setTimeout(() => {
+				// vm.notifyObserversByName("downloadDoneList", val);
 				localStorage.setItem(
 					`downloadDoneList_${vm.Address}`,
 					JSON.stringify(val)
 				);
-			}, this.timeoutObj.COUNT_TIMEOUT);
+			// }, this.timeoutObj.COUNT_TIMEOUT);
 		}
 	},
 	methods: {
@@ -678,7 +712,7 @@ export default {
 			console.log(`it's ${++this.wsOpeation.reconnectNumber}th reconnet`);
 			clearTimeout(this.wsOpeation.errorTimeout);
 			setTimeout(() => {
-				this.initWebSocket(redata);
+				this.initWebSocket();
 			}, 3000);
 		},
 		// get wait for upload promise list
@@ -764,8 +798,8 @@ export default {
 					vm.$store.commit("REMOVE_PAUSING", vm.readyUpload);
 					// vm.uploadingTransferListForce++;
 					// setTimeout(() => {
-					vm.removeReadyByIds(continueArr);
-					vm.uploadingTransferListForce++;
+						vm.removeReadyByIds(continueArr, 1);
+						vm.uploadingTransferListForce++;
 					// }, 2000);
 				});
 
@@ -801,7 +835,7 @@ export default {
 						// console.log(newWaitForList);
 						vm.$store.commit("SET_WAIT_FOR_UPLOAD_LIST", newWaitForList);
 					}
-					vm.removeReadyByIds(errorIds);
+					vm.removeReadyByIds(errorIds, 1);
 					vm.message({
 						info: errorMsg,
 						type: "error",
@@ -810,7 +844,8 @@ export default {
 				}
 			});
 		},
-		removeReadyByIds(removeIds) {
+		// type: 1 upload 2 download
+		removeReadyByIds(removeIds, type = 1) {
 			let readyArr = this.readyUpload;
 			for(let id of removeIds) {
 				let _index = readyArr.indexOf(id);
@@ -862,7 +897,8 @@ export default {
 		// wait for download file to download when max Download length gt current Downloading length
 		waitForDownloadFileToDownload() {
 			const vm = this;
-			console.log(this.realDownloadingLength);
+			console.log(`${this.$config.maxNumUpload}----${this.realDownloadingLength}----${this.waitForDownloadOrderList.length}----
+			${this.readyUpload.length}----${this.isLoginShowLog}`);
 			let needDownloadLen =
 				this.$config.maxNumUpload - this.realDownloadingLength;
 			if (
@@ -881,7 +917,6 @@ export default {
 				0,
 				realDownloadLen
 			);
-
 			// get download list in the waitForDownloadList
 			let filterWaitForDownloadList = this.waitForDownloadList.filter(item => {
 				return this.readyDownload.indexOf(item.Id) !== -1;
@@ -907,6 +942,7 @@ export default {
 				vm.$store.commit("REMOVE_PAUSING", vm.readyDownload);
 				vm.$nextTick(() => {
 					vm.readyDownload = [];
+					vm.waitForDownloadFileToDownload();
 				});
 				return;
 			}
@@ -946,12 +982,12 @@ export default {
 					vm.$store.commit("REMOVE_WAIT_FOR_DOWNLOAD_ORDER_LIST", vm.readyDownload);
 					vm.$store.commit("REMOVE_UPLOADING", vm.readyDownload);
 					vm.$store.commit("REMOVE_PAUSING", vm.readyDownload);
-					vm.downloadingTransferListForce++; // force update
-					setTimeout(() => {
+					// vm.downloadingTransferListForce++; // force update
+					// setTimeout(() => {
 						// vm.readyDownload = [];
-						vm.removeReadyByIds(continueArr);
+						vm.removeReadyByIds(continueArr, 2);
 						vm.downloadingTransferListForce++; // force update
-					}, 2000);
+					// }, 2000);
 				});
 
 				// error message
@@ -983,6 +1019,7 @@ export default {
 						});
 						vm.$store.commit("SET_WAIT_FOR_DOWNLOAD_LIST", newWaitForList);
 					}
+					vm.removeReadyByIds(errorIds, 2);
 					vm.message({
 						info: errorMsg,
 						type: "error",

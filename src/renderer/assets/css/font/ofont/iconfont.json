@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "13345287",
+      "name": "wancheng-2",
+      "font_class": "wancheng-",
+      "unicode": "e658",
+      "unicode_decimal": 58968
+    },
+    {
       "icon_id": "13189802",
       "name": "lianjie",
       "font_class": "lianjie1",

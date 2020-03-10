@@ -420,10 +420,14 @@ const actions = {
         let list = localStorage.getItem(`uploadTask_${address}`);
         if (list) {
             let _list = JSON.parse(list) || [];
-            for(let value of _list) {
+            let _newList = _list.filter(value => {
                 value.Status = 0;
-            }
-            commit('GET_WAIT_FOR_UPLOAD_LIST', _list);
+                if(value.Ready) {
+                    return false;
+                }
+                return true;
+            })
+            commit('GET_WAIT_FOR_UPLOAD_LIST', _newList);
         }
 
         // let list2 = localStorage.getItem(`waitForUploadOrderList_${address}`);
@@ -442,10 +446,14 @@ const actions = {
         let list4 = localStorage.getItem(`downloadTask_${address}`);
         if (list4) {
             let _list4 = JSON.parse(list4) || [];
-            for(let vaule of _list4) {
+            let _newList4 = _list4.filter(value => {
                 value.Status = 0;
-            }
-            commit('GET_WAIT_FOR_DOWNLOAD_LIST', _list4);
+                if(value.Ready) {
+                    return false;
+                }
+                return true;
+            })
+            commit('GET_WAIT_FOR_DOWNLOAD_LIST', _newList4);
         }
         // let list5 = localStorage.getItem(`waitForDownloadOrderList_${address}`);
         // if (list5) {

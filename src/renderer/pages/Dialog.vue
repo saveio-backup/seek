@@ -128,6 +128,9 @@ export default {
 			// ready upload list
 			readyUpload: [],
 			readyDownload: [],
+			newTaskUpload: [],
+			newTaskDownload: [],
+
 			websock: null,
 			wsOpeation: {
 				reconnectNumber: 0,
@@ -180,39 +183,32 @@ export default {
 		// wait for upload file list
 		waitForUploadList: function() {
 			let arr = this.$store.state.Transfer.waitForUploadList || [];
-			// this.notifyObserversByName("waitForUploadList", arr);
 			return arr;
 		},
 		waitForUploadOrderList: function() {
 			let arr = this.$store.state.Transfer.waitForUploadOrderList || [];
-			// this.notifyObserversByName("waitForUploadOrderList", arr);
 			return arr;
 		},
 		localStatus: function() {
 			let obj = this.$store.state.Transfer.localStatus;
-			// this.notifyObserversByName("localStatus", obj);
 			return obj;
 		},
 		realUploadingLength: function() {
 			let len = this.$store.state.Transfer.realUploadingLength;
-			// this.notifyObserversByName("realUploadingLength", len);
 			return len;
 		},
 
 		// wait for download file list
 		waitForDownloadList: function() {
 			let arr = this.$store.state.Transfer.waitForDownloadList || [];
-			// this.notifyObserversByName("waitForDownloadList", arr);
 			return arr;
 		},
 		waitForDownloadOrderList: function() {
 			let arr = this.$store.state.Transfer.waitForDownloadOrderList || [];
-			// this.notifyObserversByName("waitForDownloadOrderList", arr);
 			return arr;
 		},
 		realDownloadingLength: function() {
 			let len = this.$store.state.Transfer.realDownloadingLength;
-			// this.notifyObserversByName("realDownloadingLength", len);
 			return len;
 		}
 	},
@@ -282,7 +278,12 @@ export default {
 				if (this.realUploadingLength < this.$config.maxNumUpload) {
 					this.waitForUploadFileToUpload();
 				}
-				this.notifyObserversByName("uploadList", val);
+				if(this.newTaskUpload.length !== 0) {
+					this.removeNewTask(1);
+				}
+				this.$nextTick(() => {
+					this.notifyObserversByName("uploadList", val);
+				});
 			}, this.timeoutObj.COUNT_TIMEOUT);
 		},
 		downloadingTransferList(val, oldVal) {
@@ -291,7 +292,12 @@ export default {
 				if (this.realDownloadingLength < this.$config.maxNumUpload) {
 					this.waitForDownloadFileToDownload();
 				}
-				this.notifyObserversByName("downloadList", val);
+				if(this.newTaskDownload.length !== 0) {
+					this.removeNewTask(2);
+				}
+				this.$nextTick(() => {
+					this.notifyObserversByName("downloadList", val);
+				})
 			}, this.timeoutObj.COUNT_TIMEOUT);
 		},
 		Address(newVal, oldVal) {
@@ -305,6 +311,8 @@ export default {
 			this.$store.dispatch("getWaitForTransferList");
 			this.readyDownload = [];
 			this.readyUpload = [];
+			this.newTaskUpload = [];
+			this.newTaskDownload = [];
 			let _uploadDoneList = localStorage.getItem(`uploadDoneList_${this.Address}`);
 			if(_uploadDoneList) {
 				this.uploadDoneList = JSON.parse(_uploadDoneList);
@@ -330,51 +338,11 @@ export default {
 				this.toGetDns();
 			}
 		},
-		// uploadTransferList(newVal, oldVal) {
-		// 	clearTimeout(this.timeoutObj.upload);
-		// 	this.timeoutObj.upload = setTimeout(() => {
-		// 		for (let value of newVal) {
-		// 			this.transferObj[value.Id] = value;
-		// 		}
-		// 	}, 50);
-		// },
-		// downloadTransferList(newVal, oldVal) {
-		// 	const vm = this;
-		// 	clearTimeout(this.timeoutObj.download);
-		// 	this.timeoutObj.download = setTimeout(() => {
-		// 		for (let value of newVal) {
-		// 			vm.transferObj[value.Id] = value;
-		// 		}
-		// 	}, 50);
-		// },
 		completeTransferList(newVal, oldVal) {
 			const vm = this;
 			clearTimeout(this.timeoutObj.complete);
 			this.timeoutObj.complete = setTimeout(() => {
 				vm.getNewComplete();
-				// let justNowCompleteObj = {};
-				// for (let value of newVal) {
-				// 	if (
-				// 		value.Id &&
-				// 		this.transferObj[value.Id] &&
-				// 		this.transferObj[value.Id].Status !== 3
-				// 	) {
-				// 		this.message({
-				// 			info: `${value.FileName} ${
-				// 				this.transferObj[value.Id].Type === 1
-				// 					? vm.$t("dialog.uploadSuccess")
-				// 					: vm.$t("dialog.downloadSuccess")
-				// 			}`,
-				// 			type: "success"
-				// 		});
-				// 		if(value.IsUploadAction) {
-				// 			vm.uploadDoneList.push(value.RealFileSize);
-				// 		} else {
-				// 			vm.downloadDoneList.push(value.FileSize);
-				// 		}
-				// 	}
-				// 	this.transferObj[value.Id] = value;
-				// }
 			}, 50);
 		},
 		waitForUploadList(val, oldVal) {
@@ -637,10 +605,7 @@ export default {
 					}, vm.timeoutObj.COUNT_TIMEOUT);
 					break;
 				case "gettransferlist":
-					// clearTimeout(vm.timeoutObj.setTimeGettransferlist);
-					// vm.timeoutObj.setTimeGettransferlist = setTimeout(() => {
 					vm.gettransferlist(redata);
-					// }, vm.timeoutObj.COUNT_TIMEOUT);
 					break;
 				case "smartcontractevents":
 					if (
@@ -654,6 +619,52 @@ export default {
 						vm.getSmartcontracteventsWs(redata);
 					}, vm.timeoutObj.COUNT_TIMEOUT);
 					break;
+				case 'newtask':
+					vm.newtaskWs(redata);
+					break;
+			}
+		},
+		newtaskWs(res) {
+			const vm = this;
+			if(res.Error === 0) {
+				if(res.Result.IsUploadAction) {
+					this.newTaskUpload.push(res.Result.Id);
+				} else {
+					this.newTaskDownload.push(res.Result.Id);
+				}
+			}
+		},
+		// action: 1 upload 2 download
+		removeNewTask(action) {
+			const vm = this;
+			if(action === 1) {
+				for(let id of this.newTaskUpload) {
+					if(this.readyUpload.includes(id)) {
+						let _index = this.readyUpload.indexOf(id);
+						this.readyUpload.splice(_index, 1);
+					}
+				}
+
+				// recount wait for transfer list
+				let newWaitForUploadList = vm.waitForUploadList.filter(item => {
+					return !vm.newTaskUpload.includes(item.Id);
+				});
+				vm.$store.commit("SET_WAIT_FOR_UPLOAD_LIST", newWaitForUploadList);
+				this.newTaskUpload = [];
+			} else if(action === 2) {
+				for(let id of this.newTaskDownload) {
+					if(this.readyDownload.includes(id)) {
+						let _index = this.readyDownload.indexOf(id);
+						this.readyDownload.splice(_index, 1);
+					}
+				}
+
+				// recount wait for transfer list
+				let newWaitForDownloadList = vm.waitForDownloadList.filter(item => {
+					return !vm.newTaskDownload.includes(item.Id);
+				});
+				vm.$store.commit("SET_WAIT_FOR_DOWNLOAD_LIST", newWaitForDownloadList);
+				this.newTaskDownload = [];
 			}
 		},
 		// send data to server
@@ -729,34 +740,52 @@ export default {
 		// to upload and callback
 		toStartUpload(commitAll) {
 			const vm = this;
+			let uploadArr = [];
+			let continueArr = [];
+			let newWaitForList = vm.waitForUploadList.map(item => {
+				if(vm.readyUpload.includes(item.Id)) {
+					uploadArr.push(item.Id);
+					item.Ready = true;
+				}
+				return item; 
+			});
+			vm.$store.commit("SET_WAIT_FOR_UPLOAD_LIST", newWaitForList);
+			for(let value of vm.readyUpload) {
+				if(!uploadArr.includes(value)) {
+					continueArr.push(value)
+				}
+			}
+
 			this.$axios.all(commitAll).then(resArr => {
-				let newWaitForList = vm.waitForUploadList.filter(item => {
-					return vm.readyUpload.indexOf(item.Id) < 0;
-				});
-				let newUploadFiles = vm.waitForUploadList.filter(item => {
-					return vm.readyUpload.indexOf(item.Id) >= 0;
-				});
 				// wait for 1s for wait for get upload file done
 				vm.$nextTick(() => {
-					vm.$store.commit("SET_WAIT_FOR_UPLOAD_LIST", newWaitForList);
 					vm.$store.commit("REMOVE_WAIT_FOR_UPLOAD_ORDER_LIST", vm.readyUpload);
 					vm.$store.commit("REMOVE_UPLOADING", vm.readyUpload);
 					vm.$store.commit("REMOVE_PAUSING", vm.readyUpload);
-					// this.$store.dispatch("getUpload"); // force update
+					// vm.uploadingTransferListForce++;
+					// setTimeout(() => {
+					vm.removeReadyByIds(continueArr);
 					vm.uploadingTransferListForce++;
-					setTimeout(() => {
-						// wait for 2s to change readyUpload for check is have upload file length to upload
-						vm.readyUpload = [];
-						vm.uploadingTransferListForce++;
-					}, 2000);
+					// }, 2000);
 				});
 
 				// error message
 				let errorArr = [];
 				let errorMsg = "";
+				let errorIds = [];
+				let waitForErrorIds = [];
 				for (let i = 0; i < resArr.length; i++) {
 					let value = resArr[i];
 					if (value.Error !== 0) {
+						// get error array
+						let _index = continueArr.indexOf(vm.readyUpload[i]);
+						errorIds.push(vm.readyUpload[i]);
+						if(_index !== -1) {
+							continueArr.splice(_index, 1);
+						} else {
+							waitForErrorIds.push(vm.readyUpload[i]);
+						}
+						// get error message
 						errorMsg += `<p>`;
 						errorMsg += `${value.FileName || ""}`;
 						errorMsg += vm.$t(`error["${value.Error}"]`);
@@ -764,6 +793,15 @@ export default {
 					}
 				}
 				if (errorMsg !== "") {
+					// run upload api need remove wait for task when task is error!
+					if(waitForErrorIds.length > 0) {
+						let newWaitForList = vm.waitForUploadList.filter(item => {
+							return waitForErrorIds.indexOf(item.Id) < 0;
+						});
+						// console.log(newWaitForList);
+						vm.$store.commit("SET_WAIT_FOR_UPLOAD_LIST", newWaitForList);
+					}
+					vm.removeReadyByIds(errorIds);
 					vm.message({
 						info: errorMsg,
 						type: "error",
@@ -771,6 +809,15 @@ export default {
 					});
 				}
 			});
+		},
+		removeReadyByIds(removeIds) {
+			let readyArr = this.readyUpload;
+			for(let id of removeIds) {
+				let _index = readyArr.indexOf(id);
+				if(_index !== -1) {
+					readyArr.splice(_index, 1);
+				}
+			}
 		},
 		// get continue upload promise list
 		getContinueUploadPromise(arr) {
@@ -868,21 +915,41 @@ export default {
 		// to download and callback
 		toStartDownload(commitAll) {
 			const vm = this;
+			let downloadArr = [];
+			let continueArr = [];
+			let newWaitForList = vm.waitForDownloadList.map(item => {
+				if(vm.readyDownload.includes(item.Id)) {
+					downloadArr.push(item.Id);
+					item.Ready = true;
+				}
+				return item; 
+			});
+			vm.$store.commit("SET_WAIT_FOR_DOWNLOAD_LIST", newWaitForList);
+			for(let value of vm.readyDownload) {
+				if(!downloadArr.includes(value)) {
+					continueArr.push(value)
+				}
+			}
 			this.$axios.all(commitAll).then(resArr => {
-				let newWaitForList = vm.waitForDownloadList.filter(item => {
-					return vm.readyDownload.indexOf(item.Id) < 0;
-				});
+				// let newWaitForList = vm.waitForDownloadList.filter(item => {
+				// 	return vm.readyDownload.indexOf(item.Id) < 0;
+				// });
+				// let continueArr = [];
+				// vm.waitForDownloadList.map(item => {
+				// 	if(!vm.readyDownload.includes(item.Id)) {
+				// 		continueArr.push(item.Id);
+				// 	}
+				// 	return item;
+				// })
 				vm.$nextTick(() => {
-					vm.$store.commit("SET_WAIT_FOR_DOWNLOAD_LIST", newWaitForList);
-					vm.$store.commit(
-						"REMOVE_WAIT_FOR_DOWNLOAD_ORDER_LIST",
-						this.readyDownload
-					);
+					// vm.$store.commit("SET_WAIT_FOR_DOWNLOAD_LIST", newWaitForList);
+					vm.$store.commit("REMOVE_WAIT_FOR_DOWNLOAD_ORDER_LIST", vm.readyDownload);
 					vm.$store.commit("REMOVE_UPLOADING", vm.readyDownload);
 					vm.$store.commit("REMOVE_PAUSING", vm.readyDownload);
 					vm.downloadingTransferListForce++; // force update
 					setTimeout(() => {
-						vm.readyDownload = [];
+						// vm.readyDownload = [];
+						vm.removeReadyByIds(continueArr);
 						vm.downloadingTransferListForce++; // force update
 					}, 2000);
 				});
@@ -890,8 +957,18 @@ export default {
 				// error message
 				let errorArr = [];
 				let errorMsg = "";
+				let errorIds = [];
+				let waitForErrorIds = [];
 				for (let value of resArr) {
 					if (value.Error !== 0) {
+						// get error array
+						let _index = continueArr.indexOf(vm.readyDownload[i]);
+						errorIds.push(vm.readyDownload[i]);
+						if(_index !== -1) {
+							continueArr.splice(_index, 1);
+						} else {
+							waitForErrorIds.push(vm.readyDownload[i]);
+						}
 						errorMsg += `<p>`;
 						errorMsg += `${value.FileName || ""}`;
 						errorMsg += vm.$t(`error["${value.Error}"]`);
@@ -899,6 +976,13 @@ export default {
 					}
 				}
 				if (errorMsg !== "") {
+					// run download api need remove wait for task when task is error!
+					if(vm.waitForErrorIds.length > 0) {
+						let newWaitForList = vm.waitForDownloadList.filter(item => {
+							return vm.waitForErrorIds.indexOf(item.Id) < 0;
+						});
+						vm.$store.commit("SET_WAIT_FOR_DOWNLOAD_LIST", newWaitForList);
+					}
 					vm.message({
 						info: errorMsg,
 						type: "error",
@@ -1351,7 +1435,7 @@ export default {
 
 			let remoteUploadingList = [];
 			for (let value of this.uploadTransferList) {
-				if (value.Id.indexOf("waitfor_") !== 0) {
+				if (!value.IsCache) {
 					if (value.Status === 1 || value.Status === 2) {
 						remoteUploadingList.push(value.Id);
 					}
@@ -1368,7 +1452,7 @@ export default {
 			let remoteDownloadingList = [];
 			for (let value of this.downloadTransferList) {
 				if (
-					value.Id.indexOf("waitfor_") !== 0 &&
+					!value.IsCache &&
 					!value.Url.startsWith("oni://www")
 				) {
 					if (value.Status === 1 || value.Status === 2) {
@@ -1508,18 +1592,32 @@ export default {
 			for (let value of _waitForUploadList) {
 				value.Status = 0;
 			}
-			this.$store.commit("SET_WAIT_FOR_UPLOAD_LIST", _waitForUploadList);
 			let _waitForDownloadList = JSON.parse(
 				JSON.stringify(this.waitForDownloadList)
 			);
 			for (let value of _waitForDownloadList) {
 				value.Status = 0;
 			}
-			this.$store.commit("SET_WAIT_FOR_DOWNLOAD_LIST", _waitForDownloadList);
 			let pauseRes = await this.pauseAll();
 			if(pauseRes) {
+				this.$store.commit("SET_WAIT_FOR_UPLOAD_LIST", _waitForUploadList);
+				this.$store.commit("SET_WAIT_FOR_DOWNLOAD_LIST", _waitForDownloadList);
 				return false;
 			} else {
+				let _newWaitForUploadList = _waitForUploadList.filter(value => {
+					if(value.Ready) {
+						return false;
+					}
+					return true;
+				})
+				let _newWaitForDownloadList = _waitForDownloadList.filter(value => {
+					if(value.Ready) {
+						return false;
+					}
+					return true;
+				})
+				this.$store.commit("SET_WAIT_FOR_UPLOAD_LIST", _newWaitForUploadList);
+				this.$store.commit("SET_WAIT_FOR_DOWNLOAD_LIST", _newWaitForDownloadList);
 				return true;
 			}
 		},

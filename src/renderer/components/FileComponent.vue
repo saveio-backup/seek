@@ -188,6 +188,7 @@
 								class="light-blue"
 								v-else
 							>
+								<!-- {{scope.row.DetailStatus}} -->
 								{{ $t(`error['${scope.row.DetailStatus}']`) }}
 							</div>
 						</div>
@@ -1052,11 +1053,11 @@ export default {
 			this.switchToggle.getGasNumber++;
 			if (this.passwordCancel.File === null) {
 				for (let file of this.fileList) {
-					if (file.Id.indexOf("waitfor_") >= 0 && file.FileHash) continue;
+					if (file.IsCache && file.FileHash) continue;
 					paramUrl += `hash=${file.FileHash}&`;
 				}
 			} else {
-				if (this.passwordCancel.File.Id.indexOf("waitfor_") === -1 && this.passwordCancel.File.FileHash) {
+				if (!this.passwordCancel.File.IsCache && this.passwordCancel.File.FileHash) {
 					paramUrl += `hash=${this.passwordCancel.File.FileHash}&`;
 				}
 			}
@@ -1817,7 +1818,7 @@ export default {
 			let arr = [];
 			let waitForArr = [];
 			for (let value of row) {
-				if (value.Id.indexOf("waitfor_") >= 0) {
+				if (value.IsCache) {
 					waitForArr.push(value.Id);
 					haveWaitForFlag = true;
 					continue;

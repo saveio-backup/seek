@@ -982,7 +982,8 @@ export default {
 					Type: 1,
 					Status: 2,
 					IsUploadAction: false,
-					Id: "waitfor_" + uuid.v4(),
+					IsCache: true,
+					Id: uuid.v1(),
 					Nodes: []
 				});
 			}
@@ -1297,13 +1298,15 @@ export default {
 		},
 		uploadFileTotal() {
 			if(this.controlBar !== 'close') {
-				return this.waitForUploadList.length + this.total;
+				// return this.waitForUploadList.length + this.total;
+				return this.total;
 			} else {
 				return 0;
 			}
 		},
 		filterListData() {
-			const fileListDataAll = this.fileListDataAll;
+			// const fileListDataAll = this.fileListDataAll;
+			const fileListDataAll = this.fileListData;
 			return fileListDataAll.filter(item => {
 				item.StoreTypeNum = -item.StoreType;
 				return item.Name.toLowerCase().indexOf(this.filterInput.toLowerCase()) >= 0;
@@ -1311,22 +1314,6 @@ export default {
 		},
 		isSync: function() {
 			return this.$store.state.Home.isSync || false;
-		},
-		waitForUploadList: function() {
-			const vm = this;
-			let arr = JSON.parse(
-				JSON.stringify(vm.$store.state.Transfer.waitForUploadList || [])
-			);
-			let UpdatedAt = Date.now() / 1000;
-			arr.map(item => {
-				item.Name = item.FileName;
-				item.RealFileSize = item.FileSize;
-				item.Undone = true; //not done upload
-				item.Privilege = item.Privilege === undefined ? 1 : item.Privilege;
-				item.UpdatedAt = UpdatedAt;
-				return item;
-			});
-			return arr;
 		},
 		waitForDownloadList() {
 			return this.$store.state.Transfer.waitForDownloadList || [];
@@ -1367,10 +1354,6 @@ export default {
 				}
 				return "#2F8FF0";
 			};
-		},
-		// include waitfor upload list adn fileListData;
-		fileListDataAll() {
-			return this.waitForUploadList.concat(this.fileListData);
 		},
 		balanceLists() {
 			return this.$store.state.Wallet.balanceLists;

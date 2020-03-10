@@ -923,6 +923,7 @@ export default {
 								EncryptPassword: this.uploadFormData.EncryptPassword,
 								StoreType: this.switchToggle.advanced ? 1 : 0,
 								Password: passwordEncode,
+								Id: uuid.v1(),
 								// cache upload data↓
 								FileSize: file.fileBytes / 1024,
 								RealFileSize: parseInt(file.fileBytes / 1024),
@@ -932,7 +933,7 @@ export default {
 								Type: 1,
 								Status: 2,
 								IsUploadAction: true,
-								Id: "waitfor_" + uuid.v4(),
+								IsCache: true,
 								Nodes: []
 								// ,Url: 'oni://www.filmlabtest1210.com'
 							};

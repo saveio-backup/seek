@@ -259,6 +259,33 @@ select {
 }
 
 .el-table {
+    &.el-table--border {
+        tr,
+        td,
+        th,
+        & {
+            border-left: 0;
+            border-right: 0;
+            border-top: 0;
+        }
+
+        thead th {
+            & > .cell {
+                @include themify {
+                    border-right: 1px solid $table-border-color;
+                }
+            }
+
+            &.el-table-column--selection > .cell {
+                border-right: 0;
+            }
+
+            &.is-sortable:nth-last-child(2) > .cell {
+                border-right: 0;
+            }
+        }
+    }
+
     .el-table__header th {
         @extend .primary-font-color;
     }
@@ -276,8 +303,7 @@ select {
     }
 
     td {
-
-
+        
         span.row-name,
         span.sync-process {
             @include themify {
@@ -325,7 +351,6 @@ select {
         .caret-wrapper {
             font-size: 14px;
         }
-
         // border-bottom: none !important;
     }
 

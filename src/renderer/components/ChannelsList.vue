@@ -5,6 +5,7 @@
 			v-if="showRadio?channelsDns:channels"
 		>
 			<el-table
+				border
 				:data="showRadio?channelsDns:channels"
 				ref="singleTable"
 				:empty-text='$t("public.noData")'

@@ -59,9 +59,9 @@
 		</div>
 		<div class="content">
 			<div class="table-element">
-				<!-- border -->
 				<el-table
 					ref='table'
+					border
 					:data="filterListData"
 					:empty-text="$t('public.noData')"
 					@row-click="clickRow"
@@ -148,7 +148,7 @@
 									</span>
 									<span
 										v-if="page === 'filebox'"
-										:title="$t('fileManager.fileDistribution')"
+										:title="$t('fileManager.fileDetail')"
 										@click.stop="openDetailDialog(scope.row)"
 										class="active-blue cursor-pointer"
 									>
@@ -1073,6 +1073,7 @@ export default {
 						if (item.Hash === value.FileHash) {
 							if (value.Tx) {
 								this.fileListData.splice(index, 1);
+								this.total -= 1;
 							}
 							return true;
 						} else {
@@ -1142,44 +1143,45 @@ export default {
 					});
 			});
 		},
-		toDeleteFile(dataList, hash) {
-			const vm = this;
-			this.$axios
-				.post(
-					this.$api.delete,
-					{ Hash: hash },
-					{
-						loading: {
-							text: vm.$t("fileManager.deleting"),
-							target: ".loading-content.disk-delete-loading"
-						}
-					}
-				)
-				.then(res => {
-					if (res.Error === 0) {
-						this.$message({
-							message: vm.$t("fileManager.deleteSuccessful"),
-							type: "success"
-						});
-						dataList.some((item, index) => {
-							if (item.Hash === hash) {
-								dataList.splice(index, 1);
-								return true;
-							} else {
-								return false;
-							}
-						});
-						this.switchToggle.deleteDialog = false;
-					} else {
-						this.$message.error(this.$t(`error[${res.Error}]`));
-					}
-				})
-				.catch(error => {
-					if (error.message.includes("timeout")) {
-						this.$message.error("Request Timeout!");
-					}
-				});
-		}
+		// toDeleteFile(dataList, hash) {
+		// 	const vm = this;
+		// 	this.$axios
+		// 		.post(
+		// 			this.$api.delete,
+		// 			{ Hash: hash },
+		// 			{
+		// 				loading: {
+		// 					text: vm.$t("fileManager.deleting"),
+		// 					target: ".loading-content.disk-delete-loading"
+		// 				}
+		// 			}
+		// 		)
+		// 		.then(res => {
+		// 			if (res.Error === 0) {
+		// 				this.$message({
+		// 					message: vm.$t("fileManager.deleteSuccessful"),
+		// 					type: "success"
+		// 				});
+		// 				dataList.some((item, index) => {
+		// 					if (item.Hash === hash) {
+		// 						dataList.splice(index, 1);
+		// 						vm.total -= 1
+		// 						return true;
+		// 					} else {
+		// 						return false;
+		// 					}
+		// 				});
+		// 				this.switchToggle.deleteDialog = false;
+		// 			} else {
+		// 				this.$message.error(this.$t(`error[${res.Error}]`));
+		// 			}
+		// 		})
+		// 		.catch(error => {
+		// 			if (error.message.includes("timeout")) {
+		// 				this.$message.error("Request Timeout!");
+		// 			}
+		// 		});
+		// }
 	},
 	watch: {
 		fileToDownload: function() {

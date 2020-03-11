@@ -18,11 +18,12 @@
 		<div class="file-total tertiary-font-color">
 			{{$t('public.fileTotal')}}: {{total}}
 		</div>
-		<!-- border -->
+		<!-- :data="mockData" -->
 		<el-table
+			:data="result.Incomes"
+			border
 			class="flex1 incomeTable"
 			ref="incomeTable"
-			:data="result.Incomes"
 			:empty-text="$t('public.noData')"
 			height='100%'
 		>

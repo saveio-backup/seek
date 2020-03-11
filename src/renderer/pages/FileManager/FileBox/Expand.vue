@@ -18,8 +18,8 @@
 			</div>
 			<p class="theme-font-color bold mt40 mb10 ft14 user-no-select">{{$t('fileManager.spaceAdjustRecord')}}</p>
 			<div class="space-record">
-				<!-- border -->
 				<el-table
+					border
 					:data='Records'
 					ref='recordTable'
 					:empty-text="$t('public.noData')"

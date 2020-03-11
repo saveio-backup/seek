@@ -232,7 +232,7 @@ $gray-100: rgb(200, 200, 200);
 			width: 390px;
 		}
 		blockquote {
-				border-left: 0.5em solid #eee;
+			border-left: 0.5em solid #eee;
 			padding: 0 0 0 2em;
 			margin-left: 0;
 		}

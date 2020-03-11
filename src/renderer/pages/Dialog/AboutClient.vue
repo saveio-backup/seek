@@ -74,7 +74,7 @@ export default {
 			pluginNeedUpdate: JSON.parse(localStorage.getItem("lastVersion")) || {},
 			pluginDetail: null,
 			/**
-			 * null need to install
+			 * null, need to update
 			 * -3 net work error
 			 * -2 ready to check
 			 * -1 lasted(no need update)
@@ -112,6 +112,10 @@ export default {
 		},
 		async setUpdateState() {
 			if (this.pluginNeedUpdate.Version) {
+				if (this.pluginNeedUpdate.Version <= version) {
+					this.updateState = -1;
+					return;
+				}
 				let detail = await this.getClientTransferDetail(
 					this.pluginNeedUpdate.Url
 				);

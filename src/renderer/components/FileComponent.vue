@@ -1861,6 +1861,10 @@ export default {
 							name: "removeWaitForUploadOrderList",
 							data: waitForArr
 						});
+						ipcRenderer.send("run-dialog-event", {
+							name: "removeUploading",
+							data: waitForArr
+						});
 					}
 				} else {
 					let newWaitForList = JSON.parse(
@@ -1886,6 +1890,10 @@ export default {
 					} else {
 						ipcRenderer.send("run-dialog-event", {
 							name: "removeWaitForDownloadOrderList",
+							data: waitForArr
+						});
+						ipcRenderer.send("run-dialog-event", {
+							name: "removeUploading",
 							data: waitForArr
 						});
 					}

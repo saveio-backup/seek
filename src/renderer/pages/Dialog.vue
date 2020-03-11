@@ -243,17 +243,7 @@ export default {
 		localStorage.setItem("DNSAdress", "");
 		vm.initWebSocket();
 		// ipcRenderer.
-		// this.renderDataToBrowserView({})
-		let arrWin = remote.BrowserWindow.getAllWindows();
-		for (let i = 0; i < arrWin.length; i++) {
-			let win = arrWin[i];
-			let winContentId = win.webContents.id;
-			ipcRenderer.sendTo(winContentId, "dialog-load");
-			if (!win.views) continue;
-			for (let view of win.views) {
-				ipcRenderer.sendTo(view.browserView.webContents.id, "dialog-load");
-			}
-		}
+		vm.getWatchWebcontent();
 	},
 	watch: {
 		readyUpload(val) {
@@ -340,8 +330,12 @@ export default {
 			localStorage.setItem("DNSAdress", "");
 			if (!newVal) {
 				this.setIsLoginShowLog(false);
+				this.isNotSend = {};
+				this.subject = {};
+				this.viewsIds = [];
 				return;
 			}
+			this.getWatchWebcontent();
 			this.$store.dispatch("getWaitForTransferList");
 			this.readyDownload = [];
 			this.readyUpload = [];
@@ -424,6 +418,18 @@ export default {
 		}
 	},
 	methods: {
+		getWatchWebcontent() {
+			let arrWin = remote.BrowserWindow.getAllWindows();
+			for (let i = 0; i < arrWin.length; i++) {
+				let win = arrWin[i];
+				let winContentId = win.webContents.id;
+				ipcRenderer.sendTo(winContentId, "dialog-load");
+				if (!win.views) continue;
+				for (let view of win.views) {
+					ipcRenderer.sendTo(view.browserView.webContents.id, "dialog-load");
+				}
+			}
+		},
 		getNewComplete() {
 			const vm = this;
 			let start = this.limitTimestamp;
@@ -846,7 +852,7 @@ export default {
 		},
 		// type: 1 upload 2 download
 		removeReadyByIds(removeIds, type = 1) {
-			let readyArr = this.readyUpload;
+			let readyArr = type === 1 ? this.readyUpload : this.readyDownload;
 			for(let id of removeIds) {
 				let _index = readyArr.indexOf(id);
 				if(_index !== -1) {
@@ -1451,6 +1457,17 @@ export default {
 		 * data(type array):
 		 */
 		removeUploading(data) {
+			console.log("removeUploading=====================")
+			console.log(data)
+			for(let value of data) {
+				if(this.readyUpload.includes(value)) {
+					let _index = this.readyUpload.indexOf(value);
+					this.readyUpload.splice(_index, 1);
+				} else if(this.readyDownload.includes(value)) {
+					let _index = this.readyDownload.indexOf(value);
+					this.readyDownload.splice(_index, 1);
+				}
+			}
 			this.$store.commit("REMOVE_UPLOADING", data);
 			this.getUpload();
 		},

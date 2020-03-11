@@ -14,7 +14,7 @@
 					width="70"
 					class="about_logo"
 				>
-				<p class="mt10 ft20 bold">About Seeker</p>
+				<p class="mt10 ft20 bold theme-font-color">About Seeker</p>
 				<p class="grey-xs mt10 mb5">Seeker Version: {{version}} </p>
 				<p class="grey-xs">Edge Version : {{localStorage.getItem("edgeVersion") || ""}}</p>
 			</div>

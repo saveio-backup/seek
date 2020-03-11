@@ -132,7 +132,10 @@ export default {
 	data() {
 		return {
 			switchToggle: {
-				showPoint: localStorage.getItem("lastVersion") && JSON.parse(localStorage.getItem("lastVersion")).Version,
+				showPoint: !!(
+					localStorage.getItem("lastVersion") &&
+					JSON.parse(localStorage.getItem("lastVersion")).Version
+				),
 				logoutDialog: false
 			},
 			views: remote.getCurrentWindow().views,
@@ -271,7 +274,7 @@ export default {
 				{
 					label: that.$t("window.about"),
 					icon: that.switchToggle.showPoint
-						? path.join(__dirname, "../../../static/images/red_point.png")
+						? path.join(__static, "/images/red_point.png")
 						: null,
 					click() {
 						that.switchToggle.showPoint = false;

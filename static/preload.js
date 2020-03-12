@@ -132,7 +132,7 @@ async function loadThirdPage(url, uuid, loadView) {
     detail = await getTransferDetail(url);
   } catch (error) {
     console.log('loadThirdPage throw a error from await');
-    console.log(error);
+    console.log(error); 
     detail = {
       data: null
     };

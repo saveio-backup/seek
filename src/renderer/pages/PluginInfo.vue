@@ -388,7 +388,7 @@ export default {
 			const finalPath = path.join(dir, subDir);
 			this.$axios
 				.post(this.$api.deletedownloadfile, {
-					Hash: plugin.detail.FileHas
+					Hash: plugin.detail.FileHash
 				})
 				.then(res => {
 					if (res.Error === 0) {

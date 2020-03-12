@@ -35,7 +35,8 @@ protocol.registerSchemesAsPrivileged([{
 }]);
 const host = process.env.NODE_ENV === 'development' ?
   `http://localhost:9080/#/` :
-  `file://${__dirname}/index.html#/`
+  `file://${__dirname}/index.html#/`;
+const GLOBAL_UNZIP_TASKID = {};
 app.on('ready', () => {
   if (process.env.NODE_ENV === 'development') {
     protocol.registerHttpProtocol('seek', seekHttpProtocol, err => {
@@ -121,19 +122,30 @@ function saveStreamProtocol(request, callback) {
     }
 
   })
-
+  /**
+   * @event null
+   * @path 
+   */
   ipcMain.once('load-third-page', (event, result, fileName, id, url) => {
     try {
-      const zip = new AdmZip(result)
+      // console.log('load-third-page, url is');
+      // console.log(url);
       const parse = path.parse(result);
       // const unzipTo = path.join(parse.dir, fileName + '_' + id)
       const unzipTo = path.join(parse.dir, url)
-      console.log('unzipTo is');
-      console.log(unzipTo);
-      zip.extractAllTo(unzipTo);
-      const fileRootName = fs.readdirSync(unzipTo)[0];
+      if (!GLOBAL_UNZIP_TASKID[id]) {
+        console.log('unzip!!!!!================');
+        const zip = new AdmZip(result)
+        zip.extractAllTo(unzipTo);
+        GLOBAL_UNZIP_TASKID[id] = true;
+      } else {
+        console.log('no need unzip!!=============')
+      }
       // console.log('unzip success, will load path is:');
       // console.log(path.join(unzipTo, fileRootName, pathname));
+      console.log('unzipTo is');
+      console.log(unzipTo);
+      const fileRootName = fs.readdirSync(unzipTo)[0];
       callback({
         method: 'get',
         path: path.join(unzipTo, fileRootName, pathname)

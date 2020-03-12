@@ -43,8 +43,13 @@ export default class MenuWindow {
   hiddenMenu(from) {
     clearTimeout(this.setTimeoutObj)
     this.setTimeoutObj = setTimeout(() => {
-      this.win.hide();
-      this.blur();
+      try {
+        this.win.hide();
+        this.blur();
+      }catch(e) {
+        console.log('menuWindow.js->hiddenMenu');
+        console.log(e);
+      }
     },150);
   }
   openMenu(params, opt) {
@@ -76,11 +81,21 @@ export default class MenuWindow {
     }
   }
   focus() {
-    this.parentWindow.blur();
-    this.win.focus();
+    try {
+      this.parentWindow.blur();
+      this.win.focus();
+    } catch(e) {
+      console.log('menuWindow.js->focus');
+      console.log(e);
+    }
   }
   blur() {
-    this.win.blur();
-    this.parentWindow.focus();
+    try {
+      this.win.blur();
+      this.parentWindow.focus();
+    }catch(e) {
+      console.log('menuWindow.js->blur');
+      console.log(e);
+    }
   }
 }

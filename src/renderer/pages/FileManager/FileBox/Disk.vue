@@ -237,7 +237,7 @@
 						v-if="page ==='miner'"
 						:label="$t('fileManager.contributions')"
 						prop="DownloadCount"
-						width="150"
+						min-width="100"
 						sortable
 					>
 
@@ -245,7 +245,7 @@
 					<el-table-column
 						:label="$t('fileManager.authority')"
 						v-if="page === 'filebox'"
-						width="150"
+						min-width="60"
 						sortable
 						prop="Privilege"
 					>

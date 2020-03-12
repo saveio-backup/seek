@@ -79,7 +79,7 @@
 					<span class="channel-radio"></span>
 				</el-table-column>
 				<el-table-column
-					width="160"
+					min-width="80"
 					v-if="showTransfer"
 				>
 					<template slot-scope="scope">

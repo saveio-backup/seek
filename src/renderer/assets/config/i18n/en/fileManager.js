@@ -205,7 +205,8 @@ const result = {
   'filesUploadFailed': ' files upload failed',
   'whiteListExists': 'The address already exists on the white list',
   'transferTaskPausing': 'Transfer Task Pausing...',
-  'switchingChannelSuccessfully': 'Switching channel successfully'
+  'switchingChannelSuccessfully': 'Switching channel successfully',
+  'decryptionSuccess': 'Decryption Success!'
 }
 
 export default result;

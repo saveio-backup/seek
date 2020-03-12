@@ -205,7 +205,8 @@ const result = {
   'filesUploadFailed': '个文件上传失败',
   'whiteListExists': '白名单已存在该地址',
   'transferTaskPausing': '传输任务暂停中...',
-  'switchingChannelSuccessfully': '更换通道成功'
+  'switchingChannelSuccessfully': '更换通道成功',
+  'decryptionSuccess': '解密成功!'
 }
 
 export default result;

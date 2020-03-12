@@ -2038,7 +2038,7 @@ export default {
 				.then(res => {
 					if (res.Error === 0) {
 						this.$message({
-							message: vm.$t("fileManager.downloadSuccess"),
+							message: vm.$t("fileManager.decryptionSuccess"),
 							type: "success"
 						});
 						this.fileList.Password = "";

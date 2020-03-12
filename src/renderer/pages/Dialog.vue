@@ -383,6 +383,18 @@ export default {
 			this.notifyObserversByName("waitForDownloadList", val);
 		},
 		waitForDownloadOrderList(val, oldVal) {
+			clearTimeout(this.timeoutObj.setTimeUploadingTransferListObj);
+			this.timeoutObj.setTimeUploadingTransferListObj = setTimeout(() => {
+				if (val < this.$config.maxNumUpload) {
+					this.waitForUploadFileToUpload();
+				}
+			}, this.timeoutObj.COUNT_TIMEOUT);
+			clearTimeout(this.timeoutObj.setTimeDownloadingTransferListObj);
+			this.timeoutObj.setTimeDownloadingTransferListObj = setTimeout(() => {
+				if (val < this.$config.maxNumUpload) {
+					this.waitForDownloadFileToDownload();
+				}
+			}, this.timeoutObj.COUNT_TIMEOUT);
 			this.notifyObserversByName("waitForDownloadOrderList", val);
 		},
 		localStatus(val, oldVal) {
@@ -772,6 +784,7 @@ export default {
 				vm.$store.commit("REMOVE_PAUSING", vm.readyUpload);
 				vm.$nextTick(() => {
 					vm.readyUpload = [];
+					vm.waitForUploadFileToUpload();
 				});
 				return;
 			}
@@ -802,11 +815,8 @@ export default {
 					vm.$store.commit("REMOVE_WAIT_FOR_UPLOAD_ORDER_LIST", vm.readyUpload);
 					vm.$store.commit("REMOVE_UPLOADING", vm.readyUpload);
 					vm.$store.commit("REMOVE_PAUSING", vm.readyUpload);
-					// vm.uploadingTransferListForce++;
-					// setTimeout(() => {
-						vm.removeReadyByIds(continueArr, 1);
-						vm.uploadingTransferListForce++;
-					// }, 2000);
+					vm.removeReadyByIds(continueArr, 1);
+					vm.uploadingTransferListForce++;
 				});
 
 				// error message
@@ -973,27 +983,12 @@ export default {
 				}
 			}
 			this.$axios.all(commitAll).then(resArr => {
-				// let newWaitForList = vm.waitForDownloadList.filter(item => {
-				// 	return vm.readyDownload.indexOf(item.Id) < 0;
-				// });
-				// let continueArr = [];
-				// vm.waitForDownloadList.map(item => {
-				// 	if(!vm.readyDownload.includes(item.Id)) {
-				// 		continueArr.push(item.Id);
-				// 	}
-				// 	return item;
-				// })
 				vm.$nextTick(() => {
-					// vm.$store.commit("SET_WAIT_FOR_DOWNLOAD_LIST", newWaitForList);
 					vm.$store.commit("REMOVE_WAIT_FOR_DOWNLOAD_ORDER_LIST", vm.readyDownload);
 					vm.$store.commit("REMOVE_UPLOADING", vm.readyDownload);
 					vm.$store.commit("REMOVE_PAUSING", vm.readyDownload);
-					// vm.downloadingTransferListForce++; // force update
-					// setTimeout(() => {
-						// vm.readyDownload = [];
-						vm.removeReadyByIds(continueArr, 2);
-						vm.downloadingTransferListForce++; // force update
-					// }, 2000);
+					vm.removeReadyByIds(continueArr, 2);
+					vm.downloadingTransferListForce++; // force update
 				});
 
 				// error message

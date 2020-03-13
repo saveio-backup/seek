@@ -181,6 +181,8 @@ const result = {
   '59003': 'Database added adjustment space record failed',
   '59004': 'Failed to retrieve file information',
   '59100': 'Reconnect node failed',
-  '59101': 'Net proxy disconnected'
+  '59101': 'Net proxy disconnected',
+  '1000': 'Request Timeout!',
+  '1001': 'Request Failed!',
 }
 export default result;

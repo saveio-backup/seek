@@ -78,7 +78,7 @@
 			:class="{'is-not-compelete-top-progress':transferType != 0}"
 		>
 			<!-- border -->
-			<!-- mockFileList -->
+			<!-- :data="mockFileList" -->
 			<el-table
 				:data="fileList"
 				:empty-text='$t("public.noData")'
@@ -2244,7 +2244,7 @@ $danger: #f56c6c;
 		}
 	}
 	.speed-content {
-		width: 130px;
+		width: 150px;
 	}
 	.node-wrapper {
 		ul {

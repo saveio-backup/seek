@@ -690,10 +690,13 @@ export default {
 		removeNewTask(action) {
 			const vm = this;
 			if(action === 1) {
+				let _newTaskUpload = [];
 				for(let id of this.newTaskUpload) {
 					if(this.readyUpload.includes(id)) {
 						let _index = this.readyUpload.indexOf(id);
 						this.readyUpload.splice(_index, 1);
+					} else {
+						_newTaskUpload.push(id);
 					}
 				}
 
@@ -702,12 +705,15 @@ export default {
 					return !vm.newTaskUpload.includes(item.Id);
 				});
 				vm.$store.commit("SET_WAIT_FOR_UPLOAD_LIST", newWaitForUploadList);
-				this.newTaskUpload = [];
+				this.newTaskUpload = _newTaskUpload;
 			} else if(action === 2) {
+				let _newTaskDownload = [];
 				for(let id of this.newTaskDownload) {
 					if(this.readyDownload.includes(id)) {
 						let _index = this.readyDownload.indexOf(id);
 						this.readyDownload.splice(_index, 1);
+					} else {
+						_newTaskDownload.push(id);
 					}
 				}
 
@@ -716,7 +722,7 @@ export default {
 					return !vm.newTaskDownload.includes(item.Id);
 				});
 				vm.$store.commit("SET_WAIT_FOR_DOWNLOAD_LIST", newWaitForDownloadList);
-				this.newTaskDownload = [];
+				this.newTaskDownload = _newTaskDownload;
 			}
 		},
 		// send data to server
@@ -815,8 +821,11 @@ export default {
 					vm.$store.commit("REMOVE_WAIT_FOR_UPLOAD_ORDER_LIST", vm.readyUpload);
 					vm.$store.commit("REMOVE_UPLOADING", vm.readyUpload);
 					vm.$store.commit("REMOVE_PAUSING", vm.readyUpload);
-					vm.removeReadyByIds(continueArr, 1);
 					vm.uploadingTransferListForce++;
+					setTimeout(() => {
+						vm.removeReadyByIds(continueArr, 1);
+						vm.uploadingTransferListForce++;
+					}, 2000)
 				});
 
 				// error message
@@ -886,19 +895,49 @@ export default {
 				let params = {
 					Ids: retryArr
 				};
-				commitAll.push(this.$axios.post(this.$api.uploadRetry, params));
+				commitAll.push(this.$axios.post(this.$api.uploadRetry, params).catch(e => {
+				if (e.message.includes("timeout")) {
+					return {
+						Error: 1000
+					}
+				} else {
+					return {
+						Error: 1000
+					}
+				}
+			}));
 			}
 			if (continueArr.length > 0) {
 				let params = {
 					Ids: continueArr
 				};
-				commitAll.push(this.$axios.post(this.$api.uploadResume, params));
+				commitAll.push(this.$axios.post(this.$api.uploadResume, params).catch(e => {
+				if (e.message.includes("timeout")) {
+					return {
+						Error: 1000
+					}
+				} else {
+					return {
+						Error: 1000
+					}
+				}
+			}));
 			}
 			return commitAll;
 		},
 		// get to upload file ajax promise
 		getToUploadFilePromise(data) {
-			return this.$axios.post(this.$api.upload, data);
+			return this.$axios.post(this.$api.upload, data).catch(e => {
+				if (e.message.includes("timeout")) {
+					return {
+						Error: 1000
+					}
+				} else {
+					return {
+						Error: 1000
+					}
+				}
+			});
 		},
 
 		// get wait for download promise list
@@ -987,8 +1026,11 @@ export default {
 					vm.$store.commit("REMOVE_WAIT_FOR_DOWNLOAD_ORDER_LIST", vm.readyDownload);
 					vm.$store.commit("REMOVE_UPLOADING", vm.readyDownload);
 					vm.$store.commit("REMOVE_PAUSING", vm.readyDownload);
-					vm.removeReadyByIds(continueArr, 2);
-					vm.downloadingTransferListForce++; // force update
+					vm.uploadingTransferListForce++;
+					setTimeout(() => {
+						vm.removeReadyByIds(continueArr, 2);
+						vm.downloadingTransferListForce++; // force update
+					}, 2000);
 				});
 
 				// error message
@@ -1045,19 +1087,49 @@ export default {
 				let params = {
 					Ids: retryArr
 				};
-				commitAll.push(this.$axios.post(this.$api.downloadRetry, params));
+				commitAll.push(this.$axios.post(this.$api.downloadRetry, params).catch(e => {
+				if (e.message.includes("timeout")) {
+					return {
+						Error: 1000
+					}
+				} else {
+					return {
+						Error: 1000
+					}
+				}
+			}));
 			}
 			if (continueArr.length > 0) {
 				let params = {
 					Ids: continueArr
 				};
-				commitAll.push(this.$axios.post(this.$api.downloadResume, params));
+				commitAll.push(this.$axios.post(this.$api.downloadResume, params).catch(e => {
+				if (e.message.includes("timeout")) {
+					return {
+						Error: 1000
+					}
+				} else {
+					return {
+						Error: 1000
+					}
+				}
+			}));
 			}
 			return commitAll;
 		},
 		// get to download file ajax promise
 		getToDownloadFilePromise(data) {
-			return this.$axios.post(this.$api.download, data);
+			return this.$axios.post(this.$api.download, data).catch(e => {
+				if (e.message.includes("timeout")) {
+					return {
+						Error: 1000
+					}
+				} else {
+					return {
+						Error: 1000
+					}
+				}
+			});
 		},
 		getuserspaceWs(res) {
 			if (res.Error === 0) {
@@ -1549,6 +1621,16 @@ export default {
 			};
 			return vm.$axios.post(vm.$api.uploadPause, params, {
 				timeout: (vm.$config.outTime * 2000 + 18000) * params.Ids.length
+			}).catch(e => {
+				if (e.message.includes("timeout")) {
+					return {
+						Error: 1000
+					}
+				} else {
+					return {
+						Error: 1000
+					}
+				}
 			});
 		},
 		toPauseDownload(arr) {
@@ -1558,6 +1640,16 @@ export default {
 			};
 			return vm.$axios.post(vm.$api.downloadPause, params, {
 				timeout: (vm.$config.outTime * 2000 + 18000) * params.Ids.length
+			}).catch(e => {
+				if (e.message.includes("timeout")) {
+					return {
+						Error: 1000
+					}
+				} else {
+					return {
+						Error: 1000
+					}
+				}
 			});
 		},
 		// hand out data about lang

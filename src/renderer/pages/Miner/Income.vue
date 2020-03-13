@@ -188,8 +188,8 @@ export default {
 						this.result.TotalIncomeFormat = res.Result.TotalIncomeFormat;
 						// this.result.TotalIncomeFormat = 20124.123;
 						// this.result.Incomes = this.mockData;
-						if (result.Incomes.length > 0) {
-							this.result.Incomes = this.result.Incomes.concat(result.Incomes);
+						if (res.Result.Incomes.length > 0) {
+							this.result.Incomes = this.result.Incomes.concat(res.Result.Incomes);
 						} else {
 							this.loadSwitch = false;
 							return;

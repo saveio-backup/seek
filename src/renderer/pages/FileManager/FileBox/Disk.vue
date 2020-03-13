@@ -34,7 +34,7 @@
 				</div>
 			</div>
 			<div class="file-total tertiary-font-color">
-				{{$t('public.fileTotal')}}: {{uploadFileTotal}}
+				{{$t('public.fileTotal')}}: {{total}}
 			</div>
 		</div>
 		<div
@@ -708,7 +708,7 @@ export default {
 							});
 
 							// update limit
-							if(vm.fileListData.length < result.length) {
+							if(vm.page === 'filebox' && vm.fileListData.length < result.length) {
 								let _limit = vm.fileListData.length;
 								vm.$store.dispatch("getSyncFileList", _limit);
 							}
@@ -762,7 +762,9 @@ export default {
 							// }
 							// update sync file limit;
 							let _limit = vm.fileListData.length;
-							vm.$store.dispatch("getSyncFileList", _limit);
+							if(vm.page === 'filebox') {
+								vm.$store.dispatch("getSyncFileList", _limit);
+							}
 						} else {
 							vm.switchToggle.load = false;
 							vm.switchToggle.newFile = false;
@@ -950,7 +952,17 @@ export default {
 			}
 		},
 		getToDownloadFilePromise(data) {
-			return this.$axios.post(this.$api.download, data);
+			return this.$axios.post(this.$api.download, data).catch(e => {
+				if (e.message.includes("timeout")) {
+					return {
+						Error: 1000
+					}
+				} else {
+					return {
+						Error: 1000
+					}
+				}
+			});
 		},
 		toDownload(downloadFiles) {
 			const vm = this;
@@ -1265,7 +1277,7 @@ export default {
 		},
 		smartContractEvents(val) {
 			const vm = this;
-			if(vm.controlBar !== 'close') {
+			if(vm.page ==='filebox') {
 				clearTimeout(vm.justNowCompleteNumberTimeoutObj)
 				vm.justNowCompleteNumberTimeoutObj = setTimeout(() => {
 					vm.updateFileLists();
@@ -1274,13 +1286,14 @@ export default {
 		},
 		uploadLength(val) {
 			const vm = this;
-			if(vm.controlBar !== 'close') {
+			if(vm.page ==='filebox') {
 				clearTimeout(vm.justNowCompleteNumberTimeoutObj)
 				vm.justNowCompleteNumberTimeoutObj = setTimeout(() => {
 					vm.updateFileLists();
 				}, 200)
 			}
-		}
+		},
+		filterInput(val) {}
 	},
 	computed: {
 		uploadLength() {
@@ -1297,14 +1310,6 @@ export default {
 		},
 		channelBind() {
 			return this.$store.state.Home.channelBind;
-		},
-		uploadFileTotal() {
-			if(this.controlBar !== 'close') {
-				// return this.waitForUploadList.length + this.total;
-				return this.total;
-			} else {
-				return 0;
-			}
 		},
 		filterListData() {
 			// const fileListDataAll = this.fileListDataAll;
@@ -1372,6 +1377,7 @@ export default {
 	},
 	beforeRouteEnter(to, from, next) {
 		next(vm => {
+			console.log('beforeRouteEnter');
 			vm.type = to.query.type;
 			vm.controlBar = to.query.controlBar;
 			if (to.query.addrAPI) {
@@ -1380,20 +1386,24 @@ export default {
 				vm.addrAPI = vm.$api.getDownloadFileList;
 			} else {
 				vm.addrAPI = vm.$api.getFileList;
-				if(vm.fileListData.length === 0) { // first enter or file list is zero
-					vm.$store.dispatch("getSyncFileList", vm.limitCount);
-				} else {
-					vm.$store.dispatch("getSyncFileList", vm.fileListData.length);
+				if(to.query.page === 'filebox' || vm.page === 'filebox') {
+					if(vm.fileListData.length === 0) { // first enter or file list is zero
+						vm.$store.dispatch("getSyncFileList", vm.limitCount);
+					} else {
+						vm.$store.dispatch("getSyncFileList", vm.fileListData.length);
+					}
 				}
 			}
 			vm.getFileLists();
 		});
 	},
 	beforeRouteLeave(to, from, next) {
+		console.log('beforeRouteLeave');
 		this.$store.dispatch("clearIntervalSyncFileList");
 		next();
 	},
 	beforeRouteUpdate(to, from, next) {
+		console.log('beforeRouteUpdate')
 		this.type = to.query.type;
 		this.switchToggle.load = true;
 		this.fileListData = [];

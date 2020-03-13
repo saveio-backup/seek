@@ -85,6 +85,8 @@ const methods = {
                 localStorage.setItem('lastVersion', '{}');
                 resolve(res.Result);
               }
+            } else {
+              resolve(null);
             }
           }).catch(() => {
             reject(null);

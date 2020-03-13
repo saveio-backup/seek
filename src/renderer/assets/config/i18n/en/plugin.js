@@ -12,7 +12,9 @@ const result = {
   'areYouSureYouWantToUninstallTheSelectedPlugin': 'Are you sure you want to uninstall the selected plugin?',
   'continue': 'continue',
   'theCurrentVersionIsTheLatestVersion': 'The current version is the latest version',
-  'plugin': 'Plug-in'
+  'plugin': 'Plug-in',
+  'turnOn': 'Turn-on',
+  'turnOff': 'Turn-off'
 }
 
 export default result;

@@ -10,6 +10,7 @@
 					<div class="card">
 						<el-switch
 							v-model="plugin.isShow"
+							:title="plugin.isShow?$t('plugin.turnOff'):$t('plugin.turnOn')"
 							v-if="plugin.detail && (plugin.detail.Progress >= 1)"
 							@change="setIsShow(plugin)"
 						></el-switch>

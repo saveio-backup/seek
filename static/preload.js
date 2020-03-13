@@ -13,6 +13,7 @@ ipcRenderer.on('will-load-thirdpage', (event, url, uuid, loadViewId) => {
   loadThirdPage(url, uuid, loadView);
 })
 ipcRenderer.on('will-cancel-downloadpage', (event, url) => {
+  console.log('get will-cancel-downloadpage !!!!!!')
   cancelDownload(url);
 })
 class Seek {
@@ -118,21 +119,23 @@ async function loadThirdPage(url, uuid, loadView) {
     "getUsermeta",
     "LocalUrlPlugins"
   );
-  let {
-    Path,
-    FileName,
-    Url,
-    Id
-  } = localUrlPlugins[url].detail
-  if (fs.existsSync(Path)) {
-    ipcRenderer.send('load-third-page', Path, FileName, Id, encodeURIComponent(Url));
-    return;
+  if (localUrlPlugins[url].detail) {
+    let {
+      Path,
+      FileName,
+      Url,
+      Id
+    } = localUrlPlugins[url].detail
+    if (fs.existsSync(Path)) {
+      ipcRenderer.send('load-third-page', Path, FileName, Id, encodeURIComponent(Url));
+      return;
+    }
   }
   try {
     detail = await getTransferDetail(url);
   } catch (error) {
     console.log('loadThirdPage throw a error from await');
-    console.log(error); 
+    console.log(error);
     detail = {
       data: null
     };

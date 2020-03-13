@@ -167,7 +167,7 @@
 						<el-input-number
 							:precision='0'
 							v-model="verificationCycleNumber"
-							:min='1'
+							:min='0'
 							:max='advancedData.Duration / BASE[this.verificationCycleSelected]'
 							@change="setDataInterval"
 							class="form-right-second-inside"
@@ -285,7 +285,7 @@
 				</div>
 				<div class="flex jc-center submit-foot mb10">
 					<ripper-button @click="toEmptyUpload">{{$t('public.cancel')}}</ripper-button>
-						<!-- :disabled="!switchToggle.uploadToggle" -->
+					<!-- :disabled="!switchToggle.uploadToggle" -->
 					<ripper-button
 						v-show="!switchToggle.uploadToggle && !switchToggle.uploadToggleError"
 						:disabled="true"
@@ -293,7 +293,7 @@
 						class="primary ml10"
 						@click="OpenPasswordDialog"
 					>{{$t('fileManager.calculating')}}</ripper-button>
-					<ripper-button 
+					<ripper-button
 						class="primary ml10"
 						v-show="switchToggle.uploadToggleError"
 						@click="toGetPrice"
@@ -443,10 +443,12 @@ export default {
 					}
 				}
 			}
-			if(!this.switchToggle.advanced && ((this.space.ExpiredAt * 1000) - (new Date()).getTime() - (24 * 3600 * 1000) < 0)) {
-				callback(
-					new Error(vm.$t("error[55063]"))
-				);
+			if (
+				!this.switchToggle.advanced &&
+				this.space.ExpiredAt * 1000 - new Date().getTime() - 24 * 3600 * 1000 <
+					0
+			) {
+				callback(new Error(vm.$t("error[55063]")));
 				return;
 			}
 			callback();
@@ -465,13 +467,14 @@ export default {
 		let validateWhiteListRex = (rule, value, callback) => {
 			const vm = this;
 			const whiteListRex = /^A[1-9A-HJ-NP-Za-km-z]{33}$/;
-			if (
-				vm.advancedData.wihteListString.length === 0
-			) {
+			if (vm.advancedData.wihteListString.length === 0) {
 				callback();
-			} else if(whiteListRex.test(vm.advancedData.wihteListString)) {
-				if(vm.advancedData.WhiteList.indexOf(vm.advancedData.wihteListString) !== -1) {
-					callback(new Error(vm.$t('fileManager.whiteListExists')));
+			} else if (whiteListRex.test(vm.advancedData.wihteListString)) {
+				if (
+					vm.advancedData.WhiteList.indexOf(vm.advancedData.wihteListString) !==
+					-1
+				) {
+					callback(new Error(vm.$t("fileManager.whiteListExists")));
 				} else {
 					callback();
 				}
@@ -529,7 +532,7 @@ export default {
 				upload: true,
 				uploadToggle: true,
 				uploadToggleError: false,
-				getPriceNumber: 0,
+				getPriceNumber: 0
 			},
 			// wihteListString: "",
 			uploadPrice: DEFAULT_UPLOAD_PRICE,
@@ -589,7 +592,7 @@ export default {
 			noStorageDialog: {
 				show: false
 			},
-			uploadPriceInfo: null,
+			uploadPriceInfo: null
 		};
 	},
 	mounted() {
@@ -608,10 +611,10 @@ export default {
 	methods: {
 		init() {
 			const vm = this;
-			this.verificationCycleSelected = this.baseKeys[1], // default Second
-			this.verificationCycleNumber = 30, // Integrity verification cycle
-			this.storageCycleSelected = this.DEFAULT_KEY, // default Year
-			this.storageCycleNumber = 1;
+			(this.verificationCycleSelected = this.baseKeys[1]), // default Second
+				(this.verificationCycleNumber = 30), // Integrity verification cycle
+				(this.storageCycleSelected = this.DEFAULT_KEY), // default Year
+				(this.storageCycleNumber = 1);
 			this.contractSetting = {
 				// axios.get
 				DefaultCopyNum: "",
@@ -619,11 +622,11 @@ export default {
 				DefaultProvePeriod: "",
 				MinProveInterval: "",
 				MinVolume: ""
-			}
+			};
 			this.passwordForm = {
 				Password: "",
 				show: false
-			}
+			};
 			this.switchToggle = {
 				loading: null,
 				whiteListInput: false,
@@ -631,8 +634,8 @@ export default {
 				upload: true,
 				uploadToggle: true,
 				uploadToggleError: false,
-				getPriceNumber: 0,
-			}
+				getPriceNumber: 0
+			};
 			this.fileSize = 0;
 			this.encryptionToggle = false;
 			this.uploadFormData = {
@@ -640,8 +643,8 @@ export default {
 				FileSize: "",
 				Files: [],
 				EncryptPassword: "" // Encryption
-			}
-			this.advancedData = {
+			};
+			(this.advancedData = {
 				Duration: vm.DEFAULT_STORAGE_CYCLE, // storage cycle  default forever
 				Interval: 0, // Integrity verification cycle
 				// Times: 1, // Integrity Times
@@ -649,15 +652,15 @@ export default {
 				CopyNum: 1, // axios.get
 				wihteListString: "",
 				WhiteList: []
-			},
-			this.remindToggle = {
-				show: false,
-				// is not allow change upload model to advanced have remind dialog
-				noAllowRemind: localStorage.getItem("uploadToNoAllowRemind") || false
-			},
-			this.noStorageDialog = {
-				show: false
-			}
+			}),
+				(this.remindToggle = {
+					show: false,
+					// is not allow change upload model to advanced have remind dialog
+					noAllowRemind: localStorage.getItem("uploadToNoAllowRemind") || false
+				}),
+				(this.noStorageDialog = {
+					show: false
+				});
 			this.uploadPriceInfo = null;
 		},
 		resetFileList() {
@@ -817,7 +820,7 @@ export default {
 				return;
 			}
 			let inputValue = this.advancedData.wihteListString.trim();
-			if(this.advancedData.WhiteList.indexOf(inputValue) !== -1) {
+			if (this.advancedData.WhiteList.indexOf(inputValue) !== -1) {
 				return;
 			}
 			if (inputValue) {
@@ -844,6 +847,10 @@ export default {
 		// get price when verificationCycleNumber and verificationCycleSelected be changed
 		setDataInterval() {
 			this.formatVerificationCycleNumber();
+			console.log("verificationCycleNumber is");
+			console.log(this.verificationCycleNumber);
+			console.log("this.BASE[this.verificationCycleSelected] is==============");
+			console.log(this.BASE[this.verificationCycleSelected]);
 			this.advancedData.Interval =
 				this.verificationCycleNumber *
 				this.BASE[this.verificationCycleSelected];
@@ -960,7 +967,6 @@ export default {
 							return;
 						}
 
-
 						let errorMsg = {}; // error message
 						let flag = false; // is have success
 						this.waitForNowUpload({
@@ -1015,8 +1021,8 @@ export default {
 			this.$axios.all(commitAll).then(resArr => {
 				// console
 				let errorArr = [];
-				for(let i = 0;i < resArr.length; i ++) {
-					let res = resArr[i]
+				for (let i = 0; i < resArr.length; i++) {
+					let res = resArr[i];
 					if (res.Error === 0) {
 						flag = true;
 					} else {
@@ -1028,9 +1034,9 @@ export default {
 					this.uploadDone({ arr, errorMsg, flag });
 				} else {
 					//if have error task joint errorMsg and run me again(argumnets.callee())
-					for (let i = 0;i < errorArr.length;i ++) {
-						let value =  errorArr[i];
-						if(!errorMsg[value.Error]) errorMsg[value.Error] = [];
+					for (let i = 0; i < errorArr.length; i++) {
+						let value = errorArr[i];
+						if (!errorMsg[value.Error]) errorMsg[value.Error] = [];
 						errorMsg[value.Error].push(waitForNowUploadList[i]);
 					}
 					let errorLength = errorArr.length;
@@ -1044,28 +1050,30 @@ export default {
 			// close loading...
 			this.switchToggle.loading && this.switchToggle.loading.close();
 			this.switchToggle.upload = true; // set toggle
-			let content = '';
-			for(let key in errorMsg) {
+			let content = "";
+			for (let key in errorMsg) {
 				let item = errorMsg[key];
-				let _content = ''
-				for(let i = 0;i < item.length;i ++) {
+				let _content = "";
+				for (let i = 0; i < item.length; i++) {
 					_content += item[i].FileName;
 				}
-				if(item.length > 1) {
+				if (item.length > 1) {
 					let _sub = _content.substring(0, 20);
 					content += `
 						<p>
-							${_sub}...(${item.length} ${vm.$t('fileManager.files2')}) ${vm.$t('error["'+key+'"]')}
+							${_sub}...(${item.length} ${vm.$t("fileManager.files2")}) ${vm.$t(
+						'error["' + key + '"]'
+					)}
 						</p>
-					`
+					`;
 				} else {
 					content += `
 					<p>
-						${_content} ${vm.$t('fileManager.files2')} ${vm.$t('error["'+key+'"]')}
-					</p>`
+						${_content} ${vm.$t("fileManager.files2")} ${vm.$t('error["' + key + '"]')}
+					</p>`;
 				}
 			}
-			if(content.length === 0) {
+			if (content.length === 0) {
 				this.$message({
 					type: "success",
 					message: vm.$t("fileManager.startUpload")
@@ -1075,7 +1083,7 @@ export default {
 					message: content,
 					type: "error",
 					dangerouslyUseHTMLString: true
-				})
+				});
 			}
 
 			if (flag) {
@@ -1096,9 +1104,9 @@ export default {
 		getToUploadFilePromise(data) {
 			return this.$axios.post(this.$api.upload, data).catch(e => {
 				return {
-					Error: 'uploadTimeout'
+					Error: "uploadTimeout"
 				};
-			})
+			});
 		},
 		toGetFileSize() {
 			let fileSize = 0;
@@ -1147,12 +1155,12 @@ export default {
 			}
 			this.switchToggle.uploadToggle = false;
 			this.switchToggle.uploadToggleError = false;
-			this.switchToggle.getPriceNumber ++;
+			this.switchToggle.getPriceNumber++;
 			this.$axios
 				.all(commitAll)
 				.then(resArr => {
-					this.switchToggle.getPriceNumber --;
-					if(this.switchToggle.getPriceNumber !== 0) return;
+					this.switchToggle.getPriceNumber--;
+					if (this.switchToggle.getPriceNumber !== 0) return;
 					let storageFee = 0;
 					let validateFee = 0;
 					let contractFee = 0;
@@ -1185,8 +1193,8 @@ export default {
 					this.switchToggle.uploadToggleError = false;
 				})
 				.catch(e => {
-					this.switchToggle.getPriceNumber --;
-					if(this.switchToggle.getPriceNumber !== 0) return;
+					this.switchToggle.getPriceNumber--;
+					if (this.switchToggle.getPriceNumber !== 0) return;
 					this.$message.error(vm.$t("fileManager.getPriceFailes"));
 					this.switchToggle.uploadToggle = true;
 					this.switchToggle.uploadToggleError = true;
@@ -1340,7 +1348,7 @@ $inputFocusBg: #dee2ea;
 				@include themify {
 					background-color: $filemanager-upload-color;
 					color: $filemanager-font-color;
-					border: 1px solid $filemanager-upload-focus-color
+					border: 1px solid $filemanager-upload-focus-color;
 				}
 				&:focus {
 					@include themify {
@@ -1364,7 +1372,7 @@ $inputFocusBg: #dee2ea;
 				@include themify {
 					background-color: $filemanager-upload-color;
 					color: $filemanager-font-color;
-					border: 1px solid $filemanager-upload-focus-color
+					border: 1px solid $filemanager-upload-focus-color;
 				}
 
 				&:focus {
@@ -1509,7 +1517,7 @@ $inputFocusBg: #dee2ea;
 				overflow: auto;
 				@include themify {
 					background-color: $card-color;
-					border: 1px solid $filemanager-upload-focus-color
+					border: 1px solid $filemanager-upload-focus-color;
 				}
 				.el-tag {
 					margin-right: 20px;

@@ -12,7 +12,9 @@ const result = {
   'areYouSureYouWantToUninstallTheSelectedPlugin': '您确定要卸载所选的插件吗?',
   'theCurrentVersionIsTheLatestVersion': '当前版本已是最新版',
   'continue': '继续',
-  'plugin': '插件'
+  'plugin': '插件',
+  'turnOn': '打开',
+  'turnOff': '关闭'
 }
 
 export default result;

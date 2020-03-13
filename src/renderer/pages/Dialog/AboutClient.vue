@@ -100,7 +100,8 @@ export default {
 			console.log("result is");
 			console.log(result);
 			if (!result) {
-				this.updateState = -3;
+				// this.updateState = -3;
+				this.$message.error(this.$t("public.networkError"));
 				return;
 			}
 			if (version >= result.Version) {
@@ -248,6 +249,7 @@ export default {
 					break;
 				case 3:
 					this.buttonText = this.$t("plugin.startInstall");
+					localStorage.setItem("lastVersion", "{}");
 					this.buttonEvent = () => {
 						shell.openItem(this.pluginDetail.Path);
 					}; // to do

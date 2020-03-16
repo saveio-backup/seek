@@ -1038,7 +1038,9 @@ export default {
 				let errorMsg = "";
 				let errorIds = [];
 				let waitForErrorIds = [];
-				for (let value of resArr) {
+				// for (let value of resArr) {
+				for (let i = 0; i < resArr.length; i++) {
+					let value = resArr[i];
 					if (value.Error !== 0) {
 						// get error array
 						let _index = continueArr.indexOf(vm.readyDownload[i]);

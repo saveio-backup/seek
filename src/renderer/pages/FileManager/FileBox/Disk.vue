@@ -347,7 +347,7 @@
 					<div class="adjust-item">
 						<p class="adjust-title">{{$t('fileManager.channelBalance')}}:</p>
 						<div class="adjust-info">
-							<p class="ftpx14 mr20">{{channelBind.BalanceFormat}} ONI</p>
+							<p class="ftpx14 mr20">{{channelBind.BalanceFormat || 0}} ONI</p>
 						</div>
 					</div>
 				</div>
@@ -893,18 +893,21 @@ export default {
 					this.downloadDone({ arr, errorMsg, flag });
 				} else {
 					//if have error task joint errorMsg and run me again(argumnets.callee())
-					for (let value of errorArr) {
-						errorMsg += `<p>`;
-						errorMsg += `${value.FileName || ""}`;
-						errorMsg += this.$t(`error[${value.Error}]`);
-						errorMsg += `</p>`;
+					for (let i = 0; i < errorArr.length; i++) {
+						// errorMsg += `<p>`;
+						// errorMsg += `${value.FileName || ""}`;
+						// errorMsg += this.$t(`error[${value.Error}]`);
+						// errorMsg += `</p>`;
+						let value = errorArr[i];
+						if (!errorMsg[value.Error]) errorMsg[value.Error] = [];
+						errorMsg[value.Error].push(waitForNowUploadList[i]);
 					}
 					let errorLength = errorArr.length;
 					let param = {
-						arr: arr,
+						arr,
 						len: errorLength,
-						errorMsg: errorMsg,
-						flag: flag
+						errorMsg,
+						flag
 					};
 					vm.waitForNowDownload(param);
 				}
@@ -914,28 +917,64 @@ export default {
 			const vm = this;
 			// close loading...
 			this.switchToggle.loading && this.switchToggle.loading.close();
-			if (flag === false) {
-				// is have download success task
-				if (errorMsg) {
-					this.$message.error({
-						dangerouslyUseHTMLString: true,
-						message: errorMsg
-					});
-				} else {
-					this.$message.error(vm.$t("fileManager.downloadError"));
+			let content = "";
+			for (let key in errorMsg) {
+				let item = errorMsg[key];
+				let _content = "";
+				for (let i = 0; i < item.length; i++) {
+					_content += item[i].FileName;
 				}
+				if (item.length > 1) {
+					let _sub = _content.substring(0, 20);
+					content += `
+						<p>
+							${_sub}...(${item.length} ${vm.$t("fileManager.files2")}) ${vm.$t(
+						'error["' + key + '"]'
+					)}
+						</p>
+					`;
+				} else {
+					content += `
+					<p>
+						${_content} ${vm.$t("fileManager.files2")} ${vm.$t('error["' + key + '"]')}
+					</p>`;
+				}
+			}
+			if (content.length === 0) {
+				this.$message({
+					type: "success",
+					message: vm.$t("fileManager.startDownload")
+				});
 			} else {
-				if (!errorMsg) {
-					this.$message({
-						type: "success",
-						message: vm.$t("fileManager.startDownload")
-					});
-				} else {
-					this.$message.error({
-						dangerouslyUseHTMLString: true,
-						message: errorMsg
-					});
-				}
+				this.$message({
+					message: content,
+					type: "error",
+					dangerouslyUseHTMLString: true
+				});
+			}
+			// if (flag === false) {
+				// is have download success task
+				// if (errorMsg) {
+				// 	this.$message.error({
+				// 		dangerouslyUseHTMLString: true,
+				// 		message: errorMsg
+				// 	});
+				// } else {
+				// 	this.$message.error(vm.$t("fileManager.downloadError"));
+				// }
+			// } else {
+				// if (!errorMsg) {
+				// 	this.$message({
+				// 		type: "success",
+				// 		message: vm.$t("fileManager.startDownload")
+				// 	});
+				// } else {
+				// 	this.$message.error({
+				// 		dangerouslyUseHTMLString: true,
+				// 		message: errorMsg
+				// 	});
+				// }
+			if (flag) {
 				this.switchToggle.confrimDownloadDialog = false;
 				ipcRenderer.send("run-dialog-event", { name: "clearDownloadDone" });
 				ipcRenderer.send("run-dialog-event", { name: "getDownload" });

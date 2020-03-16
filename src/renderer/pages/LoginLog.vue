@@ -138,7 +138,7 @@ export default {
 					if (
 						vm.statusList &&
 						vm.statusList[key] &&
-						(vm.statusList[key].State === 1 ||
+						(vm.statusList[key].State ||
 							(key === "DNS" &&
 								vm.statusList[key].HostAddr === "" &&
 								vm.currentHeight === vm.totalHeight &&

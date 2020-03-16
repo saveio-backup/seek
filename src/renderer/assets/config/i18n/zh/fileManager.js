@@ -18,7 +18,7 @@ const result = {
   'delete': '删除',
   'deleteButton': '删 除',
   'searchByName': '按名称搜索',
-  'minerControl': '挖矿控制',
+  'minerControl': '挖矿管理',
   'fileName': '文件名称',
   'share': '分 享',
   'openFolder': '打开所在文件夹',

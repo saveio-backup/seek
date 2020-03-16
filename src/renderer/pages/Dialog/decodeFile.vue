@@ -8,10 +8,10 @@
 			:visible.sync="decodeFileToggle"
 		>
 			<div slot="title">
-				<h2>{{$t('dialog.decodeFile')}}</h2>
+				<h2>{{decodeDone ?$t('dialog.openFile') : $t('dialog.decodeFile')}}</h2>
 				<div class="dialog-title-border"></div>
 			</div>
-			<div class="decode-file-wrapper loading-content decode-file-loading">
+			<div v-if="!decodeDone" class="decode-file-wrapper loading-content decode-file-loading">
 				<div>
 					<p class="mt20 mb20 ft14 tl break-word">{{$t('dialog.decodes')}} {{path}} {{$t('dialog.file')}}</p>
 				</div>
@@ -46,12 +46,27 @@
 					>{{$t('dialog.decodes')}}</ripper-button>
 				</div>
 			</div>
+			<div class="text-center open-decode-file-wrapper" v-else>
+				<div>
+					<p class="mt20 mb50 ft14 tl">
+						{{$t('dialog.fileAddr')}}: {{decodePath}}
+					</p>
+				</div>
+				<div slot="footer">
+					<ripper-button @click="closeDialog">{{$t('public.cancel')}}</ripper-button>
+					<ripper-button
+						type="primary"
+						class="primary ml10"
+						@click="goDecodeFile"
+					>{{$t('dialog.openFile')}}</ripper-button>
+				</div>
+			</div>
 		</el-dialog>
 	</div>
 </template>
 
 <script>
-import { ipcRenderer, dialog, remote } from "electron";
+import { ipcRenderer, dialog, remote, shell } from "electron";
 export default {
 	name: 'DecodeFile',
 	props: {
@@ -67,6 +82,8 @@ export default {
 			dialogForm: {
 				password: ""
 			},
+			decodeDone: false,
+			decodePath: '',
 			dialogRules: {
 				password: [
 					{
@@ -79,6 +96,10 @@ export default {
     }
   },
   methods: {
+		goDecodeFile() {
+			shell.openItem(this.decodePath);
+			this.closeDialog();
+		},
     decodeFile() {
 			const vm = this;
 			vm.decodeFiling = vm.$loading({
@@ -92,8 +113,9 @@ export default {
 			}).then(res => {
 				vm.decodeFiling && vm.decodeFiling.close();
 				if(res.Error === 0) {
-					vm.$parent.message({ type: "success", info: vm.$t('dialog.decodeSuccess')});
-					vm.closeDialog();
+					vm.$message.success(vm.$t('dialog.decodeSuccess'));
+					vm.decodeDone = true;
+					vm.decodePath = res.Result.Path;
 				} else {
 					vm.$message.error(vm.$t(`error["${res.Error}"]`));
 				}
@@ -120,6 +142,10 @@ export default {
 					}
 				]
 			}
+		},
+		path() {
+			this.decodeDone = false;
+			this.decodePath = '';
 		}
 	},
 	computed: {
@@ -128,6 +154,8 @@ export default {
 		}
 	},
 	mounted() {
+		this.decodeDone = false;
+		this.decodePath = '';
 		this.decodeFileToggle = true;
 	}
 }
@@ -137,6 +165,10 @@ export default {
 	width: 100%;
 	height: 100%;
 	.decode-file-wrapper {
+		width: 440px;
+		margin: 0 auto;
+	}
+	.open-decode-file-wrapper {
 		width: 440px;
 		margin: 0 auto;
 	}

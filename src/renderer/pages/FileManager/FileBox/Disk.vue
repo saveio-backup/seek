@@ -1385,6 +1385,7 @@ export default {
 				}
 				let process =
 					uploadTotal / (vm.syncObj[Hash].Size * (nodes.length - 1));
+				if(process === 1) return -1;
 				return process || 0;
 			};
 		},

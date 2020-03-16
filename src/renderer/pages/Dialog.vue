@@ -242,7 +242,6 @@ export default {
 		});
 		localStorage.setItem("DNSAdress", "");
 		vm.initWebSocket();
-		// ipcRenderer.
 		vm.getWatchWebcontent();
 	},
 	watch: {
@@ -430,6 +429,10 @@ export default {
 		}
 	},
 	methods: {
+		testDecode(path) {
+			this.decodeFilePath = path;
+			this.checkOpenDecodeDialog();
+		},
 		getWatchWebcontent() {
 			let arrWin = remote.BrowserWindow.getAllWindows();
 			for (let i = 0; i < arrWin.length; i++) {
@@ -1058,9 +1061,9 @@ export default {
 				}
 				if (errorMsg !== "") {
 					// run download api need remove wait for task when task is error!
-					if(vm.waitForErrorIds.length > 0) {
+					if(waitForErrorIds.length > 0) {
 						let newWaitForList = vm.waitForDownloadList.filter(item => {
-							return vm.waitForErrorIds.indexOf(item.Id) < 0;
+							return waitForErrorIds.indexOf(item.Id) < 0;
 						});
 						vm.$store.commit("SET_WAIT_FOR_DOWNLOAD_LIST", newWaitForList);
 					}

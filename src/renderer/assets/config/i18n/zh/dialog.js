@@ -22,7 +22,10 @@ const result = {
   'decodeSuccess': '解密成功!',
   'filePassword': '文件密码',
   'pleaseInputFilePasswordPassword': '请输入文件密码',
-  'about': '关于'
+  'about': '关于',
+  'openFile': '打开文件',
+  'fileAddr': '文件地址',
+  
 }
 
 export default result;

@@ -1,7 +1,7 @@
 const result = {
   'file': '文 件',
   'profit': '收 益',
-  'miner': '挖 矿',
+  'miner': '挖矿',
   'profitDetail': '利润详情',
   'totalProfit': '总利润',
   'to': '到',

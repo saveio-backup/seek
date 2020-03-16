@@ -22,7 +22,9 @@ const result = {
   'decodeSuccess': 'Decode Success!',
   'filePassword': 'File Password',
   'pleaseInputFilePasswordPassword': 'Please Fill Password',
-  'about': 'about'
+  'about': 'about',
+  'openFile': 'Open File',
+  'fileAddr': 'File Address',
 }
 
 export default result;

@@ -1,8 +1,6 @@
 <template>
 	<div id="disk">
-		<div
-			v-if="controlBar !== 'close'"
-		>
+		<div v-if="controlBar !== 'close'">
 			<div class="func-nav">
 				<div class="fun-button">
 
@@ -37,9 +35,7 @@
 				{{$t('public.fileTotal')}}: {{total}}
 			</div>
 		</div>
-		<div
-			v-else
-		>
+		<div v-else>
 			<div class="func-nav">
 				<p class='light-theme-title user-no-select'>
 					{{$t('fileManager.minerControl')}}
@@ -436,7 +432,7 @@
 						type="primary"
 						class="primary ml10"
 					>{{$t('fileManager.calculating')}}</ripper-button>
-					<ripper-button 
+					<ripper-button
 						class="primary ml10"
 						v-show="switchToggle.deleteToggleError"
 						@click="getDeleteGasFee"
@@ -479,7 +475,7 @@ export default {
 			toggleFilebox: false,
 			date,
 			util,
-			deleteGasFee: '',
+			deleteGasFee: "",
 			fileDownloadInfo: {
 				Fee: 0,
 				Size: 0,
@@ -554,7 +550,7 @@ export default {
 				newFile: true, // filebox have more upload file(allow loading more file)
 				deleteToggleError: false,
 				deleteToggle: true,
-				getGasNumber: 0,
+				getGasNumber: 0
 			},
 			page: "",
 			addrAPI: "",
@@ -570,7 +566,7 @@ export default {
 			},
 			justNowCompleteNumberTimeoutObj: null,
 			updateFileRequestCancel: null,
-			total: 0,
+			total: 0
 		};
 	},
 	components: {
@@ -683,15 +679,18 @@ export default {
 		updateFileLists() {
 			const vm = this;
 			try {
-				this.updateFileRequestCancel('update upload file list request cancel!')
-			} catch(e) {}
-			let _end = Math.ceil((this.fileListData.length || 1) / this.limitCount) * this.limitCount + 1;
+				this.updateFileRequestCancel("update upload file list request cancel!");
+			} catch (e) {}
+			let _end =
+				Math.ceil((this.fileListData.length || 1) / this.limitCount) *
+					this.limitCount +
+				1;
 			let addr = `${this.addrAPI}${this.type}/0/${_end}/0/0/0/0/0`;
 			this.$axios
 				.get(addr, {
 					cancelToken: new vm.$axios.CancelToken(c => {
-            vm.updateFileRequestCancel = c;
-					}),
+						vm.updateFileRequestCancel = c;
+					})
 				})
 				.then(res => {
 					if (res.Error === 0) {
@@ -701,22 +700,27 @@ export default {
 							result.map(item => {
 								item.Undone =
 									item.Url !== "" && item.Url !== undefined ? false : true;
-									if(vm.uploadDetailHash && (item.Hash === vm.uploadDetailHash)) {
-										vm.uploadDetailNodes = item.Nodes || [];
-									}
+								if (vm.uploadDetailHash && item.Hash === vm.uploadDetailHash) {
+									vm.uploadDetailNodes = item.Nodes || [];
+								}
 								return item;
 							});
 
 							// update limit
-							if(vm.page === 'filebox' && vm.fileListData.length < result.length) {
+							if (
+								vm.page === "filebox" &&
+								vm.fileListData.length < result.length
+							) {
 								let _limit = vm.fileListData.length;
 								vm.$store.dispatch("getSyncFileList", _limit);
 							}
 
 							// update list
-							if(result.length > (_end - 1)) {
-								vm.fileListData = result.slice(0, -1).concat(vm.fileListData.slice(_end));
-								// have more file when return limit number 
+							if (result.length > _end - 1) {
+								vm.fileListData = result
+									.slice(0, -1)
+									.concat(vm.fileListData.slice(_end));
+								// have more file when return limit number
 								vm.switchToggle.newFile = true;
 							} else {
 								vm.fileListData = result.concat(vm.fileListData.slice(_end));
@@ -731,7 +735,7 @@ export default {
 					// if (err.message.includes("timeout")) {
 					// 	this.$message.error("Request Timeout!");
 					// }
-				})
+				});
 		},
 		getFileLists() {
 			const vm = this;
@@ -739,9 +743,10 @@ export default {
 			this.switchToggle.load = false; // if your are loading list now,  the switch will be set to false
 			this.switchToggle.showLoading = true;
 			this.switchToggle.newFile = false;
-			let _start = this.fileListData.length
-			let addr = `${this.addrAPI}${this.type}/${_start}/${this.limitCount
-			}${this.addrAPI === this.$api.getFileList ? "/0/0/0/0/0" : ""}`;
+			let _start = this.fileListData.length;
+			let addr = `${this.addrAPI}${this.type}/${_start}/${this.limitCount}${
+				this.addrAPI === this.$api.getFileList ? "/0/0/0/0/0" : ""
+			}`;
 			this.$axios
 				.get(addr)
 				.then(res => {
@@ -752,7 +757,7 @@ export default {
 							result.map(item => {
 								item.Undone =
 									item.Url !== "" && item.Url !== undefined ? false : true;
-								if(vm.uploadDetailHash && (item.Hash === vm.uploadDetailHash)) {
+								if (vm.uploadDetailHash && item.Hash === vm.uploadDetailHash) {
 									vm.uploadDetailNodes = item.Nodes || [];
 								}
 								return item;
@@ -762,7 +767,7 @@ export default {
 							// }
 							// update sync file limit;
 							let _limit = vm.fileListData.length;
-							if(vm.page === 'filebox') {
+							if (vm.page === "filebox") {
 								vm.$store.dispatch("getSyncFileList", _limit);
 							}
 						} else {
@@ -880,7 +885,7 @@ export default {
 
 			this.$axios.all(commitAll).then(resArr => {
 				let errorArr = [];
-				for(let i = 0;i < resArr.length;i ++) {
+				for (let i = 0; i < resArr.length; i++) {
 					let res = resArr[i];
 					if (res.Error === 0) {
 						flag = true;
@@ -953,27 +958,27 @@ export default {
 				});
 			}
 			// if (flag === false) {
-				// is have download success task
-				// if (errorMsg) {
-				// 	this.$message.error({
-				// 		dangerouslyUseHTMLString: true,
-				// 		message: errorMsg
-				// 	});
-				// } else {
-				// 	this.$message.error(vm.$t("fileManager.downloadError"));
-				// }
+			// is have download success task
+			// if (errorMsg) {
+			// 	this.$message.error({
+			// 		dangerouslyUseHTMLString: true,
+			// 		message: errorMsg
+			// 	});
 			// } else {
-				// if (!errorMsg) {
-				// 	this.$message({
-				// 		type: "success",
-				// 		message: vm.$t("fileManager.startDownload")
-				// 	});
-				// } else {
-				// 	this.$message.error({
-				// 		dangerouslyUseHTMLString: true,
-				// 		message: errorMsg
-				// 	});
-				// }
+			// 	this.$message.error(vm.$t("fileManager.downloadError"));
+			// }
+			// } else {
+			// if (!errorMsg) {
+			// 	this.$message({
+			// 		type: "success",
+			// 		message: vm.$t("fileManager.startDownload")
+			// 	});
+			// } else {
+			// 	this.$message.error({
+			// 		dangerouslyUseHTMLString: true,
+			// 		message: errorMsg
+			// 	});
+			// }
 			if (flag) {
 				this.switchToggle.confrimDownloadDialog = false;
 				ipcRenderer.send("run-dialog-event", { name: "clearDownloadDone" });
@@ -995,11 +1000,11 @@ export default {
 				if (e.message.includes("timeout")) {
 					return {
 						Error: 1000
-					}
+					};
 				} else {
 					return {
 						Error: 1000
-					}
+					};
 				}
 			});
 		},
@@ -1087,35 +1092,38 @@ export default {
 		},
 		getDeleteGasFee() {
 			const vm = this;
-			this.deleteGasFee = '...';
-			let paramUrl = ''
-			this.$set(this.switchToggle, 'deleteToggleError', false);
-			this.$set(this.switchToggle, 'deleteToggle', false);
-			this.switchToggle.getGasNumber ++;
+			this.deleteGasFee = "...";
+			let paramUrl = "";
+			this.$set(this.switchToggle, "deleteToggleError", false);
+			this.$set(this.switchToggle, "deleteToggle", false);
+			this.switchToggle.getGasNumber++;
 			for (let file of this.fileToDelete) {
-				if(file.Hash) {
+				if (file.Hash) {
 					paramUrl += `hash=${file.Hash}&`;
 				}
 			}
 			let url = `${this.$api.dspFilesDeletefee}?${paramUrl.slice(0, -1)}`;
-			this.$axios.get(url).then((res) => {
-				this.switchToggle.getGasNumber --;
-				if(this.switchToggle.getGasNumber !== 0) return;
-				if(res.Error === 0 || res.Error === 54013) {
-					this.deleteGasFee = res.Result.GasLimit;
-					this.$set(this.switchToggle, 'deleteToggleError', false);
-				} else {
-					this.$message.error(vm.$t('fileManager.getGasFeeFailed'));
-					this.$set(this.switchToggle, 'deleteToggleError', true);
-				}
-				this.$set(this.switchToggle, 'deleteToggle', true);
-			}).catch(e => {
-				this.switchToggle.getGasNumber --;
-				if(this.switchToggle.getGasNumber !== 0) return;
-				this.$message.error(vm.$t('fileManager.getGasFeeFailed'));
-				this.$set(this.switchToggle, 'deleteToggleError', true);
-				this.$set(this.switchToggle, 'deleteToggle', true);
-			})
+			this.$axios
+				.get(url)
+				.then(res => {
+					this.switchToggle.getGasNumber--;
+					if (this.switchToggle.getGasNumber !== 0) return;
+					if (res.Error === 0 || res.Error === 54013) {
+						this.deleteGasFee = res.Result.GasLimit;
+						this.$set(this.switchToggle, "deleteToggleError", false);
+					} else {
+						this.$message.error(vm.$t("fileManager.getGasFeeFailed"));
+						this.$set(this.switchToggle, "deleteToggleError", true);
+					}
+					this.$set(this.switchToggle, "deleteToggle", true);
+				})
+				.catch(e => {
+					this.switchToggle.getGasNumber--;
+					if (this.switchToggle.getGasNumber !== 0) return;
+					this.$message.error(vm.$t("fileManager.getGasFeeFailed"));
+					this.$set(this.switchToggle, "deleteToggleError", true);
+					this.$set(this.switchToggle, "deleteToggle", true);
+				});
 		},
 		syncDeleteFile(res) {
 			if (Object.prototype.toString.call(res) === "[object Array]") {
@@ -1136,8 +1144,15 @@ export default {
 		},
 		toDeleteFileNew(deleteFiles) {
 			const vm = this;
-			if(!this.switchToggle.deleteToggle || this.switchToggle.deleteToggleError) return;
-			if(this.deleteGasFee * 500 / Math.pow(10, 9) > this.currentBalanceFormat) {
+			if (
+				!this.switchToggle.deleteToggle ||
+				this.switchToggle.deleteToggleError
+			)
+				return;
+			if (
+				(this.deleteGasFee * 500) / Math.pow(10, 9) >
+				this.currentBalanceFormat
+			) {
 				this.$message.error(vm.$t("public.insufficientBalanceAvailable"));
 				return;
 			}
@@ -1193,7 +1208,7 @@ export default {
 						}
 					});
 			});
-		},
+		}
 		// toDeleteFile(dataList, hash) {
 		// 	const vm = this;
 		// 	this.$axios
@@ -1242,7 +1257,7 @@ export default {
 			let size = 0;
 			let name = "";
 			const MAX_LENGTH = 27;
-			this.fileDownloadInfo.Fee = this.$t('fileManager.calculating');
+			this.fileDownloadInfo.Fee = this.$t("fileManager.calculating");
 			fileToDownload.map((item, index) => {
 				const path = ipcRenderer.sendSync("string-to-hex", item.Url);
 				size += this.fileToDownload[index].Size;
@@ -1275,7 +1290,7 @@ export default {
 						}
 						// }
 					})
-					.catch((error) => {
+					.catch(error => {
 						if (error.message.includes("timeout")) {
 							this.$message.error("Request Timeout!");
 						}
@@ -1316,20 +1331,20 @@ export default {
 		},
 		smartContractEvents(val) {
 			const vm = this;
-			if(vm.page ==='filebox') {
-				clearTimeout(vm.justNowCompleteNumberTimeoutObj)
+			if (vm.page === "filebox") {
+				clearTimeout(vm.justNowCompleteNumberTimeoutObj);
 				vm.justNowCompleteNumberTimeoutObj = setTimeout(() => {
 					vm.updateFileLists();
-				}, 200)
+				}, 200);
 			}
 		},
 		uploadLength(val) {
 			const vm = this;
-			if(vm.page ==='filebox') {
-				clearTimeout(vm.justNowCompleteNumberTimeoutObj)
+			if (vm.page === "filebox") {
+				clearTimeout(vm.justNowCompleteNumberTimeoutObj);
 				vm.justNowCompleteNumberTimeoutObj = setTimeout(() => {
 					vm.updateFileLists();
-				}, 200)
+				}, 200);
 			}
 		},
 		filterInput(val) {}
@@ -1355,7 +1370,9 @@ export default {
 			const fileListDataAll = this.fileListData;
 			return fileListDataAll.filter(item => {
 				item.StoreTypeNum = -item.StoreType;
-				return item.Name.toLowerCase().indexOf(this.filterInput.toLowerCase()) >= 0;
+				return (
+					item.Name.toLowerCase().indexOf(this.filterInput.toLowerCase()) >= 0
+				);
 			});
 		},
 		isSync: function() {
@@ -1385,7 +1402,7 @@ export default {
 				}
 				let process =
 					uploadTotal / (vm.syncObj[Hash].Size * (nodes.length - 1));
-				if(process === 1) return -1;
+				if (process === 1) return -1;
 				return process || 0;
 			};
 		},
@@ -1417,7 +1434,7 @@ export default {
 	},
 	beforeRouteEnter(to, from, next) {
 		next(vm => {
-			console.log('beforeRouteEnter');
+			console.log("beforeRouteEnter");
 			vm.type = to.query.type;
 			vm.controlBar = to.query.controlBar;
 			if (to.query.addrAPI) {
@@ -1426,8 +1443,9 @@ export default {
 				vm.addrAPI = vm.$api.getDownloadFileList;
 			} else {
 				vm.addrAPI = vm.$api.getFileList;
-				if(to.query.page === 'filebox' || vm.page === 'filebox') {
-					if(vm.fileListData.length === 0) { // first enter or file list is zero
+				if (to.query.page === "filebox" || vm.page === "filebox") {
+					if (vm.fileListData.length === 0) {
+						// first enter or file list is zero
 						vm.$store.dispatch("getSyncFileList", vm.limitCount);
 					} else {
 						vm.$store.dispatch("getSyncFileList", vm.fileListData.length);
@@ -1438,12 +1456,12 @@ export default {
 		});
 	},
 	beforeRouteLeave(to, from, next) {
-		console.log('beforeRouteLeave');
+		console.log("beforeRouteLeave");
 		this.$store.dispatch("clearIntervalSyncFileList");
 		next();
 	},
 	beforeRouteUpdate(to, from, next) {
-		console.log('beforeRouteUpdate')
+		console.log("beforeRouteUpdate");
 		this.type = to.query.type;
 		this.switchToggle.load = true;
 		this.fileListData = [];
@@ -1459,11 +1477,12 @@ export default {
 $light-blue: #65a6ff;
 $theme-color: #1b1e2f;
 #disk {
+	padding: 0 30px 0 14px;
 	.func-nav {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		padding: 0 30px 0 14px;
+		// padding: 0 30px 0 14px;
 		height: 80px;
 		@include themify {
 			background-color: $color;
@@ -1540,7 +1559,7 @@ $theme-color: #1b1e2f;
 		// top: 80px;
 		top: 120px;
 		bottom: 0px;
-		width: 100%;
+		width: calc(100% - 50px);
 		@include themify {
 			background-color: $color;
 		}
@@ -1678,7 +1697,7 @@ $theme-color: #1b1e2f;
 
 		& > .dialog-file-delete-info {
 			@include themify {
-				color: $tertiary-font-color
+				color: $tertiary-font-color;
 			}
 		}
 
@@ -1688,7 +1707,6 @@ $theme-color: #1b1e2f;
 			@include themify {
 				border-bottom: 1px solid $line-color;
 			}
-
 		}
 	}
 }

@@ -180,6 +180,9 @@
 							</div>
 						</div>
 					</div>
+					<div class="rt10 tr mb10">
+						{{$t('fileManager.gasFee')}}: 0.01
+					</div>
 					<div slot="footer">
 						<ripper-button @click="expandDialogVisible = false">{{$t('public.cancel')}}</ripper-button>
 						<ripper-button
@@ -302,10 +305,8 @@ export default {
 			}
 		},
 		expired_old() {
-			if(this.Records && this.Records[0] && this.Records[0].ExpiredAt) {
-				this.expired = new Date(
-					this.Records[0].ExpiredAt * 1000
-				);
+			if (this.Records && this.Records[0] && this.Records[0].ExpiredAt) {
+				this.expired = new Date(this.Records[0].ExpiredAt * 1000);
 				return this.$dateFormat.formatTimeByTimestamp(
 					this.Records[0].ExpiredAt * 1000
 				);

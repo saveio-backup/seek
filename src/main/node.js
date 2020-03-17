@@ -153,9 +153,10 @@ const setupConfig = async (appDataPath, appName) => {
             fs.unlinkSync(path);
         }
     }
-    for (let index = 1; index <= 1; index++) {
+    let chainId = await global.settingDB.queryData('ChainId');
+    for (let index = 0; index <= 1; index++) {
         console.log('exec setupConfig!!!!!!!!!!');
-        if (index === 2) continue;
+        if (index === 2 || chainId != index) continue;
         let cfgPath;
         try {
             // cfgPath = await cfgFilePath(appDataPath, appName)
@@ -366,7 +367,7 @@ const run = async (appDataPath, appName) => {
                         run(cacheRestartObj.appDataPathCache, cacheRestartObj.appNameCache);
                         cacheRestartObj.edgeCloseRestartFailed.reply('edgeClose', '1');
                     } catch (e) {
-                        if(cacheRestartObj && cacheRestartObj.edgeCloseRestartFailed) {
+                        if (cacheRestartObj && cacheRestartObj.edgeCloseRestartFailed) {
                             cacheRestartObj.edgeCloseRestartFailed.reply('edgeClose', '0');
                         }
                         log.error('edge restart failed' + e)
@@ -379,6 +380,7 @@ const run = async (appDataPath, appName) => {
     });
     // get config.json value by key
     ipcMain.on('getConfigByKey', (event, params) => {
+        setupConfig();
         event.returnValue = cacheRestartObj.cfgObj.Base[params];
     });
 }

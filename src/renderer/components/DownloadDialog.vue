@@ -97,17 +97,33 @@ export default {
 				// (this.downloadUrl.startsWith("Qm") && this.downloadUrl.length === 46) ||
 				// (this.downloadUrl.startsWith("zb") && this.downloadUrl.length === 49)
 			) {
-				this.$axios
-					.post(this.$api.download, {
+				// this.$axios.post(
+				// 	this.$api.download,
+				// 	{
+				// 		Url: this.downloadUrl,
+				// 		SetFileName: true,
+				// 		MaxPeerNum: ipcRenderer.sendSync("getSettings", "maxPeerNum")
+				// 	},
+				// 	{
+				// 		loading: {
+				// 			text: vm.$t("fileManager.loading"),
+				// 			target: ".download-dialog.loading-content"
+				// 		}
+				// 	}
+				// );
+				this.$download(
+					{
 						Url: this.downloadUrl,
 						SetFileName: true,
 						MaxPeerNum: ipcRenderer.sendSync("getSettings", "maxPeerNum")
-					},{
+					},
+					{
 						loading: {
 							text: vm.$t("fileManager.loading"),
 							target: ".download-dialog.loading-content"
 						}
-					})
+					}
+				)
 					.then(res => {
 						if (res.Error === 0) {
 							this.$emit("closeDialog", { timeout: 0 });

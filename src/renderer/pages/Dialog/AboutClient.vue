@@ -136,12 +136,11 @@ export default {
 			}
 		},
 		downloadClient() {
-			this.$axios
-				.post(this.$api.download, {
-					Url: this.clientUrl,
-					MaxPeerNum: ipcRenderer.sendSync("getSettings", "maxPeerNum"),
-					SetFileName: true
-				})
+			this.$download({
+				Url: this.clientUrl,
+				MaxPeerNum: ipcRenderer.sendSync("getSettings", "maxPeerNum"),
+				SetFileName: true
+			})
 				.then(res => {
 					if (res.Error === 0) {
 						this.$message({

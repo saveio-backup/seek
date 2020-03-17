@@ -211,6 +211,9 @@ async function cancelDownload(url) {
 }
 
 function downloadPage(url, uuid, loadView) {
+  ipcRenderer.send("run-dialog-event", {
+    name: "clearDownloadDone"
+  });
   axios.post(api.download, {
     Url: url,
     MaxPeerNum: ipcRenderer.sendSync("getSettings", "maxPeerNum"),

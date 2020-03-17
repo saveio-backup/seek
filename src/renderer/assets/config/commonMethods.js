@@ -67,6 +67,18 @@ const methods = {
       // Vue.prototype.$axios
       // .get(Vue.prototype.$api.account + "/export/private")
     };
+    Vue.prototype.$download = function (data, config) {
+      ipcRenderer.send("run-dialog-event", {
+        name: "clearDownloadDone"
+      });
+      return new Promise((resolve, reject) => {
+        Vue.prototype.$axios.post(Vue.prototype.$api.download, data, config).then(res => {
+          resolve(res);
+        }).catch(err => {
+          reject(err);
+        })
+      })
+    }
     Vue.prototype.$checkClientVersion = function () {
       return new Promise(async (resolve, reject) => {
         await Vue.prototype.$axios

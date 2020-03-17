@@ -241,9 +241,6 @@ export default {
 	.incomeTable {
 		height: 100%;
 	}
-	// .el-table {
-	// 	padding-top: 20px;
-	// }
 	.total-income {
 		font-size: 1.4rem;
 		position: absolute;

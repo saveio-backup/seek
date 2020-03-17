@@ -46,7 +46,7 @@
 								v-if="plugin.isNeedUpdate === true"
 							>{{$t("plugin.update")}}</ripper-button>
 							<ripper-button
-								class="primary"
+								class="white"
 								v-if="plugin.detail.Progress >= 1"
 								@click="openConfirmDeletePlugin(plugin)"
 							>{{$t("plugin.uninstall")}}</ripper-button>
@@ -212,7 +212,7 @@ export default {
 				"getUsermeta",
 				"LocalUrlPlugins"
 			);
-			console.log("localUrlPlugins is");
+			console.log("newCheckPluginInfos localUrlPlugins is");
 			console.log(localUrlPlugins);
 			for (let i = 0; i < plugins.length; i++) {
 				if (
@@ -419,6 +419,8 @@ export default {
 			}
 			for (let i = 0; i < this.plugins.length; i++) {
 				const pluginItem = this.plugins[i];
+				console.log('localUrlPlugins is');
+				console.log(localUrlPlugins);
 				pluginItem.detail = taskByUrl[pluginItem.Url]
 					? taskByUrl[pluginItem.Url] // if plugin in in task, replace it with task
 					: localUrlPlugins[pluginItem.Url]
@@ -470,7 +472,8 @@ export default {
 <style lang="scss">
 #plugin {
 	min-height: 100vh;
-	.primary {
+	.primary,
+	.white {
 		.button {
 			padding-top: 3px;
 			padding-bottom: 3px;

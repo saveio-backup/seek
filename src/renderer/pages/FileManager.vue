@@ -351,8 +351,6 @@ $grey: #ccc;
 		left: 0px;
 		right: 0px;
 		.top-nav {
-			// background: #fff;
-			// box-shadow: 0px 2px 4px 0px rgba(231, 231, 235, 0.7);
 			@include themify {
 				background-color: $card-color;
 				box-shadow: $card-shadow;
@@ -360,7 +358,7 @@ $grey: #ccc;
 			height: 64px;
 			position: relative;
 			z-index: 9;
-			padding: 10px 70px 10px 15px;
+			padding: 10px 35px 10px 15px;
 			display: flex;
 			justify-content: space-between;
 			align-items: center;

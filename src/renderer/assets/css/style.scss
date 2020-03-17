@@ -322,10 +322,6 @@ select {
             }
 
         }
-
-        @include themify {
-            background-color: $table-hover-bg;
-        }
     }
 
     td {

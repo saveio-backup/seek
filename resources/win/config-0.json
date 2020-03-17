@@ -21,7 +21,6 @@
         "WsPortOffset": 339,
         "WsCertPath": "",
         "WsKeyPath": "",
-        "BlockConfirm": 1,
         "ChannelPortOffset": 3005,
         "ChannelProtocol": "tcp",
         "DBPath": "./DB",
@@ -50,6 +49,7 @@
         "EnableBackup": false
     },
     "Dsp": {
+        "BlockConfirm": 1,
         "ChannelClientType": "rpc",
         "ChannelRevealTimeout": "20",
         "ChannelSettleTimeout": "50",

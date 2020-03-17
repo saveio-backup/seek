@@ -150,12 +150,6 @@ $danger: #f56c6c;
 				font-size: 1.4rem;
 				transition: all 0.3s ease;
 				user-select: none;
-				& > span {
-					& > i,
-					& > span {
-						font-size: 14px;
-					}
-				}
 				&:hover {
 					@include themify {
 						background-color: $filemanager-aside-hover-color;

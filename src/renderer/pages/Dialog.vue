@@ -757,9 +757,9 @@ export default {
 			console.log(`${this.$config.maxNumUpload}----${this.realUploadingLength}----${this.waitForUploadOrderList.length}----
 			${this.readyUpload.length}----${this.isLoginShowLog}`);
 			let needUploadLen = this.$config.maxNumUpload - this.realUploadingLength;
+				// this.readyUpload.length !== 0 ||
 			if (
 				this.waitForUploadOrderList.length === 0 ||
-				this.readyUpload.length !== 0 ||
 				needUploadLen <= 0 ||
 				!this.isLoginShowLog
 			)
@@ -959,9 +959,9 @@ export default {
 			${this.readyUpload.length}----${this.isLoginShowLog}`);
 			let needDownloadLen =
 				this.$config.maxNumUpload - this.realDownloadingLength;
+				// this.readyDownload.length !== 0 ||
 			if (
 				this.waitForDownloadOrderList.length === 0 ||
-				this.readyDownload.length !== 0 ||
 				needDownloadLen <= 0 ||
 				!this.isLoginShowLog
 			)
@@ -1795,7 +1795,23 @@ export default {
 					localStorage.setItem("localStorage", data);
 				});
 			}
-		}
+		},
+		removeReadyDownload(arr) {
+			for(let value of arr) {
+				let _index = this.readyDownload.indexOf(value)
+				if(_index !== -1) {
+					this.readyDownload.splice(_index, 1);
+				}
+			}
+		},
+		removeReadyUpload(arr) {
+			for(let value of arr) {
+				let _index = this.readyUpload.indexOf(value)
+				if(_index !== -1) {
+					this.readyUpload.splice(_index, 1);
+				}
+			}
+		},
 	}
 };
 </script>

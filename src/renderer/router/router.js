@@ -187,11 +187,13 @@ export default new Router({
       component: loadComponent('pages/PluginInfo.vue')
     },
     {
-      path: '/',
-      redirect: '/Home',
-      meta: {
-        keepAlive: false
-      }
+      path: '*',
+      name: 'Page404',
+      component: loadComponent('pages/goPage404.vue')
+      // redirect: '/Home',
+      // meta: {
+      //   keepAlive: false
+      // }
     }
   ]
 })

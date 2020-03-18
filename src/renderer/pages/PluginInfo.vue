@@ -142,6 +142,9 @@ export default {
 		// 	if (document.visibilityState === "visible") this.sendPluginInfo();
 		// });
 		this.$store.dispatch("setCurrentAccount"); // get login status
+		const pluginsDB = ipcRenderer.sendSync("getUsermeta", "Plugins");
+		console.log("mounted event pluginsDB is ");
+		console.log(pluginsDB);
 	},
 	computed: {
 		lang: function() {
@@ -255,6 +258,8 @@ export default {
 				}
 				this.$set(this.plugins, i, plugins[i]);
 			}
+			console.log("setLocalDB Plugins in Complete Watch");
+			console.log(localUrlPlugins);
 			ipcRenderer.sendSync("setUsermeta", "Plugins", pluginInstaled);
 			ipcRenderer.sendSync("setUsermeta", "LocalUrlPlugins", localUrlPlugins);
 		},
@@ -398,7 +403,17 @@ export default {
 						plugin.detail = null;
 						// delete unzip file dir
 						this.deleteFolderRecursive(finalPath);
+						const localUrlPlugins = ipcRenderer.sendSync(
+							"getUsermeta",
+							"LocalUrlPlugins"
+						);
+						delete localUrlPlugins[plugin.Url]; // no longer exists, there is no need to save the local database.
 						this.switchToggle.confirmDeletePluginDialog = false;
+						ipcRenderer.sendSync(
+							"setUsermeta",
+							"LocalUrlPlugins",
+							localUrlPlugins
+						);
 					}
 				});
 		}
@@ -419,7 +434,7 @@ export default {
 			}
 			for (let i = 0; i < this.plugins.length; i++) {
 				const pluginItem = this.plugins[i];
-				console.log('localUrlPlugins is');
+				console.log("localUrlPlugins is");
 				console.log(localUrlPlugins);
 				pluginItem.detail = taskByUrl[pluginItem.Url]
 					? taskByUrl[pluginItem.Url] // if plugin in in task, replace it with task
@@ -434,34 +449,46 @@ export default {
 			console.log(val);
 			let taskByUrl = {};
 			for (let i = 0; i < val.length; i++) {
-				// const task = val[i];
 				if (!val[i].IsUploadAction) taskByUrl[val[i].Url] = val[i];
 			}
 			const pluginsTemp = [];
-			// const localUrlPluginsTemp = {};
 			const localUrlPlugins = ipcRenderer.sendSync(
 				"getUsermeta",
 				"LocalUrlPlugins"
 			);
+			const pluginsDB = ipcRenderer.sendSync("getUsermeta", "Plugins");
+			console.log("pluginsDB is ");
+			console.log(pluginsDB);
 			for (let i = 0; i < this.plugins.length; i++) {
 				const pluginItem = this.plugins[i];
-				pluginItem.detail = taskByUrl[pluginItem.Url]
-					? taskByUrl[pluginItem.Url]
-					: pluginItem.detail;
-				if (
-					// to do  may change to false
-					localUrlPlugins[pluginItem.Url] &&
-					localUrlPlugins[pluginItem.Url].isShow === false
-				) {
-					pluginItem.isShow = false;
+				if (taskByUrl[pluginItem.Url]) {
+					// if plugin in in task, replace it with task
+					console.log("当前完成的任务是对应插件");
+					pluginItem.detail = taskByUrl[pluginItem.Url];
+					pluginItem.isNeedUpdate = false; // no need to update, because it was downloaded from net // to do, may be bug
+					if (
+						// to do  may change to bug
+						localUrlPlugins[pluginItem.Url] &&
+						localUrlPlugins[pluginItem.Url].isShow === false
+					) {
+						pluginItem.isShow = false;
+					} else {
+						pluginItem.isShow = true;
+					}
+					pluginsTemp.push(pluginItem);
+					localUrlPlugins[pluginItem.Url] =
+						localUrlPlugins[pluginItem.Url] || {};
+					localUrlPlugins[pluginItem.Url].detail = pluginItem.detail;
 				} else {
-					pluginItem.isShow = true;
+					// if plguin is not in task, will reset to localUrlPlugins
+					pluginItem.detail = localUrlPlugins[pluginItem.Url]
+						? localUrlPlugins[pluginItem.Url].detail
+						: null;
 				}
-				pluginItem.isNeedUpdate = false; // no need to update, because it was downloaded from net
-				pluginsTemp.push(pluginItem);
-				localUrlPlugins[pluginItem.Url] = localUrlPlugins[pluginItem.Url] || {};
-				localUrlPlugins[pluginItem.Url].detail = pluginItem.detail;
 			}
+			console.log("setLocalDB Plugins in Complete Watch");
+			console.log(localUrlPlugins);
+
 			ipcRenderer.sendSync("setUsermeta", "Plugins", pluginsTemp);
 			ipcRenderer.sendSync("setUsermeta", "LocalUrlPlugins", localUrlPlugins);
 			this.sendPluginInfo();

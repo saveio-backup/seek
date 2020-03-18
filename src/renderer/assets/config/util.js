@@ -20,6 +20,7 @@ const result = {
     return NaN;
   },
   effectiveNumber(value) {
+    if (value == 0) return 0;
     if (!value) return '';
     var m = Number(value)
       .toExponential()

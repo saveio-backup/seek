@@ -53,7 +53,7 @@
 						:value="item"
 					></el-option>
 				</el-select> -->
-				<div class="flex ai-center">
+				<div class="flex ai-center slider-wrap">
 					<el-slider
 						:show-tooltip="false"
 						v-model="settings.maxNumUpload"
@@ -61,25 +61,21 @@
 						:max="10"
 						:min="1"
 					></el-slider>
-					<div
-						class="ml10 ftpx14"
-					>
+					<div class="ml10 ftpx14">
 						{{settings.maxNumUpload}}
 					</div>
 				</div>
 			</div>
 			<div class="settings-box">
 				<div class="tag">{{$t('settings.maxPeerNum')}}</div>
-				<div class="flex ai-center">
+				<div class="flex ai-center slider-wrap">
 					<el-slider
 						v-model="settings.maxPeerNum"
 						:show-tooltip="false"
 						@change="updateSettings('maxPeerNum',settings.maxPeerNum)"
 						:max="20"
 					></el-slider>
-					<div						
-						class="ml10 ftpx14"
-					>
+					<div class="ml10 ftpx14">
 						{{settings.maxPeerNum}}
 					</div>
 				</div>
@@ -93,7 +89,10 @@
 						@click="showInFolder(pathDir.DownloadPath)"
 					>{{pathDir.DownloadPath}}</p>
 				</div>
-				<el-button @click="setDir('DownloadPath')" class="settings-button-width">{{$t('settings.change')}}</el-button>
+				<el-button
+					@click="setDir('DownloadPath')"
+					class="settings-button-width"
+				>{{$t('settings.change')}}</el-button>
 			</div>
 			<div class="settings-box">
 				<div class="tag">
@@ -104,7 +103,10 @@
 						@click="showInFolder(path.join(pathDir.BaseDir,pathDir.LogDirName))"
 					>{{pathDir.LogDirName}}</p>
 				</div>
-				<el-button @click="showInFolder(path.join(pathDir.BaseDir,pathDir.LogDirName))" class="settings-button-width">{{$t('settings.open')}}</el-button>
+				<el-button
+					@click="showInFolder(path.join(pathDir.BaseDir,pathDir.LogDirName))"
+					class="settings-button-width"
+				>{{$t('settings.open')}}</el-button>
 			</div>
 			<div class="settings-box">
 				<div class="tag">
@@ -126,19 +128,17 @@
 				<div class="tag">
 					<p>{{$t('settings.logCache')}}</p>
 				</div>
-				<div class="flex ai-center">
+				<div class="flex ai-center slider-wrap">
 					<el-slider
 						v-model="pathDir.LogMaxSize"
 						:show-tooltip="false"
 						@change="setConfig('LogMaxSize',pathDir.LogMaxSize)"
-						:max="10737418240"
-						:step="1073741824"
-						:min="1073741824"
+						:max="10485760"
+						:step="1048576"
+						:min="1048576"
 					></el-slider>
-					<div
-						class="ml10 ftpx14"
-					>
-						{{pathDir.LogMaxSize / 1073741824}} G
+					<div class="ml10 ftpx14">
+						{{pathDir.LogMaxSize / 1048576}} G
 					</div>
 				</div>
 			</div>
@@ -495,8 +495,11 @@ export default {
 					}
 				}
 			}
-			.el-slider {
-				width: 200px;
+			.slider-wrap {
+				width: 242px;
+				.el-slider {
+					width: 200px;
+				}
 			}
 			.el-select {
 				input {

@@ -9,7 +9,6 @@ const webpack = require('webpack')
 const BabiliWebpackPlugin = require('babili-webpack-plugin')
 
 let mainConfig = {
-  devtool: '#cheap-module-eval-source-map',
   entry: {
     main: path.join(__dirname, '../src/main/index.js')
   },

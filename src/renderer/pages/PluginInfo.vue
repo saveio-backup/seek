@@ -46,7 +46,6 @@
 								v-if="plugin.isNeedUpdate === true"
 							>{{$t("plugin.update")}}</ripper-button>
 							<ripper-button
-								class="white"
 								v-if="plugin.detail.Progress >= 1"
 								@click="openConfirmDeletePlugin(plugin)"
 							>{{$t("plugin.uninstall")}}</ripper-button>
@@ -84,7 +83,7 @@
 					{{$t('plugin.areYouSureYouWantToUninstallTheSelectedPlugin')}}
 				</p>
 				<div slot="footer">
-					<ripper-button
+					<ripper-button						
 						type="primary"
 						@click="switchToggle.confirmDeletePluginDialog=false"
 					>{{$t('public.cancel')}}</ripper-button>
@@ -249,6 +248,7 @@ export default {
 					const detail = await this.isPluginInTransferDetail(plugins[i].Url);
 					if (detail) {
 						plugins[i].detail = detail;
+						plugins[i].isNeedUpdate = false; // transferDetail data is lastest no need update
 						localUrlPlugins[plugins[i].Url] = plugins[i];
 						pluginInstaled.push(plugins[i]);
 					} else {
@@ -284,11 +284,16 @@ export default {
 			console.log("exec isPluginInTransferDetail");
 			let detail = await this.getTransferDetail(pluginUrl);
 			detail = detail.Result;
-			if (detail && fs.existsSync(detail.Path)) {
+			if (!detail) return false;
+			if (detail.Progress >= 0 && detail.Progress < 1) {
+				// current task is in downloading
 				return detail;
-			} else {
-				return false;
 			}
+			if (detail.Progress >= 1 && fs.existsSync(detail.Path)) {
+				// current task is finished and file is exist
+				return detail;
+			}
+			return false;
 		},
 		openPlugin(url, plugItem) {
 			// window.open(url);
@@ -443,7 +448,7 @@ export default {
 					: null; // if plguin is not in task, will reset to localUrlPlugins
 			}
 		},
-		completeTransferList(val) {
+		async completeTransferList(val) {
 			if (!this.plugins.length) return;
 			console.log("complete transfer");
 			console.log(val);
@@ -480,10 +485,16 @@ export default {
 						localUrlPlugins[pluginItem.Url] || {};
 					localUrlPlugins[pluginItem.Url].detail = pluginItem.detail;
 				} else {
+					const detail = await this.isPluginInTransferDetail(pluginItem.Url);
+					if (detail) {
+						pluginItem.detail = detail;
+					} else {
+						pluginItem.detail = null;
+					}
 					// if plguin is not in task, will reset to localUrlPlugins
-					pluginItem.detail = localUrlPlugins[pluginItem.Url]
+					/* pluginItem.detail = localUrlPlugins[pluginItem.Url]
 						? localUrlPlugins[pluginItem.Url].detail
-						: null;
+						: null; */
 				}
 			}
 			console.log("setLocalDB Plugins in Complete Watch");
@@ -499,8 +510,7 @@ export default {
 <style lang="scss">
 #plugin {
 	min-height: 100vh;
-	.primary,
-	.white {
+	.ripper-button {
 		.button {
 			padding-top: 3px;
 			padding-bottom: 3px;

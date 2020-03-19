@@ -151,14 +151,6 @@ export default {
 			fill: rgba(255, 255, 255, 0.7);
 		}
 	}
-	&.white {
-		button {
-			border: solid 1px #2f8ff0;
-		}
-		.button.styl-material {
-			background: white;
-		}
-	}
 	&.theme1 {
 		.button {
 			font-size: 1.2rem;

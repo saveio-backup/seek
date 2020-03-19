@@ -119,7 +119,7 @@ async function loadThirdPage(url, uuid, loadView) {
     "getUsermeta",
     "LocalUrlPlugins"
   );
-  if (localUrlPlugins[url].detail) {
+  if (localUrlPlugins[url] && localUrlPlugins[url].detail) {
     let {
       Path,
       FileName,

@@ -172,7 +172,7 @@ export default {
 						ipcRenderer.send("run-dialog-event", {
 							name: "message",
 							data: {
-								info: 'dns已损坏',
+								info: vm.$t('error[1002]'),
 								type: 'error',
 								dangerouslyUseHTMLString: false
 							}

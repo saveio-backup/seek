@@ -260,6 +260,7 @@ const result = {
 
   '1000': 'Request Timeout!',
   '1001': 'Request Failed!',
+  '1002': 'The database has been damaged, can only upload, transfer operations!',
   '4006': 'Insufficient balance',
   '5001': 'There is have on going download tasks and the channel cannot be closed',
 }

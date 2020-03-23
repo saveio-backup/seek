@@ -143,6 +143,7 @@ export default {
 		button {
 			color: #fff;
 			border: none;
+			padding: 7px 26px;
 		}
 		.button.styl-material {
 			background: linear-gradient(90deg, #13affa 0%, #3e7eeb 100%);

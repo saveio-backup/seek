@@ -6,7 +6,7 @@
 	>
 		<router-view
 			v-if="flag"
-			class="theme-bg"
+			:class="{'theme-bg': routerName !== 'Dialog'}"
 		></router-view>
 	</div>
 </template>

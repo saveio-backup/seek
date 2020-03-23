@@ -468,7 +468,7 @@ export default {
 				}
 			});
 		},
-		runIsNotSendToSend(id) {
+		runReadySendToSend(id) {
 			for (let key in this.isNotSend) {
 				if (this.isNotSend[key] && this.isNotSend[key][id]) {
 					ipcRenderer.sendTo(id, "get-data", {
@@ -493,7 +493,7 @@ export default {
 						if (view.isActive) {
 							if (!this.viewsIds.includes(view.browserView.webContents.id)) {
 								this.viewsIds.push(view.browserView.webContents.id);
-								this.runIsNotSendToSend(view.browserView.webContents.id);
+								this.runReadySendToSend(view.browserView.webContents.id);
 							}
 						} else if (
 							this.viewsIds.includes(view.browserView.webContents.id)

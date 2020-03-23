@@ -843,8 +843,9 @@ export default {
 		setDuration() {
 			this.advancedData.Duration =
 				this.storageCycleNumber * this.BASE[this.storageCycleSelected];
-			this.formatVerificationCycleNumber();
-			this.toGetPrice();
+			// this.formatVerificationCycleNumber();
+			this.setDataInterval()
+			// this.toGetPrice();
 		},
 		// get price when verificationCycleNumber and verificationCycleSelected be changed
 		setDataInterval() {

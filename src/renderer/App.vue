@@ -22,10 +22,10 @@ export default {
 		).href = `./static/css/${this.themeColor}/theme/index.css`;
 		setTimeout(() => {
 			this.flag = true;
+			this.activeListener();
 		}, 1000);
 
 		this.init();
-		this.activeListener();
 		ipcRenderer.on(
 			"current-active-show-message",
 			(event, { info, type, dangerouslyUseHTMLString = false }) => {
@@ -37,8 +37,8 @@ export default {
 			}
 		);
 		ipcRenderer.on("get-data", (event, { result, type, page }) => {
-			// console.log(type);
-			// console.log(result);
+			console.log(type);
+			console.log(result);
 			this[type + "Update"]({ result, page });
 		});
 		ipcRenderer.on("set-theme", (event, theme) => {
@@ -74,7 +74,7 @@ export default {
 		activeListener() {
 			const vm = this;
 			this.syncListener.some(item => {
-				if (this.$route.fullPath.indexOf(item) >= 0) {
+				if (vm.$route.fullPath.indexOf(item) >= 0) {
 					ipcRenderer.send("watchEdge");
 					/**
 					 * params
@@ -219,6 +219,9 @@ export default {
 		},
 		smartContractEventsUpdate({ result }) {
 			this.$store.commit("SET_SMART_CONTRACT_EVENTS", result);
+		},
+		modulestateUpdate({ result }) {
+			this.$store.commit("SET_MODULE_STATE", result);
 		}
 	}
 };

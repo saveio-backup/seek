@@ -430,14 +430,6 @@ const actions = {
             commit('GET_WAIT_FOR_UPLOAD_LIST', _newList);
         }
 
-        // let list2 = localStorage.getItem(`waitForUploadOrderList_${address}`);
-        // if (list2) {
-        //     commit('GET_WAIT_FOR_UPLOAD_ORDER_LIST', JSON.parse(list2));
-        // }
-        // let list3 = localStorage.getItem(`localStatus_${address}`);
-        // if (list3) {
-        //     commit('GET_LOCAL_STATUS', JSON.parse(list3));
-        // }
         commit('GET_WAIT_FOR_UPLOAD_ORDER_LIST', []);
         commit('GET_LOCAL_STATUS', {
             pausing: [],
@@ -455,10 +447,7 @@ const actions = {
             })
             commit('GET_WAIT_FOR_DOWNLOAD_LIST', _newList4);
         }
-        // let list5 = localStorage.getItem(`waitForDownloadOrderList_${address}`);
-        // if (list5) {
-        //     commit('GET_WAIT_FOR_DOWNLOAD_ORDER_LIST', JSON.parse(list5));
-        // }
+
         commit('GET_WAIT_FOR_DOWNLOAD_ORDER_LIST', []);
         commit('GET_LOCAL_STATUS', {
             pausing: [],
@@ -477,33 +466,26 @@ const actions = {
     getUpload({
         commit
     }) {
-        // transferClear(uploadTimer);
         clearTimeout(uploadTimer);
         uploadTimer = setTimeout(() => {
             uploadTransferListRequest.bind(this, commit)();
         }, 200);
-        // uploadTimer = setInterval(uploadTransferListRequest.bind(this, commit), TIME_COUNT);
     },
     getDownload({
         commit
     }) {
-        // transferClear(downloadTimer);
         clearTimeout(downloadTimer)
         downloadTimer = setTimeout(() => {
             downloadTransferListRequest.bind(this, commit)();
         }, 200)
-
-        // downloadTimer = setInterval(downloadTransferListRequest.bind(this, commit), TIME_COUNT)
     },
     getComplete({
         commit
     }) {
-        // transferClear(completeTimer);
         clearTimeout(completeTimer);
         completeTimer = setTimeout(() => {
             completeTransferListRequest.bind(this, commit)();
         }, 200)
-        // completeTimer = setInterval(completeTransferListRequest.bind(this, commit), TIME_COUNT)
     },
     setUpload({
         commit

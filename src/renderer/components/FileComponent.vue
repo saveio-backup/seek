@@ -182,7 +182,7 @@
 								<span class="light-blue">{{$t('fileManager.taskPause')}}</span>
 							</div>
 							<div v-else-if="scope.row.Status === 4">
-								<span class="light-error">{{scope.row.ErrMsg.replace(/Neo/g,'NeDevo') || (transferType === 1? $t('fileManager.uploadFailed'):transferType === 2?$t('fileManager.downloadFailed'):'')}}</span>
+								<span class="light-error">{{scope.row.ErrMsg && scope.row.ErrMsg.replace(/Neo/g,'NeDevo') || (transferType === 1? $t('fileManager.uploadFailed'):transferType === 2?$t('fileManager.downloadFailed'):'')}}</span>
 							</div>
 							<div
 								class="light-blue"
@@ -239,19 +239,19 @@
 								class="active-blue cursor-pointer"
 								:class="{'not-allow-opeation':scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23}"
 								:title="scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23 ? '' : scope.row.IsUploadAction ? $t('fileManager.pauseToUpload'):$t('fileManager.pauseToDownload')"
-								v-show="scope.row.Status === 1 || scope.row.Status === 2"
+								v-show="scope.row.Status === 1 || scope.row.Status === 2 || scope.row.Status === 6"
 								@click="uploadOrDownloadPause([scope.row])"
 							><i class="ofont ofont-zanting"></i></span>
 							<span
 								class="active-blue cursor-pointer"
-								:class="{'not-allow-opeation':(scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4}"
+								:class="{'not-allow-opeation': (scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4}"
 								:title="(scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4 ? '' : scope.row.IsUploadAction ? $t('fileManager.cancelToUpload'):$t('fileManager.cancelToDownload')"
 								v-if="transferType === 1"
 								@click="openPassword(scope.row)"
 							><i class="ofont ofont-guanbi"></i></span>
 							<span
 								class="active-blue cursor-pointer"
-								:class="{'not-allow-opeation':(scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4}"
+								:class="{'not-allow-opeation': scope.row.Status === 6 || (scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4}"
 								:title="(scope.row.DetailStatus === 5 || scope.row.DetailStatus === 23) && scope.row.Status !== 4 ? '' : scope.row.IsUploadAction ? $t('fileManager.cancelToUpload'):$t('fileManager.cancelToDownload')"
 								v-if="transferType === 2"
 								@click="openConfirmCancelDownload(scope.row)"
@@ -947,7 +947,7 @@ export default {
 					value.DetailStatus = "1";
 					continue;
 				}
-				if (this.localStatus.uploading.indexOf(value.Id) >= 0 && value.Status !== 2) {
+				if (this.localStatus.uploading.indexOf(value.Id) >= 0 && (value.Status !== 2 && value.Status !== 6)) {
 					value.Status = 2;
 					value.DetailStatus = "uploadLoading";
 					continue;
@@ -969,7 +969,7 @@ export default {
 					value.DetailStatus = "1";
 					continue;
 				}
-				if (this.localStatus.uploading.indexOf(value.Id) >= 0 && value.Status !== 2) {
+				if (this.localStatus.uploading.indexOf(value.Id) >= 0 && (value.Status !== 2 && value.Status !== 6)) {
 					value.Status = 2;
 					value.DetailStatus = "downloadLoading";
 					continue;
@@ -1024,7 +1024,7 @@ export default {
 			const vm = this;
 			const type = this.transferType;
 			if (task === "all") {
-				const arr = this.getTask(type, 0, 1, 2, 4);
+				const arr = this.getTask(type, 0, 1, 2, 4, 6);
 				if (arr.length === 0) {
 					this.$message({
 						message: vm.$t("fileManager.thereAreNoTasksToCancel"),
@@ -1203,7 +1203,7 @@ export default {
 		cancelAll() {
 			const vm = this;
 			const type = this.transferType;
-			const arr = this.getTask(type, 0, 1, 2, 3, 4);
+			const arr = this.getTask(type, 0, 1, 2, 3, 4, 6);
 			if (arr.length === 0) {
 				this.$message({
 					message: vm.$t("fileManager.thereAreNoTasksToCancel"),
@@ -1268,7 +1268,7 @@ export default {
 		pauseAll() {
 			const vm = this;
 			const type = this.transferType;
-			const arr = this.getTask(type, 1, 2);
+			const arr = this.getTask(type, 1, 2, 6);
 			if (arr.length === 0) {
 				this.$message({
 					message: vm.$t("fileManager.thereAreNoTasksToPause"),

@@ -352,7 +352,7 @@ const run = async (appDataPath, appName) => {
                         i++
                         return;
                     } else {
-                        clearInterval(setIntervalObj)
+                        clearInterval(setIntervalObj);
                     }
                     try {
                         cacheRestartObj.restartNum++;
@@ -371,6 +371,11 @@ const run = async (appDataPath, appName) => {
                             cacheRestartObj.edgeCloseRestartFailed.reply('edgeClose', '0');
                         }
                         log.error('edge restart failed' + e)
+                    }
+                } else {
+                    if(cacheRestartObj.edgeCloseRestartFailed) {
+                        cacheRestartObj.edgeCloseRestartFailed.reply('edgeClose', '0');
+                        clearInterval(setIntervalObj);
                     }
                 }
             } catch (e) {

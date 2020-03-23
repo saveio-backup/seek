@@ -428,7 +428,7 @@ export default {
 					new Error(
 						`${vm.$t(
 							"fileManager.insufficientRemainingStorageSpaceCurrently"
-						)} ${this.util.bytesToSize(this.space.Remain * 1024)} ${vm.$t(
+						)} ${this.util.bytesToSize(this.fileSize)} ${vm.$t(
 							"fileManager.remaining"
 						)}`
 					)
@@ -662,6 +662,8 @@ export default {
 					show: false
 				});
 			this.uploadPriceInfo = null;
+			this.$refs.uploadForm.clearValidate();
+			// this.$refs["passwordForm"].validate(() => {});
 		},
 		resetFileList() {
 			this.uploadFormData.Files = [];

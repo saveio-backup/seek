@@ -427,8 +427,12 @@ export default {
 			if (this.Password.length === 0) {
 				this.$message.error(vm.$t("public.pleaseInputWalletPassword"));
 				return false;
+			} else if (this.mainCount && (this.mainCount - 0.01 - (this.cost && this.cost.FeeFormat || 0)) >= 0) {
+				return true;
+			} else {
+				this.$message.error(vm.$t("error[4006]"));
+				return false;
 			}
-			return true;
 		},
 		linkUpload() {
 			this.linkUploadDialogVisible = false;

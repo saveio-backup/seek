@@ -251,7 +251,8 @@ export default {
 			channelForm: {
 				password: "",
 				partner: "",
-				amount: parseFloat(0).toFixed(9)
+				amount: parseFloat(0).toFixed(9),
+				channelId: ""
 			},
 			dialogRules: {
 				amount: [
@@ -505,10 +506,15 @@ export default {
 			this.$nextTick(() => {
 				this.$refs["channelForm"].resetFields();
 				this.channelForm.partner = channelSelected.Address;
+				this.channelForm.channelId = channelSelected.ChannelId
 			});
 		},
 		toPeationChannel() {
 			const vm = this;
+			if(this.channelToggle.type !== "add" && this.channelForm.channelId == localStorage.getItem("channelBindId") && (this.$store.state.Transfer.realDownloadingLength + this.$store.state.Transfer.waitForDownloadOrderList.length > 0)) {
+				this.$message.error(vm.$t("error[5001]"))
+				return;
+			}
 			this.$refs["channelForm"].validate(valid => {
 				if (!valid) return;
 				if (this.channelToggle.type === "add") {

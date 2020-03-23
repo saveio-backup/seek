@@ -25,12 +25,16 @@ const state = {
     DNSState: {},
     DspProxyState: {},
     ChannelProxyState: {}
-  }
+  },
+  moduleState: null,
 }
 // Confirm login status
 
 
 const mutations = {
+  'SET_MODULE_STATE'(state, result) {
+    state.moduleState = result;
+  },
   'SET_STAET'(state, result) {
     state.state = result;
   },

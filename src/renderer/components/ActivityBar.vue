@@ -169,20 +169,44 @@ export default {
 		},
 		// return 0 all offline,1 all online,2 some online some offline
 		status: function() {
+			const vm = this;
 			let online = false;
 			let offline = false;
-			let statusKey = ["Chain", "DNS", "DspProxy"];
-			for (let value of statusKey) {
-				if (
-					this.statusList &&
-					this.statusList[value] &&
-					(this.statusList[value].State === 1 ||
-						(value === "DNS" && !this.statusList[value].HostAddr))
-				) {
+			if (!vm.statusList) return 0;
+			if (!vm.stateObjByName) return 0;
+			if(vm.stateObjByName['chain'] && vm.stateObjByName['chain'].State === 3) {
+				if(!vm.statusList['Chain'] || vm.statusList['Chain'].State === 0) {
+					offline = true;
+				} else {
 					online = true;
+				}
+			} else {
+				offline = true;
+			}
+			if(vm.stateObjByName['dsp'] && vm.stateObjByName['dsp'].State === 3) {
+				if(!vm.statusList['DspProxy'] || vm.statusList['DspProxy'].State === 0) {
+					offline = true;
+				} else {
+					online = true;
+				}
+			} else {
+				offline = true;
+			}
+
+			if(vm.stateObjByName['pylons']) {
+				if(vm.stateObjByName['pylons'].State === 6) {
+					offline = true;
+				} else if (vm.stateObjByName['pylons'].State === 3){
+					if(!vm.statusList['DNS'] || (vm.statusList['DNS'].State === 0 && vm.statusList['DNS'].HostAddr != '')) {
+						offline = true;
+					} else {
+						online = true;
+					}
 				} else {
 					offline = true;
 				}
+			} else {
+				offline = true;
 			}
 			if (online && !offline) {
 				return 1;
@@ -191,6 +215,16 @@ export default {
 			} else {
 				return 2;
 			}
+		},
+		moduleState() {
+			return this.$store.state.Home.moduleState || [];
+		},
+		stateObjByName() {
+			let obj = {};
+			for(let item of this.moduleState) {
+				obj[item.Name] = item;
+			}
+			return obj;
 		}
 	},
 	methods: {

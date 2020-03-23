@@ -266,7 +266,7 @@ export default {
 			ipcRenderer.send("run-dialog-event", {
 				name: "attach",
 				data: {
-					names: ['progress', 'account', 'channel', 'balance', 'revence'],
+					names: ['progress', 'account', 'channel', 'balance', 'revence', 'realDownloadingLength', 'localStatus', 'waitForDownloadOrderList'],
 					id: remote.getCurrentWebContents().id
 				}
 			});

@@ -5,13 +5,15 @@
 		<div  class="flex jc-center ai-center">
 			<div>
 				<!-- <div> -->
+					<!-- {{stateObjByName}}
+					{{statusList}} -->
 				<i
 					class="first-ofont ofont ofont-lianjie1"
-					:class="statusList.Chain && statusList.Chain.State ? 'active-blue' : 'ofont-grep'"
+					:class="stateObjByName['chain'] && stateObjByName['chain'].State === 3 && statusList.Chain && statusList.Chain.State ? 'active-blue' : 'ofont-grep'"
 				></i>
 				<div
 					class="connect-success"
-					v-if="statusList.Chain && statusList.Chain.State"
+					v-if="stateObjByName['chain'] && stateObjByName['chain'].State === 3 && statusList.Chain && statusList.Chain.State"
 				>
 					<i
 						class="ofont ofont-wancheng-"
@@ -32,10 +34,10 @@
 			<div>
 				<i
 					class="first-ofont ofont ofont-ziyuan"
-					:class="statusList.DspProxy && statusList.DspProxy.State ? 'active-blue' : 'ofont-grep'"
+					:class="stateObjByName['dsp'] && stateObjByName['dsp'].State === 3 && statusList.DspProxy && statusList.DspProxy.State ? 'active-blue' : 'ofont-grep'"
 				></i>
 				<div
-					v-if="statusList.DspProxy && statusList.DspProxy.State"
+					v-if="stateObjByName['dsp'] && stateObjByName['dsp'].State === 3 && statusList.DspProxy && statusList.DspProxy.State"
 					class="connect-success"
 				>
 					<i
@@ -57,11 +59,11 @@
 			<div>
 				<i
 					class="first-ofont ofont ofont-DNS-"
-					:class="statusList.DNS && (statusList.DNS.State || (statusList.DNS.HostAddr === '' && currentHeight === totalHeight && totalHeight !== 0)) ? 'active-blue' : 'ofont-grep'"
+					:class="stateObjByName['pylons'] && stateObjByName['pylons'].State === 3 && statusList.DNS && (statusList.DNS.State || statusList.DNS.HostAddr === '') ? 'active-blue' : stateObjByName['pylons'] && stateObjByName['pylons'].State === 6 ? 'ofont-error' : 'ofont-grep'"
 				></i>
 				<div
 					class="connect-success"
-					v-if="statusList.DNS && (statusList.DNS.State || (statusList.DNS.HostAddr === '' && currentHeight === totalHeight && totalHeight !== 0))"
+					v-if="stateObjByName['pylons'] && stateObjByName['pylons'].State === 3 && statusList.DNS && (statusList.DNS.State || statusList.DNS.HostAddr === '')"
 				>
 					<i
 						class="ofont ofont-wancheng-"
@@ -106,24 +108,22 @@ export default {
 		statusList() {
 			return this.$store.state.Home.state;
 		},
-		currentHeight() {
-			return this.$store.state.Home.currentHeight || 0;
+		moduleState() {
+			return this.$store.state.Home.moduleState || [];
 		},
-		totalHeight() {
-			return this.$store.state.Home.totalHeight;
-		},
-		account() {
-			return this.$store.state.Home.account;
+		stateObjByName() {
+			let obj = {};
+			for(let item of this.moduleState) {
+				obj[item.Name] = item;
+			}
+			return obj;
 		}
 	},
 	watch: {
 		statusList() {
 			this.checkDoneLog();
 		},
-		currentHeight() {
-			this.checkDoneLog();
-		},
-		totalHeight() {
+		stateObjByName() {
 			this.checkDoneLog();
 		}
 	},
@@ -133,28 +133,53 @@ export default {
 			clearTimeout(vm.statusListTimeoutObj);
 			vm.statusListTimeoutObj = setTimeout(() => {
 				let flag = true;
+				let dnsHasError = false;
 				if (!vm.statusList) return;
-				for (let key in vm.statusList) {
-					if (
-						vm.statusList &&
-						vm.statusList[key] &&
-						(vm.statusList[key].State ||
-							(key === "DNS" &&
-								vm.statusList[key].HostAddr === "" &&
-								vm.currentHeight === vm.totalHeight &&
-								vm.totalHeight !== 0))
-					) {
-					} else {
-						flag = false;
+				if(vm.stateObjByName['chain'] && vm.stateObjByName['chain'].State === 3) {
+					if(!vm.statusList['Chain'] || vm.statusList['Chain'].State === 0) {
+						return false;
 					}
+				} else {
+					return false;
+				}
+				if(vm.stateObjByName['dsp'] && vm.stateObjByName['dsp'].State === 3) {
+					if(!vm.statusList['DspProxy'] || vm.statusList['DspProxy'].State === 0) {
+						return false;
+					}
+				} else {
+					return false;
+				}
+
+				if(vm.stateObjByName['pylons']) {
+					if(vm.stateObjByName['pylons'].State === 6) {
+						dnsHasError = true;
+					} else if (vm.stateObjByName['pylons'].State === 3){
+						if(!vm.statusList['DNS'] || (vm.statusList['DNS'].State === 0 && vm.statusList['DNS'].HostAddr != '')) {
+							return false;
+						}
+					} else {
+						return false;
+					}
+				} else {
+					return false;
 				}
 				if (flag) {
 					ipcRenderer.send("run-dialog-event", {
 						name: "setIsLoginShowLog",
 						data: true
 					});
+					if(dnsHasError) {
+						ipcRenderer.send("run-dialog-event", {
+							name: "message",
+							data: {
+								info: 'dns已损坏',
+								type: 'error',
+								dangerouslyUseHTMLString: false
+							}
+						});
+					}
 				}
-			}, 10);
+			}, 1000);
 		},
 		getNetworkState() {
 			this.$axios.get(this.$api.networkStatus).then(res => {
@@ -167,7 +192,7 @@ export default {
 			ipcRenderer.send("run-dialog-event", {
 			name: "attach",
 				data: {
-					names: ['progress', 'state', 'account', 'channel'],
+					names: ['progress', 'state', 'channel', 'modulestate'],
 					id: remote.getCurrentWebContents().id
 				}
 			});
@@ -183,6 +208,7 @@ export default {
 	}
 };
 </script>
+
 <style lang="scss">
 #login-log {
 	min-height: 100%;
@@ -223,6 +249,10 @@ export default {
 					margin-bottom: 40px;
 					&.ofont-grep {
 						color: #a6a6a6;
+					}
+
+					&.ofont-error {
+						color: #c44;
 					}
 				}
 	

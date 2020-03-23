@@ -162,9 +162,9 @@ export default {
 		this.$store.dispatch("setCurrentAccount"); // get login status
 		this.$store.dispatch("getDns"); // get login status
 		this.initBalanceRequest();
-		this.$store.dispatch("getUpload");
-		this.$store.dispatch("getDownload");
-		this.$store.dispatch("getComplete");
+		// this.$store.dispatch("getUpload");
+		// this.$store.dispatch("getDownload");
+		// this.$store.dispatch("getComplete");
 	},
 	components: {
 		channelWalletTransfer,

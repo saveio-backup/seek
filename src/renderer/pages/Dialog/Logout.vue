@@ -81,9 +81,11 @@ export default {
               name: "setLoginStatus",
               data: false
 						});
+							// "waitForUploadOrderList",
+							// "waitForDownloadOrderList",
 						const notClear = [
-							"waitForUploadOrderList",
 							"uploadTask",
+							"downloadTask",
 							"localStatus",
 							"showSmallContract",
 							"downloadDoneList",

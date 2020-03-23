@@ -7,36 +7,30 @@
 			<li class="flex">
 				<i
 					class="process-status"
-					:class="{'process-all-error': statusList.Chain.State === 0}"
+					:class="{'process-all-error': !stateObjByName['chain'] || stateObjByName['chain'].State !== 3 || statusList.Chain.State === 0}"
 				></i> {{$t('menuWindow.chainState')}}
 			</li>
 			<li class="flex">
 				<i
 					class="process-status"
-					:class="{'process-all-error': statusList.DspProxy.State === 0}"
+					:class="{'process-all-error': !stateObjByName['dsp'] || stateObjByName['dsp'].State !== 3 || statusList.DspProxy.State === 0}"
 				></i> {{$t('menuWindow.dspProxyState')}}
 			</li>
 			<li class="flex">
 				<i
 					class="process-status"
-					:class="{'process-all-error': statusList.DNS.State === 0 && statusList.DNS.HostAddr, 'process-all-offline': statusList.DNS.State === 0 && !statusList.DNS.HostAddr}"
+					:class="{'process-all-error': !stateObjByName['pylons'] || stateObjByName['pylons'].State !== 3 || statusList.DNS.State === 0 && statusList.DNS.HostAddr, 'process-all-offline': stateObjByName['pylons'] && stateObjByName['pylons'].State === 3 && statusList.DNS.State === 0 && !statusList.DNS.HostAddr}"
 				></i> 
-				<span :class="{'state-font-disabled': statusList.DNS.State === 0 && !statusList.DNS.HostAddr}">
+				<span :class="{'state-font-disabled': stateObjByName['pylons'] && stateObjByName['pylons'].State === 3 && statusList.DNS.State === 0 && !statusList.DNS.HostAddr}">
 					{{$t('menuWindow.dnsState')}}
 				</span>
 				<i
-					v-show="statusList.DNS.State === 0 && statusList.DNS.HostAddr && UpdatedAt(statusList.DNS.UpdatedAt)"
+					v-show="stateObjByName['pylons'] && stateObjByName['pylons'].State === 3 && statusList.DNS.State === 0 && statusList.DNS.HostAddr && UpdatedAt(statusList.DNS.UpdatedAt)"
 					class="ofont ofont-chonglian ftpx18 ml10 light-blue cursor-click cursor-pointer"
 					:class="{'rotate-animate': isLoading}"
 					@click="reconnect"
 				></i>
 			</li>
-			<!-- <li class="flex">
-				<i
-					class="process-status"
-					:class="{'process-all-error': statusList.ChannelProxy.State === 0}"
-				></i> {{$t('menuWindow.channelProxyState')}}
-			</li> -->
 		</ul>
 	</div>
 </template>
@@ -66,6 +60,16 @@ export default {
 					return false;
 				}
 			};
+		},
+		moduleState() {
+			return this.$store.state.Home.moduleState || [];
+		},
+		stateObjByName() {
+			let obj = {};
+			for(let item of this.moduleState) {
+				obj[item.Name] = item;
+			}
+			return obj;
 		}
 	},
 	methods: {

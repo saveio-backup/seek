@@ -905,7 +905,7 @@ export default {
 						// errorMsg += `</p>`;
 						let value = errorArr[i];
 						if (!errorMsg[value.Error]) errorMsg[value.Error] = [];
-						errorMsg[value.Error].push(waitForNowUploadList[i]);
+						errorMsg[value.Error].push(waitForNowDownloadList[i]);
 					}
 					let errorLength = errorArr.length;
 					let param = {
@@ -1061,7 +1061,7 @@ export default {
 				return;
 			}
 
-			let errorMsg = ""; // error message
+			let errorMsg = []; // error message
 			let flag = false; // is have success
 			this.waitForNowDownload({
 				arr,

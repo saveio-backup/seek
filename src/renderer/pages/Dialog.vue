@@ -118,7 +118,8 @@ export default {
 			},
 
 			isNeedSync: false,
-			isLoginShowLog: process.env.NODE_ENV === "development" ? true : false,
+			// isLoginShowLog: process.env.NODE_ENV === "development" ? true : false,
+			isLoginShowLog: false,
 
 			// transfer correlation
 			transferObj: {},
@@ -332,14 +333,12 @@ export default {
 				this.isNotSend = {};
 				this.subject = {};
 				this.viewsIds = [];
+				this.readyDownload = [];
+				this.readyUpload = [];
+				this.newTaskUpload = [];
+				this.newTaskDownload = [];
 				return;
 			}
-			this.getWatchWebcontent();
-			this.$store.dispatch("getWaitForTransferList");
-			this.readyDownload = [];
-			this.readyUpload = [];
-			this.newTaskUpload = [];
-			this.newTaskDownload = [];
 			let _uploadDoneList = localStorage.getItem(`uploadDoneList_${this.Address}`);
 			if(_uploadDoneList) {
 				this.uploadDoneList = JSON.parse(_uploadDoneList);
@@ -354,6 +353,13 @@ export default {
 			} else {
 				this.downloadDoneList = [];
 			}
+			this.$store.dispatch("getWaitForTransferList");
+			this.$nextTick(() => {
+				this.getWatchWebcontent();
+				this.$store.dispatch("getUpload");
+				this.$store.dispatch("getDownload");
+				this.$store.dispatch("getComplete");
+			})
 		},
 		Balance(newVal, oldVal) {
 			if (!oldVal && newVal && this.channelNum === 0) {
@@ -411,21 +417,13 @@ export default {
 				`uploadDoneList_${vm.Address}`,
 				JSON.stringify(val)
 			);
-			// clearTimeout(this.timeoutObj.setTimeUploadDoneList);
-			// this.timeoutObj.setTimeUploadDoneList = setTimeout(() => {
-			// 	this.notifyObserversByName("uploadDoneList", val);
-			// }, this.timeoutObj.COUNT_TIMEOUT);
 		},
 		downloadDoneList(val, oldVal) {
 			const vm = this;
-			// clearTimeout(this.timeoutObj.setTimeDownloadDoneList);
-			// this.timeoutObj.setTimeDownloadDoneList = setTimeout(() => {
-				// vm.notifyObserversByName("downloadDoneList", val);
-				localStorage.setItem(
-					`downloadDoneList_${vm.Address}`,
-					JSON.stringify(val)
-				);
-			// }, this.timeoutObj.COUNT_TIMEOUT);
+			localStorage.setItem(
+				`downloadDoneList_${vm.Address}`,
+				JSON.stringify(val)
+			);
 		}
 	},
 	methods: {
@@ -624,22 +622,13 @@ export default {
 					}, vm.timeoutObj.COUNT_TIMEOUT);
 					break;
 				case "getbalance":
-					clearTimeout(vm.timeoutObj.setTimeGetbalance);
-					vm.timeoutObj.setTimeGetbalance = setTimeout(() => {
-						vm.getBalanceWs(redata);
-					}, vm.timeoutObj.COUNT_TIMEOUT);
+					vm.getBalanceWs(redata);
 					break;
 				case "getfilesharerevenue":
-					clearTimeout(vm.timeoutObj.setTimeGetfilesharerevenue);
-					vm.timeoutObj.setTimeGetfilesharerevenue = setTimeout(() => {
-						vm.getRevenueWs(redata);
-					}, vm.timeoutObj.COUNT_TIMEOUT);
+					vm.getRevenueWs(redata);
 					break;
 				case "networkstate":
-					clearTimeout(vm.timeoutObj.setTimeNetworkstate);
-					vm.timeoutObj.setTimeNetworkstate = setTimeout(() => {
-						vm.getStateWs(redata);
-					}, vm.timeoutObj.COUNT_TIMEOUT);
+					vm.getStateWs(redata);
 					break;
 				case "currentchannel":
 					clearTimeout(vm.timeoutObj.setTimeCurrentchannel);
@@ -654,10 +643,7 @@ export default {
 					}, vm.timeoutObj.COUNT_TIMEOUT);
 					break;
 				case "getcurrentaccount":
-					clearTimeout(vm.timeoutObj.setTimeGetcurrentaccount);
-					vm.timeoutObj.setTimeGetcurrentaccount = setTimeout(() => {
-						vm.getAddressWs(redata);
-					}, vm.timeoutObj.COUNT_TIMEOUT);
+					vm.getAddressWs(redata);
 					break;
 				case "gettransferlist":
 					vm.gettransferlist(redata);
@@ -677,6 +663,14 @@ export default {
 				case 'newtask':
 					vm.newtaskWs(redata);
 					break;
+				case 'modulestate':
+					vm.moduleStateWs(redata);
+					break;
+			}
+		},
+		moduleStateWs(res) {
+			if(res.Error === 0) {
+				this.notifyObserversByName("modulestate", res.Result);
 			}
 		},
 		newtaskWs(res) {
@@ -1396,7 +1390,7 @@ export default {
 			});
 		},
 		// rendTo active browser display message
-		message({ info, type, dangerouslyUseHTMLString }) {
+		message({ info, type, dangerouslyUseHTMLString=false }) {
 			// let views = this.win.views;
 			let views = [];
 			//  remote.BrowserWindow.getAllWindows()[0].views;
@@ -1562,7 +1556,7 @@ export default {
 			let remoteUploadingList = [];
 			for (let value of this.uploadTransferList) {
 				if (!value.IsCache) {
-					if (value.Status === 1 || value.Status === 2) {
+					if (value.Status === 1 || value.Status === 2 || value.Status === 6) {
 						remoteUploadingList.push(value.Id);
 					}
 				}
@@ -1581,7 +1575,7 @@ export default {
 					!value.IsCache &&
 					!value.Url.startsWith("oni://www")
 				) {
-					if (value.Status === 1 || value.Status === 2) {
+					if (value.Status === 1 || value.Status === 2 || value.Status === 6) {
 						remoteDownloadingList.push(value.Id);
 					}
 				}
@@ -1674,9 +1668,9 @@ export default {
 			let uploadingArr = [];
 			let flag = false;
 			for(let value of this.uploadingTransferList) {
-				if(value.Status === 2 && value.DetailStatus !== 5 && value.DetailStatus !== 23) {
+				if((value.Status === 2 || value.Status === 6) && value.DetailStatus !== 5 && value.DetailStatus !== 23) {
 					uploadingArr.push(value.Id)
-				} else if(value.Status === 2 && (value.DetailStatus === 5 || value.DetailStatus === 23)){
+				} else if((value.Status === 2 || value.Status === 6) && (value.DetailStatus === 5 || value.DetailStatus === 23)){
 					console.log('can\'t pause', value);
 					flag = true;
 				}
@@ -1684,9 +1678,9 @@ export default {
 
 			let downloadingArr = [];
 			for(let value of this.downloadingTransferList) {
-				if(value.Status === 2 && value.DetailStatus !== 5 && value.DetailStatus !== 23) {
+				if((value.Status === 2 || value.Status === 6) && value.DetailStatus !== 5 && value.DetailStatus !== 23) {
 					downloadingArr.push(value.Id)
-				} else if(value.Status === 2 && (value.DetailStatus === 5 || value.DetailStatus === 23)){
+				} else if((value.Status === 2 || value.Status === 6) && (value.DetailStatus === 5 || value.DetailStatus === 23)){
 					console.log('can\'t pause', value);
 					flag = true
 				}
@@ -1711,7 +1705,7 @@ export default {
 					}
 					for(let j = 0;j < Res.Result.Tasks.length;j ++) {
 						let _task = Res.Result.Tasks[j];
-						if(_task.State === 2 || _task.State === 1) {
+						if(_task.State === 2 || value.Status === 6 || _task.State === 1) {
 							console.log('can\'t pause Res', _task);
 							return true;
 						}

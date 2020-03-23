@@ -73,7 +73,7 @@ export default {
 			ipcRenderer.send("run-dialog-event", {
 				name: "attach",
 				data: {
-					names: ['progress', 'state'],
+					names: ['progress', 'state', 'modulestate'],
 					id: remote.getCurrentWebContents().id
 				}
 			});

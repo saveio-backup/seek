@@ -110,8 +110,8 @@ export default {
 			}
 			if (this.withDraw && this.channelSelected.IsOnline) {
 				if (
-					value * 1 > this.channelSelected.BalanceFormat * 1 &&
-					this.mainCount >= 0.01
+					value * 1 > this.channelSelected.BalanceFormat * 1 ||
+					this.mainCount < 0.01
 				) {
 					callback(new Error(vm.$t("public.insufficientBalanceAvailable")));
 					return;

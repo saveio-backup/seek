@@ -5,7 +5,7 @@ const result = {
   'uploadTimeout': 'Upload file timeout!',
   'start': 'Wait for the Start',
   'pause': 'Wait for the Pause',
-  '0':  '',
+  '0': 'Task Pause',
   '1': 'Task Pause',
   '2': 'Task Start',
   '3': 'Start Sharding',
@@ -191,6 +191,7 @@ const result = {
   '55065': 'Update plug-in information failed',
   '55066': 'The query for plug-in information failed',
   '55067': 'Failed to obtain all plug-in information',
+  '55068': 'There is have on going download tasks and the channel cannot be closed',
 
   '55100': 'No file information found on the chain',
   '55101': 'File does not exist',
@@ -259,5 +260,7 @@ const result = {
 
   '1000': 'Request Timeout!',
   '1001': 'Request Failed!',
+  '4006': 'Insufficient balance',
+  '5001': 'There is have on going download tasks and the channel cannot be closed',
 }
 export default result;

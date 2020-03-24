@@ -139,6 +139,7 @@
 					<el-input
 						class="mt20 mb20 ft14 back-border-input-class grey-theme"
 						type="textarea"
+						resize="none"
 						:row="4"
 						v-model="validation.confirmPrivateKey"
 						:placeholder="$t('account.pleaseInputYourPrivateKey')"

@@ -6,6 +6,7 @@
 				<el-form-item :label="$t('public.address')+':'">
 					<el-input
 						type="textarea"
+						resize="none"
 						v-model="data.Address"
 						cols="30"
 						rows="10"

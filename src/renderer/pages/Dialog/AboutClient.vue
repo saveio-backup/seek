@@ -36,7 +36,7 @@
 						type="textarea"
 						class="update-info-changelog theme-bg"
 						:value="pluginNeedUpdate.ChangeLog[lang.toUpperCase()]"
-						resize='none'
+						resize="none"
 						readonly
 					>
 					</el-input>

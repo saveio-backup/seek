@@ -25,6 +25,7 @@
 						<el-form-item :label="$t('account.keystoreFile')+':'">
 							<el-input
 								type="textarea"
+								resize="none"
 								v-model="data.Wallet"
 								cols="30"
 								rows="10"

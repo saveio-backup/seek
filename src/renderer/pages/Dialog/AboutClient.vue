@@ -15,7 +15,7 @@
 					class="about_logo"
 				>
 				<p class="mt10 ft20 bold theme-font-color">About Seeker</p>
-				<p class="grey-xs mt10 mb5">Seeker Version: {{version}} </p>
+				<p class="grey-xs mt10 mb5">Seeker Version: {{currentClientVersion}} </p>
 				<p class="grey-xs">Edge Version : {{localStorage.getItem("edgeVersion") || ""}}</p>
 			</div>
 			<div class="loading-content">
@@ -59,7 +59,7 @@
 </template>
 <script>
 import { version, clientUrl } from "../../../../package.json";
-import { ipcRenderer, shell } from "electron";
+import { ipcRenderer, shell, remote } from "electron";
 import fs from "fs";
 export default {
 	mounted() {
@@ -68,7 +68,7 @@ export default {
 	},
 	data() {
 		return {
-			version,
+			currentClientVersion: version,
 			clientUrl,
 			localStorage,
 			pluginNeedUpdate: JSON.parse(localStorage.getItem("lastVersion")) || {},
@@ -104,7 +104,7 @@ export default {
 				this.$message.error(this.$t("public.networkError"));
 				return;
 			}
-			if (version >= result.Version) {
+			if (this.currentClientVersion >= result.Version) {
 				this.updateState = -1;
 				return;
 			}
@@ -113,7 +113,7 @@ export default {
 		},
 		async setUpdateState() {
 			if (this.pluginNeedUpdate.Version) {
-				if (this.pluginNeedUpdate.Version <= version) {
+				if (this.pluginNeedUpdate.Version <= this.currentClientVersion) {
 					this.updateState = -1;
 					return;
 				}
@@ -248,9 +248,10 @@ export default {
 					break;
 				case 3:
 					this.buttonText = this.$t("plugin.startInstall");
-					localStorage.setItem("lastVersion", "{}");
+					// localStorage.setItem("lastVersion", "{}");
 					this.buttonEvent = () => {
-						shell.openItem(this.pluginDetail.Path);
+						shell.openExternal(this.pluginDetail.Path);
+						remote.app.quit();
 					}; // to do
 					break;
 				case 4:

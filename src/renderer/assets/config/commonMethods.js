@@ -92,8 +92,11 @@ const methods = {
                 console.log('res.Result is');
                 console.log(JSON.stringify(res.Result));
                 localStorage.setItem('lastVersion', JSON.stringify(res.Result));
+                console.log('localSorgage lastVersion is');
+                console.log(localStorage.getItem('lastVersion'));
                 resolve(res.Result);
               } else {
+                console.log('当前版本大于接口返回版本')
                 localStorage.setItem('lastVersion', '{}');
                 resolve(res.Result);
               }

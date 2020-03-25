@@ -83,7 +83,7 @@
 					{{$t('plugin.areYouSureYouWantToUninstallTheSelectedPlugin')}}
 				</p>
 				<div slot="footer">
-					<ripper-button						
+					<ripper-button
 						type="primary"
 						@click="switchToggle.confirmDeletePluginDialog=false"
 					>{{$t('public.cancel')}}</ripper-button>
@@ -300,12 +300,11 @@ export default {
 			Seek.openThirdPage(url);
 		},
 		downloadPlugin(url, plugItem) {
-			this.$axios
-				.post(this.$api.download, {
-					Url: url,
-					MaxPeerNum: ipcRenderer.sendSync("getSettings", "maxPeerNum"),
-					SetFileName: true
-				})
+			this.$download({
+				Url: url,
+				MaxPeerNum: ipcRenderer.sendSync("getSettings", "maxPeerNum"),
+				SetFileName: true
+			})
 				.then(res => {
 					if (res.Error === 0) {
 						this.$message({

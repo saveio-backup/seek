@@ -10,10 +10,10 @@
 					class="ft20 mb10 theme-font-color"
 					v-if="fileList.length>0"
 				>{{$t(`fileManager["${transferTypeConfig[transferType]}"]`)}} {{$t('fileManager.progress')}}</p>
-				<p
+				<!-- <p
 					class="grey-xs user-no-select"
 					v-else
-				>{{$t('fileManager.noTask')}}</p>
+				>{{$t('fileManager.noTask')}}</p> -->
 				<el-progress
 					v-if="fileList.length>0"
 					class="progress"

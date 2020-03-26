@@ -250,7 +250,7 @@ export default {
 					this.buttonText = this.$t("plugin.startInstall");
 					// localStorage.setItem("lastVersion", "{}");
 					this.buttonEvent = () => {
-						shell.openExternal(this.pluginDetail.Path);
+						shell.openItem(this.pluginDetail.Path);
 						remote.app.quit();
 					}; // to do
 					break;

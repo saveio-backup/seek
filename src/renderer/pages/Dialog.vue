@@ -339,6 +339,7 @@ export default {
 				this.newTaskDownload = [];
 				return;
 			}
+			this.getViewIds();
 			let _uploadDoneList = localStorage.getItem(`uploadDoneList_${this.Address}`);
 			if(_uploadDoneList) {
 				this.uploadDoneList = JSON.parse(_uploadDoneList);
@@ -488,6 +489,10 @@ export default {
 				if (!this.viewsIds.includes(win.id)) {
 					this.viewsIds.push(win.id);
 				}
+				if (!this.viewsIds.includes(win.webContents.id)) {
+					this.viewsIds.push(win.webContents.id);
+				}
+
 				if (win.views) {
 					for (let view of win.views) {
 						if (view.isActive) {

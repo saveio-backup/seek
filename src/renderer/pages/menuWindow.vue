@@ -19,12 +19,6 @@
 			>
 				<state-info></state-info>
 			</div>
-			<div
-				class="plugin"
-				v-if="menuid === 'plugin'"
-			>
-				<plugin-info></plugin-info>
-			</div>
 		</div>
 	</div>
 </template>
@@ -32,19 +26,18 @@
 import { ipcRenderer, remote } from "electron";
 import syncInfo from "./MenuWindow/SyncInfo";
 import stateInfo from "./MenuWindow/StateInfo";
-import pluginInfo from "./PluginInfo.vue";
 export default {
 	name: "menuWindow",
 	components: {
 		syncInfo,
-		stateInfo,
-		pluginInfo
+		stateInfo
 	},
 	mounted() {
+		const vm = this;
 		ipcRenderer.on("dialog-load", (e) => {
-			this.attach();
+			vm.attach();
 		});
-		this.attach();
+		vm.attach();
 		document.querySelector("body").style.background = "transparent";
 		this.eventListener();
 	},

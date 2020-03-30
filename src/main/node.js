@@ -156,7 +156,8 @@ const setupConfig = async (appDataPath, appName) => {
     let chainId = await global.settingDB.queryData('ChainId');
     for (let index = 0; index <= 1; index++) {
         console.log('exec setupConfig!!!!!!!!!!');
-        if (index === 2 || chainId != index) continue;
+        if (index === 2 ) continue;
+        // if (index === 2 || chainId != index) continue;
         let cfgPath;
         try {
             // cfgPath = await cfgFilePath(appDataPath, appName)
@@ -190,7 +191,9 @@ const setupConfig = async (appDataPath, appName) => {
         }
         let cfg = fs.readFileSync(srcCfgPath);
         let cfgObj = JSON.parse(cfg.toString());
-        cacheRestartObj.cfgObj = Object.assign({}, cfgObj);
+        if(chainId === index) {
+            cacheRestartObj.cfgObj = Object.assign({}, cfgObj);
+        }
         if (!cfgObj) {
             log.error("cfg is no object ")
             log.debug(cfg.toString())

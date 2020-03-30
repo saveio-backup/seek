@@ -26,8 +26,6 @@ const i18n = {
 }
 const log = require('electron-log')
 
-
-
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
@@ -44,43 +42,46 @@ const winURL = process.env.NODE_ENV === 'development' ?
   `http://localhost:9080/#/navigation` :
   `file://${__dirname}/index.html#/navigation`
 
+import initDocs from './initDocs.js'; // Different version compatibility files
 import * as node from "./node"
 
-app.on('will-finish-launching',() => {
+app.on('will-finish-launching', () => {
   app.on('open-file', (e, urlStr) => {
     try {
-      log.error('urlStr:',urlStr);
+      log.error('urlStr:', urlStr);
       const fw = BrowserWindow.getFocusedWindow();
-      if(fw) {
+      if (fw) {
         windows['1'].driftViews[0].browserView.webContents.send('setDecodeFilePath', urlStr);
       } else {
         setTimeout(() => {
           windows['1'].driftViews[0].browserView.webContents.send('setDecodeFilePath', urlStr);
         }, 3000)
       }
-    }catch(e) {
+    } catch (e) {
       log.error(e);
     }
   })
 });
 app.on('ready', function () {
-  global.settingDB = new SettingDB(); // store SettingDB in global var
-  global.HistoryDB = new HistoryDB(); // store HistoryDB in global var
-  // global.usermetaDB = new UsermetaDB(); // store UsermetaDB in global var 
+  initDocs.init(app.getPath("appData"), app.getName()).then(() => {
+    global.settingDB = new SettingDB(); // store SettingDB in global var
+    global.HistoryDB = new HistoryDB(); // store HistoryDB in global var
+    // global.usermetaDB = new UsermetaDB(); // store UsermetaDB in global var 
 
 
-  global.settingDB.initDB(async () => {
-    const currentAddress = await global.settingDB.queryData('currentAddress');
-    const lang = await global.settingDB.queryData('lang')
-    node.setupConfig(app.getPath("appData"), app.getName());
-    node.setFrontConfig(app.getPath("appData"), app.getName());
-    (!frontCfgObj().devEdgeEnable) && node.run(app.getPath("appData"), app.getName());
-    createWindow(winURL);
-    global.usermetaDB = new UsermetaDB(currentAddress);
-    global.HistoryDB.initDB();
-    global.usermetaDB.initDB();
-    global.lang = i18n[lang];
-  })
+    global.settingDB.initDB(async () => {
+      const currentAddress = await global.settingDB.queryData('currentAddress');
+      const lang = await global.settingDB.queryData('lang')
+      node.setupConfig(app.getPath("appData"), app.getName());
+      node.setFrontConfig(app.getPath("appData"), app.getName());
+      (!frontCfgObj().devEdgeEnable) && node.run(app.getPath("appData"), app.getName());
+      createWindow(winURL);
+      global.usermetaDB = new UsermetaDB(currentAddress);
+      global.HistoryDB.initDB();
+      global.usermetaDB.initDB();
+      global.lang = i18n[lang];
+    })
+  });
 })
 
 app.on('window-all-closed', () => {
@@ -112,10 +113,11 @@ app.on('second-instance', (e, argv) => {
     log.debug("argv")
     log.debug(argv)
     windows['1'].driftViews[0].browserView.webContents.send('setDecodeFilePath', argv[(argv.length - 1)]);
-  }catch(e) {
+  } catch (e) {
     log.error(e);
   }
 });
+
 /**
  * Auto Updater
  *

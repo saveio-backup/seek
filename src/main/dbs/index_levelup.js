@@ -43,6 +43,13 @@ const DEFAULT_USERSUMMARY_CONFIG = {
       visits: []
     },
     modify: true
+  },
+  Version: {
+    type: 'JSON',
+    value: {
+      frontVersion: '0.0.0-0'
+    },
+    modify: true
   }
 }
 
@@ -228,6 +235,29 @@ class HistoryDB extends SeekLevelDB {
 
   }
 }
+class VersionDB extends SeekLevelDB {
+
+  constructor() {
+    super('Version');
+  }
+
+  initDB(callback) {
+    const keyLists = {};
+    this.db.createKeyStream()
+      .on('data', (key) => {
+        keyLists[key.toString()] = true;
+      }).on('end', () => {
+        for (const item in DEFAULT_USERSUMMARY_CONFIG.Version.value) {
+          if (!keyLists.hasOwnProperty(item)) {
+            this.updateData(item, DEFAULT_USERSUMMARY_CONFIG.Version.value[item]);
+          }
+        }
+        callback && callback();
+      })
+  }
+}
+
+
 // create dirctory if not exist
 function initDir(...dirname) {
   const subPath = path.join(g_seekLevelDB, ...dirname);
@@ -242,5 +272,6 @@ function initDir(...dirname) {
 export {
   UsermetaDB,
   SettingDB,
-  HistoryDB
+  HistoryDB,
+  VersionDB
 }

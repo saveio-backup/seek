@@ -15,14 +15,12 @@ class InitDocs {
         console.log('=======================');
         const currentVersion = await versionDB.queryData('frontVersion');
         console.log('frontVerison:', currentVersion);
-        if(vm.getNumberByFrontVersion(currentVersion) <= vm.getNumberByFrontVersion('1.0.2-47')) {
+        if(vm.getNumberByFrontVersion(currentVersion) < vm.getNumberByFrontVersion('1.0.2-50')) {
           console.log('toDosomeThing');
           vm.compatibleOpeation(appDataPath, appName)
         }
         versionDB.updateData('frontVersion', version).then(async () => {
-          setTimeout(() => {
-            resolve(true);
-          }, 5000);
+          resolve(true);
           console.log('change version')
         })
       })
@@ -80,8 +78,9 @@ class InitDocs {
   getNumberByFrontVersion(frontVersion) {
     try {
       let frontVersionArr = frontVersion.split(/\.|-/);
+      console.log(frontVersionArr);
       let number = parseInt(frontVersionArr[0]) + (parseInt(frontVersionArr[1]) * Math.pow(10, 3)) +
-      (parseInt(frontVersion[2]) * Math.pow(10,6)) + (parseInt(frontVersion[3]) * Math.pow(10, 9));
+      (parseInt(frontVersionArr[2]) * Math.pow(10,6)) + (parseInt(frontVersionArr[3]) * Math.pow(10, 9));
       return number;
     } catch(e) {
       return 0;

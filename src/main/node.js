@@ -156,7 +156,7 @@ const setupConfig = async (appDataPath, appName) => {
     let chainId = await global.settingDB.queryData('ChainId');
     for (let index = 0; index <= 1; index++) {
         console.log('exec setupConfig!!!!!!!!!!');
-        if (index === 2 ) continue;
+        if (index === 2) continue;
         // if (index === 2 || chainId != index) continue;
         let cfgPath;
         try {
@@ -191,7 +191,7 @@ const setupConfig = async (appDataPath, appName) => {
         }
         let cfg = fs.readFileSync(srcCfgPath);
         let cfgObj = JSON.parse(cfg.toString());
-        if(chainId === index) {
+        if (chainId == index) {
             cacheRestartObj.cfgObj = Object.assign({}, cfgObj);
         }
         if (!cfgObj) {
@@ -376,7 +376,7 @@ const run = async (appDataPath, appName) => {
                         log.error('edge restart failed' + e)
                     }
                 } else {
-                    if(cacheRestartObj.edgeCloseRestartFailed) {
+                    if (cacheRestartObj.edgeCloseRestartFailed) {
                         cacheRestartObj.edgeCloseRestartFailed.reply('edgeClose', '0');
                         clearInterval(setIntervalObj);
                     }

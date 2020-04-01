@@ -69,7 +69,7 @@
 									v-for="item in fileDetail.Whitelist"
 									:key="item"
 								>
-									{{item}}
+								<p>{{item}}</p>
 								</li>
 							</ul>
 						</div>
@@ -408,6 +408,7 @@ export default {
 				overflow: auto;
 				li {
 					margin-bottom: 10px;
+					@extend .grey-color;
 				}
 			}
 		}

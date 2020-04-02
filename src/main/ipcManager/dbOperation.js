@@ -9,7 +9,9 @@ ipcMain.on('initUsermetaDB', (event, subDirname) => {
   if ((!global.usermetaDB) || global.usermetaDB.subDirname != subDirname) {
     global.usermetaDB && global.usermetaDB.close();
     global.usermetaDB = new UsermetaDB(subDirname);
-    global.usermetaDB.initDB();
+    global.usermetaDB.initDB(() => {
+      event.returnValue = 'Done';
+    });
   }
 
 })

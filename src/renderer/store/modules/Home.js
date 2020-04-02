@@ -1,7 +1,7 @@
 import axios from 'axios';
 import api from '../../assets/config/api'
 import {
-  ipcRenderer
+  ipcRenderer, remote
 } from 'electron';
 const state = {
   balanceTotal: 0,
@@ -128,7 +128,12 @@ const actions = {
               data: true
             });
             ipcRenderer.sendSync("updateSettings", 'currentAddress', res.Result.Address);
-            ipcRenderer.send('initUsermetaDB', res.Result.Address); // set Usermeta db
+            ipcRenderer.sendSync('initUsermetaDB', res.Result.Address); // set Usermeta db
+            remote.getCurrentWindow() &&
+              ipcRenderer.sendTo(
+                remote.getCurrentWindow().webContents.id,
+                "updatePlugin"
+              );
             for (let key in result) {
               window.localStorage.setItem(key, result[key]);
             }

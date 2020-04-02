@@ -48,17 +48,17 @@ export default {
 			vm.logoutLoding = vm.$loading({
 				text: vm.$t("fileManager.transferTaskPausing"),
 				target: ".loading-content.logout-loading",
-        lock: true
+				lock: true
 			});
-			
+
 			let falg = await vm.$parent.logoutPauseAllTask();
-			if(!falg) {
+			if (!falg) {
 				vm.logoutLoding && vm.logoutLoding.close();
 				this.$message.error(this.$t(`dialog.taskNotPauseWaitForOpeation`));
 				return;
 			}
 			vm.logoutLoding && vm.logoutLoding.close();
-			
+
 			this.$axios
 				.post(
 					this.$api.account + "/logout",
@@ -78,11 +78,11 @@ export default {
 							data: false
 						});
 						ipcRenderer.send("run-dialog-event", {
-              name: "setLoginStatus",
-              data: false
+							name: "setLoginStatus",
+							data: false
 						});
-							// "waitForUploadOrderList",
-							// "waitForDownloadOrderList",
+						// "waitForUploadOrderList",
+						// "waitForDownloadOrderList",
 						const notClear = [
 							"uploadTask",
 							"downloadTask",
@@ -101,8 +101,14 @@ export default {
 							window.localStorage.removeItem(value);
 						}
 						// window.localStorage.clear();
+						ipcRenderer.sendSync("initUsermetaDB", ""); // set Usermeta db,because you has been logout
+						remote.getCurrentWindow() &&
+							ipcRenderer.sendTo(
+								remote.getCurrentWindow().webContents.id,
+								"updatePlugin"
+							);
 						this.logoutUploadViews();
-						this.$emit('logoutCb');
+						this.$emit("logoutCb");
 						this.closeDialog();
 						ipcRenderer.send("setApp", {key: 'Address', value: ''});
 					} else {

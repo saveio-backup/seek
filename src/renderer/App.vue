@@ -96,7 +96,7 @@ export default {
 		},
 		accountUpdate({ result }) {
 			this.$store.commit("SET_ACCOUNT", result);
-			if(!result) {
+			if (!result) {
 				this.$store.commit("SET_STAET", {
 					ChainState: {},
 					DNSState: {},
@@ -115,7 +115,7 @@ export default {
 			this.$store.commit("SET_REVENUE", result);
 		},
 		goHomeUpdate({ result, page }) {
-			console.log('goHomeUpdate');
+			console.log("goHomeUpdate");
 			if (page === "tab") {
 				if (this.routerName === "settings") return;
 				// if (location.href.indexOf("Home") < 0) {
@@ -126,7 +126,12 @@ export default {
 			}
 		},
 		progressUpdate({ result, page }) {
-			if (this.routerName && this.routerName !== "menuWindow" && this.routerName !== "Navigation" && this.routerName !== "settings") {
+			if (
+				this.routerName &&
+				this.routerName !== "menuWindow" &&
+				this.routerName !== "Navigation" &&
+				this.routerName !== "settings"
+			) {
 				if (result.isNeedSync) {
 					if (location.href.indexOf("CreateAccount") < 0) {
 						this.$router.replace({
@@ -134,14 +139,17 @@ export default {
 						});
 					}
 				} else {
-					if(result.isLoginShowLog === true) {
-						if (location.href.indexOf("CreateAccount") > 0 || location.href.indexOf("loginLog") > 0) {
+					if (result.isLoginShowLog === true) {
+						if (
+							location.href.indexOf("CreateAccount") > 0 ||
+							location.href.indexOf("loginLog") > 0
+						) {
 							this.$router.replace({
 								name: "Home"
 							});
 						}
 					} else {
-						let address = localStorage.getItem('Address');
+						let address = localStorage.getItem("Address");
 						if (location.href.indexOf("loginLog") < 0 && address) {
 							this.$router.replace({
 								name: "LoginLog"
@@ -211,7 +219,7 @@ export default {
 		userspaceUpdate({ result }) {
 			this.$store.commit("SET_SPACE", result);
 		},
-		uploadDoneListUpdate({result}) {
+		uploadDoneListUpdate({ result }) {
 			this.$store.commit("SET_UPLOAD_DONE_LIST", result);
 		},
 		downloadDoneListUpdate({ result }) {

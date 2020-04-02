@@ -39,9 +39,7 @@ const DEFAULT_USERSUMMARY_CONFIG = {
   },
   HistoryRecord: {
     type: 'JSON',
-    value: {
-      visits: []
-    },
+    value: {},
     modify: true
   },
   Version: {
@@ -69,12 +67,6 @@ class SeekLevelDB {
         console.log('level success!');
       }
     });
-    // try {
-    //   this.db = levelup(leveldown(dbPath))
-    // } catch (error) {
-    //   console.log('level error');
-    //   throw (error);
-    // }
   }
 
   updateData(key, value) {
@@ -176,16 +168,18 @@ class HistoryDB extends SeekLevelDB {
 
   constructor(callback) {
     super('History');
+    this.keyLists = {}
   }
 
   initDB(callback) {
-    const keyLists = {};
+    // const keyLists = {};
+    const vm = this;
     this.db.createKeyStream()
       .on('data', (key) => {
-        keyLists[key.toString()] = true;
+        vm.keyLists[key.toString()] = true;
       }).on('end', () => {
         for (const item in DEFAULT_USERSUMMARY_CONFIG.HistoryRecord.value) {
-          if (!keyLists.hasOwnProperty(item)) {
+          if (!vm.keyLists.hasOwnProperty(item)) {
             this.updateData(item, DEFAULT_USERSUMMARY_CONFIG.HistoryRecord.value[item]);
           }
         }
@@ -193,33 +187,36 @@ class HistoryDB extends SeekLevelDB {
       })
   }
 
-  getList({
-    offset,
-    limit
-  }) {
+  async getList(
+  ) {
     const vm = this;
     console.log('offset, limit');
-    // console.log(offset, '===============',limit);
-    return vm.queryData('visits').then(list => {
-      // if(Object.prototype.toString().call(list) !== '[Object Array]') resolve([]);
-      let resLimit = (list.length - offset) > limit ? limit : (list.length - offset)
-      let res = list.splice(offset, resLimit);
-      return res;
+    console.log(app);
+    let _key = `${app.Address || ''}_visits`;
+    if(!vm.keyLists.hasOwnProperty(_key)) {
+      vm.keyLists[_key] = true;
+      await this.updateData(_key, []);
+    }
+    console.log(_key);
+    return vm.queryData(_key).then(list => {
+      return list;
     });
   }
 
-  add({
+  async add({
     timestamp = (new Date()).getTime(),
     title = '--',
     href = '',
     src = ''
   }) {
     const vm = this;
-    console.log('add history')
-    // console.log(timestamp)
-    // console.log(title)
-    // console.log(href)
-    vm.queryData('visits').then(list => {
+    console.log('add history');
+    let _key = `${app.Address || ''}_visits`;
+    if(!vm.keyLists.hasOwnProperty(_key)) {
+      vm.keyLists[_key] = true;
+      await this.updateData(_key, [])
+    }
+    vm.queryData(_key).then(list => {
       list.unshift({
         timestamp,
         title,
@@ -227,12 +224,8 @@ class HistoryDB extends SeekLevelDB {
         src,
         id: uuid.v4()
       });
-      vm.updateData('visits', list);
+      vm.updateData(_key, list);
     })
-  }
-
-  deleteByIds() {
-
   }
 }
 class VersionDB extends SeekLevelDB {

@@ -329,6 +329,7 @@ export default {
 			this.channelNum = null;
 			localStorage.setItem("DNSAdress", "");
 			if (!newVal) {
+				ipcRenderer.send("setApp", {key: 'Address', value: ''});
 				this.setIsLoginShowLog(false);
 				this.isNotSend = {};
 				this.subject = {};
@@ -339,6 +340,7 @@ export default {
 				this.newTaskDownload = [];
 				return;
 			}
+			ipcRenderer.send("setApp", {key: 'Address', value: newVal});
 			this.getViewIds();
 			let _uploadDoneList = localStorage.getItem(`uploadDoneList_${this.Address}`);
 			if(_uploadDoneList) {
@@ -1195,7 +1197,6 @@ export default {
 					this.notifyObserversByName("account", res.Result);
 				}
 			} else {
-				this.Address = "";
 				this.notifyObserversByName("account", res.Result);
 			}
 		},

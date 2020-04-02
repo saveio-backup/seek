@@ -67,7 +67,7 @@ ipcMain.on('updateSettings', (event, key, value) => {
 })
 //historyDB
 ipcMain.on('getListHistory', (event, params) => {
-  global.HistoryDB.getList(params).then(async (res) => {
+  global.HistoryDB.getList().then(async (res) => {
     // console.log('HistoryDB')
     // console.log(res)
     event.returnValue = res;

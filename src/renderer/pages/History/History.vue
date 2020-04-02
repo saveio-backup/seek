@@ -3,7 +3,7 @@
 		<div
 			class="card-container"
 			v-for="(dayTimestamp,index) in list['allTimestampKeyList']"
-			:key="dayTimestamp + index"
+			:key="'' + dayTimestamp + index"
 		>
 			<div class="card-title">
 				{{$dateFormat.formatYearMonthDayByTimestamp(dayTimestamp*86400000)}}
@@ -65,6 +65,7 @@ export default {
 	data() {
 		return {
 			url,
+			listData: [],
 			list: {
 				allTimestampKeyList: []
 			},
@@ -79,20 +80,18 @@ export default {
 	methods: {
 		init() {
 			const vm = this;
+			vm.getData();
 			vm.getList({ offset: vm.offset, limit: vm.limit });
 		},
 		getList({ offset, limit }) {
+			console.log("offset, limit")
+			console.log(offset, limit)
 			const vm = this;
 			if (this.isAll) return;
 			vm.loading = true;
-
-			const list = ipcRenderer.sendSync("getListHistory", {
-				offset: offset,
-				limit: limit
-			});
-			console.log(list);
-
-			for (let i = 0; i < list.length; i++) {
+			let len = Math.min(limit + offset, vm.listData.length);
+			let list = vm.listData;
+			for (let i = offset; i < len; i++) {
 				let prexTimestamp;
 				if (i === 0) {
 					let allTimestampKeyList = vm.list["allTimestampKeyList"] || [];
@@ -116,20 +115,24 @@ export default {
 				vm.list[currentTimestamp].push(list[i]);
 			}
 
-			if (list.length < this.limit) {
+			if (list.length === len) {
 				this.isAll = true;
 			} else {
 				this.offset = this.offset + this.limit;
 			}
 			this.loading = false;
 		},
+		getData() {
+			const vm = this;
+			vm.loading = true;
+
+			vm.listData = ipcRenderer.sendSync("getListHistory");
+			console.log(vm.listData);
+		},
 		scrollInit() {
-			const scrollTop =
-				document.documentElement.scrollTop || document.body.scrollTop;
-			// scrollTop滚动条的垂直位置，innerheight	返回窗口的文档显示区的高度。
+			let historyDom = document.getElementById("history");
 			const bottomwindow =
-				scrollTop + window.innerHeight + 5 >
-				document.getElementById("app").offsetHeight;
+				historyDom.offsetHeight + 5 + historyDom.scrollTop > historyDom.scrollHeight;
 			if (bottomwindow && !this.loading && !this.isAll) {
 				this.getList({ offset: this.offset, limit: this.limit });
 			}
@@ -173,10 +176,14 @@ export default {
 		vm.attach();
 		document.title = this.$t("history.historyRecord");
 		this.init();
-		document.addEventListener("scroll", this.scrollInit);
+		document.getElementById('history').addEventListener("scroll", this.scrollInit);
 	},
 	beforeDestroy() {
-		document.removeEventListener("scroll", this.scrollInit);
+		try {
+			document.getElementById('history').removeEventListener("scroll", this.scrollInit);
+		} catch(e) {
+			console.log(e)
+		}
 	}
 };
 </script>
@@ -184,7 +191,10 @@ export default {
 <style lang="scss">
 #history {
 	padding: 10px 0px;
-	min-height: 100%;
+	// min-height: 100%;
+	height: 100%;
+	overflow: auto;
+
 	.card-container {
 		@include themify {
 			background-color: $card-color;
@@ -193,7 +203,7 @@ export default {
 		border-radius: 6px;
 		padding: 0 30px;
 		width: 900px;
-		margin: 0px auto;
+		margin: 0px auto 15px;
 
 		.card-title {
 			font-size: 20px;

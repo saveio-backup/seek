@@ -239,7 +239,7 @@ class View {
         // const href = e.sender.history[(e.sender.history.length - 1)];
         const src = this.favicon;
         console.log(title, '--->', timestamp, '--->', href, '---------->', src);
-        let res = /^seek:\/\/(history|Login|CreateAccount|ImportAccount|settings)/.test(href)
+        let res = /^seek:\/\/(history|Login|CreateAccount|ImportAccount|settings|loginLog)/.test(href)
         if (res) {
           return;
         }

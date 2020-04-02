@@ -104,6 +104,7 @@ export default {
 						this.logoutUploadViews();
 						this.$emit('logoutCb');
 						this.closeDialog();
+						ipcRenderer.send("setApp", {key: 'Address', value: ''});
 					} else {
 						this.$message.error(this.$t(`error[${res.Error}]`));
 					}

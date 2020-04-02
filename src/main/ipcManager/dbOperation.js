@@ -8,10 +8,17 @@ import {
 ipcMain.on('initUsermetaDB', (event, subDirname) => {
   if ((!global.usermetaDB) || global.usermetaDB.subDirname != subDirname) {
     global.usermetaDB && global.usermetaDB.close();
-    global.usermetaDB = new UsermetaDB(subDirname);
-    global.usermetaDB.initDB(() => {
+    try {
+      global.usermetaDB = new UsermetaDB(subDirname);
+      global.usermetaDB.initDB(() => {
+        event.returnValue = 'Done';
+      });
+    } catch (error) {
       event.returnValue = 'Done';
-    });
+    }
+  } else {
+    // no Need init there has been init in main process
+    event.returnValue = 'Done';
   }
 
 })

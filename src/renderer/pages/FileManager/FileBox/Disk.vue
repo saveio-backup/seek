@@ -313,7 +313,7 @@
 			<div class="loading-content disk-download-loading">
 				<div class="adjust">
 					<div class="adjust-item">
-						<p class="adjust-title  ftpx14">{{$t('fileManager.fileName')}}</p>
+						<p class="adjust-title  ftpx14">{{$t('fileManager.fileName')}}:</p>
 						<div class="adjust-info">
 							<p
 								class="ftpx14 mr20"
@@ -1659,6 +1659,8 @@ $theme-color: #1b1e2f;
 			width: 200px;
 			display: flex;
 			text-align: left;
+			@extend .grey-color;
+
 			.sizeunit {
 				width: 100px;
 				margin: 0 20px;

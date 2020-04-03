@@ -2374,6 +2374,8 @@ $danger: #f56c6c;
 			width: 200px;
 			display: flex;
 			text-align: left;
+			@extend .grey-color;
+
 			.sizeunit {
 				width: 100px;
 				margin: 0 20px;

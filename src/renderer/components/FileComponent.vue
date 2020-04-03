@@ -2279,6 +2279,7 @@ $danger: #f56c6c;
 				.node-value {
 					text-align: left;
 					width: calc(100% - 140px);
+					@extend .grey-color;
 				}
 				.node-process {
 					width: calc(100% - 370px);

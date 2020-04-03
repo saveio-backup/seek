@@ -19,16 +19,13 @@
 		</el-form>
 		<div class="mt20 text-center new-download-wrapper">
 			<div class="tl">
-				<p class="new-download-left">{{$t('public.name')}}:</p>
-				<p class="new-download-right">{{downloadInfo.Name || ''}}</p>
+				{{$t('public.name')}}: {{downloadInfo.Name || ''}}
 			</div>
 			<div class="tl">
-				<p class="new-download-left">{{$t('public.size')}}:</p>
-				<p class="new-download-right">{{downloadInfo.Size? util.bytesToSize(downloadInfo.Size*1024) : '0'}}</p>
+				{{$t('public.size')}}: {{downloadInfo.Size? util.bytesToSize(downloadInfo.Size*1024) : '0'}}
 			</div>
 			<div class="tl">
-				<p class="new-download-left">{{$t('public.cost')}}:</p>
-				<p class="new-download-right">{{downloadInfo.FeeFormat || '0'}} ONI</p>
+				{{$t('public.cost')}}: {{downloadInfo.FeeFormat || '0'}} ONI
 			</div>
 			<ripper-button
 				class="mt40 primary"
@@ -165,25 +162,15 @@ export default {
 };
 </script>
  <style lang="scss">
-.new-download-wrapper {
-	div {
-		margin-bottom: 10px;
-		width: 100%;
-		overflow: hidden;
-		.new-download-left {
-			float: left;
-			width: 55px;
-			text-align: right;
-			height: 2rem;
-			font-size: 1.4rem;
-			line-height: 2rem;
-		}
-		.new-download-right {
-			float: right;
-			width: calc(100% - 60px);
-			height: 2rem;
-			line-height: 2rem;
+ #download-dialog {
+	padding: 0 30px;
+
+	.new-download-wrapper {
+		div {
+			margin-bottom: 10px;
+			width: 100%;
+			overflow: hidden;
 		}
 	}
-}
+ }
 </style>

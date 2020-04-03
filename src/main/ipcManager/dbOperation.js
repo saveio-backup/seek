@@ -5,24 +5,51 @@ import {
 import {
   UsermetaDB
 } from '../dbs/index_levelup';
-ipcMain.on('initUsermetaDB', (event, subDirname) => {
-  if ((!global.usermetaDB) || global.usermetaDB.subDirname != subDirname) {
-    global.usermetaDB && global.usermetaDB.close();
-    try {
-      global.usermetaDB = new UsermetaDB(subDirname);
-      global.usermetaDB.initDB(() => {
-        event.returnValue = 'Done';
-      });
-    } catch (error) {
-      event.returnValue = 'Done';
+
+
+/**
+ * 
+ * @param {string} dbVarName 
+ *        "remote.global" dataBase variable name. (eg:'usermetaDB, historyDB)
+ * @param {string} subDirname
+ *        Subdirectory in current directory. (Usually using a wallet address)
+ * @param {SeekLevelDB} DB 
+ *         Database subclass inherited from SeekLevelDB 
+ * 
+ */
+
+const reInitDB = (dbVarName, subDirname, DB) => {
+
+  return new Promise((reslove, reject) => {
+    if ((!global[dbVarName]) || global[dbVarName].subDirname != subDirname) {
+      global[dbVarName] && global[dbVarName].close();
+      try {
+        global[dbVarName] = new DB(subDirname);
+        global[dbVarName].initDB(() => {
+          reslove('Done');
+        });
+      } catch (error) {
+        reslove('Done');
+      }
+    } else {
+      // no Need init there has been init in main process
+      reslove('Done');
     }
-  } else {
-    // no Need init there has been init in main process
-    event.returnValue = 'Done';
-  }
+  })
+
+}
+
+
+ipcMain.on('initUsermetaDB', async (event, subDirname) => {
+
+  await reInitDB('usermetaDB', subDirname, UsermetaDB)
+  event.returnValue = 'Done';
 
 })
+
+
 ipcMain.on('getUsermeta', (event, key) => {
+
   if (!global.usermetaDB) {
     event.returnValue = null;
     return;
@@ -32,9 +59,12 @@ ipcMain.on('getUsermeta', (event, key) => {
   }).catch(err => {
     event.returnValue = null;
   })
+
 })
 
+
 ipcMain.on('setUsermeta', (event, key, value) => {
+
   global.usermetaDB && global.usermetaDB.updateData(key, value).then(async () => {
     event.returnValue = {
       status: true
@@ -45,24 +75,35 @@ ipcMain.on('setUsermeta', (event, key, value) => {
       msg: reject
     };
   })
+
 })
+
 
 // settingDB
 ipcMain.on('getAllSettings', event => {
+
   global.settingDB.getAllData().then(async (res) => {
     event.returnValue = res;
   }).catch(err => {
     event.returnValue = null;
   })
+
 })
+
+
 ipcMain.on('getSettings', (event, key) => {
+
   global.settingDB.queryData(key).then(async (res) => {
     event.returnValue = res;
   }).catch(err => {
     event.returnValue = null;
   })
+
 })
+
+
 ipcMain.on('updateSettings', (event, key, value) => {
+
   global.settingDB.updateData(key, value).then(async () => {
     event.returnValue = {
       status: true
@@ -73,9 +114,13 @@ ipcMain.on('updateSettings', (event, key, value) => {
       msg: reject
     };
   })
+
 })
+
+
 //historyDB
 ipcMain.on('getListHistory', (event, params) => {
+
   global.HistoryDB.getList().then(async (res) => {
     // console.log('HistoryDB')
     // console.log(res)
@@ -83,4 +128,5 @@ ipcMain.on('getListHistory', (event, params) => {
   }).catch(err => {
     event.returnValue = [];
   })
+
 });

@@ -25,6 +25,7 @@ const result = {
   'about': 'about',
   'openFile': 'Open File',
   'fileAddr': 'File Address',
+  'filePath': 'File Path'
 }
 
 export default result;

@@ -13,7 +13,8 @@
 			</div>
 			<div v-if="!decodeDone" class="decode-file-wrapper loading-content decode-file-loading">
 				<div>
-					<p class="mt20 mb20 ft14 tl break-word">{{$t('dialog.decodes')}} {{path}} {{$t('dialog.file')}}</p>
+					<p class="mt20 ft14 tl">{{$t('dialog.filePath')}}: </p>
+					<p class="grey-color mb20  ft14 tl break-word">{{path}} {{$t('dialog.file')}}</p>
 				</div>
 				<el-form
 					class="mb90"
@@ -48,8 +49,11 @@
 			</div>
 			<div class="text-center open-decode-file-wrapper" v-else>
 				<div>
-					<p class="mt20 mb50 ft14 tl">
-						{{$t('dialog.fileAddr')}}: {{decodePath}}
+					<p class="mt20 ft14 tl">
+						{{$t('dialog.fileAddr')}}:
+					</p>
+					<p class="mb50 ft14 tl grey-color">
+					 {{decodePath}}
 					</p>
 				</div>
 				<div slot="footer">

@@ -25,7 +25,7 @@ const result = {
   'about': '关于',
   'openFile': '打开文件',
   'fileAddr': '文件地址',
-  
+  'filePath': '文件地址'
 }
 
 export default result;

@@ -3,7 +3,8 @@ import {
 } from 'electron'
 
 import {
-  UsermetaDB
+  UsermetaDB,
+  HistoryDB
 } from '../dbs/index_levelup';
 
 
@@ -42,7 +43,8 @@ const reInitDB = (dbVarName, subDirname, DB) => {
 
 ipcMain.on('initUsermetaDB', async (event, subDirname) => {
 
-  await reInitDB('usermetaDB', subDirname, UsermetaDB)
+  await reInitDB('usermetaDB', subDirname, UsermetaDB);
+  await reInitDB('HistoryDB', subDirname, HistoryDB);
   event.returnValue = 'Done';
 
 })

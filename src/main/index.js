@@ -65,7 +65,6 @@ app.on('will-finish-launching', () => {
 app.on('ready', function () {
   initDocs.init(app.getPath("appData"), app.getName()).then(() => {
     global.settingDB = new SettingDB(); // store SettingDB in global var
-    global.HistoryDB = new HistoryDB(); // store HistoryDB in global var
     // global.usermetaDB = new UsermetaDB(); // store UsermetaDB in global var 
 
 
@@ -76,6 +75,7 @@ app.on('ready', function () {
       node.setFrontConfig(app.getPath("appData"), app.getName());
       (!frontCfgObj().devEdgeEnable) && node.run(app.getPath("appData"), app.getName());
       createWindow(winURL);
+      global.HistoryDB = new HistoryDB(currentAddress); // store HistoryDB in global var
       global.usermetaDB = new UsermetaDB(currentAddress);
       global.HistoryDB.initDB();
       global.usermetaDB.initDB();

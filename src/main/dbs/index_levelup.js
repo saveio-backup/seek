@@ -39,7 +39,9 @@ const DEFAULT_USERSUMMARY_CONFIG = {
   },
   HistoryRecord: {
     type: 'JSON',
-    value: {},
+    value: {
+      visits: []
+    },
     modify: true
   },
   Version: {
@@ -166,8 +168,8 @@ class SettingDB extends SeekLevelDB {
 }
 class HistoryDB extends SeekLevelDB {
 
-  constructor(callback) {
-    super('History');
+  constructor(subDirname) {
+    super('History', subDirname);
     this.keyLists = {}
   }
 
@@ -192,12 +194,13 @@ class HistoryDB extends SeekLevelDB {
     const vm = this;
     console.log('offset, limit');
     console.log(app);
-    let _key = `${app.Address || ''}_visits`;
-    if(!vm.keyLists.hasOwnProperty(_key)) {
-      vm.keyLists[_key] = true;
-      await this.updateData(_key, []);
-    }
-    console.log(_key);
+    // let _key = `${app.Address || ''}_visits`;
+    let _key = 'visits'
+    // if(!vm.keyLists.hasOwnProperty(_key)) {
+    //   vm.keyLists[_key] = true;
+    //   await this.updateData(_key, []);
+    // }
+    // console.log(_key);
     return vm.queryData(_key).then(list => {
       return list;
     });
@@ -210,12 +213,13 @@ class HistoryDB extends SeekLevelDB {
     src = ''
   }) {
     const vm = this;
-    console.log('add history');
-    let _key = `${app.Address || ''}_visits`;
-    if(!vm.keyLists.hasOwnProperty(_key)) {
-      vm.keyLists[_key] = true;
-      await this.updateData(_key, [])
-    }
+    // console.log('add history');
+    // let _key = `${app.Address || ''}_visits`;
+    let _key = `visits`;
+    // if(!vm.keyLists.hasOwnProperty(_key)) {
+    //   vm.keyLists[_key] = true;
+    //   await this.updateData(_key, [])
+    // }
     vm.queryData(_key).then(list => {
       list.unshift({
         timestamp,

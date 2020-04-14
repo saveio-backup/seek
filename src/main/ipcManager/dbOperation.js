@@ -11,7 +11,7 @@ import {
 /**
  * 
  * @param {string} dbVarName 
- *        "remote.global" dataBase variable name. (eg:'usermetaDB, historyDB)
+ *        dataBase variable name "remote.global". (eg:'usermetaDB, historyDB)
  * @param {string} subDirname
  *        Subdirectory in current directory. (Usually using a wallet address)
  * @param {SeekLevelDB} DB 

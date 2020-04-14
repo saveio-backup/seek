@@ -140,6 +140,7 @@ const result = {
   '54011': 'Failed to calculate file cost to get file size',
   '54012': 'Failed to calculate file cost',
   '54012': 'Failed to calculate the cost of batch file deletion',
+  '54014': 'The validity period of the storage space cannot be less than one day',
 
   '55000': 'DSP initialization failed',
   '55001': 'DSP startup failed',
@@ -233,7 +234,7 @@ const result = {
   '80004': 'Node connection failed network shutdown failed',
   '80005': 'The request message failed to be sent',
   '80006': 'Failed to send message',
-  
+
   '90000': 'Channel internal error',
   '90001': 'Channel startup failure',
   '90002': 'Channel synchronization block failed',

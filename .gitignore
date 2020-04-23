@@ -11,6 +11,7 @@ resources/mac/edge-darwin-amd64
 resources/seek_releases
 static/webpackPreloadOutput.js
 coverage
+.idea/
 node_modules/
 node_modules.zip
 npm-debug.log

@@ -79,7 +79,7 @@ const methods = {
         })
       })
     }
-    Vue.prototype.$checkClientVersion = function () {
+    Vue.prototype.$checkClientVersion = function () { // TODO while no account , it return no dsp 
       return new Promise(async (resolve, reject) => {
         await Vue.prototype.$axios
           .post(Vue.prototype.$api.pluginQuery, {

@@ -19,7 +19,7 @@ class InitDocs {
 				}
 				if (vm.getNumberByFrontVersion(currentVersion) < vm.getNumberByFrontVersion("1.0.2-53")) {
 					console.log("delete Chain-1 Config");
-					vm.deleteChainConfig("./Chain-1");
+					vm.deleteChainConfig(appDataPath, appName, "./Chain-1");
 				}
 				versionDB.updateData("frontVersion", version).then(async () => {
 					resolve(true);
@@ -47,11 +47,11 @@ class InitDocs {
 		}
 	}
 
-  /**
-   * 
-   * @param {*} configFile  Config-x.json  you want to del (eg: config-1.json)
-   */
-	deleteChainConfig(configFile) {
+	/**
+	 *
+	 * @param {*} configFile  Config-x.json  you want to del (eg: config-1.json)
+	 */
+	deleteChainConfig(appDataPath, appName, configFile) {
 		const _pathChain = path.join(appDataPath, appName, configFile);
 		const hasChain = fs.existsSync(_pathChain);
 		console.log(hasChain);

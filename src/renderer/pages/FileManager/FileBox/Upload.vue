@@ -198,6 +198,7 @@
 						<el-input-number
 							type="number"
 							:min="0"
+							:precision='0'
 							:max="contractSetting.MaxCopyNum"
 							class="form-right"
 							v-model="advancedData.CopyNum"

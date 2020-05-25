@@ -79,7 +79,7 @@ const methods = {
 				await Vue.prototype.$axios
 					.post(Vue.prototype.$api.pluginQuery, {
 						Url: clientUrl,
-						Platrofm: PLANTFORM_TO_NUMBER_STRING[process.platform]
+						Platform: PLANTFORM_TO_NUMBER_STRING[process.platform]
 					})
 					.then(res => {
 						if (res.Error === 0) {

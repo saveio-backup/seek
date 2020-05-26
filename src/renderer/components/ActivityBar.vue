@@ -126,7 +126,6 @@ export default {
 		});
 		ipcRenderer.on("login-status", (e, status) => {
 			vm.loginStatus = status;
-			console.log("this.loginStatus", vm.loginStatus);
 		});
 	},
 	data() {

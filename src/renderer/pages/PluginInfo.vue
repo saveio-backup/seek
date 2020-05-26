@@ -2,63 +2,56 @@
 	<div id="plugin">
 		<div class="container-fluid">
 			<ul class="plugin-items theme-font-color row">
-				<li
-					v-for="(plugin,index) in plugins"
-					:key="index"
-					class="plugin-item col-md-4 col-lg-3"
-				>
+				<li v-for="(plugin, index) in plugins" :key="index" class="plugin-item col-md-4 col-lg-3">
 					<div class="card">
 						<el-switch
 							v-model="plugin.isShow"
-							:title="plugin.isShow?$t('plugin.turnOff'):$t('plugin.turnOn')"
-							v-if="plugin.detail && (plugin.detail.Progress >= 1)"
+							:title="plugin.isShow ? $t('plugin.turnOff') : $t('plugin.turnOn')"
+							v-if="plugin.detail && plugin.detail.Progress >= 1"
 							@change="setIsShow(plugin)"
 						></el-switch>
-						<img
-							:src="plugin.Img"
-							alt="save"
-						>
-						<h3>{{plugin.Title}}</h3>
-						<p :title="plugin.ChangeLog[lang.toUpperCase()]">{{plugin.ChangeLog[lang.toUpperCase()]}}</p>
+						<img :src="plugin.Img" alt="save" />
+						<h3>{{ plugin.Title }}</h3>
+						<p :title="plugin.ChangeLog[lang.toUpperCase()]">{{ plugin.ChangeLog[lang.toUpperCase()] }}</p>
 						<div v-if="plugin.detail">
 							<ripper-button
 								class="primary"
-								v-if="(plugin.detail.Status === 3) && (plugin.isNeedUpdate === false)"
-								@click="openPlugin(plugin.Url,plugin)"
-							>{{$t("plugin.open")}}</ripper-button>
+								v-if="plugin.detail.Status === 3 && plugin.isNeedUpdate === false"
+								@click="openPlugin(plugin.Url, plugin)"
+								>{{ $t("plugin.open") }}</ripper-button
+							>
 							<ripper-button
 								class="primary"
-								v-if="plugin.detail.Status===4"
-								@click="downloadPluginRetry(plugin.Url,plugin)"
-							>{{$t("plugin.retry")}}</ripper-button>
-							<ripper-button
-								class="primary"
-								v-if='(plugin.detail.Status ===1) || (plugin.detail.Status ===2)'
-							>{{$t("plugin.installing")}}</ripper-button>
+								v-if="plugin.detail.Status === 4"
+								@click="downloadPluginRetry(plugin.Url, plugin)"
+								>{{ $t("plugin.retry") }}</ripper-button
+							>
+							<ripper-button class="primary" v-if="plugin.detail.Status === 1 || plugin.detail.Status === 2">{{
+								$t("plugin.installing")
+							}}</ripper-button>
 							<ripper-button
 								class="primary"
 								@click="downloadResume(plugin.detail.Id)"
-								v-if="plugin.detail.Status ===0"
-							>{{$t("plugin.continue")}}</ripper-button>
+								v-if="plugin.detail.Status === 0"
+								>{{ $t("plugin.continue") }}</ripper-button
+							>
 							<ripper-button
 								class="primary"
-								@click="downloadPlugin(plugin.Url,plugin)"
+								@click="downloadPlugin(plugin.Url, plugin)"
 								v-if="plugin.isNeedUpdate === true"
-							>{{$t("plugin.update")}}</ripper-button>
-							<ripper-button
-								v-if="plugin.detail.Progress >= 1"
-								@click="openConfirmDeletePlugin(plugin)"
-							>{{$t("plugin.uninstall")}}</ripper-button>
+								>{{ $t("plugin.update") }}</ripper-button
+							>
+							<ripper-button v-if="plugin.detail.Progress >= 1" @click="openConfirmDeletePlugin(plugin)">{{
+								$t("plugin.uninstall")
+							}}</ripper-button>
 						</div>
-						<ripper-button
-							class="primary"
-							@click="downloadPlugin(plugin.Url,plugin)"
-							v-else
-						>{{$t("plugin.install")}}</ripper-button>
+						<ripper-button class="primary" @click="downloadPlugin(plugin.Url, plugin)" v-else>{{
+							$t("plugin.install")
+						}}</ripper-button>
 						<el-progress
 							v-if="plugin.detail"
 							class="plugin-progress"
-							:class="{'progressAnimate': (plugin.detail.Status == 1 )|| (plugin.detail.Status == 2)}"
+							:class="{ progressAnimate: plugin.detail.Status == 1 || plugin.detail.Status == 2 }"
 							:percentage="Math.ceil(plugin.detail.Progress * 100)"
 							:stroke-width="2"
 							:show-text="false"
@@ -69,29 +62,26 @@
 		</div>
 		<el-dialog
 			width="600px"
-			:close-on-click-modal='false'
+			:close-on-click-modal="false"
 			class="download-file-detail"
 			:visible.sync="switchToggle.confirmDeletePluginDialog"
 			center
 		>
 			<div slot="title">
-				<h2>{{$t('plugin.uninstall')}}</h2>
+				<h2>{{ $t("plugin.uninstall") }}</h2>
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content confirm-cancel-download-dialog">
 				<p class="mb20 mt10">
-					{{$t('plugin.areYouSureYouWantToUninstallTheSelectedPlugin')}}
+					{{ $t("plugin.areYouSureYouWantToUninstallTheSelectedPlugin") }}
 				</p>
 				<div slot="footer">
-					<ripper-button
-						type="primary"
-						@click="switchToggle.confirmDeletePluginDialog=false"
-					>{{$t('public.cancel')}}</ripper-button>
-					<ripper-button
-						class="primary ml10"
-						type="primary"
-						@click="deletePlugin(pluginSelected)"
-					>{{$t('public.confirm')}}</ripper-button>
+					<ripper-button type="primary" @click="switchToggle.confirmDeletePluginDialog = false">{{
+						$t("public.cancel")
+					}}</ripper-button>
+					<ripper-button class="primary ml10" type="primary" @click="deletePlugin(pluginSelected)">{{
+						$t("public.confirm")
+					}}</ripper-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -111,8 +101,7 @@ const G_plugins = [
 		changeLog: {
 			en:
 				"ONI Explorer is a plug-in that queries ONI block, transaction, ONI token, wallet, storage space and other information, and updates all ONI node information in real time.",
-			zh:
-				"ONI区块浏览器是一个查询ONI区块、交易、ONI代币、钱包、存储空间等信息的插件,实时同步更新ONI所有节点信息"
+			zh: "ONI区块浏览器是一个查询ONI区块、交易、ONI代币、钱包、存储空间等信息的插件,实时同步更新ONI所有节点信息"
 		},
 		progress: 0,
 		detail: null
@@ -183,21 +172,14 @@ export default {
 			});
 		},
 		setIsShow(plugin) {
-			const localUrlPlugins = ipcRenderer.sendSync(
-				"getUsermeta",
-				"LocalUrlPlugins"
-			);
+			const localUrlPlugins = ipcRenderer.sendSync("getUsermeta", "LocalUrlPlugins");
 			localUrlPlugins[plugin.Url] = plugin;
 			ipcRenderer.sendSync("setUsermeta", "Plugins", this.plugins);
 			ipcRenderer.sendSync("setUsermeta", "LocalUrlPlugins", localUrlPlugins);
 			this.sendPluginInfo();
 		},
 		sendPluginInfo() {
-			remote.getCurrentWindow() &&
-				ipcRenderer.sendTo(
-					remote.getCurrentWindow().webContents.id,
-					"updatePlugin"
-				);
+			remote.getCurrentWindow() && ipcRenderer.sendTo(remote.getCurrentWindow().webContents.id, "updatePlugin");
 		},
 		async getPluginInfos() {
 			return new Promise((resolve, reject) => {
@@ -210,10 +192,7 @@ export default {
 			let plugins = await this.getPluginInfos();
 			plugins = plugins.Result;
 			const pluginInstaled = [];
-			const localUrlPlugins = ipcRenderer.sendSync(
-				"getUsermeta",
-				"LocalUrlPlugins"
-			);
+			const localUrlPlugins = ipcRenderer.sendSync("getUsermeta", "LocalUrlPlugins");
 			console.log("newCheckPluginInfos localUrlPlugins is");
 			console.log(localUrlPlugins);
 			for (let i = 0; i < plugins.length; i++) {
@@ -227,19 +206,15 @@ export default {
 					plugins[i].isShow = true;
 				}
 				if (this.isPluginExist(plugins[i].Url, localUrlPlugins)) {
-					console.log(
-						"isPluginExist is true,Plugins is exist in DB, and plugins[i] is"
-					);
+					console.log("isPluginExist is true,Plugins is exist in DB, and plugins[i] is");
 					console.log(plugins[i]);
 					plugins[i].detail = localUrlPlugins[plugins[i].Url].detail;
 					if (
 						// if filehash is lastest, just update infoi
-						plugins[i].FileHash !==
-						localUrlPlugins[plugins[i].Url].detail.FileHash
+						plugins[i].FileHash !== localUrlPlugins[plugins[i].Url].detail.FileHash
 					) {
 						localUrlPlugins[plugins[i].Url] = plugins[i]; // update info (not plugin)
-						plugins[i].isNeedUpdate =
-							plugins[i].detail.Status === 3 ? true : false; // need update plugin;
+						plugins[i].isNeedUpdate = plugins[i].detail.Status === 3 ? true : false; // need update plugin;
 					} else {
 						plugins[i].isNeedUpdate = false; // no need  to update plugin;
 					}
@@ -407,17 +382,10 @@ export default {
 						plugin.detail = null;
 						// delete unzip file dir
 						this.deleteFolderRecursive(finalPath);
-						const localUrlPlugins = ipcRenderer.sendSync(
-							"getUsermeta",
-							"LocalUrlPlugins"
-						);
+						const localUrlPlugins = ipcRenderer.sendSync("getUsermeta", "LocalUrlPlugins");
 						delete localUrlPlugins[plugin.Url]; // no longer exists, there is no need to save the local database.
 						this.switchToggle.confirmDeletePluginDialog = false;
-						ipcRenderer.sendSync(
-							"setUsermeta",
-							"LocalUrlPlugins",
-							localUrlPlugins
-						);
+						ipcRenderer.sendSync("setUsermeta", "LocalUrlPlugins", localUrlPlugins);
 					}
 				});
 		}
@@ -428,10 +396,7 @@ export default {
 			console.log("downloading changed");
 			console.log(val);
 			let taskByUrl = {};
-			const localUrlPlugins = ipcRenderer.sendSync(
-				"getUsermeta",
-				"LocalUrlPlugins"
-			);
+			const localUrlPlugins = ipcRenderer.sendSync("getUsermeta", "LocalUrlPlugins");
 			for (let index = 0; index < val.length; index++) {
 				// const task = val[index];
 				taskByUrl[val[index].Url] = val[index];
@@ -449,25 +414,17 @@ export default {
 		},
 		async completeTransferList(val) {
 			if (!this.plugins.length) return;
-			console.log("complete transfer");
-			console.log(val);
 			let taskByUrl = {};
 			for (let i = 0; i < val.length; i++) {
 				if (!val[i].IsUploadAction) taskByUrl[val[i].Url] = val[i];
 			}
 			const pluginsTemp = [];
-			const localUrlPlugins = ipcRenderer.sendSync(
-				"getUsermeta",
-				"LocalUrlPlugins"
-			);
+			const localUrlPlugins = ipcRenderer.sendSync("getUsermeta", "LocalUrlPlugins");
 			const pluginsDB = ipcRenderer.sendSync("getUsermeta", "Plugins");
-			console.log("pluginsDB is ");
-			console.log(pluginsDB);
 			for (let i = 0; i < this.plugins.length; i++) {
 				const pluginItem = this.plugins[i];
-				if (taskByUrl[pluginItem.Url]) {
+				if (taskByUrl[pluginItem.Url] && fs.existsSync(taskByUrl[pluginItem.Url].Path)) {
 					// if plugin in in task, replace it with task
-					console.log("当前完成的任务是对应插件");
 					pluginItem.detail = taskByUrl[pluginItem.Url];
 					pluginItem.isNeedUpdate = false; // no need to update, because it was downloaded from net // to do, may be bug
 					if (
@@ -480,8 +437,7 @@ export default {
 						pluginItem.isShow = true;
 					}
 					pluginsTemp.push(pluginItem);
-					localUrlPlugins[pluginItem.Url] =
-						localUrlPlugins[pluginItem.Url] || {};
+					localUrlPlugins[pluginItem.Url] = localUrlPlugins[pluginItem.Url] || {};
 					localUrlPlugins[pluginItem.Url].detail = pluginItem.detail;
 				} else {
 					const detail = await this.isPluginInTransferDetail(pluginItem.Url);

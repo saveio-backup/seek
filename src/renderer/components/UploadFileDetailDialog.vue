@@ -401,7 +401,7 @@ export default {
 				margin: 0 20px;
 			}
 			& > p {
-				@extend .grey-color;
+				@extend .tertiary-font-color;
 			}
 			ul {
 				max-height: 150px;

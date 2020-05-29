@@ -80,11 +80,11 @@ const calculateTimeLeft = (timeStampLeft) => {
 const calculateTimeFuture = (targettime) => {
   const currentTime = new Date().getTime();
   if (targettime - currentTime > 0 && targettime - currentTime < 86400000 && (new Date(targettime).getDay() - new Date(currentTime).getDay() == 1)) {
-    return '明天\n' + formatHourMinute(new Date(targettime))
+    return 'Tomorrow\n' + formatHourMinute(new Date(targettime))
   } else if (targettime - currentTime > 0 && targettime - currentTime < 86400000) { // 在今天
     return formatHourMinute(new Date(targettime))
   } else if (currentTime - targettime > 0 && currentTime - targettime < 86400000 && (new Date(currentTime).getDay() - new Date(targettime).getDay() == 1)) {
-    return '昨天\n' + formatHourMinute(new Date(targettime))
+    return 'Yesterday\n' + formatHourMinute(new Date(targettime))
   } else if (currentTime - targettime > 0 && currentTime - targettime < 86400000) {
     return formatHourMinute(new Date(targettime))
   } else {

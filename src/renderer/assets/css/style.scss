@@ -297,7 +297,6 @@ select {
         transition-duration: 0s !important;
 
         @include themify {
-            // @extend .grey-color;
             background-color: $color;
         }
     }
@@ -307,7 +306,6 @@ select {
         span.row-name,
         span.sync-process {
             @include themify {
-                // @extend .grey-color;
                 background-color: $color;
             }
         }

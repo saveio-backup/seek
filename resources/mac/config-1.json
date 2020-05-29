@@ -1,6 +1,7 @@
 {
 	"Base": {
 		"BaseDir": ".",
+		"edgeIsRestart":true,
 		"LogPath": "./SeekLog_Config_1",
 		"LogMaxSize": 5242880,
 		"ChainId": "1",

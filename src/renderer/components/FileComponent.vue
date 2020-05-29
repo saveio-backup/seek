@@ -2308,10 +2308,12 @@ $danger: #f56c6c;
 				.node-content-second {
 					width: 129px;
 					text-align: center;
+					@extend .grey-color
 				}
 				.node-content-third {
 					width: 129px;
 					text-align: right;
+					@extend .grey-color
 				}
 			}
 		}

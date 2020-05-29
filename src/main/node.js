@@ -306,8 +306,6 @@ const run = async (appDataPath, appName) => {
     workerProcess.stdout.on('data', function (data) {
         // console.log('stdout: ' + data);
     });
-    var now = new Date()
-    var panicLogFileName = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}_${now.getHours()}_${now.getMinutes()}_${now.getSeconds()}.log`
     if (getPlatform() == "win") {
         var panicLogDir = `${cfgDir}\\PanicLogs`
         if (!fs.existsSync(panicLogDir)) {
@@ -320,6 +318,8 @@ const run = async (appDataPath, appName) => {
         }
     }
     workerProcess.stderr.on('data', function (data) {
+        var now = new Date()
+        var panicLogFileName = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}_${now.getHours()}_${now.getMinutes()}_${now.getSeconds()}.log`
         if (getPlatform() == "win") {
             fs.appendFileSync(`${panicLogDir}\\${panicLogFileName}`, data)
         } else {

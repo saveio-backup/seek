@@ -6,7 +6,7 @@
 		"LogMaxSize": 5242880,
 		"ChainId": "1",
 		"BlockTime": 5,
-		"NetworkId": 1567651915,
+		"NetworkId": 1567651917,
 		"PublicIP": "",
 		"IntranetIP": "",
 		"PortBase": 10000,
@@ -38,7 +38,7 @@
 		"NATProxyServerAddrs": "tcp://106.75.9.56:6007",
 		"DspProtocol": "tcp",
 		"DspPortOffset": 4001,
-		"TrackerNetworkId": 1567651915,
+		"TrackerNetworkId": 1567651917,
 		"TrackerProtocol": "tcp",
 		"TrackerPortOffset": 337,
 		"WalletDir": "./keystore.dat"

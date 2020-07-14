@@ -1659,7 +1659,7 @@ $theme-color: #1b1e2f;
 			width: 200px;
 			display: flex;
 			text-align: left;
-			@extend .grey-color;
+			@extend .tertiary-font-color;
 
 			.sizeunit {
 				width: 100px;

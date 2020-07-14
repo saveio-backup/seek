@@ -2279,7 +2279,7 @@ $danger: #f56c6c;
 				.node-value {
 					text-align: left;
 					width: calc(100% - 140px);
-					@extend .grey-color;
+					@extend .tertiary-font-color;
 				}
 				.node-process {
 					width: calc(100% - 370px);
@@ -2308,12 +2308,12 @@ $danger: #f56c6c;
 				.node-content-second {
 					width: 129px;
 					text-align: center;
-					@extend .grey-color
+					@extend .tertiary-font-color
 				}
 				.node-content-third {
 					width: 129px;
 					text-align: right;
-					@extend .grey-color
+					@extend .tertiary-font-color
 				}
 			}
 		}
@@ -2376,7 +2376,7 @@ $danger: #f56c6c;
 			width: 200px;
 			display: flex;
 			text-align: left;
-			@extend .grey-color;
+			@extend .tertiary-font-color;
 
 			.sizeunit {
 				width: 100px;

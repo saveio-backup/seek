@@ -38,7 +38,7 @@
 		"NATProxyServerAddrs": "tcp://106.75.9.56:6007",
 		"DspProtocol": "tcp",
 		"DspPortOffset": 4001,
-		"TrackerNetworkId": 1585561964,
+		"TrackerNetworkId": 1567651917,
 		"TrackerProtocol": "tcp",
 		"TrackerPortOffset": 337,
 		"WalletDir": "./keystore.dat"

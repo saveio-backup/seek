@@ -91,11 +91,12 @@
 			<div class="flex price-div transfer-meta-price">
 				<div class="price-div-bg user-no-select">ON</div>
 				<p class="price-gas-fee">{{$t('orderpay.total')}}
+				{{round((contractData.GasPrice * contractData.GasLimit + (contractData.TransferPrice || 0)) / powBase, 9)}} ONI	
 				</p>
 				<p
 					class="price-gas-fee"
 					v-if="contractData.Method==='FilmPublish'"
-				>{{round((contractData.GasPrice*contractData.GasLimit) /powBase,9)}} ONI ({{$t('orderpay.amountGas')}})</p>
+				>{{round((contractData.GasPrice*contractData.GasLimit) / powBase,9)}} ONI ({{$t('orderpay.amountGas')}})</p>
 			</div>
 			<!-- <div
 				class="text-center whitelist-checkbox"

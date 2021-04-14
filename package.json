@@ -72,7 +72,7 @@
       "icon": "build/icons"
     },
     "nsis": {
-      "oneClick": false,
+      "oneClick": true,
       "perMachine": false,
       "allowToChangeInstallationDirectory": true
     },

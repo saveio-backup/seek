@@ -1,8 +1,7 @@
 {
 	"Base": {
 		"BaseDir": ".",
-		"edgeIsRestart":true,
-		"LogPath": "./SeekLog_Config_1",
+		"LogPath": "./SeekLog",
 		"LogMaxSize": 5242880,
 		"ChainId": "1",
 		"BlockTime": 5,
@@ -28,12 +27,12 @@
 		"ChainRestAddrs": [
 			"http://106.75.10.25:10334",
 			"http://106.75.10.25:20334",
-			"http://139.219.141.206:20334"
+			"http://117.50.109.129:20334"
 		],
 		"ChainRpcAddrs": [
 			"http://106.75.10.25:10336",
 			"http://106.75.10.25:20336",
-			"http://139.219.141.206:20336"
+			"http://117.50.109.129:20336"
 		],
 		"NATProxyServerAddrs": "tcp://106.75.9.56:6007",
 		"DspProtocol": "tcp",
@@ -41,6 +40,7 @@
 		"TrackerNetworkId": 1567651917,
 		"TrackerProtocol": "tcp",
 		"TrackerPortOffset": 337,
+		"ProfilePortOffset": 332,
 		"WalletDir": "./keystore.dat"
 	},
 	"Fs": {

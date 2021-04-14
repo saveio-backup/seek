@@ -13,7 +13,7 @@ class InitDocs {
 				console.log("=======================");
 				const currentVersion = await versionDB.queryData("frontVersion");
 				console.log("frontVerison:", currentVersion);
-				if (vm.getNumberByFrontVersion(currentVersion) < vm.getNumberByFrontVersion("1.0.2-63")) {
+				if (vm.getNumberByFrontVersion(currentVersion) < vm.getNumberByFrontVersion("1.0.2-66")) {
 					console.log("toDosomeThing");
 					vm.compatibleOpeation(appDataPath, appName);
 				}

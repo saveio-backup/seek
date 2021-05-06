@@ -517,7 +517,7 @@ export default {
 					},
 					{
 						loading: {
-							text: "Creating",
+							text: vm.$t("account.creating"),
 							target: ".step"
 						}
 					}

@@ -1030,7 +1030,7 @@ export default {
 					if (res.Error === 0) {
 						flag = true;
 					} else {
-						errorArr.push(res);
+						errorArr.push({...res, FileName: waitForNowUploadList[i].FileName});
 					}
 				}
 
@@ -1041,7 +1041,7 @@ export default {
 					for (let i = 0; i < errorArr.length; i++) {
 						let value = errorArr[i];
 						if (!errorMsg[value.Error]) errorMsg[value.Error] = [];
-						errorMsg[value.Error].push(waitForNowUploadList[i]);
+						errorMsg[value.Error].push(errorArr[i]);
 					}
 					let errorLength = errorArr.length;
 					this.waitForNowUpload({ arr, len: errorLength, errorMsg, flag });

@@ -1435,6 +1435,7 @@ export default {
 	beforeRouteEnter(to, from, next) {
 		next(vm => {
 			console.log("beforeRouteEnter");
+			if(vm.type !== to.query.type) vm.switchToggle.load = true;
 			vm.type = to.query.type;
 			vm.controlBar = to.query.controlBar;
 			if (to.query.addrAPI) {

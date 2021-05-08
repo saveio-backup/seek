@@ -11,6 +11,7 @@
 				:range-separator="$t('miner.to')"
 				:start-placeholder="$t('miner.start')"
 				:end-placeholder="$t('miner.end')"
+				:default-time="['00:00:00', '23:59:59']"
 			>
 			</el-date-picker>
 			<div class="total-income ft14"> <span class="fixeddddddd">{{$t('miner.totalProfit')}}:</span> <span class="theme-font-color">{{filterFloat(result.TotalIncomeFormat).toLocaleString('en-US') || 0}} ONI</span></div>

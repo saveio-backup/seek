@@ -138,26 +138,20 @@
 							></el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item :label="$t('fileManager.integrityVerificationCycle') + ':'" prop="Interval">
-						<p class="dark-grey tootips break-word">
-							{{ $t("fileManager.integrityVerificationCycleCannotBeLongerThanStorageCycle") }}
-						</p>
-						<el-input-number
-							:precision="0"
-							v-model="verificationCycleNumber"
-							:min="0"
-							:max="advancedData.Duration / BASE[this.verificationCycleSelected]"
-							@change="setDataInterval"
-							class="form-right-second-inside"
-							type="number"
-						></el-input-number>
-						<el-select class="form-right" v-model="verificationCycleSelected" @change="setDataInterval">
+					<el-form-item
+						:label="$t('fileManager.integrityVerificationLevel')+':'"
+					>
+						<p class="dark-grey tootips break-word">{{$t('fileManager.integrityVerificationCycleCannotBeLongerThanStorageCycle')}}</p>
+						<el-select
+							class="form-right"
+							v-model="advancedData.ProveLevel"
+							@change="toGetPrice"
+						>
 							<el-option
-								v-for="(item, index) in baseKeys"
+								v-for="item in [1, 2, 3]"
 								:key="item"
 								:label="$t(`fileManager['${item}']`)"
 								:value="item"
-								v-show="index < baseKeys.length - 1 && index != 0"
 							></el-option>
 						</el-select>
 					</el-form-item>
@@ -408,8 +402,8 @@ export default {
 			baseKeys,
 			BASE,
 			DEFAULT_KEY,
-			verificationCycleSelected: baseKeys[1], // default Second
-			verificationCycleNumber: 30, // Integrity verification cycle
+			// verificationCycleSelected: baseKeys[1], // default Second
+			// verificationCycleNumber: 30, // Integrity verification cycle
 			storageCycleSelected: DEFAULT_KEY, // default Year
 			storageCycleNumber: 1,
 			contractSetting: {
@@ -490,7 +484,8 @@ export default {
 				Privilege: 1, // Authority
 				CopyNum: 1, // axios.get
 				wihteListString: "",
-				WhiteList: []
+				WhiteList: [],
+				ProveLevel: 1
 			},
 			remindToggle: {
 				show: false,
@@ -505,22 +500,22 @@ export default {
 	},
 	mounted() {
 		this.getSpaceIsZero();
-		this.setDataInterval();
+		// this.setDataInterval();
 		this.getfscontractsetting();
 	},
 	beforeRouteEnter(to, from, next) {
 		next(vm => {
 			vm.init();
 			vm.getSpaceIsZero();
-			vm.setDataInterval();
+			// vm.setDataInterval();
 			vm.getfscontractsetting();
 		});
 	},
 	methods: {
 		init() {
 			const vm = this;
-			(this.verificationCycleSelected = this.baseKeys[1]), // default Second
-				(this.verificationCycleNumber = 30), // Integrity verification cycle
+			// (this.verificationCycleSelected = this.baseKeys[1]), // default Second
+				// (this.verificationCycleNumber = 30), // Integrity verification cycle
 				(this.storageCycleSelected = this.DEFAULT_KEY), // default Year
 				(this.storageCycleNumber = 1);
 			this.contractSetting = {
@@ -559,7 +554,8 @@ export default {
 				Privilege: 1, // Authority
 				CopyNum: 1, // axios.get
 				wihteListString: "",
-				WhiteList: []
+				WhiteList: [],
+				ProveLevel: 1
 			}),
 				(this.remindToggle = {
 					show: false,
@@ -636,7 +632,7 @@ export default {
 		//change upload model to advanced
 		toAdvanced() {
 			this.switchToggle.advanced = true;
-			this.setDataInterval();
+			// this.setDataInterval();
 			if (!this.remindToggle.noAllowRemind) this.remindToggle.show = true;
 			this.$refs.uploadForm.validateField("FileSize");
 		},
@@ -736,26 +732,30 @@ export default {
 		setDuration() {
 			this.advancedData.Duration = this.storageCycleNumber * this.BASE[this.storageCycleSelected];
 			// this.formatVerificationCycleNumber();
-			this.setDataInterval();
-			// this.toGetPrice();
-		},
-		// get price when verificationCycleNumber and verificationCycleSelected be changed
-		setDataInterval() {
-			this.formatVerificationCycleNumber();
-			console.log("verificationCycleNumber is");
-			console.log(this.verificationCycleNumber);
-			console.log("this.BASE[this.verificationCycleSelected] is==============");
-			console.log(this.BASE[this.verificationCycleSelected]);
-			this.advancedData.Interval = this.verificationCycleNumber * this.BASE[this.verificationCycleSelected];
+			// this.setDataInterval();
 			this.toGetPrice();
 		},
+		// get price when verificationCycleNumber and verificationCycleSelected be changed
+		// setDataInterval() {
+		// 	this.formatVerificationCycleNumber();
+		// 	console.log("verificationCycleNumber is");
+		// 	console.log(this.verificationCycleNumber);
+		// 	console.log("this.BASE[this.verificationCycleSelected] is==============");
+		// 	console.log(this.BASE[this.verificationCycleSelected]);
+		// 	this.advancedData.Interval =
+		// 		this.verificationCycleNumber *
+		// 		this.BASE[this.verificationCycleSelected];
+		// 	this.toGetPrice();
+		// },
 		// format verificationCycleNumber value
-		formatVerificationCycleNumber() {
-			this.verificationCycleNumber = Math.min(
-				this.verificationCycleNumber,
-				Math.floor(this.advancedData.Duration / this.BASE[this.verificationCycleSelected])
-			);
-		},
+		// formatVerificationCycleNumber() {
+		// 	this.verificationCycleNumber = Math.min(
+		// 		this.verificationCycleNumber,
+		// 		Math.floor(
+		// 			this.advancedData.Duration / this.BASE[this.verificationCycleSelected]
+		// 		)
+		// 	);
+		// },
 		// go filebox page
 		toEmptyUpload() {
 			// this.uploadFormData.Path = "";
@@ -1006,12 +1006,13 @@ export default {
 			);
 			const duration = this.advancedData.Duration;
 			const interval = this.advancedData.Interval;
+			const proveLevel = this.advancedData.ProveLevel;
 			const copyNum = (this.advancedData.CopyNum *= 1);
 			const whitelistCount = this.advancedData.Privilege === 2 ? this.advancedData.WhiteList.length : 0;
 			const storeType = this.switchToggle.advanced ? 1 : 0;
 			// if (!path) return;
 			return this.$axios.get(this.$api.uploadfee + path, {
-				params: { duration, interval, copyNum, whitelistCount, storeType }
+				params: { duration, interval, copyNum, whitelistCount, storeType, proveLevel }
 			});
 		},
 		// get price
@@ -1078,7 +1079,7 @@ export default {
 			}
 			this.advancedDataInit();
 			this.switchToggle.advanced = false;
-			this.setDataInterval();
+			// this.setDataInterval();
 			this.$refs.uploadForm.validateField("FileSize");
 		}
 	},

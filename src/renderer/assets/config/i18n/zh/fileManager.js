@@ -90,6 +90,7 @@ const result = {
   'no': '否',
   'filePassword': '文件密码',
   'integrityVerificationCycle': '完整性验证周期',
+  "integrityVerificationLevel": '完整性验证级别',
   'integrityVerificationCycleCannotBeLongerThanStorageCycle': '完整性验证周期不能长于存储周期',
   'backupNumCannoExceed': '备份数不能超过',
   'backups': '备 份',
@@ -206,7 +207,11 @@ const result = {
   'whiteListExists': '白名单已存在该地址',
   'transferTaskPausing': '传输任务暂停中...',
   'switchingChannelSuccessfully': '更换通道成功',
-  'decryptionSuccess': '解密成功!'
+  'decryptionSuccess': '解密成功!',
+  'proveLevel': '证明级别',
+  "1": '高',
+  "2": '中',
+  "3": '低',
 }
 
 export default result;

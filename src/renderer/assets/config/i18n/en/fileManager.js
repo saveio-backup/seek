@@ -90,6 +90,7 @@ const result = {
   'no': 'No',
   'filePassword': 'File Password',
   'integrityVerificationCycle': 'Integrity Verification Cycle',
+  "integrityVerificationLevel": 'Integrity Verification Level',
   'integrityVerificationCycleCannotBeLongerThanStorageCycle': 'Integrity Verification Cycle cannot be longer than Storage Cycle',
   'backupNumCannoExceed':'The number of backups cannot exceed',
   'backups': 'Backups',
@@ -206,7 +207,11 @@ const result = {
   'whiteListExists': 'The address already exists on the white list',
   'transferTaskPausing': 'Transfer Task Pausing...',
   'switchingChannelSuccessfully': 'Switching channel successfully',
-  'decryptionSuccess': 'Decryption Success!'
+  'decryptionSuccess': 'Decryption Success!',
+  'proveLevel': 'Prove Level',
+  '1': 'Heigh',
+  '2': 'Middle',
+  '3': 'Low',
 }
 
 export default result;

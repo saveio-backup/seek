@@ -41,9 +41,9 @@
 						</div>
 					</div>
 					<div class="adjust-item">
-						<p class="adjust-title ft14">{{$t('fileManager.verificationCycle')}}:</p>
+						<p class="adjust-title ft14">{{$t('fileManager.proveLevel')}}:</p>
 						<div class="adjust-info">
-							<p class="ftpx14 mr20">{{fileDetail && timeTofilter(fileDetail.Interval)}}</p>
+							<p class="ftpx14 mr20">{{fileDetail && !!fileDetail.ProveLevel && $t(`fileManager['${fileDetail.ProveLevel}']`) || ''}}</p>
 						</div>
 					</div>
 					<div class="adjust-item">

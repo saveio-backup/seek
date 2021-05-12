@@ -46,7 +46,6 @@ class dialogView {
   }
   createBrowserView() {
     this.initBrowserView();
-    this.updateEvent();
     this.resize();
     this.loadDialog();
     global.settingDB.queryData('console').then(async (res) => {
@@ -66,9 +65,6 @@ class dialogView {
       console.error(error);
     }
   }
-  updateEvent() {
-
-  }
   initBrowserView() {
     this.browserView = new BrowserView({
       webPreferences: {
@@ -80,10 +76,6 @@ class dialogView {
         defaultEncoding: 'utf-8'
       }
     });
-  }
-
-  updateEvent() {
-
   }
 
   resize() {

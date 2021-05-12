@@ -501,6 +501,7 @@ export default {
 	mounted() {
 		this.getSpaceIsZero();
 		// this.setDataInterval();
+		this.toGetPrice();
 		this.getfscontractsetting();
 	},
 	beforeRouteEnter(to, from, next) {
@@ -508,6 +509,7 @@ export default {
 			vm.init();
 			vm.getSpaceIsZero();
 			// vm.setDataInterval();
+			vm.toGetPrice();
 			vm.getfscontractsetting();
 		});
 	},
@@ -633,6 +635,7 @@ export default {
 		toAdvanced() {
 			this.switchToggle.advanced = true;
 			// this.setDataInterval();
+			this.toGetPrice();
 			if (!this.remindToggle.noAllowRemind) this.remindToggle.show = true;
 			this.$refs.uploadForm.validateField("FileSize");
 		},
@@ -1080,6 +1083,7 @@ export default {
 			this.advancedDataInit();
 			this.switchToggle.advanced = false;
 			// this.setDataInterval();
+			this.toGetPrice();
 			this.$refs.uploadForm.validateField("FileSize");
 		}
 	},

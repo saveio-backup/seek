@@ -5,7 +5,8 @@ import {
 } from 'element-ui'
 import loadingClass from './model/loadingClass';
 axios.defaults.timeout = config.outTime * 5000 + 5000;
-import {i18n} from './../../main'
+// import {i18n} from './../../main'
+import { i18n } from './i18n/index'
 
 // http requst proxy
 axios.interceptors.request.use(request => {

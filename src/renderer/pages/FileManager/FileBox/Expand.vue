@@ -348,7 +348,7 @@ export default {
 			let addr = this.$api.getFileList + "0/0/0/0/0/0/0/0";
 			let result = await this.$axios.get(addr).catch(error => {
 				if (error.message.includes("timeout")) {
-					this.$message.error("Request Timeout!");
+					this.$message.error(this.$t('error.requestTimeout'));
 				}
 			});
 			if (result.Error === 0) {
@@ -413,7 +413,7 @@ export default {
 				})
 				.catch(err => {
 					if (err.message.includes("timeout")) {
-						this.$message.error("Request Timeout!");
+						this.$message.error(this.$t('error.requestTimeout'));
 					}
 					console.error(err);
 				});
@@ -519,7 +519,7 @@ export default {
 							vm.$t("fileManager.networkErrorSetUserSpaceFailed")
 						);
 					} else {
-						this.$message.error("Request Timeout!");
+						this.$message.error(this.$t('error.requestTimeout'));
 					}
 				});
 		},
@@ -558,7 +558,7 @@ export default {
 				})
 				.catch(error => {
 					if (error.message.includes("timeout")) {
-						this.$message.error("Request Timeout!");
+						this.$message.error(this.$t('error.requestTimeout'));
 					}
 				});
 		},

@@ -803,7 +803,7 @@ export default {
 							if (!e.message.includes("timeout")) {
 								this.$message.error(vm.$t("public.networkErrorTransferFailed"));
 							} else {
-								this.$message.error("Request Timeout!");
+								this.$message.error(this.$t('error.requestTimeout'));
 							}
 						});
 				}
@@ -886,7 +886,7 @@ export default {
 				})
 				.catch(err => {
 					if (err.message.includes("timeout")) {
-						this.$message.error("Request Timeout!");
+						this.$message.error(this.$t('error.requestTimeout'));
 					}
 					this.switchToggle.loadSwitch = true;
 					console.log(err);

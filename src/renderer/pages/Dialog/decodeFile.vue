@@ -126,7 +126,7 @@ export default {
 			}).catch(err => {
 				vm.decodeFiling && vm.decodeFiling.close();
 				if (err.message.includes("timeout")) {
-					vm.$message.error("Request Timeout!");
+					vm.$message.error(vm.$t('error.requestTimeout'));
 				}
 			})
     },

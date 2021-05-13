@@ -335,7 +335,7 @@ export default {
 				})
 				.catch(error => {
 					if (error.message.includes("timeout")) {
-						this.$message.error("Request Timeout!");
+						this.$message.error(this.$t('error.requestTimeout'));
 					}
 				});
 		},
@@ -358,7 +358,7 @@ export default {
 				})
 				.catch(error => {
 					if (error.message.includes("timeout")) {
-						this.$message.error("Request Timeout!");
+						this.$message.error(this.$t('error.requestTimeout'));
 					}
 					s;
 				});
@@ -371,7 +371,7 @@ export default {
 				})
 				.catch(error => {
 					if (error.message.includes("timeout")) {
-						this.$message.error("Request Timeout!");
+						this.$message.error(this.$t('error.requestTimeout'));
 					}
 				});
 		},
@@ -404,7 +404,7 @@ export default {
 				})
 				.catch(error => {
 					if (error.message.includes("timeout")) {
-						this.$message.error("Request Timeout!");
+						this.$message.error(this.$t('error.requestTimeout'));
 					}
 				});
 		},
@@ -420,7 +420,7 @@ export default {
 					})
 					.catch(error => {
 						if (error.message.includes("timeout")) {
-							this.$message.error("Request Timeout!");
+							this.$message.error(this.$t('error.requestTimeout'));
 						}
 					});
 			});

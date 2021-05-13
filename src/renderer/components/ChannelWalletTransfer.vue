@@ -235,7 +235,7 @@ export default {
 							if (!e.message.includes("timeout")) {
 								this.$message.error(vm.$t("public.networkErrorTransferFailed"));
 							} else {
-								this.$message.error("Request Timeout!");
+								this.$message.error(vm.$t('error.requestTimeout'));
 							}
 						});
 				}

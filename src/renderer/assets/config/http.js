@@ -4,9 +4,8 @@ import {
   Message
 } from 'element-ui'
 import loadingClass from './model/loadingClass';
-// const OUTTIME = 5;//out block time
 axios.defaults.timeout = config.outTime * 5000 + 5000;
-// axios.defaults.timeout = 100;
+import {i18n} from './../../main'
 
 // http requst proxy
 axios.interceptors.request.use(request => {
@@ -14,7 +13,7 @@ axios.interceptors.request.use(request => {
   return request
 }, error => {
   Message.error({
-    message: 'Request Timeout!'
+    message: i18n.t('error.requestTimeout')
   })
   return Promise.reject(error)
 })
@@ -27,13 +26,6 @@ axios.interceptors.response.use(
   },
   error => {
     loadingClass.removeLoading(error);
-    // if (typeof error !== Object) {
-    //   if (error.message.includes('timeout')) {
-    //     Message.error({
-    //       message: 'Request Timeout!'
-    //     })
-    //   }
-    // }
     return Promise.reject(error)
   }
 );

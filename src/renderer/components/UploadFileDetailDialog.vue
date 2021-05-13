@@ -296,7 +296,7 @@ export default {
 							vm.$t("fileManager.networkErrorGetFileDetailFailed")
 						);
 					} else {
-						this.$message.error("Request Timeout!");
+						this.$message.error(vm.$t('error.requestTimeout'));
 					}
 				});
 		},

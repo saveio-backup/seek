@@ -554,7 +554,7 @@ export default {
 							text: vm.$t("public.processing"),
 							target: ".loading-content-2"
 						},
-						// timeout: 60000
+						// timeout: 6
 						timeout: this.$config.outTime * 10000 + 50000
 					})
 					.then(res => {
@@ -575,7 +575,7 @@ export default {
 								vm.$t("public.networkErrorOpenChannelFailed")
 							);
 						} else {
-							this.$message.error("Request Timeout!");
+							this.$message.error(this.$t('error.requestTimeout'));
 						}
 					});
 			} else {
@@ -609,7 +609,7 @@ export default {
 					if (!e.message.includes("timeout")) {
 						this.$message.error(vm.$t("public.networkErrorCloseChannelFailed"));
 					} else {
-						this.$message.error("Request Timeout!");
+						this.$message.error(vm.$t('error.requestTimeout'));
 					}
 				});
 		}

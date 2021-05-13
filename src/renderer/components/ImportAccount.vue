@@ -387,7 +387,7 @@ export default {
 							vm.$t("account.networkErrorImportWalletFileFailed")
 						);
 					} else {
-						vm.$message.error("Request Timeout!");
+						vm.$message.error(vm.$t('error.requestTimeout'));
 					}
 				});
 		},
@@ -432,7 +432,7 @@ export default {
 									vm.$t("account.networkErrorImportPrivateKeyFailed")
 								);
 							} else {
-								this.$message.error("Request Timeout!");
+								this.$message.error(vm.$t('error.requestTimeout'));
 							}
 						});
 				}

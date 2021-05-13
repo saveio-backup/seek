@@ -5,6 +5,7 @@ const result = {
   'uploadTimeout': '上传文件超时!',
   'start': '等待继续',
   'pause': '等待暂停',
+  'requestTimeout': '请求超时!',
   '0':  '任务暂停',
   '1': '任务暂停',
   '2': '任务开始',

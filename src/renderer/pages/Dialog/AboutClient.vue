@@ -156,7 +156,7 @@ export default {
 				})
 				.catch(error => {
 					if (error.message.includes("timeout")) {
-						this.$message.error("Request Timeout!");
+						this.$message.error(this.$t('error.requestTimeout'));
 					}
 					this.updateState = -2; // to do
 				});
@@ -172,7 +172,7 @@ export default {
 				})
 				.catch(error => {
 					if (error.message.includes("timeout")) {
-						this.$message.error("Request Timeout!");
+						this.$message.error(this.$t('error.requestTimeout'));
 					}
 				});
 		},
@@ -191,7 +191,7 @@ export default {
 				})
 				.catch(error => {
 					if (error.message.includes("timeout")) {
-						this.$message.error("Request Timeout!");
+						this.$message.error(this.$t('error.requestTimeout'));
 					}
 				});
 		},
@@ -205,7 +205,7 @@ export default {
 					})
 					.catch(err => {
 						if (err.message.includes("timeout")) {
-							this.$message.error("Request Timeout!");
+							this.$message.error(this.$t('error.requestTimeout'));
 						}
 						reject(err);
 					});

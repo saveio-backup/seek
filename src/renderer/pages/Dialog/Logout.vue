@@ -118,7 +118,7 @@ export default {
 				.catch(err => {
 					console.error(err);
 					if (err.message.includes("timeout")) {
-						this.$message.error("Request Timeout!");
+						this.$message.error(this.$t('error.requestTimeout'));
 					}
 				});
 		},

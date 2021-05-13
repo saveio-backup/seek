@@ -271,7 +271,7 @@ export default {
 				})
 				.catch(error => {
 					if (error.message.includes("timeout")) {
-						this.$message.error("Request Timeout!");
+						this.$message.error(vm.$t('error.requestTimeout'));
 					}
 				});
 		},

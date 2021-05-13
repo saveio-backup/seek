@@ -733,7 +733,7 @@ export default {
 				.catch(err => {
 					console.error(err);
 					// if (err.message.includes("timeout")) {
-					// 	this.$message.error("Request Timeout!");
+					// 	this.$message.error(this.$t('error.requestTimeout'));
 					// }
 				});
 		},
@@ -785,7 +785,7 @@ export default {
 				.catch(err => {
 					console.error(err);
 					if (err.message.includes("timeout")) {
-						this.$message.error("Request Timeout!");
+						this.$message.error(this.$t('error.requestTimeout'));
 					}
 					this.switchToggle.load = true;
 				})
@@ -1204,7 +1204,7 @@ export default {
 								vm.$t("fileManager.networkErrorDeleteFailed")
 							);
 						} else {
-							this.$message.error("Request Timeout!");
+							this.$message.error(this.$t('error.requestTimeout'));
 						}
 					});
 			});
@@ -1244,7 +1244,7 @@ export default {
 		// 		})
 		// 		.catch(error => {
 		// 			if (error.message.includes("timeout")) {
-		// 				this.$message.error("Request Timeout!");
+		// 				this.$message.error(this.$t('error.requestTimeout'));
 		// 			}
 		// 		});
 		// }
@@ -1292,7 +1292,7 @@ export default {
 					})
 					.catch(error => {
 						if (error.message.includes("timeout")) {
-							this.$message.error("Request Timeout!");
+							this.$message.error(this.$t('error.requestTimeout'));
 						}
 						console.error("unable to calc");
 						this.fileDownloadInfo.Fee = "Unable to calculate. network error.";

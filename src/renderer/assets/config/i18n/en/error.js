@@ -5,6 +5,7 @@ const result = {
   'uploadTimeout': 'Upload file timeout!',
   'start': 'Wait for the Start',
   'pause': 'Wait for the Pause',
+  'requestTimeout': 'Request Timeout!',
   '0': 'Task Pause',
   '1': 'Task Pause',
   '2': 'Task Start',

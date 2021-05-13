@@ -6,10 +6,6 @@
 				<p class="ft20 mb10 theme-font-color" v-if="fileList.length > 0">
 					{{ $t(`fileManager["${transferTypeConfig[transferType]}"]`) }} {{ $t("fileManager.progress") }}
 				</p>
-				<!-- <p
-					class="grey-xs user-no-select"
-					v-else
-				>{{$t('fileManager.noTask')}}</p> -->
 				<el-progress
 					v-if="fileList.length > 0"
 					class="progress"
@@ -25,7 +21,6 @@
 			</div>
 
 			<!-- upload cancel btn -->
-
 			<ripper-button v-if="transferType === 1" class="batch-button" @click="openPassword()">{{
 				$t("fileManager.cancelAll")
 			}}</ripper-button>
@@ -48,7 +43,6 @@
 				@click="pauseAll"
 				>{{ $t("fileManager.pauseAll") }}</ripper-button
 			>
-			<!--@click="switchToggle.newTaskDialog=true"-->
 			<ripper-button v-if="transferType === 2" class="primary batch-button" @click="openNewTaskDialog">{{
 				$t("fileManager.newTask")
 			}}</ripper-button>
@@ -63,9 +57,7 @@
 		<!-- table -->
 		<div class="file-list mr50 ml20" :class="{ 'is-not-compelete-top-progress': transferType != 0 }">
 			<!-- border -->
-			<!-- :data="mockFileList" -->
 			<el-table :data="fileList" :empty-text="$t('public.noData')" height="100%" :show-header="false" row-key="Id">
-				<!-- :data="fileList" -->
 				<el-table-column width="30" label="" class-name="download-type" v-if="transferType === 2">
 					<template slot-scope="scope">
 						<div class="ftpx16">
@@ -137,7 +129,6 @@
 								}}</span>
 							</div>
 							<div class="light-blue" v-else>
-								<!-- {{scope.row.DetailStatus}} -->
 								{{ $t(`error['${scope.row.DetailStatus}']`) }}
 							</div>
 						</div>
@@ -564,82 +555,6 @@ export default {
 				]
 			},
 			executedFile: {}, // a file be opera
-			mockFileList: [
-				{
-					Id: "c3c94084-b8bf-11e9-837c-74e5f93a476b",
-					FileHash: "QmdUW37NcoT4YdkjgPinNFFT6CGHLRRcXQ5SNzrLqT123123JVpd",
-					FileName: "mock_传输管理.png",
-					Type: 2,
-					Status: 2,
-					DetailStatus: 5,
-					CopyNum: 2,
-					Path: "C:\\Users\\qwews\\Desktop\\Seeker交互图\\交互原型图PNG版\\传输管理.png",
-					IsUploadAction: false,
-					UploadSize: 3072,
-					DownloadSize: 1,
-					FileSize: 1024,
-					Url: "",
-					Nodes: [
-						{
-							HostAddr: "tcp://40.73.103.72:33516",
-							UploadSize: 1024,
-							DownloadSize: 0
-						},
-						{
-							HostAddr: "tcp://40.73.103.72:35269",
-							UploadSize: 1024,
-							DownloadSize: 0
-						},
-						{
-							HostAddr: "tcp://40.73.103.72:37559",
-							UploadSize: 1024,
-							DownloadSize: 0
-						}
-					],
-					Progress: 1,
-					CreatedAt: 1565146937,
-					UpdatedAt: 1565150221,
-					ErrorCode: 0,
-					StoreType: 0
-				},
-				{
-					Id: "c3c94084-b8bf-11e9-837c-74e5f93a4762",
-					FileHash: "QmdUW37NcoT4YdkjgPinNFFT6CGHLR2cXQ5SqTJVpd",
-					FileName: "传输管理2.png",
-					Type: 1,
-					Status: 2,
-					DetailStatus: 23,
-					CopyNum: 2,
-					Url: "oni://www",
-					Path: "C:\\Users\\qwews\\Desktop\\Seeker交互图\\交互原型图PNG版\\传输管理.png",
-					IsUploadAction: false,
-					UploadSize: 2072,
-					DownloadSize: 3678121520,
-					FileSize: 1024,
-					Nodes: [
-						{
-							HostAddr: "tcp://40.73.103.72:33516",
-							UploadSize: 1024,
-							DownloadSize: 0
-						},
-						{
-							HostAddr: "tcp://40.73.103.72:35269",
-							UploadSize: 1024,
-							DownloadSize: 0
-						},
-						{
-							HostAddr: "tcp://40.73.103.72:37559",
-							UploadSize: 1024,
-							DownloadSize: 0
-						}
-					],
-					Progress: 1,
-					CreatedAt: 1565146937,
-					UpdatedAt: 1565150221,
-					ErrorCode: 0,
-					StoreType: 0
-				}
-			],
 			//http loading array
 			httpWaitForing: {},
 			// speed association attributes
@@ -888,7 +803,6 @@ export default {
 		// dialog confirm cancel download
 		cancelDownload() {
 			const vm = this;
-			// this.switchToggle.confirmCancelDownloadDialog = false;
 			this.switchToggle.confirmCancelDownloadDialogLoading = this.$loading({
 				target: ".confirm-cancel-download-dialog.loading-content",
 				text: vm.$t("fileManager.loading"),
@@ -1032,12 +946,7 @@ export default {
 				return;
 			}
 
-			if (file != null && (file.DetailStatus === 5 || file.DetailStatus === 23) && file.Status !== 4) {
-				// this.$message({
-				// 	message: vm.$t('fileManager.thereAreNoTasksToCancel')
-				// });
-				return;
-			}
+			if (file != null && (file.DetailStatus === 5 || file.DetailStatus === 23) && file.Status !== 4) return;
 			if (this.uploadLength === 0) {
 				this.$message({
 					message: vm.$t("fileManager.thereAreNoTasksToCancel"),
@@ -1908,31 +1817,6 @@ export default {
 			}
 			this.taskSpeed = newTaskSpeed;
 		},
-		// getTaskSpeed() {
-		// 	let oldTaskSpeed = this.taskSpeed;
-		// 	let newTaskSpeed = {};
-		// 	this.taskSpeedNum = this.taskSpeedNum + 3;
-		// 	if (this.taskSpeedNum !== 3) {
-		// 		this.passHowLongTimeGetFileList = this.taskSpeedNum;
-		// 		return;
-		// 	}
-		// 	for (let value of this.fileList) {
-		// 		let uploadOrDownloadSize = value.UploadSize || value.DownloadSize;
-		// 		let speed =
-		// 			uploadOrDownloadSize -
-		// 			(oldTaskSpeed[value.Id]
-		// 				? oldTaskSpeed[value.Id].FileSize
-		// 				: uploadOrDownloadSize);
-		// 		if (newTaskSpeed[value.Id]) continue;
-		// 		newTaskSpeed[value.Id] = {
-		// 			speed: speed / (this.passHowLongTimeGetFileList + 3),
-		// 			FileSize: uploadOrDownloadSize
-		// 		};
-		// 	}
-		// 	// this.passHowLongTimeGetFileList = this.passHowLongTimeGetFileList + 3;
-		// 	this.passHowLongTimeGetFileList = 3;
-		// 	this.taskSpeed = newTaskSpeed;
-		// },
 		/**
 		 * params
 		 * isF: is not force run
@@ -1953,28 +1837,7 @@ export default {
 				};
 			}
 			this.nodeSpeed = newNodeSpeed;
-			// }
 		}
-		// getNodeSpeed(isF = false) {
-		// 	if (this.transferType === 1) return;
-		// 	if ((this.fileDetailNodes.length > 0 && this.taskSpeedNum === 1) || isF) {
-		// 		let oldNodeSpeed = this.nodeSpeed;
-		// 		let newNodeSpeed = {};
-		// 		for (let value of this.fileDetailNodes) {
-		// 			let uploadOrDownloadSize = value.UploadSize || value.DownloadSize;
-		// 			let speed =
-		// 				oldNodeSpeed[value.HostAddr] !== undefined
-		// 					? uploadOrDownloadSize -
-		// 					  (oldNodeSpeed[value.HostAddr].FileSize || 0)
-		// 					: 0;
-		// 			newNodeSpeed[value.HostAddr] = {
-		// 				speed: speed / this.passHowLongTimeGetFileList,
-		// 				FileSize: uploadOrDownloadSize
-		// 			};
-		// 		}
-		// 		this.nodeSpeed = newNodeSpeed;
-		// 	}
-		// }
 	},
 	mounted() {
 		// const INTERVAL_TIME = 1000;

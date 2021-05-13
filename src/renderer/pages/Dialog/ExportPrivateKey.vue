@@ -96,11 +96,9 @@ export default {
 							"PrivateKey"
 						);
 						ipcRenderer.once("export-finished", () => {
-							// ipcRenderer.send("open-info-dialog", { info: "Export Success!" });
 							this.$refs.dialogForm.resetFields();
 							this.message({ type: "success", info: vm.$t('dialog.exportSuccess')});
 							this.closeDialog();
-							// this.exportPrivateKeyToggle = false;
 						});
 					} else {
 						this.$message.error(this.$t(`error[${res.Error}]`));

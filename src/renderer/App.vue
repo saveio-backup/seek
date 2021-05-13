@@ -118,11 +118,9 @@ export default {
 			console.log("goHomeUpdate");
 			if (page === "tab") {
 				if (this.routerName === "settings") return;
-				// if (location.href.indexOf("Home") < 0) {
 				this.$router.replace({
 					name: "Home"
 				});
-				// }
 			}
 		},
 		progressUpdate({ result, page }) {

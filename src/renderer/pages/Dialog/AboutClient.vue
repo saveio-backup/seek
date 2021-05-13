@@ -248,7 +248,6 @@ export default {
 					break;
 				case 3:
 					this.buttonText = this.$t("plugin.startInstall");
-					// localStorage.setItem("lastVersion", "{}");
 					this.buttonEvent = () => {
 						shell.openItem(this.pluginDetail.Path);
 						remote.app.quit();
@@ -269,7 +268,6 @@ export default {
 		},
 		downloadingTransferList(val) {
 			for (let index = 0; index < val.length; index++) {
-				// const task = val[index];
 				if (val[index].Url === this.clientUrl) {
 					this.updateState = val[index].Status;
 					break;
@@ -278,7 +276,6 @@ export default {
 		},
 		completeTransferList(val) {
 			for (let index = 0; index < val.length; index++) {
-				// const task = val[index];
 				if (val[index].Url === this.clientUrl) {
 					this.pluginDetail = val[index];
 					this.updateState = val[index].Status;

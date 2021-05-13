@@ -1,11 +1,9 @@
 <template>
-	<!-- @mouseleave="hiddenDialog" -->
 	<div
 		id="menu-window"
 		@blur="hiddenDialog"
 	>
 		<!-- MenuWindow -->
-		<!-- @mouseenter="hiddenDialog" -->
 		<div style="padding:3px">
 			<div
 				class="syncInfo box-shadow"

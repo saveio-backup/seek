@@ -72,7 +72,6 @@ export default {
 				)
 				.then(res => {
 					if (res.Error === 0) {
-						// remote.getCurrentWindow().send('login-status', false);
 						ipcRenderer.send("run-dialog-event", {
 							name: "setIsLoginShowLog",
 							data: false
@@ -100,7 +99,6 @@ export default {
 							}
 							window.localStorage.removeItem(value);
 						}
-						// window.localStorage.clear();
 						ipcRenderer.sendSync("initUsermetaDB", ""); // set Usermeta db,because you has been logout
 						remote.getCurrentWindow() &&
 							ipcRenderer.sendTo(

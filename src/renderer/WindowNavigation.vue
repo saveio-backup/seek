@@ -10,7 +10,6 @@
 						:key="index"
 						:class="{'is-active':item.isActive}"
 					>
-						<!-- @click="remoteSetActive(item,index)" -->
 						<span
 							v-if="item.isLoading"
 							class="el-icon-loading ml10"
@@ -94,14 +93,11 @@
 							@keyup.esc.native='inputDisplayUrl=activeView.displayURL'
 							@keyup.enter.native='remoteLoadURL(activeView)'
 						></el-input>
-						<!-- @mouseleave="hiddenDialog" -->
 						<div
 							@mouseleave="hiddenDialog"
 							@mouseenter="setDialog('syncInfo')"
 							class="sync-wrapper flex flex-center"
 						>
-							<!-- v-if="address && !isNeedSync" -->
-							<!-- v-if="address && !isNeedSync" -->
 							<el-progress
 								class="sync-progress"
 								type="circle"
@@ -126,7 +122,6 @@
 							</span>
 						</div>
 					</div>
-					<!-- <div @click="setDialog('netstate')" v-if="true">Syning...</div> -->
 					<el-progress
 						v-show="activeView.pageLoadProgress<1"
 						class="page-load-progress"
@@ -139,18 +134,15 @@
 					v-if="platform === 'win32'"
 					class="winform"
 				>
-					<!-- class="window-min ofont ofont-zuixiaohua" -->
 					<a
 						@click="windowMin"
 						class="minimize ofont ofont-zuixiaohua"
 					></a>
-					<!-- class="maximize ofont" -->
 					<a
 						class="window-resize ofont maximize"
 						:class="{'ofont-tuichuquanping':isMaximized,'ofont-zuidahua':!isMaximized}"
 						@click="windowResize"
 					></a>
-					<!-- class="window-close ofont ofont-guanbi" -->
 					<a
 						class="window-close close ofont ofont-guanbi"
 						@click="closeWindow"
@@ -298,11 +290,6 @@ export default {
 			view.destroy(index);
 		},
 		remoteFormatDisplayURL(view) {
-			// this.$refs["inputUrl" + index][0].blur();
-			// setTimeout(() => {
-			// 	// waiting data from 'formatDisplayURL' method return 'displayURL'
-			// 	this.$refs["inputUrl" + index][0].select();
-			// }, 0);
 			view.formatDisplayURL();
 		},
 		remoteLoadURL(view) {
@@ -364,10 +351,6 @@ export default {
 				id: menuid
 			};
 			this.currentWindow.menuWindow.openMenu(params);
-			// this.currentWindow.menuWindow.win.on(
-			// 	"blur",
-			// 	this.currentWindow.menuWindow.win.hide
-			// );
 		}
 	}
 };

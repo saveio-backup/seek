@@ -50,7 +50,6 @@ import util from "../../assets/config/util";
 export default {
 	mounted() {
 		this.$store.dispatch("setSpace");
-		// this.getUserSpace();
 	},
 	data() {
 		return {
@@ -108,7 +107,6 @@ $danger: #f56c6c;
 	.aside {
 		display: flex;
 		flex-direction: column;
-		// justify-content: space-between;
 		align-items: center;
 		position: absolute;
 		top: 60px;
@@ -155,7 +153,6 @@ $danger: #f56c6c;
 						background-color: $filemanager-aside-hover-color;
 					}
 					color: #2f8ff0;
-					// background: rgba(231, 231, 235, 1);
 				}
 				&:active {
 					opacity: 0.7;
@@ -165,7 +162,6 @@ $danger: #f56c6c;
 						background-color: $filemanager-aside-hover-color;
 					}
 					color: #2f8ff0;
-					// background: rgba(231, 231, 235, 1);
 				}
 			}
 		}

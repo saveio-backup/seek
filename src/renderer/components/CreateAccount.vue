@@ -89,7 +89,6 @@
 					v-if="step===1"
 				>
 					<div class="flex between">
-						<!-- <p> Backup your </p> -->
 						<ripper-button
 							class="primary margin-center mt20 mb20"
 							@click="exportFile(validation.Wallet,'keystore')"
@@ -105,7 +104,6 @@
 					class="step"
 					v-if="step===2"
 				>
-					<!-- <p>Backup your Private Key(WIF)</p> -->
 					<p class="back-border-class">{{validation.PrivateKey}}</p>
 					<ripper-button
 						class="primary"
@@ -119,7 +117,6 @@
 						class="mt20 mb20 ft14 break-word"
 						style="color:#e95464"
 					>{{$t('account.keepThisPrivateKeySafe')}}</p>
-					<!-- <el-button @click="setStep(1)">Return</el-button> -->
 					<p class="back-class ft14">
 						<a @click="setStep(1)">{{$t('account.back')}}</a>
 					</p>
@@ -130,7 +127,6 @@
 					v-if="step ===3"
 				>
 					<div class="flex between ai-center">
-						<!-- <p></p> -->
 						<ripper-button
 							@click="importFile"
 							class="primary margin-center mt20 mb20"
@@ -144,7 +140,6 @@
 						v-model="validation.confirmPrivateKey"
 						:placeholder="$t('account.pleaseInputYourPrivateKey')"
 					></el-input>
-					<!-- <el-button @click="setStep(2)">Return</el-button> -->
 					<p class="back-class ft14">
 						<a @click="setStep(2)">{{$t('account.back')}}</a>
 					</p>
@@ -234,7 +229,6 @@ export default {
 				callback(new Error(vm.$t("account.invaildword")));
 			} else {
 				callback();
-				// new Error(vm.$t("account.inconsistentPasswordsFilledInTwice"))
 			}
 		};
 		return {
@@ -245,7 +239,6 @@ export default {
 			clipboard,
 			loopFontIndex: 0,
 			accountStatus: "", // 0: no account, 1:account exist
-			// progress: 0,
 			switchToggle: {
 				passwordStrength: -1,
 				loading: null,
@@ -524,14 +517,12 @@ export default {
 				)
 				.then(res => {
 					if (res.Error === 0) {
-						// this.$store.dispatch("getChannelInitProgress");
 						const result = res.Result;
 						this.accountStatus = 1;
 						for (let key in result) {
 							window.localStorage.setItem(key, result[key]);
 						}
 						this.switchToggle.submitSwitch = true;
-						// window.location.href = location.origin + location.pathname;
 					} else {
 						this.$message.error(this.$t(`error[${res.Error}]`));
 						this.switchToggle.submitSwitch = true;
@@ -653,10 +644,5 @@ export default {
 			}
 		}
 	}
-	// .el-form .el-input__inner {
-	// 	background: #edeff4;
-	// 	border: 0;
-	// 	border-radius: 2px;
-	// }
 }
 </style>

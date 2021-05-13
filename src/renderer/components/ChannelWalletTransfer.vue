@@ -70,7 +70,6 @@
 					@keyup.enter.native='toTransfer'
 					@blur="setFixed"
 				>
-					<!-- maxlength="9" -->
 				</el-input>
 			</el-form-item>
 			<el-form-item
@@ -218,8 +217,6 @@ export default {
 						)
 						.then(res => {
 							if (res.Error === 0) {
-								// this.transferInfo.Amount = 0; // reset
-								// this.transferInfo.Password = ""; // reset
 								this.$refs.transferForm.resetFields();
 								this.$message({
 									message: vm.$t("public.transferSuccess"),
@@ -293,7 +290,6 @@ export default {
 			margin-left: 20px;
 			margin-right: 20px;
 			align-items: center;
-			// padding: 5px 10px;
 			padding: 10px 16px;
 			background: $color;
 		}
@@ -326,16 +322,6 @@ export default {
 	}
 	.transfer-input {
 		&.el-input {
-			// .el-input__inner {
-			// background: #ebecef;
-			// height: 35px;
-			// line-height: 35px;
-			// border-radius: 2px;
-			// border: none;
-			// &:focus {
-			// 	border: none;
-			// }
-			// }
 			.el-input-group__append {
 				background: none;
 				border: none;
@@ -358,7 +344,6 @@ export default {
 			background: $color;
 		}
 		color: blue;
-		// width: 45px;
 		width: 54px;
 		justify-content: center;
 	}

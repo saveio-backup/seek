@@ -137,7 +137,6 @@ const mutations = {
                 address = localStorage.getItem('Address');
             }
             console.log("state.waitForUploadOrderList:",state.waitForUploadOrderList);
-            // localStorage.setItem(`waitForUploadOrderList_${address}`, JSON.stringify(state.waitForUploadOrderList));
         }
     },
     UNSHIFT_WAIT_FOR_UPLOAD_ORDER_LIST(state, result) {
@@ -158,7 +157,6 @@ const mutations = {
                 address = localStorage.getItem('Address');
             }
             console.log("state.waitForUploadOrderList:", state.waitForUploadOrderList);
-            // localStorage.setItem(`waitForUploadOrderList_${address}`, JSON.stringify(state.waitForUploadOrderList));
         }
     },
     /**
@@ -182,7 +180,6 @@ const mutations = {
                 address = localStorage.getItem('Address');
             }
             console.log("state.waitForUploadOrderList:",state.waitForUploadOrderList);
-            // localStorage.setItem(`waitForUploadOrderList_${address}`, JSON.stringify(state.waitForUploadOrderList));
         }
     },
     SET_WAIT_FOR_UPLOAD_ORDER_LIST(state, result) {
@@ -191,7 +188,6 @@ const mutations = {
         if(!address) {
             address = localStorage.getItem('Address');
         }
-        // localStorage.setItem(`waitForUploadOrderList_${address}`, JSON.stringify(result));
     },
     /**
      * params:
@@ -214,8 +210,6 @@ const mutations = {
             if(!address) {
                 address = localStorage.getItem('Address');
             }
-            // console.log("state.waitForDownloadOrderList:", state.waitForDownloadOrderList);
-            // localStorage.setItem(`waitForDownloadOrderList_${address}`, JSON.stringify(state.waitForDownloadOrderList));
         }
     },
     UNSHIFT_WAIT_FOR_DOWNLOAD_ORDER_LIST(state, result) {
@@ -235,8 +229,6 @@ const mutations = {
             if(!address) {
                 address = localStorage.getItem('Address');
             }
-            // console.log("state.waitForDownloadOrderList:", state.waitForDownloadOrderList);
-            // localStorage.setItem(`waitForDownloadOrderList_${address}`, JSON.stringify(state.waitForDownloadOrderList));
         }
     },
     /**
@@ -259,8 +251,6 @@ const mutations = {
             if(!address) {
                 address = localStorage.getItem('Address');
             }
-            // console.log("state.waitForDownloadOrderList:", state.waitForDownloadOrderList);
-            // localStorage.setItem(`waitForDownloadOrderList_${address}`, JSON.stringify(state.waitForDownloadOrderList));
         }
     },
     SET_WAIT_FOR_DOWNLOAD_ORDER_LIST(state, result) {
@@ -409,8 +399,6 @@ let completeTimer = null;
 let syncFileTimer = null;
 let address = '';
 
-// let syncFileTimeoutr = null;
-// const TIME_COUNT = 3000;
 const actions = {
     getWaitForTransferList({
         commit
@@ -565,9 +553,6 @@ function toDownloadTransferListRequest({
 }) {
     if (res.Error === 0) {
         const result = res.Result.Transfers;
-        if (res.Result.IsTransfering) {} else {
-            // transferClear(downloadTimer);
-        }
         commit('GET_DOWNLOAD_TRANSFER', result)
         let num = 0;
         for (let value of result) {
@@ -576,8 +561,6 @@ function toDownloadTransferListRequest({
             }
         }
         commit('GET_REAL_DOWNLOADING_LENGTH', num)
-    } else {
-        // transferClear(downloadTimer);
     }
 }
 
@@ -595,11 +578,7 @@ function toUploadTransferListRequest({
     res
 }) {
     if (res.Error === 0) {
-        // this.dispatch('getComplete');
         const result = res.Result.Transfers;
-        if (res.Result.IsTransfering) {} else {
-            // transferClear(uploadTimer);
-        }
         commit('GET_UPLOAD_TRANSFER', result)
         let num = 0;
         for (let value of result) {
@@ -609,8 +588,6 @@ function toUploadTransferListRequest({
         }
         console.log("num:============>",num);
         commit('GET_REAL_UPLOADING_LENGTH', num)
-    } else {
-        // transferClear(uploadTimer);
     }
 }
 

@@ -11,7 +11,6 @@
 						:class="{'link-hover': fileType == 1}"
 						:to="{name:'income', query:{type:1}}"
 					><span>{{$t('miner.profit')}}</span></router-link>
-					<!-- <i class="el-icon-tickets"></i>  -->
 				</div>
 			</div>
 			<div class="layout-main theme-bg">
@@ -118,7 +117,6 @@ $danger: #f56c6c;
 						background-color: $filemanager-aside-hover-color;
 					}
 					color: #2f8ff0;
-					// background: rgba(231, 231, 235, 1);
 				}
 				&:active {
 					opacity: 0.7;
@@ -129,9 +127,6 @@ $danger: #f56c6c;
 					}
 					color: #2f8ff0;
 				}
-				// &.link-hover{
-				// 	background: rgba(231, 231, 235, 1);
-				// }
 			}
 		}
 		.aside-progress {

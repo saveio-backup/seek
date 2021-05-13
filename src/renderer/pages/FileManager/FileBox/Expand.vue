@@ -30,8 +30,6 @@
 						prop="ExpiredAt"
 						sortable
 					>
-						<!-- prop="ExpiredAt"
-						sortable -->
 						<template slot-scope="scope">
 							<div>
 								{{ $dateFormat.formatTimeByTimestamp(scope.row.ExpiredAt * 1000)}}
@@ -101,7 +99,6 @@
 									@focus="$refs.spaceNumberInput.select()"
 									@blur="userSpaceCost"
 								></el-input-number>
-								<!-- @change="setSizeValue" -->
 								<el-select
 									class="sizeunit"
 									@change="userSpaceCost"
@@ -222,10 +219,6 @@ import util from "../../../assets/config/util";
 import $date from "../../../assets/tool/date";
 import crypto from "crypto";
 const _NOW = new Date();
-// const nextDay = new Date(now.setDate(now.getDate() + 1));
-// nextDay.setHours(23);
-// nextDay.setMinutes(59);
-// nextDay.setSeconds(59);
 export default {
 	mounted() {
 		this.hasUploadedFile();
@@ -453,10 +446,6 @@ export default {
 				this.$message.error(vm.$t("public.pleaseAdjustYourSpaceAndDate"));
 				return;
 			}
-			// if (this.cost.FeeFormat === "" || this.cost.FeeFormat === undefined) {
-			// 	this.$message.error("Please adjust your space and date.");
-			// 	return;
-			// }
 
 			const checkRes = this.setUserSpaceCheckRes();
 			if (!checkRes) return;
@@ -563,7 +552,6 @@ export default {
 				});
 		},
 		setSizeValue() {
-			// this.addInfo.Size.Value = this.adjustSize;
 			if (
 				this.adjustSize * this.sizeUnit -
 					(this.space.Remain + this.space.Used) ===
@@ -629,9 +617,6 @@ $grey: #ccc;
 					width: 100%;
 				}
 			}
-			// .el-button {
-			// height: 40px;
-			// }
 		}
 		.space-record {
 			display: flex;

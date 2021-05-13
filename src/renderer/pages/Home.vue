@@ -106,7 +106,6 @@
 		>
 			<canvas-bg ref="canvasBgObj"></canvas-bg>
 			<div class="account-box flex column jc-center">
-				<!-- <h3 class="account-box-sub  mb50"><span>Welcome to</span></h3> -->
 				<div class="flex between column account-box-sub">
 					<div class="save-logo-wrap">
 						<div class="save-log-desc user-no-select">
@@ -187,78 +186,7 @@ export default {
 			index: 0,
 			timeoutObj: null,
 			historyIntervalObj: null,
-			currentBalanceList: [0, 0, 0, 0, 0, 0, 0],
-			balanceListsMock: {
-				Action: "getbalancehistory",
-				Desc: "SUCCESS",
-				Error: 0,
-				Result: [
-					{
-						DateAt: 1563379200,
-						TxsCount: 0,
-						TxsSendCount: 0,
-						TxsReceiveCount: 0,
-						Asset: "save",
-						Balance: 550000000,
-						BalanceFormat: "0"
-					},
-					{
-						DateAt: 1563379200,
-						TxsCount: 0,
-						TxsSendCount: 0,
-						TxsReceiveCount: 0,
-						Asset: "save",
-						Balance: 550000000,
-						BalanceFormat: "0"
-					},
-					{
-						DateAt: 1563379200,
-						TxsCount: 0,
-						TxsSendCount: 0,
-						TxsReceiveCount: 0,
-						Asset: "save",
-						Balance: 550000000,
-						BalanceFormat: "2000"
-					},
-					{
-						DateAt: 1563379200,
-						TxsCount: 0,
-						TxsSendCount: 0,
-						TxsReceiveCount: 0,
-						Asset: "save",
-						Balance: 550000000,
-						BalanceFormat: "1000"
-					},
-					{
-						DateAt: 1563379200,
-						TxsCount: 0,
-						TxsSendCount: 0,
-						TxsReceiveCount: 0,
-						Asset: "save",
-						Balance: 550000000,
-						BalanceFormat: "5000"
-					},
-					{
-						DateAt: 1563379200,
-						TxsCount: 0,
-						TxsSendCount: 0,
-						TxsReceiveCount: 0,
-						Asset: "save",
-						Balance: 550000000,
-						BalanceFormat: "2000000"
-					},
-					{
-						DateAt: 1563465600,
-						TxsCount: 0,
-						TxsSendCount: 0,
-						TxsReceiveCount: 0,
-						Asset: "save",
-						Balance: 550000000,
-						BalanceFormat: "0.5"
-					}
-				],
-				Version: "1.0.0"
-			}
+			currentBalanceList: [0, 0, 0, 0, 0, 0, 0]
 		};
 	},
 	methods: {

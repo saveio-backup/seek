@@ -19,7 +19,6 @@
 		<div class="file-total tertiary-font-color">
 			{{$t('public.fileTotal')}}: {{total}}
 		</div>
-		<!-- :data="mockData" -->
 		<el-table
 			:data="result.Incomes"
 			border
@@ -69,74 +68,6 @@ export default {
 		return {
 			filterFloat,
 			dateRange: [start, now],
-			mockData: [
-				{
-					Name: "tet",
-					Profit: 1,
-					ProfitFormat: "1",
-					SharedAt: 155491126
-				},
-				{
-					Name: "te41st",
-					Profit: 1,
-					ProfitFormat: "1",
-					SharedAt: 15491126
-				},
-				{
-					Name: "fstest",
-					Profit: 1124,
-					ProfitFormat: "1124",
-					SharedAt: 15491126
-				},
-				{
-					Name: "tdsest",
-					Profit: 1362,
-					ProfitFormat: "1362",
-					SharedAt: 15591126
-				},
-				{
-					Name: "tes525235t",
-					Profit: 13535,
-					ProfitFormat: "13535",
-					SharedAt: 1555126
-				},
-				{
-					Name: "test",
-					Profit: 12,
-					ProfitFormat: "12",
-					SharedAt: 1555491126
-				},
-				{
-					Name: "test",
-					Profit: 152,
-					ProfitFormat: "152",
-					SharedAt: 1555491126
-				},
-				{
-					Name: "test",
-					Profit: 21,
-					ProfitFormat: "21",
-					SharedAt: 1555491126
-				},
-				{
-					Name: "test",
-					Profit: 31,
-					ProfitFormat: "31",
-					SharedAt: 1555491126
-				},
-				{
-					Name: "test",
-					Profit: 231,
-					ProfitFormat: "231",
-					SharedAt: 1555491126
-				},
-				{
-					Name: "test",
-					Profit: 201,
-					ProfitFormat: "201",
-					SharedAt: 1555491126
-				}
-			],
 			result: { TotalIncome: 0, TotalIncomeFormat: 0, Incomes: [] },
 			loadSwitch: true,
 			limit: 20,
@@ -187,8 +118,6 @@ export default {
 						this.total = res.Result.TotalFile;
 						this.result.TotalIncome = res.Result.TotalIncome;
 						this.result.TotalIncomeFormat = res.Result.TotalIncomeFormat;
-						// this.result.TotalIncomeFormat = 20124.123;
-						// this.result.Incomes = this.mockData;
 						if (res.Result.Incomes.length > 0) {
 							this.result.Incomes = this.result.Incomes.concat(res.Result.Incomes);
 						} else {
@@ -218,7 +147,6 @@ export default {
 	flex-direction: column;
 	& > .header {
 		padding: 20px 20px;
-		// border-bottom: 1px solid rgba(32, 32, 32, 0.1);
 		position: relative;
 		@include themify {
 			border-bottom: 1px solid $line-color;

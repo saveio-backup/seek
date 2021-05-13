@@ -97,12 +97,10 @@ export default {
 					let allTimestampKeyList = vm.list["allTimestampKeyList"] || [];
 					prexTimestamp = allTimestampKeyList[allTimestampKeyList.length - 1];
 				} else {
-					// prexTimestamp = Math.ceil((list[i - 1].timestamp)/86400000);
 					prexTimestamp = parseInt(
 						(list[i - 1].timestamp - this.timezoneOffset) / 86400000
 					);
 				}
-				// let currentTimestamp = Math.ceil((list[i].timestamp)/86400000);
 				let currentTimestamp = parseInt(
 					(list[i].timestamp - this.timezoneOffset) / 86400000
 				);
@@ -191,7 +189,6 @@ export default {
 <style lang="scss">
 #history {
 	padding: 10px 0px;
-	// min-height: 100%;
 	height: 100%;
 	overflow: auto;
 

@@ -65,12 +65,8 @@ export default {
 			this.$emit("closeDialog", { timeout: 0 });
 		},
 		toGetFileInfo() {
-			// if (this.downloadUrl.indexOf(this.formatUrl) != 0 || (this.formatUrl.startsWith('Qm') && this.formatUrl.length != 46) || (this.formatUrl.startsWith('Qm') && this.formatUrl.length != 49)) return;
 			if (
 				this.downloadUrl.indexOf(this.formatUrl) === 0
-				//  ||
-				// (this.downloadUrl.startsWith("Qm") && this.downloadUrl.length === 46) ||
-				// (this.downloadUrl.startsWith("zb") && this.downloadUrl.length === 49)
 			) {
 				const path = ipcRenderer.sendSync("string-to-hex", this.downloadUrl);
 				clearTimeout(timer);
@@ -87,27 +83,9 @@ export default {
 		},
 		toDownload() {
 			const vm = this;
-			// if (this.downloadUrl.indexOf(this.formatUrl) != 0) return;
 			if (
 				this.downloadUrl.indexOf(this.formatUrl) === 0
-				//  ||
-				// (this.downloadUrl.startsWith("Qm") && this.downloadUrl.length === 46) ||
-				// (this.downloadUrl.startsWith("zb") && this.downloadUrl.length === 49)
 			) {
-				// this.$axios.post(
-				// 	this.$api.download,
-				// 	{
-				// 		Url: this.downloadUrl,
-				// 		SetFileName: true,
-				// 		MaxPeerNum: ipcRenderer.sendSync("getSettings", "maxPeerNum")
-				// 	},
-				// 	{
-				// 		loading: {
-				// 			text: vm.$t("fileManager.loading"),
-				// 			target: ".download-dialog.loading-content"
-				// 		}
-				// 	}
-				// );
 				this.$download(
 					{
 						Url: this.downloadUrl,
@@ -124,7 +102,6 @@ export default {
 					.then(res => {
 						if (res.Error === 0) {
 							this.$emit("closeDialog", { timeout: 0 });
-							// this.$store.dispatch("getDownload");
 							ipcRenderer.send("run-dialog-event", { name: "getDownload" });
 							this.downloadInfo = {};
 							this.win.views

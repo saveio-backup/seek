@@ -91,7 +91,6 @@ export default {
 		},
 		login() {
 			const vm = this;
-			// alert('login');
 			let params = {
 				Password: this.data.Password
 			};
@@ -112,7 +111,6 @@ export default {
 							name: "LoginLog"
 						});
 					} else {
-						// remote.getCurrentWindow().send('login-status', false);
 						ipcRenderer.send("run-dialog-event", {
               name: "setLoginStatus",
               data: false
@@ -161,9 +159,7 @@ export default {
 		padding-right: 10px;
 	}
 	.login-form-item {
-		// input{
 		margin-top: 10px;
-		// }
 	}
 }
 </style>

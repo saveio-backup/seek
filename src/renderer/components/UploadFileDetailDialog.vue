@@ -97,11 +97,6 @@
 							prop="HostAddr"
 							min-width="140"
 						>
-							<!-- <template>
-								<div>
-									{{fileDetail && fileDetail.HostAddr}}
-								</div>
-							</template> -->
 						</el-table-column>
 						<el-table-column
 							:label='$t("public.status")'
@@ -114,32 +109,9 @@
 										:class="{'progressAnimate': scope.row.State != 4 && scope.row.State != 0}"
 										:percentage="percentage(scope.row.UploadSize)"
 									></el-progress>
-									<!-- <div v-if="scope.row.State === 4">
-									<span class="light-error">
-										{{ scope.row.ErrMsg || '' }}
-									</span>
-								</div>
-								<div v-else>
-									{{ $t(`error['${scope.row.DetailStatus}']`) }}
-								</div> -->
 								</div>
 							</template>
 						</el-table-column>
-						<!-- <el-table-column
-							label=""
-							align="center"
-						>
-							<template>
-								<div>
-									<span class="active-blue cursor-pointer">
-										<i class="ofont ofont-zhongxin ftpx14 mr10"></i>
-									</span>
-									<span class="active-blue cursor-pointer">
-										<i class="ofont ofont-guanbi ftpx14"></i>
-									</span>
-								</div>
-							</template>
-						</el-table-column> -->
 					</el-table>
 				</div>
 				<div slot="footer">
@@ -343,7 +315,6 @@ export default {
 
 			&:hover,
 			&.select {
-				// opacity: 0.7;
 				color: #2f8ff0;
 				&::before {
 					transform: scale(1, 1);
@@ -372,12 +343,6 @@ export default {
 					}
 				}
 			}
-			th {
-				// background: #EBEEF5;
-			}
-		}
-
-		.file-progress {
 		}
 	}
 	.adjust-item {

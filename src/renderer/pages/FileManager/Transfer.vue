@@ -78,7 +78,6 @@ export default {
 	},
 	beforeRouteUpdate(to, from, next) {
 		this.transferType = to.query.transferType >= 0 ? to.query.transferType : 2;
-		// localStorage.setItem("transferType", this.transferType);
 		if(to.query.transferType === 0) {
 			this.$store.dispatch('getSyncFileList');
 		} else {

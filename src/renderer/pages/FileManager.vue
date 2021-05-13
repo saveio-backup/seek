@@ -23,7 +23,6 @@
 						v-if="channelBind.Address"
 					>{{channelBind.Address.replace(channelBind.Address.slice(5,-5),'...')}}</p>
 				</div>
-				<!-- {{location.href}}  -->
 				<div class="router">
 					<router-link
 						:to="{name:'filebox'}"
@@ -31,10 +30,6 @@
 						class="user-no-select"
 						:replace="true"
 					>{{$t('fileManager.filebox')}}</router-link>
-					<!-- <router-link
-					 :to="{name:'discovery'}"
-					 active-class="active-blue"
-					>Discovery</router-link> -->
 					<router-link
 						:to="{name:'transfer',query:{transferType: (localStorage.getItem('transferType') || 1)}}"
 						class="user-no-select"
@@ -158,13 +153,9 @@ export default {
 		ipcRenderer.on("queryto", (sender, query) => {
 			this.$router.push({ name: "transfer", query: query });
 		});
-		// this.$store.dispatch("getWaitForTransferList"); // get wait for upload list
 		this.$store.dispatch("setCurrentAccount"); // get login status
 		this.$store.dispatch("getDns"); // get login status
 		this.initBalanceRequest();
-		// this.$store.dispatch("getUpload");
-		// this.$store.dispatch("getDownload");
-		// this.$store.dispatch("getComplete");
 	},
 	components: {
 		channelWalletTransfer,
@@ -432,15 +423,12 @@ $grey: #ccc;
 					line-height: $width;
 					font-size: 12px;
 					text-align: center;
-					// border-radius: 50%;
 					border-radius: ($width/2);
 					color: #fff;
 					position: absolute;
-					// right: 30px;
 					right: 45px;
 					transform: translateX(100%);
 					top: 0px;
-					// transform: translateX(50%) translateY(-50%)
 				}
 			}
 			.coin {

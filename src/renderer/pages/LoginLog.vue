@@ -2,9 +2,6 @@
 	<div id="login-log">
 		<div class="flex jc-center ai-center">
 			<div>
-				<!-- <div> -->
-				<!-- {{stateObjByName}}
-					{{statusList}} -->
 				<i
 					class="first-ofont ofont ofont-lianjie1"
 					:class="
@@ -24,7 +21,6 @@
 				<div slot="append" v-else class="loading text-center transparent">
 					<i class="ofont ofont-loading loading-rotate"></i>
 				</div>
-				<!-- </div> -->
 				<p>
 					{{ $t("menuWindow.chainState") }}
 				</p>
@@ -93,15 +89,6 @@
 					{{ $t("menuWindow.dnsState") }}
 				</p>
 			</div>
-			<!-- <div>
-				<div>
-					<i class="ofont ofont-success active-blue" v-if="statusList.ChannelProxy && statusList.ChannelProxy.State"></i>
-					<i class="el-icon-loading" v-else></i>
-				</div>
-				<p>
-					通道代理状态:
-				</p>
-			</div> -->
 		</div>
 	</div>
 </template>

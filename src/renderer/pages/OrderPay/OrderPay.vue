@@ -98,12 +98,6 @@
 					v-if="contractData.Method==='FilmPublish'"
 				>{{round((contractData.GasPrice*contractData.GasLimit) / powBase,9)}} ONI ({{$t('orderpay.amountGas')}})</p>
 			</div>
-			<!-- <div
-				class="text-center whitelist-checkbox"
-				style="margin: 0 auto 20px;"
-			>
-				<el-checkbox v-model="whiteselected">Whitelist this action</el-checkbox>
-			</div> -->
 			<div
 				class="flex jc-center submit-foot"
 				v-if="tradingStatus === 0"
@@ -155,7 +149,6 @@
 							v-model="passwordForm.Password"
 						></el-input>
 					</el-form-item>
-					<!-- <p class="mb20 tr">Confirm Payment: {{uploadPrice}} ONI</p> -->
 				</el-form>
 				<div slot="footer">
 					<el-button @click="passwordForm.show = false">{{$t('public.cancel')}}</el-button>

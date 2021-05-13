@@ -115,7 +115,6 @@ const actions = {
   setCurrentAccount({
     commit
   }) {
-    // commit('SET_CURRENT_ACCOUNT', 1) // login success
     const router = require('../../router/router');
     axios
       .get(api.account)
@@ -164,13 +163,11 @@ const actions = {
               console.log(e);
             }
           } else {
-            // remote.getCurrentWindow().send('login-status', false);
             ipcRenderer.send("run-dialog-event", {
               name: "setLoginStatus",
               data: false
             });
             commit('SET_CURRENT_ACCOUNT', 0) // login fail
-            // window.localStorage.clear(); // remove all local infomation
             const notClear = [
               'waitForUploadOrderList',
               'uploadTask',
@@ -191,13 +188,11 @@ const actions = {
           }
         } else if (res.Error === 50012) {
           if (location.href.indexOf('login') < 0) {
-            // remote.getCurrentWindow().send('login-status', false);
             router.default.replace({
               name: 'login'
             });
           }
         } else {
-          // remote.getCurrentWindow().send('login-status', false);
           ipcRenderer.send("run-dialog-event", {
             name: "setLoginStatus",
             data: false

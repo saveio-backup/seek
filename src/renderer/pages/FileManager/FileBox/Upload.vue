@@ -10,7 +10,6 @@
 					><i class="ofont ofont-jiandan"></i> {{ $t("fileManager.primary") }}</el-button
 				>
 			</div>
-			<!-- <span @click="resetFileList">asda</span> -->
 			<div class="upload-params">
 				<el-form
 					ref="uploadForm"
@@ -26,7 +25,6 @@
 						class="form-vertical select-file-wrapper"
 						prop="FileSize"
 					>
-						<!-- prop="Path" -->
 						<span
 							class="form-right browse-layout-reset light-blue"
 							@click="resetFileList"
@@ -48,9 +46,7 @@
 							:on-change="handleChange"
 						>
 							<div slot="trigger">
-								<!-- <el-button class="browse-layout" type="primary">Browser</el-button> -->
 								<div class="path-content" @click.stop="">
-									<!-- @click.stop="" -->
 									<ul>
 										<el-tag
 											@click.stop=""
@@ -67,9 +63,6 @@
 												>({{ util.bytesToSize(file.fileBytes) }})</span
 											></el-tag
 										>
-										<!-- <li v-for="" :key="" >
-											{{file.fileName}}
-										</li> -->
 									</ul>
 									<div class="path-no-data-title" v-if="uploadFormData.Files.length === 0">
 										<p class="text-center mt60 user-no-select break-word">
@@ -80,7 +73,6 @@
 										</p>
 									</div>
 								</div>
-								<!-- <el-button slot="trigger" size="small" type="primary">选取文件</el-button> -->
 							</div>
 						</el-upload>
 					</el-form-item>
@@ -237,7 +229,6 @@
 				</div>
 				<div class="flex jc-center submit-foot mb10">
 					<ripper-button @click="toEmptyUpload">{{ $t("public.cancel") }}</ripper-button>
-					<!-- :disabled="!switchToggle.uploadToggle" -->
 					<ripper-button
 						v-show="!switchToggle.uploadToggle && !switchToggle.uploadToggleError"
 						:disabled="true"
@@ -402,8 +393,6 @@ export default {
 			baseKeys,
 			BASE,
 			DEFAULT_KEY,
-			// verificationCycleSelected: baseKeys[1], // default Second
-			// verificationCycleNumber: 30, // Integrity verification cycle
 			storageCycleSelected: DEFAULT_KEY, // default Year
 			storageCycleNumber: 1,
 			contractSetting: {
@@ -436,7 +425,6 @@ export default {
 				uploadToggleError: false,
 				getPriceNumber: 0
 			},
-			// wihteListString: "",
 			uploadPrice: DEFAULT_UPLOAD_PRICE,
 			fileSize: 0,
 			encryptionToggle: false,
@@ -444,7 +432,6 @@ export default {
 				Path: "",
 				FileSize: "",
 				Files: [],
-				// Desc: "",
 				EncryptPassword: "" // Encryption
 			},
 			rules: {
@@ -480,7 +467,6 @@ export default {
 			advancedData: {
 				Duration: DEFAULT_STORAGE_CYCLE, // storage cycle  default forever
 				Interval: 0, // Integrity verification cycle
-				// Times: 1, // Integrity Times
 				Privilege: 1, // Authority
 				CopyNum: 1, // axios.get
 				wihteListString: "",
@@ -500,7 +486,6 @@ export default {
 	},
 	mounted() {
 		this.getSpaceIsZero();
-		// this.setDataInterval();
 		this.toGetPrice();
 		this.getfscontractsetting();
 	},
@@ -516,8 +501,6 @@ export default {
 	methods: {
 		init() {
 			const vm = this;
-			// (this.verificationCycleSelected = this.baseKeys[1]), // default Second
-				// (this.verificationCycleNumber = 30), // Integrity verification cycle
 				(this.storageCycleSelected = this.DEFAULT_KEY), // default Year
 				(this.storageCycleNumber = 1);
 			this.contractSetting = {
@@ -569,7 +552,6 @@ export default {
 				});
 			this.uploadPriceInfo = null;
 			this.$refs.uploadForm.clearValidate();
-			// this.$refs["passwordForm"].validate(() => {});
 		},
 		resetFileList() {
 			this.uploadFormData.Files = [];
@@ -600,7 +582,6 @@ export default {
 				});
 				this.toGetFileSize();
 				this.toGetPrice();
-				// this.$refs.upload.clearFiles();
 				this.$refs.uploadForm.validateField("FileSize");
 			});
 		},
@@ -688,9 +669,6 @@ export default {
 				}
 				vm.uploadFormData.Files = vm.uploadFormData.Files.concat(arr);
 				vm.toGetFileSize();
-				// this.fileSize = content.fileBytes;
-				// this.uploadFormData.Path = content.filePath;
-				// this.uploadFormData.Desc = content.fileName;
 				vm.toGetPrice();
 				vm.$refs.uploadForm.validateField("FileSize");
 			});
@@ -707,8 +685,6 @@ export default {
 		},
 		// add while list item
 		setWhiteList() {
-			// let array = this.wihteListString.replace(/[\s\r\n]/g, "").split(";");
-			// this.advancedData.WhiteList = array;
 			const whiteListRex = /^A[1-9A-HJ-NP-Za-km-z]{33}$/;
 			if (this.advancedData.wihteListString.length != 0 && !whiteListRex.test(this.advancedData.wihteListString)) {
 				return;
@@ -734,31 +710,8 @@ export default {
 		// get price when storageCycleNumber and storageCycleSelected be changed
 		setDuration() {
 			this.advancedData.Duration = this.storageCycleNumber * this.BASE[this.storageCycleSelected];
-			// this.formatVerificationCycleNumber();
-			// this.setDataInterval();
 			this.toGetPrice();
 		},
-		// get price when verificationCycleNumber and verificationCycleSelected be changed
-		// setDataInterval() {
-		// 	this.formatVerificationCycleNumber();
-		// 	console.log("verificationCycleNumber is");
-		// 	console.log(this.verificationCycleNumber);
-		// 	console.log("this.BASE[this.verificationCycleSelected] is==============");
-		// 	console.log(this.BASE[this.verificationCycleSelected]);
-		// 	this.advancedData.Interval =
-		// 		this.verificationCycleNumber *
-		// 		this.BASE[this.verificationCycleSelected];
-		// 	this.toGetPrice();
-		// },
-		// format verificationCycleNumber value
-		// formatVerificationCycleNumber() {
-		// 	this.verificationCycleNumber = Math.min(
-		// 		this.verificationCycleNumber,
-		// 		Math.floor(
-		// 			this.advancedData.Duration / this.BASE[this.verificationCycleSelected]
-		// 		)
-		// 	);
-		// },
 		// go filebox page
 		toEmptyUpload() {
 			// this.uploadFormData.Path = "";

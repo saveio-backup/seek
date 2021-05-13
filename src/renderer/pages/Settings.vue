@@ -1,8 +1,5 @@
 <template>
 	<div id="settings">
-		<!-- <div class="settings-box">
-			<div class="ft20">{{$t('settings.setting')}}</div>
-		</div> -->
 		<h2 class="ft20 settings-title">
 			{{$t('settings.setting')}}
 		</h2>
@@ -42,17 +39,6 @@
 			</div>
 			<div class="settings-box">
 				<div class="tag">{{$t('settings.maxUploadLength')}}</div>
-				<!-- <el-select
-					v-model="settings.maxNumUpload"
-					@change="frontConfigUploadRender"
-				>
-					<el-option
-						v-for="item in maxUploadLimitList"
-						:key="item"
-						:label="item"
-						:value="item"
-					></el-option>
-				</el-select> -->
 				<div class="flex ai-center slider-wrap">
 					<el-slider
 						:show-tooltip="false"
@@ -168,17 +154,6 @@
 						<p class="dark-grey tag text-center mt10">{{$t('settings.theme.dark')}}</p>
 					</li>
 				</ul>
-				<!-- <el-select
-					v-model="settings.themeColor"
-					@change="setTheme"
-				>
-					<el-option
-						v-for="item in themeList"
-						:key="item"
-						:label='item'
-						:value="item"
-					></el-option>
-				</el-select> -->
 			</div>
 		</div>
 	</div>

@@ -53,10 +53,6 @@ const actions = {
     commit
   }) {
     requestBalanceLists(commit);
-    // clearInterval(timer.balanceListsTimer);
-    // timer.balanceListsTimer = setInterval(() => {
-    // requestBalanceLists(commit)
-    // }, timer.COUNT_INTERVAL);
   },
   cancelTxRequest() {
     clearTimeout(timer.heart);
@@ -96,7 +92,6 @@ function requestTransActions(commit, config) {
   } = config || {};
   switchToggle.showLoading = true;
   let _url = `${api.transactions}${window.localStorage.Address}/${txType}?asset=${asset}&limit=${limit}&height=${height}&skipTxCountFromBlock=${(skipTxCountFromBlock || '')}&IgnoreOtherContract=${IgnoreOtherContract}`
-  // axios.get(api.transactions + window.localStorage.Address + '/0?asset=' + asset + '&limit=' + limit + '&height=' + height + '&skipTxCountFromBlock=' + (skipTxCountFromBlock || '') + '&IgnoreOtherContract=' + IgnoreOtherContract, {
   axios.get(_url, {
     cancelToken: new CancelToken(c => {
       txTransSourceCancel = c;

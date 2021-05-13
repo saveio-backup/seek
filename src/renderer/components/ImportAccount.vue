@@ -33,10 +33,6 @@
 								class="grey-theme"
 							>
 							</el-input>
-							<!-- <div class="tr mb20 input-opeation"><a
-                  @click='importWallet'
-                  class="light-blue ft14 cursor-pointer cursor-click user-no-select"
-                >Select Keystore File</a></div> -->
 							<div class="tr input-opeation">
 								<ripper-button
 									@click='importWallet'
@@ -58,10 +54,6 @@
 							></el-input>
 						</el-form-item>
 					</el-form>
-					<!-- <p
-					 class="light-blue ft14 cursor-pointer text-right mt10 mb50"
-					 @click="importWay = 1"
-					>Import the account with the private key(WIF)</p> -->
 				</div>
 				<div v-show="importWay ==1">
 					<el-form
@@ -79,10 +71,6 @@
 								:placeholder="$t('account.inputImportPrivatekeyHere')"
 								class="grey-theme"
 							></el-input>
-							<!-- <div class="tr"><a
-                  @click='importPrivateKey'
-                  class="light-blue ft14 cursor-pointer user-no-select cursor-click input-opeation"
-                >Select Private Key File</a></div> -->
 							<div class="tr input-opeation">
 								<ripper-button
 									class="primary ftpx12"
@@ -367,9 +355,6 @@ export default {
 						for (let key in result) {
 							window.localStorage.setItem(key, result[key]);
 						}
-						// window.location.href = location.origin + location.pathname; // success login link to home page
-						// console.log(location.pathname)
-						// window.location.href = location.origin + location.pathname; // success login link to home page
 						ipcRenderer.send("run-dialog-event", {
 							name: "setLoginStatus",
 							data: true
@@ -414,7 +399,6 @@ export default {
 								for (let key in result) {
 									window.localStorage.setItem(key, result[key]);
 								}
-								// window.location.href = location.origin + location.pathname; // success login link to home page
 								ipcRenderer.send("run-dialog-event", {
 									name: "setLoginStatus",
 									data: true

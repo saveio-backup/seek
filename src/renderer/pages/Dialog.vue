@@ -62,7 +62,6 @@ import channelLoseEfficacy from "./Dialog/ChannelLoseEfficacy.vue";
 import decodeFile from "./Dialog/decodeFile.vue";
 import downloadDialog from "../components/DownloadDialog.vue";
 import aboutClient from "./Dialog/AboutClient.vue";
-// import io from 'socket.io-client';
 export default {
 	name: "Dialog",
 	components: {
@@ -118,7 +117,6 @@ export default {
 			},
 
 			isNeedSync: false,
-			// isLoginShowLog: process.env.NODE_ENV === "development" ? true : false,
 			isLoginShowLog: false,
 
 			// transfer correlation

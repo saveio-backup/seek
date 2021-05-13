@@ -126,9 +126,6 @@ export default {
 		vm.attach();
 		document.title = this.$t("plugin.plugin");
 		this.newCheckPluginInfos();
-		// document.addEventListener("visibilitychange", () => {
-		// 	if (document.visibilityState === "visible") this.sendPluginInfo();
-		// });
 		this.$store.dispatch("setCurrentAccount"); // get login status
 		const pluginsDB = ipcRenderer.sendSync("getUsermeta", "Plugins");
 		console.log("mounted event pluginsDB is ");

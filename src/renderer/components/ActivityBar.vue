@@ -241,8 +241,6 @@ export default {
 			console.log(plugins);
 			for (let i = 0; i < plugins.length; i++) {
 				const item = plugins[i];
-				// let detail = await this.getTransferDetail(item.Url);
-				// detail = detail.Result;
 				let detail = item.detail;
 				if (detail && fs.existsSync(detail.Path)) {
 					fs.statSync(detail.Path);
@@ -275,18 +273,6 @@ export default {
 		toPopCustomControlMenu() {
 			const that = this;
 			const customControlMenuItems = [
-				// {
-				// 	label: that.$t("window.exportKeystoreFile"),
-				// 	click() {
-				// 		that.exportWallet();
-				// 	}
-				// },
-				// {
-				// 	label: that.$t("window.exportPrivateKey"),
-				// 	click() {
-				// 		that.exportPrivateKey();
-				// 	}
-				// },
 				{
 					label: that.$t("window.helpDocument"),
 					click() {

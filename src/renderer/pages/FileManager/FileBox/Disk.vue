@@ -105,7 +105,6 @@
 										></circle-progress>
 									</span>
 								</span>
-								<!-- @click="executedFile = scope.row" -->
 								<div
 									class="opera"
 									v-if="!scope.row.Undone"
@@ -151,7 +150,6 @@
 										<i class="ofont-xiangqing ofont ftpx16">
 										</i>
 									</span>
-									<!-- @click.stop="switchToggle.deleteDialog = true" -->
 								</div>
 							</div>
 						</template>
@@ -291,7 +289,6 @@
 					</el-form-item>
 				</el-form>
 				<div slot="footer">
-					<!-- slot="footer" -->
 					<ripper-button
 						type="primer"
 						class="primary"
@@ -732,9 +729,6 @@ export default {
 				})
 				.catch(err => {
 					console.error(err);
-					// if (err.message.includes("timeout")) {
-					// 	this.$message.error(this.$t('error.requestTimeout'));
-					// }
 				});
 		},
 		getFileLists() {
@@ -762,9 +756,7 @@ export default {
 								}
 								return item;
 							});
-							// if(vm.fileListData.length > _start) {
 							vm.fileListData = vm.fileListData.slice(0, _start).concat(result);
-							// }
 							// update sync file limit;
 							let _limit = vm.fileListData.length;
 							if (vm.page === "filebox") {
@@ -899,10 +891,6 @@ export default {
 				} else {
 					//if have error task joint errorMsg and run me again(argumnets.callee())
 					for (let i = 0; i < errorArr.length; i++) {
-						// errorMsg += `<p>`;
-						// errorMsg += `${value.FileName || ""}`;
-						// errorMsg += this.$t(`error[${value.Error}]`);
-						// errorMsg += `</p>`;
 						let value = errorArr[i];
 						if (!errorMsg[value.Error]) errorMsg[value.Error] = [];
 						errorMsg[value.Error].push(waitForNowDownloadList[i]);
@@ -957,28 +945,6 @@ export default {
 					dangerouslyUseHTMLString: true
 				});
 			}
-			// if (flag === false) {
-			// is have download success task
-			// if (errorMsg) {
-			// 	this.$message.error({
-			// 		dangerouslyUseHTMLString: true,
-			// 		message: errorMsg
-			// 	});
-			// } else {
-			// 	this.$message.error(vm.$t("fileManager.downloadError"));
-			// }
-			// } else {
-			// if (!errorMsg) {
-			// 	this.$message({
-			// 		type: "success",
-			// 		message: vm.$t("fileManager.startDownload")
-			// 	});
-			// } else {
-			// 	this.$message.error({
-			// 		dangerouslyUseHTMLString: true,
-			// 		message: errorMsg
-			// 	});
-			// }
 			if (flag) {
 				this.switchToggle.confrimDownloadDialog = false;
 				ipcRenderer.send("run-dialog-event", { name: "clearDownloadDone" });
@@ -1050,7 +1016,6 @@ export default {
 			if (waitForNowDownloadLength <= 0) {
 				this.switchToggle.loading && this.switchToggle.loading.close();
 				this.switchToggle.confrimDownloadDialog = false;
-				// this.$store.dispatch("getUpload");
 				ipcRenderer.send("run-dialog-event", { name: "getDownload" });
 				ipcRenderer.send("run-dialog-event", { name: "clearDownloadDone" });
 				this.$router.push({
@@ -1209,45 +1174,6 @@ export default {
 					});
 			});
 		}
-		// toDeleteFile(dataList, hash) {
-		// 	const vm = this;
-		// 	this.$axios
-		// 		.post(
-		// 			this.$api.delete,
-		// 			{ Hash: hash },
-		// 			{
-		// 				loading: {
-		// 					text: vm.$t("fileManager.deleting"),
-		// 					target: ".loading-content.disk-delete-loading"
-		// 				}
-		// 			}
-		// 		)
-		// 		.then(res => {
-		// 			if (res.Error === 0) {
-		// 				this.$message({
-		// 					message: vm.$t("fileManager.deleteSuccessful"),
-		// 					type: "success"
-		// 				});
-		// 				dataList.some((item, index) => {
-		// 					if (item.Hash === hash) {
-		// 						dataList.splice(index, 1);
-		// 						vm.total -= 1
-		// 						return true;
-		// 					} else {
-		// 						return false;
-		// 					}
-		// 				});
-		// 				this.switchToggle.deleteDialog = false;
-		// 			} else {
-		// 				this.$message.error(this.$t(`error[${res.Error}]`));
-		// 			}
-		// 		})
-		// 		.catch(error => {
-		// 			if (error.message.includes("timeout")) {
-		// 				this.$message.error(this.$t('error.requestTimeout'));
-		// 			}
-		// 		});
-		// }
 	},
 	watch: {
 		fileToDownload: function() {

@@ -1,83 +1,102 @@
 <template>
 	<div class="upload-file-detail">
-		<el-dialog
-			width="600px"
-			:close-on-click-modal='false'
-			:visible.sync="fileDetailDialogToggle"
-			center
-		>
+		<el-dialog width="600px" :close-on-click-modal="false" :visible.sync="fileDetailDialogToggle" center>
 			<div slot="title">
-				<h2>{{$t('fileManager.fileDetail')}}</h2>
+				<h2>{{ $t("fileManager.fileDetail") }}</h2>
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content upload-file-detail-loading">
 				<div class="flex around upload-file-detail-title" v-if="nodes && !isClose">
-					<div class="upload-file-detail-title-item" @click="selectType(0)" :class="{'select': type === 0}">{{$t('fileManager.basicInfo')}}</div>
-					<div class="upload-file-detail-title-item" @click="selectType(1)" :class="{'select': type === 1}">{{$t('fileManager.nodesInfo')}}</div>
+					<div class="upload-file-detail-title-item" @click="selectType(0)" :class="{ select: type === 0 }">
+						{{ $t("fileManager.basicInfo") }}
+					</div>
+					<div class="upload-file-detail-title-item" @click="selectType(1)" :class="{ select: type === 1 }">
+						{{ $t("fileManager.nodesInfo") }}
+					</div>
 				</div>
 				<div class="adjust" v-if="!nodes || type === 0">
 					<div class="adjust-item">
-						<p class="adjust-title ft14">{{$t('fileManager.fileHash')}}:</p>
+						<p class="adjust-title ft14">{{ $t("fileManager.fileUrl") }}:</p>
 						<div class="adjust-info">
-							<p class="ftpx14 mr20">{{fileDetail && fileDetail.FileHash || ''}}</p>
+							<p class="ftpx14 mr20">{{ url || "" }}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
-						<p class="adjust-title ft14">{{$t('fileManager.createDate')}}:</p>
+						<p class="adjust-title ft14">{{ $t("fileManager.fileHash") }}:</p>
 						<div class="adjust-info">
-							<p class="ftpx14 mr20">{{fileDetail && $dateFormat.formatTimeByTimestamp(fileDetail.CreatedAt*1000) || ''}}</p>
+							<p class="ftpx14 mr20">{{ (fileDetail && fileDetail.FileHash) || "" }}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
-						<p class="adjust-title ft14">{{$t('fileManager.fileSize')}}:</p>
+						<p class="adjust-title ft14">{{ $t("fileManager.createDate") }}:</p>
 						<div class="adjust-info">
-							<p class="ftpx14 mr20">{{fileDetail && util.bytesToSize(fileDetail.Size*1024 || 0) || ''}}</p>
+							<p class="ftpx14 mr20">
+								{{ (fileDetail && $dateFormat.formatTimeByTimestamp(fileDetail.CreatedAt * 1000)) || "" }}
+							</p>
 						</div>
 					</div>
 					<div class="adjust-item">
-						<p class="adjust-title ft14">{{$t('fileManager.nodeNumber')}}:</p>
+						<p class="adjust-title ft14">{{ $t("fileManager.fileSize") }}:</p>
 						<div class="adjust-info">
-							<p class="ftpx14 mr20">{{fileDetail && (fileDetail.CopyNum + 1) || ''}}</p>
+							<p class="ftpx14 mr20">{{ (fileDetail && util.bytesToSize(fileDetail.Size * 1024 || 0)) || "" }}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
-						<p class="adjust-title ft14">{{$t('fileManager.proveLevel')}}:</p>
+						<p class="adjust-title ft14">{{ $t("fileManager.nodeNumber") }}:</p>
 						<div class="adjust-info">
-							<p class="ftpx14 mr20">{{fileDetail && !!fileDetail.ProveLevel && $t(`fileManager['${fileDetail.ProveLevel}']`) || ''}}</p>
+							<p class="ftpx14 mr20">{{ (fileDetail && fileDetail.CopyNum + 1) || "" }}</p>
 						</div>
 					</div>
 					<div class="adjust-item">
-						<p class="adjust-title ft14">{{$t('fileManager.expireTime')}}:</p>
+						<p class="adjust-title ft14">{{ $t("fileManager.proveLevel") }}:</p>
 						<div class="adjust-info">
-							<p class="ftpx14 mr20">{{fileDetail && $dateFormat.formatTimeByTimestamp(fileDetail.ExpiredAt*1000) || ''}}</p>
+							<p class="ftpx14 mr20">
+								{{ (fileDetail && !!fileDetail.ProveLevel && $t(`fileManager['${fileDetail.ProveLevel}']`)) || "" }}
+							</p>
 						</div>
 					</div>
 					<div class="adjust-item">
-						<p class="adjust-title ft14">{{$t('fileManager.authority')}}:</p>
+						<p class="adjust-title ft14">{{ $t("fileManager.expireTime") }}:</p>
 						<div class="adjust-info">
-							<p class="ftpx14 mr20">{{fileDetail && (fileDetail.Privilege===0?$t('fileManager.private'):fileDetail.Privilege===1?$t('fileManager.public'):fileDetail.Privilege===2?$t('fileManager.whitelist'):'') || ''}}</p>
+							<p class="ftpx14 mr20">
+								{{ (fileDetail && $dateFormat.formatTimeByTimestamp(fileDetail.ExpiredAt * 1000)) || "" }}
+							</p>
 						</div>
 					</div>
-					<div
-						v-if="fileDetail && fileDetail.Privilege === 2"
-						class="adjust-item"
-					>
-						<p class="adjust-title ft14">{{$t('fileManager.whitelist2')}}:</p>
+					<div class="adjust-item">
+						<p class="adjust-title ft14">{{ $t("fileManager.authority") }}:</p>
+						<div class="adjust-info">
+							<p class="ftpx14 mr20">
+								{{
+									(fileDetail &&
+										(fileDetail.Privilege === 0
+											? $t("fileManager.private")
+											: fileDetail.Privilege === 1
+											? $t("fileManager.public")
+											: fileDetail.Privilege === 2
+											? $t("fileManager.whitelist")
+											: "")) ||
+										""
+								}}
+							</p>
+						</div>
+					</div>
+					<div v-if="fileDetail && fileDetail.Privilege === 2" class="adjust-item">
+						<p class="adjust-title ft14">{{ $t("fileManager.whitelist2") }}:</p>
 						<div class="adjust-info ftpx14">
 							<ul>
-								<li
-									v-for="item in fileDetail.Whitelist"
-									:key="item"
-								>
-								<p>{{item}}</p>
+								<li v-for="item in fileDetail.Whitelist" :key="item">
+									<p>{{ item }}</p>
 								</li>
 							</ul>
 						</div>
 					</div>
 					<div class="adjust-item">
-						<p class="adjust-title ft14">{{$t('fileManager.encryption')}}:</p>
+						<p class="adjust-title ft14">{{ $t("fileManager.encryption") }}:</p>
 						<div class="adjust-info">
-							<p class="ftpx14 mr20">{{fileDetail && (fileDetail.Encrypt?$t('fileManager.yes'):$t('fileManager.no'))}}</p>
+							<p class="ftpx14 mr20">
+								{{ fileDetail && (fileDetail.Encrypt ? $t("fileManager.yes") : $t("fileManager.no")) }}
+							</p>
 						</div>
 					</div>
 				</div>
@@ -98,15 +117,12 @@
 							min-width="140"
 						>
 						</el-table-column>
-						<el-table-column
-							:label='$t("public.status")'
-							min-width="180"
-						>
+						<el-table-column :label="$t('public.status')" min-width="180">
 							<template slot-scope="scope">
 								<div>
 									<el-progress
 										class="file-progress flex1 ai-center mr10"
-										:class="{'progressAnimate': scope.row.State != 4 && scope.row.State != 0}"
+										:class="{ progressAnimate: scope.row.State != 4 && scope.row.State != 0 }"
 										:percentage="percentage(scope.row.UploadSize)"
 									></el-progress>
 								</div>
@@ -115,11 +131,9 @@
 					</el-table>
 				</div>
 				<div slot="footer">
-					<ripper-button
-						class="primary"
-						type="primary"
-						@click="fileDetailDialogToggle=false"
-					>{{$t('public.close')}}</ripper-button>
+					<ripper-button class="primary" type="primary" @click="fileDetailDialogToggle = false">{{
+						$t("public.close")
+					}}</ripper-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -137,6 +151,10 @@ export default {
 		hash: {
 			required: true,
 			type: String //file hash
+		},
+		url: {
+			required: false,
+			type: String // file url
 		},
 		fileNodes: {
 			required: false,
@@ -194,13 +212,9 @@ export default {
 					return "";
 				}
 				if (value / BASE["Month"] >= 1) {
-					return `${parseFloat((value / BASE["Month"]).toFixed(3))} ${vm.$t(
-						"fileManager.Month"
-					)}`;
+					return `${parseFloat((value / BASE["Month"]).toFixed(3))} ${vm.$t("fileManager.Month")}`;
 				} else if (value / BASE["Day"] >= 1) {
-					return `${parseFloat((value / BASE["Day"]).toFixed(3))} ${vm.$t(
-						"fileManager.Day"
-					)}`;
+					return `${parseFloat((value / BASE["Day"]).toFixed(3))} ${vm.$t("fileManager.Day")}`;
 				} else {
 					return `${value / BASE["Second"]} ${vm.$t("fileManager.Second")}`;
 				}
@@ -224,8 +238,8 @@ export default {
 		},
 		nodes() {
 			let _nodes;
-			if(!this.syncObj[this.hash] || this.syncObj[this.hash].Nodes.length < 1) {
-				if(!this.fileNodes || this.fileNodes.length < 1) return [];
+			if (!this.syncObj[this.hash] || this.syncObj[this.hash].Nodes.length < 1) {
+				if (!this.fileNodes || this.fileNodes.length < 1) return [];
 				// _nodes = this.fileNodes.slice(1);
 				_nodes = this.fileNodes;
 			} else {
@@ -264,9 +278,7 @@ export default {
 				})
 				.catch(e => {
 					if (!e.message.includes("timeout")) {
-						this.$message.error(
-							vm.$t("fileManager.networkErrorGetFileDetailFailed")
-						);
+						this.$message.error(vm.$t("fileManager.networkErrorGetFileDetailFailed"));
 					} else {
 						this.$message.error(vm.$t('error.requestTimeout'));
 					}
@@ -281,7 +293,7 @@ export default {
 			});
 		},
 		indexMethod(index) {
-			return `${this.$t('fileManager.node')}${index + 1}`;
+			return `${this.$t("fileManager.node")}${index + 1}`;
 		}
 	},
 	mounted() {

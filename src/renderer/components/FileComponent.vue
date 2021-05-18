@@ -302,7 +302,7 @@
 				<div class="dialog-title-border"></div>
 			</div>
 			<div class="loading-content decrypt">
-				<el-form>
+				<el-form @submit.native.prevent>
 					<el-form-item :label="$t('fileManager.filePassword') + ':'">
 						<el-input
 							v-model="fileSelected.Password"
@@ -1162,7 +1162,7 @@ export default {
 					if (!e.message.includes("timeout")) {
 						this.$message.error(vm.$t("fileManager.networkErrorDeleteRecordFailed"));
 					} else {
-						this.$message.error(vm.$t('error.requestTimeout'));
+						this.$message.error(vm.$t("error.requestTimeout"));
 					}
 				});
 		},
@@ -1372,7 +1372,7 @@ export default {
 					if (!e.message.includes("timeout")) {
 						this.$message.error(vm.$t("fileManager.networkErrorCancelTaskFailed"));
 					} else {
-						this.$message.error(vm.$t('error.requestTimeout'));
+						this.$message.error(vm.$t("error.requestTimeout"));
 					}
 				});
 		},
@@ -1729,7 +1729,7 @@ export default {
 					if (!e.message.includes("timeout")) {
 						this.$message.error(vm.$t("fileManager.networkErrorPauseTaskFailed"));
 					} else {
-						this.$message.error(vm.$t('error.requestTimeout'));
+						this.$message.error(vm.$t("error.requestTimeout"));
 					}
 				});
 		},
@@ -1766,7 +1766,7 @@ export default {
 					if (!e.message.includes("timeout")) {
 						this.$message.error(vm.$t("fileManager.networkErrorDeleteFileFailed"));
 					} else {
-						this.$message.error(vm.$t('error.requestTimeout'));
+						this.$message.error(vm.$t("error.requestTimeout"));
 					}
 				});
 		},
@@ -1797,7 +1797,7 @@ export default {
 					if (!e.message.includes("timeout")) {
 						this.$message.error(vm.$t("fileManager.networkErrorDecryptFailed"));
 					} else {
-						this.$message.error(vm.$t('error.requestTimeout'));
+						this.$message.error(vm.$t("error.requestTimeout"));
 					}
 				});
 		},

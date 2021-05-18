@@ -424,6 +424,7 @@
 		<upload-file-detail-dialog
 			@closeUploadFileDetail="toCloseUploadFileDetail"
 			:hash="uploadDetailHash"
+			:url="uploadDetailUrl"
 			:fileNodes="uploadDetailNodes"
 			:isClose="true"
 			v-if="transferType === 0"
@@ -442,6 +443,12 @@
 			</div>
 			<div class="loading-content download-file-detail-loading">
 				<div class="adjust" v-if="fileObjById[detailId]">
+					<div class="adjust-item">
+						<p class="adjust-title  ft14">{{ $t("fileManager.fileUrl") }}:</p>
+						<div class="adjust-info">
+							<p class=" ftpx14 mr20">{{ fileObjById[detailId].Url || "" }}</p>
+						</div>
+					</div>
 					<div class="adjust-item">
 						<p class="adjust-title  ft14">{{ $t("fileManager.fileHash") }}:</p>
 						<div class="adjust-info">
@@ -529,6 +536,7 @@ export default {
 			confirmCancelTask: null,
 			detailId: "",
 			uploadDetailHash: "",
+			uploadDetailUrl:"",
 			detailObj: {
 				fee: 0
 			},
@@ -965,6 +973,7 @@ export default {
 		// close upload file detail dialog callback
 		toCloseUploadFileDetail() {
 			this.uploadDetailHash = "";
+			this.uploadDetailUrl = "";
 			this.uploadDetailNodes = [];
 		},
 		// open detail dialog
@@ -972,6 +981,7 @@ export default {
 			if (this.transferType === 0) {
 				if (row.IsUploadAction) {
 					this.uploadDetailHash = row.FileHash;
+					this.uploadDetailUrl = row.Url;
 					this.uploadDetailNodes = row.Nodes || [];
 				} else {
 					this.detailObj = null;

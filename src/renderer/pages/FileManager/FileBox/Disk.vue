@@ -82,10 +82,7 @@
 										></circle-progress>
 									</span>
 								</span>
-								<div
-									class="opera"
-									v-if="!scope.row.Undone"
-								>
+								<div class="opera" v-if="!scope.row.Undone">
 									<span
 										@click.stop="shareFile(scope.row)"
 										:title="$t('fileManager.share')"
@@ -252,11 +249,9 @@
 					</el-form-item>
 				</el-form>
 				<div slot="footer">
-					<ripper-button
-						type="primer"
-						class="primary"
-						@click="switchToggle.shareDialog = false"
-					>{{$t('public.close')}}</ripper-button>
+					<ripper-button type="primer" class="primary" @click="switchToggle.shareDialog = false">{{
+						$t("public.close")
+					}}</ripper-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -536,6 +531,7 @@ export default {
 		},
 		toCloseUploadFileDetail() {
 			this.uploadDetailHash = "";
+			this.uploadDetailUrl = "";
 			this.uploadDetailNodes = [];
 		},
 		openDetailDialog(row) {
@@ -708,7 +704,7 @@ export default {
 				.catch(err => {
 					console.error(err);
 					if (err.message.includes("timeout")) {
-						this.$message.error(this.$t('error.requestTimeout'));
+						this.$message.error(this.$t("error.requestTimeout"));
 					}
 					this.switchToggle.load = true;
 				})
@@ -1073,7 +1069,7 @@ export default {
 						if (!e.message.includes("timeout")) {
 							this.$message.error(vm.$t("fileManager.networkErrorDeleteFailed"));
 						} else {
-							this.$message.error(this.$t('error.requestTimeout'));
+							this.$message.error(this.$t("error.requestTimeout"));
 						}
 					});
 			});
@@ -1117,7 +1113,7 @@ export default {
 					})
 					.catch(error => {
 						if (error.message.includes("timeout")) {
-							this.$message.error(this.$t('error.requestTimeout'));
+							this.$message.error(this.$t("error.requestTimeout"));
 						}
 						console.error("unable to calc");
 						this.fileDownloadInfo.Fee = "Unable to calculate. network error.";

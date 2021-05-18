@@ -1,13 +1,10 @@
 <template>
 	<div
 		id="app"
-		:class="{['theme-'+themeColor]:true, 'haveBg':(routerName !== 'Dialog' && routerName !== 'menuWindow')}"
+		:class="{ ['theme-' + themeColor]: true, haveBg: routerName !== 'Dialog' && routerName !== 'menuWindow' }"
 		:data-id="routerName"
 	>
-		<router-view
-			v-if="flag"
-			:class="{'theme-bg': routerName !== 'Dialog'}"
-		></router-view>
+		<router-view v-if="flag" :class="{ 'theme-bg': routerName !== 'Dialog' }"></router-view>
 	</div>
 </template>
 
@@ -17,34 +14,27 @@ export default {
 	name: "browser",
 	mounted() {
 		console.log(remote.getCurrentWebContents().id);
-		document.querySelector(
-			"#theme-ui"
-		).href = `./static/css/${this.themeColor}/theme/index.css`;
+		document.querySelector("#theme-ui").href = `./static/css/${this.themeColor}/theme/index.css`;
 		setTimeout(() => {
 			this.flag = true;
 			this.activeListener();
 		}, 1000);
 
 		this.init();
-		ipcRenderer.on(
-			"current-active-show-message",
-			(event, { info, type, dangerouslyUseHTMLString = false }) => {
-				this.$message({
-					message: info,
-					type,
-					dangerouslyUseHTMLString
-				});
-			}
-		);
+		ipcRenderer.on("current-active-show-message", (event, { info, type, dangerouslyUseHTMLString = false }) => {
+			this.$message({
+				message: info,
+				type,
+				dangerouslyUseHTMLString
+			});
+		});
 		ipcRenderer.on("get-data", (event, { result, type, page }) => {
 			console.log(type);
 			console.log(result);
 			this[type + "Update"]({ result, page });
 		});
 		ipcRenderer.on("set-theme", (event, theme) => {
-			document.querySelector(
-				"#theme-ui"
-			).href = `./static/css/${theme}/theme/index.css`;
+			document.querySelector("#theme-ui").href = `./static/css/${theme}/theme/index.css`;
 			this.$store.commit("SET_THEME_COLOR", theme);
 		});
 		this.$axios.get(this.$api.version).then(res => {
@@ -84,7 +74,7 @@ export default {
 						this.$axios.get = null;
 						this.$axios.post = null;
 						this.$message({
-							message: "Unexpected failure, need to restart Seeker.",
+							message: this.$t("error.UnexpectedFailureNeedToRestartSeeker"),
 							type: "error",
 							duration: 0
 						});
@@ -138,10 +128,7 @@ export default {
 					}
 				} else {
 					if (result.isLoginShowLog === true) {
-						if (
-							location.href.indexOf("CreateAccount") > 0 ||
-							location.href.indexOf("loginLog") > 0
-						) {
+						if (location.href.indexOf("CreateAccount") > 0 || location.href.indexOf("loginLog") > 0) {
 							this.$router.replace({
 								name: "Home"
 							});
@@ -233,7 +220,7 @@ export default {
 };
 </script>
 
-<style lang='scss'>
+<style lang="scss">
 $light-grey: #f9f9fb;
 $tabs-height: 70px;
 #app {
@@ -252,4 +239,3 @@ $tabs-height: 70px;
 	overflow-y: scroll;
 }
 </style>
-

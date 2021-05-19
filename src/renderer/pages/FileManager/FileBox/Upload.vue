@@ -130,15 +130,11 @@
 							></el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item
-						:label="$t('fileManager.integrityVerificationLevel')+':'"
-					>
-						<p class="dark-grey tootips break-word">{{$t('fileManager.integrityVerificationCycleCannotBeLongerThanStorageCycle')}}</p>
-						<el-select
-							class="form-right"
-							v-model="advancedData.ProveLevel"
-							@change="toGetPrice"
-						>
+					<el-form-item :label="$t('fileManager.integrityVerificationLevel') + ':'">
+						<p class="dark-grey tootips break-word">
+							{{ $t("fileManager.integrityVerificationCycleCannotBeLongerThanStorageCycle") }}
+						</p>
+						<el-select class="form-right" v-model="advancedData.ProveLevel" @change="toGetPrice">
 							<el-option
 								v-for="item in [1, 2, 3]"
 								:key="item"
@@ -501,7 +497,7 @@ export default {
 	methods: {
 		init() {
 			const vm = this;
-				(this.storageCycleSelected = this.DEFAULT_KEY), // default Year
+			(this.storageCycleSelected = this.DEFAULT_KEY), // default Year
 				(this.storageCycleNumber = 1);
 			this.contractSetting = {
 				// axios.get
@@ -599,7 +595,7 @@ export default {
 				})
 				.catch(error => {
 					if (error.message.includes("timeout")) {
-						this.$message.error(this.$t('error.requestTimeout'));
+						this.$message.error(this.$t("error.requestTimeout"));
 					}
 				});
 		},
@@ -643,7 +639,7 @@ export default {
 				})
 				.catch(error => {
 					if (error.message.includes("timeout")) {
-						this.$message.error(this.$t('error.requestTimeout'));
+						this.$message.error(this.$t("error.requestTimeout"));
 					}
 				});
 		},
@@ -822,7 +818,7 @@ export default {
 					})
 					.catch(error => {
 						if (error.message.includes("timeout")) {
-							this.$message.error(this.$t('error.requestTimeout'));
+							this.$message.error(this.$t("error.requestTimeout"));
 						}
 					});
 			});
@@ -896,18 +892,18 @@ export default {
 				let item = errorMsg[key];
 				let _content = "";
 				for (let i = 0; i < item.length; i++) {
-					_content += item[i].FileName;
+					_content += item[i].FileName + "、";
 				}
 				if (item.length > 1) {
-					let _sub = _content.substring(0, 20);
+					let _sub = _content.substring(1, 21);
 					content += `
-						<p>
+						<p title="${_sub} ${vm.$t('error["' + key + '"]')}">
 							${_sub}...(${item.length} ${vm.$t("fileManager.files2")}) ${vm.$t('error["' + key + '"]')}
 						</p>
 					`;
 				} else {
 					content += `
-					<p>
+					<p title="${_sub} ${vm.$t('error["' + key + '"]')}">
 						${_content} ${vm.$t("fileManager.files2")} ${vm.$t('error["' + key + '"]')}
 					</p>`;
 				}

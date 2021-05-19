@@ -2,7 +2,7 @@
 	<div id="plugin">
 		<div class="container-fluid">
 			<ul class="plugin-items theme-font-color row">
-				<li v-for="(plugin, index) in plugins" :key="index" class="plugin-item col-md-4 col-lg-3">
+				<li v-for="(plugin, index) in plugins" :key="index" class="plugin-item col-md-4 col-lg-3" v-if="plugin.Url !== clientUrl">
 					<div class="card">
 						<el-switch
 							v-model="plugin.isShow"
@@ -91,6 +91,7 @@
 import { ipcRenderer, remote } from "electron";
 import fs from "fs";
 import path from "path";
+import {clientUrl} from '../../../package.json'
 const G_plugins = [
 	{
 		Url: "oni://www.explorer.com",
@@ -112,6 +113,7 @@ export default {
 		return {
 			plugins: [],
 			pluginSelected: null,
+			clientUrl,
 			taskByUrl: {},
 			switchToggle: {
 				confirmDeletePluginDialog: false

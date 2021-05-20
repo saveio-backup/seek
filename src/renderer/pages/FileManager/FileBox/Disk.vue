@@ -183,7 +183,7 @@
 								{{
 									scope.row.Status === -1
 										? ""
-										: date.formatTime(new Date((scope.row.DownloadAt || scope.row.UpdatedAt) * 1000))
+										: date.formatTime(new Date((scope.row.DownloadAt || scope.row.CreatedAt) * 1000))
 								}}
 							</div>
 						</template>

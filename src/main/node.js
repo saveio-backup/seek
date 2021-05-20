@@ -288,7 +288,7 @@ const run = async (appDataPath, appName) => {
         path.join(appRoot, 'resources', getPlatform());
     log.debug(cmdStr, resourcesPath)
     log.debug("[run] run node++++++")
-    let workerProcess = cp.spawn(cmdStr, ["--config", cfgPath, "--launchManual", true], {
+    let workerProcess = cp.spawn(cmdStr, ["--profile","--config", cfgPath, "--launchManual", true], {
         cwd: resourcesPath,
         detached: getPlatform() == "win" ? false : true
     })

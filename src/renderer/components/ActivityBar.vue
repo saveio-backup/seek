@@ -41,7 +41,7 @@
 					<li
 						class="action-item"
 						v-for="item in pluginsInstalled"
-						v-show="item.detail && item.detail.Progress>=1 && item.isShow && item.Url !== clientUrl"
+						v-show="item.detail && item.detail.Progress>=1 && item.isShow && item.Type == 1"
 						:key="item.Url"
 						:title="item.title"
 						@click="openThirdPage(item.Url)"
@@ -113,7 +113,6 @@
 import { remote, ipcRenderer } from "electron";
 import fs from "fs";
 import path from "path";
-import {clientUrl} from '../../../package.json'
 const { Menu } = remote;
 export default {
 	mounted() {
@@ -131,7 +130,6 @@ export default {
 	},
 	data() {
 		return {
-			clientUrl,
 			switchToggle: {
 				// showPoint: !!(
 				// 	localStorage.getItem("lastVersion") &&

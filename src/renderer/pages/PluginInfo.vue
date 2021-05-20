@@ -2,7 +2,12 @@
 	<div id="plugin">
 		<div class="container-fluid">
 			<ul class="plugin-items theme-font-color row">
-				<li v-for="(plugin, index) in plugins" :key="index" class="plugin-item col-md-4 col-lg-3" v-if="plugin.Url !== clientUrl">
+				<li
+					v-for="(plugin, index) in plugins"
+					:key="index"
+					class="plugin-item col-md-4 col-lg-3"
+					v-show="plugin.Type == 1"
+				>
 					<div class="card">
 						<el-switch
 							v-model="plugin.isShow"
@@ -91,7 +96,6 @@
 import { ipcRenderer, remote } from "electron";
 import fs from "fs";
 import path from "path";
-import {clientUrl} from '../../../package.json'
 const G_plugins = [
 	{
 		Url: "oni://www.explorer.com",
@@ -113,7 +117,6 @@ export default {
 		return {
 			plugins: [],
 			pluginSelected: null,
-			clientUrl,
 			taskByUrl: {},
 			switchToggle: {
 				confirmDeletePluginDialog: false
@@ -219,15 +222,19 @@ export default {
 					}
 					pluginInstaled.push(plugins[i]);
 				} else {
-					const detail = await this.isPluginInTransferDetail(plugins[i].Url);
-					if (detail) {
-						plugins[i].detail = detail;
-						plugins[i].isNeedUpdate = false; // transferDetail data is lastest no need update
-						localUrlPlugins[plugins[i].Url] = plugins[i];
-						pluginInstaled.push(plugins[i]);
-					} else {
-						delete localUrlPlugins[plugins[i].Url]; // no longer exists, there is no need to save the local database.
-						plugins[i].detail = null;
+					try {
+						const detail = await this.isPluginInTransferDetail(plugins[i].Url);
+						if (detail) {
+							plugins[i].detail = detail;
+							plugins[i].isNeedUpdate = false; // transferDetail data is lastest no need update
+							localUrlPlugins[plugins[i].Url] = plugins[i];
+							pluginInstaled.push(plugins[i]);
+						} else {
+							delete localUrlPlugins[plugins[i].Url]; // no longer exists, there is no need to save the local database.
+							plugins[i].detail = null;
+						}
+					} catch (error) {
+						// Invaild Url
 					}
 				}
 				this.$set(this.plugins, i, plugins[i]);
@@ -292,7 +299,7 @@ export default {
 				})
 				.catch(error => {
 					if (error.message.includes("timeout")) {
-						this.$message.error(this.$t('error.requestTimeout'));
+						this.$message.error(this.$t("error.requestTimeout"));
 					}
 				});
 		},
@@ -307,7 +314,7 @@ export default {
 				})
 				.catch(error => {
 					if (error.message.includes("timeout")) {
-						this.$message.error(this.$t('error.requestTimeout'));
+						this.$message.error(this.$t("error.requestTimeout"));
 					}
 				});
 		},
@@ -326,7 +333,7 @@ export default {
 				})
 				.catch(error => {
 					if (error.message.includes("timeout")) {
-						this.$message.error(this.$t('error.requestTimeout'));
+						this.$message.error(this.$t("error.requestTimeout"));
 					}
 				});
 		},
@@ -340,7 +347,7 @@ export default {
 					})
 					.catch(err => {
 						if (err.message.includes("timeout")) {
-							this.$message.error(this.$t('error.requestTimeout'));
+							this.$message.error(this.$t("error.requestTimeout"));
 						}
 						reject(err);
 					});
@@ -356,7 +363,7 @@ export default {
 					})
 					.catch(err => {
 						if (err.message.includes("timeout")) {
-							this.$message.error(this.$t('error.requestTimeout'));
+							this.$message.error(this.$t("error.requestTimeout"));
 						}
 						rejest(err);
 					});
@@ -439,16 +446,20 @@ export default {
 					localUrlPlugins[pluginItem.Url] = localUrlPlugins[pluginItem.Url] || {};
 					localUrlPlugins[pluginItem.Url].detail = pluginItem.detail;
 				} else {
-					const detail = await this.isPluginInTransferDetail(pluginItem.Url);
-					if (detail) {
-						pluginItem.detail = detail;
-					} else {
-						pluginItem.detail = null;
-					}
-					// if plguin is not in task, will reset to localUrlPlugins
-					/* pluginItem.detail = localUrlPlugins[pluginItem.Url]
+					try {
+						const detail = await this.isPluginInTransferDetail(pluginItem.Url);
+						if (detail) {
+							pluginItem.detail = detail;
+						} else {
+							pluginItem.detail = null;
+						}
+						// if plguin is not in task, will reset to localUrlPlugins
+						/* pluginItem.detail = localUrlPlugins[pluginItem.Url]
 						? localUrlPlugins[pluginItem.Url].detail
 						: null; */
+					} catch (error) {
+						pluginItem.detail = null;
+					}
 				}
 			}
 			console.log("setLocalDB Plugins in Complete Watch");

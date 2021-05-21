@@ -903,7 +903,7 @@ export default {
 					`;
 				} else {
 					content += `
-					<p title="${_sub} ${vm.$t('error["' + key + '"]')}">
+					<p title="${_content} ${vm.$t('error["' + key + '"]')}">
 						${_content} ${vm.$t("fileManager.files2")} ${vm.$t('error["' + key + '"]')}
 					</p>`;
 				}

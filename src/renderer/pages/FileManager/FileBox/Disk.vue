@@ -504,7 +504,8 @@ export default {
 			},
 			justNowCompleteNumberTimeoutObj: null,
 			updateFileRequestCancel: null,
-			total: 0
+			total: 0,
+			updateFileListsFlag: false // keep-alive prove is not run!
 		};
 	},
 	components: {
@@ -652,6 +653,8 @@ export default {
 							}
 							vm.$forceUpdate();
 							// update sync file limit;
+						} else {
+							vm.fileListData = [];
 						}
 					}
 				})
@@ -675,15 +678,16 @@ export default {
 					if (res.Error === 0) {
 						let result = res.Result.List;
 						vm.total = res.Result.TotalCount || 0;
+						result.map(item => {
+							item.Undone = item.Url !== "" && item.Url !== undefined ? false : true;
+							if (vm.uploadDetailHash && item.Hash === vm.uploadDetailHash) {
+								vm.uploadDetailNodes = item.Nodes || [];
+							}
+							return item;
+						});
+						vm.fileListData = vm.fileListData.slice(0, _start).concat(result);
+
 						if (result.length) {
-							result.map(item => {
-								item.Undone = item.Url !== "" && item.Url !== undefined ? false : true;
-								if (vm.uploadDetailHash && item.Hash === vm.uploadDetailHash) {
-									vm.uploadDetailNodes = item.Nodes || [];
-								}
-								return item;
-							});
-							vm.fileListData = vm.fileListData.slice(0, _start).concat(result);
 							// update sync file limit;
 							let _limit = vm.fileListData.length;
 							if (vm.page === "filebox") {

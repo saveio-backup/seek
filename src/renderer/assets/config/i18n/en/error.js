@@ -188,7 +188,7 @@ const result = {
 	"55060": "Querying all DNS node information failed",
 	"55061": "Querying DNS node get ip infomation failed",
 	"55062": "There is not enough time in user space",
-	"55063": "Insufficient storage time for upload Settings",
+	"55063": "The storage space is not valid enough time",
 	"55064": "Download without permission",
 	"55065": "Update plug-in information failed",
 	"55066": "The query for plug-in information failed",

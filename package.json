@@ -1,0 +1,144 @@
+{
+  "name": "seek",
+  "version": "1.0.2-84",
+  "description": "seek about ONI",
+  "author": "MartinLizeqian <964810963@qq.com>",
+  "license": "MIT",
+  "clientUrl": "oni://www.client.com",
+  "main": "./dist/electron/main.js",
+  "scripts": {
+    "preload": "npx webpack --config ./.electron-vue/webpack.preload.config.js",
+    "build": "npm run preload && node .electron-vue/build.js && electron-builder",
+    "build:mac": "npm run preload && node .electron-vue/build.js && electron-builder --m",
+    "build:win": "npm run preload && node .electron-vue/build.js && electron-builder --w --x64",
+    "build:dir": "node .electron-vue/build.js && electron-builder --dir",
+    "build:clean": "cross-env BUILD_TARGET=clean node .electron-vue/build.js",
+    "build:web": "cross-env BUILD_TARGET=web node .electron-vue/build.js",
+    "dev": "npm run preload && node .electron-vue/dev-runner.js",
+    "pack": "npm run pack:main && npm run pack:renderer",
+    "pack:main": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.main.config.js",
+    "pack:renderer": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.renderer.config.js",
+    "postinstall": ""
+  },
+  "build": {
+    "productName": "Seeker",
+    "artifactName": "${productName}_${version}.${ext}",
+    "appId": "com.application.seeker",
+    "directories": {
+      "output": "build"
+    },
+    "extraFiles": [
+      {
+        "from": "resources/${os}",
+        "to": "Resources/bin",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "files": [
+      "dist/electron/**/*"
+    ],
+    "dmg": {
+      "contents": [
+        {
+          "x": 410,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        },
+        {
+          "x": 130,
+          "y": 150,
+          "type": "file"
+        }
+      ]
+    },
+    "mac": {
+      "icon": "build/icons/seeker_logo_origin.png",
+      "artifactName": "${productName}_Setup_${version}_alpha.${ext}"
+    },
+    "win": {
+      "icon": "build/icons/seeker.png",
+      "artifactName": "${productName}_Setup_${version}_alpha.${ext}"
+    },
+    "linux": {
+      "icon": "build/icons"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false
+    },
+    "fileAssociations": [
+      {
+        "name": "seeker encrypt file",
+        "ext": "ept",
+        "description": "seeker encrypt file"
+      }
+    ]
+  },
+  "dependencies": {
+    "@electron/remote": "^2.0.1",
+    "adm-zip": "^0.5.7",
+    "app-root-dir": "^1.0.2",
+    "axios": "^0.18.0",
+    "cfonts": "^2.10.0",
+    "echarts": "^5.2.1",
+    "electron-log": "^4.4.1",
+    "element-ui": "^2.15.6",
+    "highlight.js": "^9.18.5",
+    "leveldown": "^6.1.0",
+    "levelup": "^5.1.1",
+    "marked": "^3.0.4",
+    "mathjs": "^9.5.0",
+    "multispinner": "^0.2.1",
+    "node-uuid": "^1.4.8",
+    "spark-md5": "^3.0.2",
+    "uninstall": "*",
+    "vue": "^2.5.16",
+    "vue-electron": "^1.0.6",
+    "vue-i18n": "^8.14.1",
+    "vue-router": "^3.0.1",
+    "vuex": "^3.0.1"
+  },
+  "devDependencies": {
+    "ajv": "^6.5.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.4",
+    "babel-minify-webpack-plugin": "^0.3.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-stage-0": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "chalk": "^2.4.1",
+    "copy-webpack-plugin": "^4.5.1",
+    "cross-env": "^5.1.6",
+    "css-loader": "^0.28.11",
+    "del": "^3.0.0",
+    "devtron": "^1.4.0",
+    "electron": "^13.0.0",
+    "electron-builder": "^22.9.1",
+    "electron-debug": "^1.5.0",
+    "electron-devtools-installer": "^2.2.4",
+    "file-loader": "^1.1.11",
+    "html-webpack-plugin": "^3.2.0",
+    "listr": "^0.14.3",
+    "mini-css-extract-plugin": "0.4.0",
+    "node-loader": "^0.6.0",
+    "sass": "~1.26.5",
+    "sass-loader": "^8.0.2",
+    "sass-resources-loader": "^2.2.4",
+    "style-loader": "^0.21.0",
+    "url-loader": "^1.0.1",
+    "vue-html-loader": "^1.2.4",
+    "vue-loader": "^15.2.4",
+    "vue-style-loader": "^4.1.0",
+    "vue-template-compiler": "^2.5.16",
+    "webpack": "^4.15.1",
+    "webpack-cli": "^3.0.8",
+    "webpack-dev-server": "^3.1.4",
+    "webpack-hot-middleware": "^2.22.2",
+    "webpack-merge": "^4.1.3"
+  }
+}

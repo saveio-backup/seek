@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>seek</title>
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="static/images/logo/SAVE.png"
+    />
+    <link rel="stylesheet" href="" id="theme-ui" />
+    <% if (htmlWebpackPlugin.options.nodeModules) { %>
+    <!-- Add `node_modules/` to global paths so `require` works properly in development -->
+    <script>
+      require('module').globalPaths.push('<%= htmlWebpackPlugin.options.nodeModules.replace(/\\/g, '\\\\') %>')
+    </script>
+    <% } %>
+  </head>
+  <body>
+    <div id="app"></div>
+    <!-- Set `__static` path to static files in production -->
+    <% if (!process.browser) { %>
+    <script>
+      if (process.env.NODE_ENV !== "development")
+        window.__static = require("path")
+          .join(__dirname, "/static")
+          .replace(/\\/g, "\\\\");
+    </script>
+    <% } %>
+
+    <!-- webpack builds are automatically injected -->
+  </body>
+</html>

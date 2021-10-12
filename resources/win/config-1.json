@@ -1,0 +1,73 @@
+{
+	"Base": {
+		"BaseDir": ".",
+		"LogPath": "./SeekLog",
+		"LogMaxSize": 5242880,
+		"ChainId": "1",
+		"BlockTime": 5,
+		"NetworkId": 1567651917,
+		"PublicIP": "",
+		"IntranetIP": "",
+		"PortBase": 10000,
+		"LogLevel": 0,
+		"LocalRpcPortOffset": 338,
+		"EnableLocalRpc": false,
+		"JsonRpcPortOffset": 336,
+		"EnableJsonRpc": true,
+		"HttpRestPortOffset": 335,
+		"HttpCertPath": "",
+		"HttpKeyPath": "",
+		"RestEnable": true,
+		"WsPortOffset": 339,
+		"WsCertPath": "",
+		"WsKeyPath": "",
+		"ChannelPortOffset": 3005,
+		"ChannelProtocol": "tcp",
+		"DBPath": "./DB",
+		"ChainRestAddrs": [
+			"http://106.75.10.25:10334",
+			"http://106.75.10.25:20334",
+			"http://117.50.109.129:20334"
+		],
+		"ChainRpcAddrs": [
+			"http://106.75.10.25:10336",
+			"http://106.75.10.25:20336",
+			"http://117.50.109.129:20336"
+		],
+		"NATProxyServerAddrs": "tcp://106.75.9.56:6007",
+		"DspProtocol": "tcp",
+		"DspPortOffset": 4001,
+		"TrackerNetworkId": 1567651917,
+		"TrackerProtocol": "tcp",
+		"TrackerPortOffset": 337,
+		"ProfilePortOffset": 332,
+		"WalletDir": "./keystore.dat"
+	},
+	"Fs": {
+		"FsRepoRoot": "./FS",
+		"FsFileRoot": "./Downloads",
+		"FsType": 0,
+		"FsGCPeriod": "1h",
+		"FsMaxStorage": "",
+		"EnableBackup": false
+	},
+	"Dsp": {
+		"BlockConfirm": 1,
+		"ChannelClientType": "rpc",
+		"ChannelRevealTimeout": "20",
+		"ChannelSettleTimeout": "50",
+		"BlockDelay": "3",
+		"MaxUnpaidPayment": 5,
+		"AutoSetupDNSEnable": false,
+		"DnsNodeMaxNum": 100,
+		"DnsChannelDeposit": 0,
+		"DNSWalletAddrs": null,
+		"HealthCheckDNS": false,
+		"SeedInterval": 600,
+		"Trackers": null,
+		"MaxUploadTask": 10000,
+		"MaxDownloadTask": 10000,
+		"MaxShareTask": 10000
+	},
+	"Bootstraps": []
+}

@@ -650,6 +650,7 @@ export default {
 				return;
 			}
 			const vm = this;
+
 			ipcRenderer.send("upload-file-dialog");
 			ipcRenderer.once("selected-upload", (event, content) => {
 				// get current select not have file list

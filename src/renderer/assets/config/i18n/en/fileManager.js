@@ -61,7 +61,7 @@ const result = {
 	storage: "Storage",
 	spaceAdjustRecord: "Space Adjust Record",
 	expiredTime: "Expired Time",
-	cost: "Cost",
+	cost: "Estimate",
 	spaceSize: "Space Size",
 	current: "Current",
 	adjustTo: "Adjust to",

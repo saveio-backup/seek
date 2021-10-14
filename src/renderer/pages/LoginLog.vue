@@ -149,7 +149,7 @@ export default {
 				} else {
 					return false;
 				}
-
+				//debugger
 				if (vm.stateObjByName["pylons"]) {
 					if (vm.stateObjByName["pylons"].State === 6) {
 						dnsHasError = true;

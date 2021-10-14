@@ -202,7 +202,7 @@ export default {
 					this.toClose();
 				});
 			}
-		}
+		},
 	},
 	computed: {
 		timeTofilter() {

@@ -1182,6 +1182,7 @@ export default {
 			return this.$store.state.Filemanager.space;
 		},
 		channelBind() {
+			console.log(this.$store.state.Home.channelBind);
 			return this.$store.state.Home.channelBind;
 		},
 		filterListData() {

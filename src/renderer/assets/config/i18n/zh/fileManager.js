@@ -60,7 +60,7 @@ const result = {
 	storage: "存储空间",
 	spaceAdjustRecord: "空间调整记录",
 	expiredTime: "过期时间",
-	cost: "费 用",
+	cost: "估算费用",
 	spaceSize: "空间大小",
 	current: "当 前",
 	adjustTo: "调 整",

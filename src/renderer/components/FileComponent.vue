@@ -687,13 +687,25 @@ export default {
 		},
 		fileObjById: function() {
 			let obj = {};
+			console.log(this.fileList);
+			let temp =false; //标志是否有展示详情的文件已经被下载完毕
 			for (let value of this.fileList) {
 				// update upload file nodes
 				if (this.uploadDetailHash && this.transferType === 0 && value.FileHash === this.uploadDetailHash) {
 					this.uploadDetailNodes = value.Nodes;
+					console.log("update upload file nodes");
 				}
 				//
 				obj[value.Id] = value;
+				// 展示了详情情况下
+				if (this.switchToggle.detailDialog &&this.detailId == value.Id) {
+					temp = true; //展示详情的文件还存在	
+				}
+			}
+			//展示详情的文件已经下载完毕 关闭详情
+			if (this.switchToggle.detailDialog&&!temp) {
+				this.switchToggle.detailDialog = false;
+				this.detailId =""
 			}
 			return obj;
 		},

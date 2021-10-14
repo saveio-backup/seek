@@ -13,9 +13,9 @@ ipcMain.on('open-file-dialog', (event) => {
       extensions: ['dat', 'txt', 'text']
     }],
     properties: ['openFile']
-  }, (files) => {
-    if (files) {
-      const contents = fs.readFileSync(files[0], 'utf-8');
+  }).then((files) => {
+    if (files.filePaths) {
+      const contents = fs.readFileSync(files.filePaths[0], 'utf-8');
       event.sender.send('selected-file', contents)
     }
   })
@@ -27,9 +27,9 @@ ipcMain.on('open-wallet-dialog', (event) => {
       extensions: ['dat', 'txt', 'text']
     }],
     properties: ['openFile']
-  }, (files) => {
-    if (files) {
-      const contents = fs.readFileSync(files[0], 'utf-8');
+  }).then((files) => {
+    if (files.filePaths) {
+      const contents = fs.readFileSync(files.filePaths[0], 'utf-8');
       event.sender.send('selected-wallet', contents)
     }
   })
@@ -39,19 +39,22 @@ ipcMain.on('export-file-dialog', (event, contents, defaultName) => {
     title: 'Export your file',
     defaultPath: `${defaultName}.dat`
   }
-  dialog.showSaveDialog(option, (filename) => {
+  dialog.showSaveDialog(option).then((filename) => {
     if (!filename) return;
-    fs.writeFileSync(filename, contents, 'utf-8');
+    if (!filename.filePath.endsWith('.dat')) {
+      filename.filePath = filename.filePath + '.dat'
+    }
+    fs.writeFileSync(filename.filePath, contents, 'utf-8');
     event.sender.send('export-finished');
   })
 })
 ipcMain.on('upload-file-dialog', (event) => {
   dialog.showOpenDialog({
     properties: ['openFile', 'treatPackageAsDirectory', 'multiSelections']
-  }, (files) => {
-    if (files) {
+  }).then((files) => {
+    if (files.filePaths) {
       let arr = [];
-      for (let value of files) {
+      for (let value of files.filePaths) {
         const fileName = path.basename(value)
         const filePath = value;
         let fileBytes = fs.statSync(filePath).size;
@@ -71,9 +74,9 @@ ipcMain.on('upload-file-dialog', (event) => {
 ipcMain.on('will-set-dir', (event) => {
   dialog.showOpenDialog({
     properties: ['openDirectory']
-  }, (dir) => {
-    if (dir) {
-      event.sender.send('did-set-dir', dir[0]);
+  }).then((dir) => {
+    if (dir.filePaths) {
+      event.sender.send('did-set-dir', dir.filePaths[0]);
     }
   })
 })

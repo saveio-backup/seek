@@ -31,6 +31,7 @@ export default {
 		});
 		ipcRenderer.on("get-data", (event, { result, type, page }) => {
 			console.log(type);
+			console.log("?????????????");
 			console.log(result);
 			this[type + "Update"]({ result, page });
 		});

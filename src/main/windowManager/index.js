@@ -464,12 +464,13 @@ class View {
     createView(win, url, option);
   }
 }
-export function createWindow(url) {
+export async function createWindow(url) {
 
   /**
    * Initial window options
    */
-
+  let themeColor = ""
+  themeColor = await global.settingDB.queryData('themeColor')
   let mainWindow = new BrowserWindow({
     height: 850,
     frame: false,
@@ -477,6 +478,7 @@ export function createWindow(url) {
     minWidth: 1200,
     minHeight: 800,
     width: 1200,
+    backgroundColor: themeColor=="dark"? '#333333':'#dfe2e9',
     titleBarStyle: 'hiddenInset',
     autoHideMenuBar: true,
     fullscreenable: true,

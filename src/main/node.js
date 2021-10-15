@@ -1,5 +1,6 @@
 import {
-    platform
+    platform,
+    cpus
 } from 'os';
 import {
     app,
@@ -277,7 +278,15 @@ const run = async (appDataPath, appName) => {
         cfgPath = fs.existsSync(chainIdPath) ? chainIdPath : defaultPath;
         cfgDir = `${appDataPath}/${appName}/`;
         // cmdStr = `./edge --config='${cfgDir}'`
-        cmdStr = `./edge-darwin-amd64`
+        
+        //apple 不同芯片区分 apple m1 和 intel
+        let cpuTypes = cpus();
+        if (cpuTypes[0].model.search("Apple") !=- 1) {
+            cmdStr = `./edge-darwin-arm64`
+        }else{
+            cmdStr = `./edge-darwin-amd64`
+        }
+        console.log(cmdStr);
     }
     log.debug("[run] run node")
     log.debug("[run] appDataPath", appDataPath)

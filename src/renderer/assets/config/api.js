@@ -35,6 +35,8 @@ if (exist) { // chainid.json   exist
   } catch (err) {}
 }
 
+// HOST = "http://localhost:20335/api/"
+
 const VERSION = 'v1/';
 const API = {
   host: HOST,

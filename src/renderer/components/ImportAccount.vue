@@ -343,6 +343,7 @@ export default {
 		importAccountWithWalletFile() {
 			const vm = this;
 			if (this.switchToggle.loading) return;
+			alert(this.$api.account)
 			this.$axios
 				.post(this.$api.account + "/import/walletfile", this.data, {
 					loading: {

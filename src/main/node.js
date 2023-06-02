@@ -277,8 +277,6 @@ const run = async (appDataPath, appName) => {
         const defaultPath = `${appDataPath}/${appName}/config-${DEFAULT_CHAINID}.json`
         cfgPath = fs.existsSync(chainIdPath) ? chainIdPath : defaultPath;
         cfgDir = `${appDataPath}/${appName}/`;
-        // cmdStr = `./edge --config='${cfgDir}'`
-        
         //apple 不同芯片区分 apple m1 和 intel
         let cpuTypes = cpus();
         if (cpuTypes[0].model.search("Apple") !=- 1) {
